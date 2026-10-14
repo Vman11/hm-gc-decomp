@@ -1,0 +1,2 @@
+/* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
+#include "common.h"

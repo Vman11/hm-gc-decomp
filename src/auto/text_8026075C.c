@@ -1,0 +1,2 @@
+/* Functions from 0x8026075C to 0x80260764, found by decomp-toolkit. */
+#include "common.h"

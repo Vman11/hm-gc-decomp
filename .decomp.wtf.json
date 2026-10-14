@@ -1,0 +1,36 @@
+{
+  "created": "from scratch",
+  "platform": "gc",
+  "version": "GHYE6S",
+  "compiler": "GC/1.3.2",
+  "game": {
+    "what": "your copy of the game",
+    "path": "orig/GHYE6S/Disney's The Haunted Mansion (USA).nkit.iso",
+    "sha1": null
+  },
+  "setup": [
+    [
+      "python",
+      "configure.py",
+      "--dtk",
+      "/home/mi/.local/share/decompnet/toolchains/dtk/dtk",
+      "--binutils",
+      "/home/mi/.local/share/decompnet/toolchains/gc-wii-binutils",
+      "--compilers",
+      "/home/mi/.local/share/decompnet/toolchains/mwcc",
+      "--objdiff",
+      "/home/mi/.local/share/decompnet/toolchains/objdiff-cli/objdiff-cli",
+      "--sjiswrap",
+      "/home/mi/.local/share/decompnet/toolchains/sjiswrap/sjiswrap.exe",
+      "--wrapper",
+      "/home/mi/.local/share/decompnet/toolchains/wibo/wibo"
+    ],
+    [
+      "ninja"
+    ]
+  ],
+  "rebuild": {
+    "identical": true,
+    "detail": "identical"
+  }
+}

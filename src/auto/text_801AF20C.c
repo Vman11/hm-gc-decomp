@@ -1,0 +1,2 @@
+/* Functions from 0x801AF20C to 0x801AF218, found by decomp-toolkit. */
+#include "common.h"

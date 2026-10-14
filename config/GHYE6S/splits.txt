@@ -1,0 +1,3259 @@
+Sections:
+	.init       type:code align:4
+	extab       type:rodata align:16
+	extabindex  type:rodata align:32
+	.text       type:code align:32
+	.ctors      type:rodata align:16
+	.dtors      type:rodata align:32
+	.rodata     type:rodata align:32
+	.data       type:data align:4
+	.bss        type:bss align:16
+	.sdata      type:data align:32
+	.sbss       type:bss align:16
+	.sdata2     type:rodata align:16
+
+auto/text_8002A97C.c:
+	.text       start:0x8002A97C end:0x8002A9AC
+
+auto/text_8002B26C.c:
+	.text       start:0x8002B26C end:0x8002B42C
+
+auto/text_8002BDC8.c:
+	.text       start:0x8002BDC8 end:0x8002BDD4
+
+auto/text_8002C3EC.c:
+	.text       start:0x8002C3EC end:0x8002C414
+
+auto/text_8002F118.c:
+	.text       start:0x8002F118 end:0x8002F3C8
+
+auto/text_8002FADC.c:
+	.text       start:0x8002FADC end:0x8002FC80
+
+auto/text_8002FE70.c:
+	.text       start:0x8002FE70 end:0x8002FE78
+
+auto/text_80030368.c:
+	.text       start:0x80030368 end:0x8003036C
+
+auto/text_800303A4.c:
+	.text       start:0x800303A4 end:0x800303A8
+
+auto/text_80030DA4.c:
+	.text       start:0x80030DA4 end:0x80030DA8
+
+auto/text_8003142C.c:
+	.text       start:0x8003142C end:0x80031434
+
+auto/text_800316C4.c:
+	.text       start:0x800316C4 end:0x800316C8
+
+auto/text_80032068.c:
+	.text       start:0x80032068 end:0x80032078
+
+auto/text_80032098.c:
+	.text       start:0x80032098 end:0x800320A0
+
+auto/text_80033824.c:
+	.text       start:0x80033824 end:0x800338E8
+
+auto/text_80034AEC.c:
+	.text       start:0x80034AEC end:0x80034AFC
+
+auto/text_80036E0C.c:
+	.text       start:0x80036E0C end:0x80036E44
+
+auto/text_80036F10.c:
+	.text       start:0x80036F10 end:0x80037060
+
+auto/text_80037118.c:
+	.text       start:0x80037118 end:0x8003714C
+
+auto/text_800371D0.c:
+	.text       start:0x800371D0 end:0x800372CC
+
+auto/text_80037438.c:
+	.text       start:0x80037438 end:0x80037480
+
+auto/text_800377B4.c:
+	.text       start:0x800377B4 end:0x800378AC
+
+auto/text_80037904.c:
+	.text       start:0x80037904 end:0x8003793C
+
+auto/text_800379AC.c:
+	.text       start:0x800379AC end:0x80037E64
+
+auto/text_80037F20.c:
+	.text       start:0x80037F20 end:0x80037FBC
+
+auto/text_80037FF4.c:
+	.text       start:0x80037FF4 end:0x80038058
+
+auto/text_80038474.c:
+	.text       start:0x80038474 end:0x800384A4
+
+auto/text_80038B90.c:
+	.text       start:0x80038B90 end:0x80038BE4
+
+auto/text_80038D2C.c:
+	.text       start:0x80038D2C end:0x80038DA4
+
+auto/text_80038DDC.c:
+	.text       start:0x80038DDC end:0x80039060
+
+auto/text_800390F8.c:
+	.text       start:0x800390F8 end:0x80039170
+
+auto/text_80039258.c:
+	.text       start:0x80039258 end:0x8003925C
+
+auto/text_8003965C.c:
+	.text       start:0x8003965C end:0x80039688
+
+auto/text_80039E10.c:
+	.text       start:0x80039E10 end:0x80039E48
+
+auto/text_80039E80.c:
+	.text       start:0x80039E80 end:0x80039EA4
+
+auto/text_8003A490.c:
+	.text       start:0x8003A490 end:0x8003A4C4
+
+auto/text_8003A978.c:
+	.text       start:0x8003A978 end:0x8003A9AC
+
+auto/text_8003AA24.c:
+	.text       start:0x8003AA24 end:0x8003AA34
+
+auto/text_8003AAF8.c:
+	.text       start:0x8003AAF8 end:0x8003AB08
+
+auto/text_8003AB70.c:
+	.text       start:0x8003AB70 end:0x8003AB98
+
+auto/text_8003ACE0.c:
+	.text       start:0x8003ACE0 end:0x8003AD00
+
+auto/text_8003B394.c:
+	.text       start:0x8003B394 end:0x8003B3B0
+
+auto/text_8003C0D8.c:
+	.text       start:0x8003C0D8 end:0x8003C0EC
+
+auto/text_8003C388.c:
+	.text       start:0x8003C388 end:0x8003C3D4
+
+auto/text_8003C590.c:
+	.text       start:0x8003C590 end:0x8003C59C
+
+auto/text_8003C604.c:
+	.text       start:0x8003C604 end:0x8003C63C
+
+auto/text_8003C89C.c:
+	.text       start:0x8003C89C end:0x8003C8A4
+
+auto/text_8003D50C.c:
+	.text       start:0x8003D50C end:0x8003D518
+
+auto/text_8003E88C.c:
+	.text       start:0x8003E88C end:0x8003E8A0
+
+auto/text_8003E978.c:
+	.text       start:0x8003E978 end:0x8003E980
+
+auto/text_8003EC40.c:
+	.text       start:0x8003EC40 end:0x8003EC48
+
+auto/text_8003EC80.c:
+	.text       start:0x8003EC80 end:0x8003EEA0
+
+auto/text_8003EFF4.c:
+	.text       start:0x8003EFF4 end:0x8003F108
+
+auto/text_8003F1DC.c:
+	.text       start:0x8003F1DC end:0x8003F1E0
+
+auto/text_8003FB68.c:
+	.text       start:0x8003FB68 end:0x8003FB70
+
+auto/text_80040570.c:
+	.text       start:0x80040570 end:0x8004058C
+
+auto/text_80041668.c:
+	.text       start:0x80041668 end:0x800416BC
+
+auto/text_80042AF0.c:
+	.text       start:0x80042AF0 end:0x80042AF8
+
+auto/text_800447E8.c:
+	.text       start:0x800447E8 end:0x8004486C
+
+auto/text_80044D00.c:
+	.text       start:0x80044D00 end:0x80044D08
+
+auto/text_800452C8.c:
+	.text       start:0x800452C8 end:0x800452D0
+
+auto/text_80045930.c:
+	.text       start:0x80045930 end:0x80045938
+
+auto/text_80046E50.c:
+	.text       start:0x80046E50 end:0x80046EDC
+
+auto/text_80047CD0.c:
+	.text       start:0x80047CD0 end:0x80047D30
+
+auto/text_80048C40.c:
+	.text       start:0x80048C40 end:0x80048D10
+
+auto/text_80048F58.c:
+	.text       start:0x80048F58 end:0x80048F60
+
+auto/text_800496A0.c:
+	.text       start:0x800496A0 end:0x800496A8
+
+auto/text_8004C480.c:
+	.text       start:0x8004C480 end:0x8004C488
+
+auto/text_8004DCC0.c:
+	.text       start:0x8004DCC0 end:0x8004DD3C
+
+auto/text_8004E150.c:
+	.text       start:0x8004E150 end:0x8004E158
+
+auto/text_8004E8F0.c:
+	.text       start:0x8004E8F0 end:0x8004E930
+
+auto/text_8004EFB8.c:
+	.text       start:0x8004EFB8 end:0x8004EFC0
+
+auto/text_800501FC.c:
+	.text       start:0x800501FC end:0x80050288
+
+auto/text_80052028.c:
+	.text       start:0x80052028 end:0x800520A4
+
+auto/text_80054790.c:
+	.text       start:0x80054790 end:0x80054834
+
+auto/text_80058404.c:
+	.text       start:0x80058404 end:0x80058478
+
+auto/text_8005B318.c:
+	.text       start:0x8005B318 end:0x8005B320
+
+auto/text_8005C2C0.c:
+	.text       start:0x8005C2C0 end:0x8005C2C8
+
+auto/text_8005E00C.c:
+	.text       start:0x8005E00C end:0x8005E0C8
+
+auto/text_8005F59C.c:
+	.text       start:0x8005F59C end:0x8005F620
+
+auto/text_80060FA4.c:
+	.text       start:0x80060FA4 end:0x80060FB8
+
+auto/text_800612DC.c:
+	.text       start:0x800612DC end:0x800612F0
+
+auto/text_80061458.c:
+	.text       start:0x80061458 end:0x80061484
+
+auto/text_80061734.c:
+	.text       start:0x80061734 end:0x8006173C
+
+auto/text_80061894.c:
+	.text       start:0x80061894 end:0x800619B8
+
+auto/text_800641A4.c:
+	.text       start:0x800641A4 end:0x800641B0
+
+auto/text_80066188.c:
+	.text       start:0x80066188 end:0x800662A4
+
+auto/text_80068AA4.c:
+	.text       start:0x80068AA4 end:0x80068AC4
+
+auto/text_80068F50.c:
+	.text       start:0x80068F50 end:0x80068F98
+
+auto/text_80070CC0.c:
+	.text       start:0x80070CC0 end:0x800710BC
+
+auto/text_80071E34.c:
+	.text       start:0x80071E34 end:0x80071E68
+
+auto/text_80072388.c:
+	.text       start:0x80072388 end:0x800724AC
+
+auto/text_80072944.c:
+	.text       start:0x80072944 end:0x80072988
+
+auto/text_80072D94.c:
+	.text       start:0x80072D94 end:0x80072DB8
+
+auto/text_80074660.c:
+	.text       start:0x80074660 end:0x800746E8
+
+auto/text_80076974.c:
+	.text       start:0x80076974 end:0x80076990
+
+auto/text_80076A04.c:
+	.text       start:0x80076A04 end:0x80076A50
+
+auto/text_80076D44.c:
+	.text       start:0x80076D44 end:0x80076D50
+
+auto/text_80076E54.c:
+	.text       start:0x80076E54 end:0x80076E94
+
+auto/text_8007BA64.c:
+	.text       start:0x8007BA64 end:0x8007BAA4
+
+auto/text_8007BEE4.c:
+	.text       start:0x8007BEE4 end:0x8007BEEC
+
+auto/text_8007C5AC.c:
+	.text       start:0x8007C5AC end:0x8007C668
+
+auto/text_8007C830.c:
+	.text       start:0x8007C830 end:0x8007C838
+
+auto/text_8007C9D0.c:
+	.text       start:0x8007C9D0 end:0x8007C9DC
+
+auto/text_8007EFC0.c:
+	.text       start:0x8007EFC0 end:0x8007EFC8
+
+auto/text_8007F4F8.c:
+	.text       start:0x8007F4F8 end:0x8007F500
+
+auto/text_8007FBA8.c:
+	.text       start:0x8007FBA8 end:0x8007FC10
+
+auto/text_800801B4.c:
+	.text       start:0x800801B4 end:0x8008021C
+
+auto/text_80083CD0.c:
+	.text       start:0x80083CD0 end:0x80083D38
+
+auto/text_8008498C.c:
+	.text       start:0x8008498C end:0x80084994
+
+auto/text_80085110.c:
+	.text       start:0x80085110 end:0x80085118
+
+auto/text_80089F48.c:
+	.text       start:0x80089F48 end:0x80089F50
+
+auto/text_8008A238.c:
+	.text       start:0x8008A238 end:0x8008A240
+
+auto/text_8008A528.c:
+	.text       start:0x8008A528 end:0x8008A530
+
+auto/text_8008A82C.c:
+	.text       start:0x8008A82C end:0x8008A834
+
+auto/text_8008AE50.c:
+	.text       start:0x8008AE50 end:0x8008AEFC
+
+auto/text_8008B0AC.c:
+	.text       start:0x8008B0AC end:0x8008B0B4
+
+auto/text_8008B740.c:
+	.text       start:0x8008B740 end:0x8008B804
+
+auto/text_8008BA8C.c:
+	.text       start:0x8008BA8C end:0x8008BA94
+
+auto/text_8008C33C.c:
+	.text       start:0x8008C33C end:0x8008C344
+
+auto/text_8008CA0C.c:
+	.text       start:0x8008CA0C end:0x8008CAD8
+
+auto/text_8008DE54.c:
+	.text       start:0x8008DE54 end:0x8008DED8
+
+auto/text_8008E324.c:
+	.text       start:0x8008E324 end:0x8008E328
+
+auto/text_8008E3C8.c:
+	.text       start:0x8008E3C8 end:0x8008E3DC
+
+auto/text_8008E49C.c:
+	.text       start:0x8008E49C end:0x8008E4A4
+
+auto/text_8008F074.c:
+	.text       start:0x8008F074 end:0x8008F0F8
+
+auto/text_80090C68.c:
+	.text       start:0x80090C68 end:0x80090CEC
+
+auto/text_800919A4.c:
+	.text       start:0x800919A4 end:0x80091A28
+
+auto/text_80092F84.c:
+	.text       start:0x80092F84 end:0x80092F8C
+
+auto/text_800933F8.c:
+	.text       start:0x800933F8 end:0x80093400
+
+auto/text_800939F4.c:
+	.text       start:0x800939F4 end:0x800939FC
+
+auto/text_800948A8.c:
+	.text       start:0x800948A8 end:0x80094944
+
+auto/text_80095188.c:
+	.text       start:0x80095188 end:0x8009525C
+
+auto/text_800953D8.c:
+	.text       start:0x800953D8 end:0x800953E0
+
+auto/text_80095D20.c:
+	.text       start:0x80095D20 end:0x80095DD4
+
+auto/text_80095F2C.c:
+	.text       start:0x80095F2C end:0x80095F34
+
+auto/text_8009633C.c:
+	.text       start:0x8009633C end:0x8009651C
+
+auto/text_800965F8.c:
+	.text       start:0x800965F8 end:0x80096710
+
+auto/text_80096A30.c:
+	.text       start:0x80096A30 end:0x80096A38
+
+auto/text_80098F48.c:
+	.text       start:0x80098F48 end:0x8009902C
+
+auto/text_8009C2B0.c:
+	.text       start:0x8009C2B0 end:0x8009C3AC
+
+auto/text_8009C4EC.c:
+	.text       start:0x8009C4EC end:0x8009C4F4
+
+auto/text_8009CFD4.c:
+	.text       start:0x8009CFD4 end:0x8009D080
+
+auto/text_8009DC2C.c:
+	.text       start:0x8009DC2C end:0x8009DCB0
+
+auto/text_8009F130.c:
+	.text       start:0x8009F130 end:0x8009F160
+
+auto/text_8009F3EC.c:
+	.text       start:0x8009F3EC end:0x8009F3F8
+
+auto/text_8009F764.c:
+	.text       start:0x8009F764 end:0x8009F76C
+
+auto/text_800A0C1C.c:
+	.text       start:0x800A0C1C end:0x800A0C90
+
+auto/text_800A0FFC.c:
+	.text       start:0x800A0FFC end:0x800A1004
+
+auto/text_800A217C.c:
+	.text       start:0x800A217C end:0x800A2198
+
+auto/text_800A29A4.c:
+	.text       start:0x800A29A4 end:0x800A2ABC
+
+auto/text_800A4930.c:
+	.text       start:0x800A4930 end:0x800A4938
+
+auto/text_800A50F0.c:
+	.text       start:0x800A50F0 end:0x800A5164
+
+auto/text_800A585C.c:
+	.text       start:0x800A585C end:0x800A5924
+
+auto/text_800A5B6C.c:
+	.text       start:0x800A5B6C end:0x800A5B74
+
+auto/text_800A6B4C.c:
+	.text       start:0x800A6B4C end:0x800A6B8C
+
+auto/text_800A8128.c:
+	.text       start:0x800A8128 end:0x800A817C
+
+auto/text_800A8758.c:
+	.text       start:0x800A8758 end:0x800A87B8
+
+auto/text_800A9AF0.c:
+	.text       start:0x800A9AF0 end:0x800A9AF8
+
+auto/text_800A9E8C.c:
+	.text       start:0x800A9E8C end:0x800A9E94
+
+auto/text_800AA6F4.c:
+	.text       start:0x800AA6F4 end:0x800AA6FC
+
+auto/text_800AB024.c:
+	.text       start:0x800AB024 end:0x800AB02C
+
+auto/text_800AB7CC.c:
+	.text       start:0x800AB7CC end:0x800AB7D4
+
+auto/text_800AC3D0.c:
+	.text       start:0x800AC3D0 end:0x800AC430
+
+auto/text_800AE8E4.c:
+	.text       start:0x800AE8E4 end:0x800AE9F0
+
+auto/text_800AED5C.c:
+	.text       start:0x800AED5C end:0x800AED64
+
+auto/text_800AF690.c:
+	.text       start:0x800AF690 end:0x800AF6F8
+
+auto/text_800AFB2C.c:
+	.text       start:0x800AFB2C end:0x800AFB34
+
+auto/text_800B0510.c:
+	.text       start:0x800B0510 end:0x800B057C
+
+auto/text_800B0F9C.c:
+	.text       start:0x800B0F9C end:0x800B1048
+
+auto/text_800B1478.c:
+	.text       start:0x800B1478 end:0x800B1530
+
+auto/text_800B2A34.c:
+	.text       start:0x800B2A34 end:0x800B2A74
+
+auto/text_800B2DF8.c:
+	.text       start:0x800B2DF8 end:0x800B2E00
+
+auto/text_800B2E70.c:
+	.text       start:0x800B2E70 end:0x800E1DA8
+
+auto/text_800E1DF0.c:
+	.text       start:0x800E1DF0 end:0x800E1E08
+
+auto/text_800E1E7C.c:
+	.text       start:0x800E1E7C end:0x800E1E88
+
+auto/text_800E222C.c:
+	.text       start:0x800E222C end:0x800E2458
+
+auto/text_800E24F0.c:
+	.text       start:0x800E24F0 end:0x800E2C68
+
+auto/text_800E2CDC.c:
+	.text       start:0x800E2CDC end:0x800E2F24
+
+auto/text_800E3A94.c:
+	.text       start:0x800E3A94 end:0x800E3CDC
+
+auto/text_800E40A0.c:
+	.text       start:0x800E40A0 end:0x800F5578
+
+auto/text_800F55D8.c:
+	.text       start:0x800F55D8 end:0x800F55E0
+
+auto/text_800F6C28.c:
+	.text       start:0x800F6C28 end:0x800F6E40
+
+auto/text_800F6F00.c:
+	.text       start:0x800F6F00 end:0x800F6F68
+
+auto/text_800F6FBC.c:
+	.text       start:0x800F6FBC end:0x800F710C
+
+auto/text_800F7138.c:
+	.text       start:0x800F7138 end:0x800F75B0
+
+auto/text_800F7614.c:
+	.text       start:0x800F7614 end:0x800F771C
+
+auto/text_800F7E70.c:
+	.text       start:0x800F7E70 end:0x800F7EEC
+
+auto/text_800F85DC.c:
+	.text       start:0x800F85DC end:0x800F8604
+
+auto/text_800F8CD8.c:
+	.text       start:0x800F8CD8 end:0x800F8DD0
+
+auto/text_800F92E8.c:
+	.text       start:0x800F92E8 end:0x800F9324
+
+auto/text_800F9638.c:
+	.text       start:0x800F9638 end:0x800F9654
+
+auto/text_800F9688.c:
+	.text       start:0x800F9688 end:0x800F96A4
+
+auto/text_800F9BB4.c:
+	.text       start:0x800F9BB4 end:0x800F9BEC
+
+auto/text_800F9CC8.c:
+	.text       start:0x800F9CC8 end:0x800F9FE0
+
+auto/text_800FA3A8.c:
+	.text       start:0x800FA3A8 end:0x800FA3DC
+
+auto/text_800FA974.c:
+	.text       start:0x800FA974 end:0x800FA9B0
+
+auto/text_800FAB98.c:
+	.text       start:0x800FAB98 end:0x800FADA8
+
+auto/text_800FB398.c:
+	.text       start:0x800FB398 end:0x800FB3D0
+
+auto/text_800FB48C.c:
+	.text       start:0x800FB48C end:0x800FB520
+
+auto/text_800FB6A8.c:
+	.text       start:0x800FB6A8 end:0x800FB6D8
+
+auto/text_800FB984.c:
+	.text       start:0x800FB984 end:0x800FB9AC
+
+auto/text_800FBF24.c:
+	.text       start:0x800FBF24 end:0x800FBF5C
+
+auto/text_800FC0E8.c:
+	.text       start:0x800FC0E8 end:0x800FC108
+
+auto/text_800FC150.c:
+	.text       start:0x800FC150 end:0x800FC16C
+
+auto/text_800FC1D4.c:
+	.text       start:0x800FC1D4 end:0x800FC1FC
+
+auto/text_800FC36C.c:
+	.text       start:0x800FC36C end:0x800FC380
+
+auto/text_800FC3E8.c:
+	.text       start:0x800FC3E8 end:0x800FC558
+
+auto/text_800FC8F0.c:
+	.text       start:0x800FC8F0 end:0x800FC9FC
+
+auto/text_800FCE00.c:
+	.text       start:0x800FCE00 end:0x800FCED8
+
+auto/text_800FCF58.c:
+	.text       start:0x800FCF58 end:0x800FCF74
+
+auto/text_800FD528.c:
+	.text       start:0x800FD528 end:0x800FD530
+
+auto/text_800FEEA0.c:
+	.text       start:0x800FEEA0 end:0x800FF140
+
+auto/text_800FF744.c:
+	.text       start:0x800FF744 end:0x800FF778
+
+auto/text_800FF994.c:
+	.text       start:0x800FF994 end:0x800FF9E8
+
+auto/text_80100060.c:
+	.text       start:0x80100060 end:0x80100104
+
+auto/text_801003A8.c:
+	.text       start:0x801003A8 end:0x80100754
+
+auto/text_80100CF4.c:
+	.text       start:0x80100CF4 end:0x80100D68
+
+auto/text_8010155C.c:
+	.text       start:0x8010155C end:0x80101590
+
+auto/text_80101624.c:
+	.text       start:0x80101624 end:0x80101664
+
+auto/text_801018FC.c:
+	.text       start:0x801018FC end:0x80101A90
+
+auto/text_80102234.c:
+	.text       start:0x80102234 end:0x801022FC
+
+auto/text_80102A6C.c:
+	.text       start:0x80102A6C end:0x80102C30
+
+auto/text_80103304.c:
+	.text       start:0x80103304 end:0x80103310
+
+auto/text_801033C0.c:
+	.text       start:0x801033C0 end:0x80103404
+
+auto/text_8010344C.c:
+	.text       start:0x8010344C end:0x80103464
+
+auto/text_801035AC.c:
+	.text       start:0x801035AC end:0x80103628
+
+auto/text_80103A7C.c:
+	.text       start:0x80103A7C end:0x80103A84
+
+auto/text_80104068.c:
+	.text       start:0x80104068 end:0x801040E0
+
+auto/text_80104BCC.c:
+	.text       start:0x80104BCC end:0x80104BF0
+
+auto/text_80105074.c:
+	.text       start:0x80105074 end:0x801050B0
+
+auto/text_80105F4C.c:
+	.text       start:0x80105F4C end:0x80105F54
+
+auto/text_801063F0.c:
+	.text       start:0x801063F0 end:0x801064C4
+
+auto/text_80106B38.c:
+	.text       start:0x80106B38 end:0x80106B40
+
+auto/text_80106DAC.c:
+	.text       start:0x80106DAC end:0x80106E84
+
+auto/text_801071A0.c:
+	.text       start:0x801071A0 end:0x80107218
+
+auto/text_80107D64.c:
+	.text       start:0x80107D64 end:0x80107D68
+
+auto/text_80108478.c:
+	.text       start:0x80108478 end:0x80108498
+
+auto/text_801087A4.c:
+	.text       start:0x801087A4 end:0x801087AC
+
+auto/text_801089E8.c:
+	.text       start:0x801089E8 end:0x801089F0
+
+auto/text_80108CF0.c:
+	.text       start:0x80108CF0 end:0x80108D14
+
+auto/text_80108F90.c:
+	.text       start:0x80108F90 end:0x80108FA0
+
+auto/text_80109020.c:
+	.text       start:0x80109020 end:0x8010904C
+
+auto/text_8010945C.c:
+	.text       start:0x8010945C end:0x8010946C
+
+auto/text_801094B4.c:
+	.text       start:0x801094B4 end:0x801094CC
+
+auto/text_80109F14.c:
+	.text       start:0x80109F14 end:0x80109F1C
+
+auto/text_8010A8CC.c:
+	.text       start:0x8010A8CC end:0x8010A8E4
+
+auto/text_8010AA40.c:
+	.text       start:0x8010AA40 end:0x8010AA58
+
+auto/text_8010AB5C.c:
+	.text       start:0x8010AB5C end:0x8010AB74
+
+auto/text_8010ACD8.c:
+	.text       start:0x8010ACD8 end:0x8010ACDC
+
+auto/text_8010AD04.c:
+	.text       start:0x8010AD04 end:0x8010AD40
+
+auto/text_8010B8F8.c:
+	.text       start:0x8010B8F8 end:0x8010B928
+
+auto/text_8010BF70.c:
+	.text       start:0x8010BF70 end:0x8010BF74
+
+auto/text_8010C33C.c:
+	.text       start:0x8010C33C end:0x8010C348
+
+auto/text_8010C3AC.c:
+	.text       start:0x8010C3AC end:0x8010C3D4
+
+auto/text_8010C41C.c:
+	.text       start:0x8010C41C end:0x8010C4D0
+
+auto/text_8010CA74.c:
+	.text       start:0x8010CA74 end:0x8010CB34
+
+auto/text_8010CD34.c:
+	.text       start:0x8010CD34 end:0x8010CD58
+
+auto/text_8010CE30.c:
+	.text       start:0x8010CE30 end:0x8010CE64
+
+auto/text_8010D2A8.c:
+	.text       start:0x8010D2A8 end:0x8010D2D4
+
+auto/text_8010D328.c:
+	.text       start:0x8010D328 end:0x8010D344
+
+auto/text_8010D400.c:
+	.text       start:0x8010D400 end:0x8010D408
+
+auto/text_8010D494.c:
+	.text       start:0x8010D494 end:0x8010D4A4
+
+auto/text_8010E25C.c:
+	.text       start:0x8010E25C end:0x8010E280
+
+auto/text_8010E448.c:
+	.text       start:0x8010E448 end:0x8010E450
+
+auto/text_8010ED74.c:
+	.text       start:0x8010ED74 end:0x8010ED84
+
+auto/text_8010EE3C.c:
+	.text       start:0x8010EE3C end:0x8010EE60
+
+auto/text_8010EEE4.c:
+	.text       start:0x8010EEE4 end:0x8010EF9C
+
+auto/text_8010EFF8.c:
+	.text       start:0x8010EFF8 end:0x8010F01C
+
+auto/text_8010F1B0.c:
+	.text       start:0x8010F1B0 end:0x8010F3DC
+
+auto/text_801103B4.c:
+	.text       start:0x801103B4 end:0x80110444
+
+auto/text_80110A9C.c:
+	.text       start:0x80110A9C end:0x80110AA4
+
+auto/text_80112168.c:
+	.text       start:0x80112168 end:0x80112190
+
+auto/text_801122C0.c:
+	.text       start:0x801122C0 end:0x801122C8
+
+auto/text_801124C0.c:
+	.text       start:0x801124C0 end:0x801124D8
+
+auto/text_801124F8.c:
+	.text       start:0x801124F8 end:0x80112510
+
+auto/text_80112A14.c:
+	.text       start:0x80112A14 end:0x80112A4C
+
+auto/text_80112AAC.c:
+	.text       start:0x80112AAC end:0x80112B28
+
+auto/text_80112F08.c:
+	.text       start:0x80112F08 end:0x80112F20
+
+auto/text_801149C0.c:
+	.text       start:0x801149C0 end:0x80114A5C
+
+auto/text_80114E64.c:
+	.text       start:0x80114E64 end:0x80114F30
+
+auto/text_80115088.c:
+	.text       start:0x80115088 end:0x80115090
+
+auto/text_801150CC.c:
+	.text       start:0x801150CC end:0x801150D8
+
+auto/text_80115114.c:
+	.text       start:0x80115114 end:0x8011511C
+
+auto/text_801153CC.c:
+	.text       start:0x801153CC end:0x801153D4
+
+auto/text_80115B5C.c:
+	.text       start:0x80115B5C end:0x80115C58
+
+auto/text_80116318.c:
+	.text       start:0x80116318 end:0x80116320
+
+auto/text_80116794.c:
+	.text       start:0x80116794 end:0x80116810
+
+auto/text_80116B10.c:
+	.text       start:0x80116B10 end:0x80116B64
+
+auto/text_80116DC0.c:
+	.text       start:0x80116DC0 end:0x80116E1C
+
+auto/text_80117350.c:
+	.text       start:0x80117350 end:0x80117358
+
+auto/text_80117D5C.c:
+	.text       start:0x80117D5C end:0x80117D64
+
+auto/text_80118144.c:
+	.text       start:0x80118144 end:0x8011814C
+
+auto/text_80118280.c:
+	.text       start:0x80118280 end:0x8011836C
+
+auto/text_801188F8.c:
+	.text       start:0x801188F8 end:0x80118AE8
+
+auto/text_80118F04.c:
+	.text       start:0x80118F04 end:0x80118FF8
+
+auto/text_80119180.c:
+	.text       start:0x80119180 end:0x801191B4
+
+auto/text_801194F8.c:
+	.text       start:0x801194F8 end:0x80119508
+
+auto/text_80119948.c:
+	.text       start:0x80119948 end:0x80119960
+
+auto/text_80119A58.c:
+	.text       start:0x80119A58 end:0x80119A84
+
+auto/text_80119C34.c:
+	.text       start:0x80119C34 end:0x80119C40
+
+auto/text_8011A098.c:
+	.text       start:0x8011A098 end:0x8011A0A4
+
+auto/text_8011A5A0.c:
+	.text       start:0x8011A5A0 end:0x8011A5AC
+
+auto/text_8011A894.c:
+	.text       start:0x8011A894 end:0x8011A8A0
+
+auto/text_8011A980.c:
+	.text       start:0x8011A980 end:0x8011A9A8
+
+auto/text_8011AB9C.c:
+	.text       start:0x8011AB9C end:0x8011ABAC
+
+auto/text_8011AC8C.c:
+	.text       start:0x8011AC8C end:0x8011ACA8
+
+auto/text_8011AE68.c:
+	.text       start:0x8011AE68 end:0x8011AE78
+
+auto/text_8011B248.c:
+	.text       start:0x8011B248 end:0x8011B250
+
+auto/text_8011B418.c:
+	.text       start:0x8011B418 end:0x8011B424
+
+auto/text_8011C284.c:
+	.text       start:0x8011C284 end:0x8011C28C
+
+auto/text_8011D748.c:
+	.text       start:0x8011D748 end:0x8011D79C
+
+auto/text_8011D8A4.c:
+	.text       start:0x8011D8A4 end:0x8011D8E0
+
+auto/text_8011DC28.c:
+	.text       start:0x8011DC28 end:0x8011DC84
+
+auto/text_8011DD04.c:
+	.text       start:0x8011DD04 end:0x8011DFE8
+
+auto/text_8011F35C.c:
+	.text       start:0x8011F35C end:0x8011F36C
+
+auto/text_8011F7C0.c:
+	.text       start:0x8011F7C0 end:0x8011F7E4
+
+auto/text_8011F988.c:
+	.text       start:0x8011F988 end:0x8011F990
+
+auto/text_8011FA44.c:
+	.text       start:0x8011FA44 end:0x8011FA98
+
+auto/text_8011FBC8.c:
+	.text       start:0x8011FBC8 end:0x8011FC24
+
+auto/text_8012003C.c:
+	.text       start:0x8012003C end:0x8012008C
+
+auto/text_80120164.c:
+	.text       start:0x80120164 end:0x801201A4
+
+auto/text_801201F4.c:
+	.text       start:0x801201F4 end:0x80120200
+
+auto/text_80120408.c:
+	.text       start:0x80120408 end:0x80120410
+
+auto/text_80120580.c:
+	.text       start:0x80120580 end:0x80120598
+
+auto/text_8012163C.c:
+	.text       start:0x8012163C end:0x80121670
+
+auto/text_801216D4.c:
+	.text       start:0x801216D4 end:0x801217EC
+
+auto/text_80121D44.c:
+	.text       start:0x80121D44 end:0x80121E1C
+
+auto/text_80121E80.c:
+	.text       start:0x80121E80 end:0x80121E84
+
+auto/text_8012645C.c:
+	.text       start:0x8012645C end:0x80126464
+
+auto/text_80126550.c:
+	.text       start:0x80126550 end:0x80126570
+
+auto/text_80126A2C.c:
+	.text       start:0x80126A2C end:0x80126A9C
+
+auto/text_801275D4.c:
+	.text       start:0x801275D4 end:0x80127658
+
+auto/text_80128EA0.c:
+	.text       start:0x80128EA0 end:0x80128EA8
+
+auto/text_80129514.c:
+	.text       start:0x80129514 end:0x8012951C
+
+auto/text_80129B88.c:
+	.text       start:0x80129B88 end:0x80129C48
+
+auto/text_8012C2EC.c:
+	.text       start:0x8012C2EC end:0x8012C2FC
+
+auto/text_8012C49C.c:
+	.text       start:0x8012C49C end:0x8012C4A8
+
+auto/text_8012C740.c:
+	.text       start:0x8012C740 end:0x8012C744
+
+auto/text_8012D250.c:
+	.text       start:0x8012D250 end:0x8012D280
+
+auto/text_8012D5E8.c:
+	.text       start:0x8012D5E8 end:0x8012D5F0
+
+auto/text_8012D674.c:
+	.text       start:0x8012D674 end:0x8012D680
+
+auto/text_8012DCC0.c:
+	.text       start:0x8012DCC0 end:0x8012DCC8
+
+auto/text_8012DCD8.c:
+	.text       start:0x8012DCD8 end:0x8012DD1C
+
+auto/text_8012E39C.c:
+	.text       start:0x8012E39C end:0x8012E3F4
+
+auto/text_8012E79C.c:
+	.text       start:0x8012E79C end:0x8012E7A0
+
+auto/text_8012EE94.c:
+	.text       start:0x8012EE94 end:0x8012EE9C
+
+auto/text_8012EEF8.c:
+	.text       start:0x8012EEF8 end:0x8012EF00
+
+auto/text_8012F4C0.c:
+	.text       start:0x8012F4C0 end:0x8012F4C8
+
+auto/text_8012F75C.c:
+	.text       start:0x8012F75C end:0x8012F7F8
+
+auto/text_8012F9AC.c:
+	.text       start:0x8012F9AC end:0x8012FA54
+
+auto/text_8012FD20.c:
+	.text       start:0x8012FD20 end:0x8012FD28
+
+auto/text_8012FDD4.c:
+	.text       start:0x8012FDD4 end:0x8012FE8C
+
+auto/text_80130DA8.c:
+	.text       start:0x80130DA8 end:0x80130E40
+
+auto/text_80131C18.c:
+	.text       start:0x80131C18 end:0x80131C58
+
+auto/text_80131EB4.c:
+	.text       start:0x80131EB4 end:0x80131ED4
+
+auto/text_80132888.c:
+	.text       start:0x80132888 end:0x80132890
+
+auto/text_80132B58.c:
+	.text       start:0x80132B58 end:0x80132B5C
+
+auto/text_80132BC0.c:
+	.text       start:0x80132BC0 end:0x80132C64
+
+auto/text_80133580.c:
+	.text       start:0x80133580 end:0x80133588
+
+auto/text_801339B4.c:
+	.text       start:0x801339B4 end:0x801339D8
+
+auto/text_80134044.c:
+	.text       start:0x80134044 end:0x8013404C
+
+auto/text_80134094.c:
+	.text       start:0x80134094 end:0x801340B0
+
+auto/text_80134544.c:
+	.text       start:0x80134544 end:0x80134570
+
+auto/text_80134840.c:
+	.text       start:0x80134840 end:0x80134848
+
+auto/text_801348E8.c:
+	.text       start:0x801348E8 end:0x8013494C
+
+auto/text_801358BC.c:
+	.text       start:0x801358BC end:0x801358C8
+
+auto/text_80135978.c:
+	.text       start:0x80135978 end:0x80135A78
+
+auto/text_80135ABC.c:
+	.text       start:0x80135ABC end:0x80135B68
+
+auto/text_80135CB0.c:
+	.text       start:0x80135CB0 end:0x80135CB4
+
+auto/text_80136038.c:
+	.text       start:0x80136038 end:0x80136040
+
+auto/text_80136560.c:
+	.text       start:0x80136560 end:0x80136640
+
+auto/text_80136BEC.c:
+	.text       start:0x80136BEC end:0x80136BF4
+
+auto/text_80136EC8.c:
+	.text       start:0x80136EC8 end:0x80136ED0
+
+auto/text_801372E0.c:
+	.text       start:0x801372E0 end:0x80137314
+
+auto/text_80137444.c:
+	.text       start:0x80137444 end:0x801374B8
+
+auto/text_80137968.c:
+	.text       start:0x80137968 end:0x801379E8
+
+auto/text_80137A30.c:
+	.text       start:0x80137A30 end:0x80137A9C
+
+auto/text_80137B38.c:
+	.text       start:0x80137B38 end:0x80137BC0
+
+auto/text_80137F54.c:
+	.text       start:0x80137F54 end:0x80137FA8
+
+auto/text_80138BBC.c:
+	.text       start:0x80138BBC end:0x80138BC4
+
+auto/text_80138E50.c:
+	.text       start:0x80138E50 end:0x80138E60
+
+auto/text_80139220.c:
+	.text       start:0x80139220 end:0x80139228
+
+auto/text_80139438.c:
+	.text       start:0x80139438 end:0x80139500
+
+auto/text_80139604.c:
+	.text       start:0x80139604 end:0x801397FC
+
+auto/text_801399F4.c:
+	.text       start:0x801399F4 end:0x80139B38
+
+auto/text_80139D34.c:
+	.text       start:0x80139D34 end:0x80139D3C
+
+auto/text_8013BB48.c:
+	.text       start:0x8013BB48 end:0x8013BBCC
+
+auto/text_8013BE24.c:
+	.text       start:0x8013BE24 end:0x8013BE6C
+
+auto/text_8013C114.c:
+	.text       start:0x8013C114 end:0x8013C11C
+
+auto/text_8013C324.c:
+	.text       start:0x8013C324 end:0x8013C334
+
+auto/text_8013D878.c:
+	.text       start:0x8013D878 end:0x8013D888
+
+auto/text_8013D970.c:
+	.text       start:0x8013D970 end:0x8013D97C
+
+auto/text_8013E224.c:
+	.text       start:0x8013E224 end:0x8013E24C
+
+auto/text_8013E7F8.c:
+	.text       start:0x8013E7F8 end:0x8013E800
+
+auto/text_8013ECE4.c:
+	.text       start:0x8013ECE4 end:0x8013ECFC
+
+auto/text_8013F0E0.c:
+	.text       start:0x8013F0E0 end:0x8013F0E8
+
+auto/text_80140008.c:
+	.text       start:0x80140008 end:0x80140030
+
+auto/text_80140108.c:
+	.text       start:0x80140108 end:0x80140120
+
+auto/text_8014091C.c:
+	.text       start:0x8014091C end:0x80140924
+
+auto/text_801409B0.c:
+	.text       start:0x801409B0 end:0x80142990
+
+auto/text_80142C7C.c:
+	.text       start:0x80142C7C end:0x80144B64
+
+auto/text_801471FC.c:
+	.text       start:0x801471FC end:0x8014721C
+
+auto/text_80147568.c:
+	.text       start:0x80147568 end:0x80147CD8
+
+auto/text_80147ED8.c:
+	.text       start:0x80147ED8 end:0x80148330
+
+auto/text_801487AC.c:
+	.text       start:0x801487AC end:0x801487C8
+
+auto/text_801488AC.c:
+	.text       start:0x801488AC end:0x801488B4
+
+auto/text_80148B60.c:
+	.text       start:0x80148B60 end:0x80148B68
+
+auto/text_80149C60.c:
+	.text       start:0x80149C60 end:0x80149C68
+
+auto/text_80149DA0.c:
+	.text       start:0x80149DA0 end:0x80149DAC
+
+auto/text_8014A5DC.c:
+	.text       start:0x8014A5DC end:0x8014A67C
+
+auto/text_8014AA0C.c:
+	.text       start:0x8014AA0C end:0x8014AA48
+
+auto/text_8014AAC8.c:
+	.text       start:0x8014AAC8 end:0x8014AB2C
+
+auto/text_8014AD60.c:
+	.text       start:0x8014AD60 end:0x8014AD6C
+
+auto/text_8014B124.c:
+	.text       start:0x8014B124 end:0x8014B14C
+
+auto/text_8014B6C0.c:
+	.text       start:0x8014B6C0 end:0x8014B6F0
+
+auto/text_8014B86C.c:
+	.text       start:0x8014B86C end:0x8014B890
+
+auto/text_8014BA24.c:
+	.text       start:0x8014BA24 end:0x8014BC1C
+
+auto/text_8014C6F4.c:
+	.text       start:0x8014C6F4 end:0x8014C734
+
+auto/text_8014CBA4.c:
+	.text       start:0x8014CBA4 end:0x8014CC80
+
+auto/text_8014D468.c:
+	.text       start:0x8014D468 end:0x8014D470
+
+auto/text_8014D7A0.c:
+	.text       start:0x8014D7A0 end:0x8014D7E8
+
+auto/text_8014D89C.c:
+	.text       start:0x8014D89C end:0x8014D8D8
+
+auto/text_8014DC90.c:
+	.text       start:0x8014DC90 end:0x8014DC98
+
+auto/text_8014E2D8.c:
+	.text       start:0x8014E2D8 end:0x8014E434
+
+auto/text_8014EAB4.c:
+	.text       start:0x8014EAB4 end:0x8014EABC
+
+auto/text_8014EB30.c:
+	.text       start:0x8014EB30 end:0x8014F264
+
+auto/text_8014F358.c:
+	.text       start:0x8014F358 end:0x8014F65C
+
+auto/text_8014F6FC.c:
+	.text       start:0x8014F6FC end:0x8014F8EC
+
+auto/text_8014F918.c:
+	.text       start:0x8014F918 end:0x8014FA70
+
+auto/text_8014FE14.c:
+	.text       start:0x8014FE14 end:0x8014FE3C
+
+auto/text_8014FFE8.c:
+	.text       start:0x8014FFE8 end:0x8015012C
+
+auto/text_801504CC.c:
+	.text       start:0x801504CC end:0x80150788
+
+auto/text_80150CD4.c:
+	.text       start:0x80150CD4 end:0x80151030
+
+auto/text_8015157C.c:
+	.text       start:0x8015157C end:0x801515F8
+
+auto/text_80151710.c:
+	.text       start:0x80151710 end:0x80151958
+
+auto/text_80151BD4.c:
+	.text       start:0x80151BD4 end:0x80151D58
+
+auto/text_80151E84.c:
+	.text       start:0x80151E84 end:0x80151F08
+
+auto/text_801521E8.c:
+	.text       start:0x801521E8 end:0x80152234
+
+auto/text_801525DC.c:
+	.text       start:0x801525DC end:0x801525F8
+
+auto/text_80152BA4.c:
+	.text       start:0x80152BA4 end:0x80153420
+
+auto/text_801534E0.c:
+	.text       start:0x801534E0 end:0x80153B24
+
+auto/text_80153EC0.c:
+	.text       start:0x80153EC0 end:0x80153F88
+
+auto/text_80154300.c:
+	.text       start:0x80154300 end:0x80154330
+
+auto/text_80154510.c:
+	.text       start:0x80154510 end:0x80154530
+
+auto/text_80154680.c:
+	.text       start:0x80154680 end:0x801546A4
+
+auto/text_801548EC.c:
+	.text       start:0x801548EC end:0x801548F0
+
+auto/text_801554D4.c:
+	.text       start:0x801554D4 end:0x801554E4
+
+auto/text_8015562C.c:
+	.text       start:0x8015562C end:0x8015563C
+
+auto/text_80155F58.c:
+	.text       start:0x80155F58 end:0x80155F9C
+
+auto/text_80156110.c:
+	.text       start:0x80156110 end:0x8015641C
+
+auto/text_80156A18.c:
+	.text       start:0x80156A18 end:0x80156ABC
+
+auto/text_80157504.c:
+	.text       start:0x80157504 end:0x8015750C
+
+auto/text_80159784.c:
+	.text       start:0x80159784 end:0x8015979C
+
+auto/text_80159A9C.c:
+	.text       start:0x80159A9C end:0x80159AA4
+
+auto/text_8015A8B0.c:
+	.text       start:0x8015A8B0 end:0x8015A8B8
+
+auto/text_8015A994.c:
+	.text       start:0x8015A994 end:0x8015A99C
+
+auto/text_8015AE14.c:
+	.text       start:0x8015AE14 end:0x8015AE1C
+
+auto/text_8015AE48.c:
+	.text       start:0x8015AE48 end:0x8015AEA4
+
+auto/text_8015B000.c:
+	.text       start:0x8015B000 end:0x8015B020
+
+auto/text_8015B148.c:
+	.text       start:0x8015B148 end:0x8015B1CC
+
+auto/text_8015B7DC.c:
+	.text       start:0x8015B7DC end:0x8015B81C
+
+auto/text_8015BA48.c:
+	.text       start:0x8015BA48 end:0x8015BAC4
+
+auto/text_8015C108.c:
+	.text       start:0x8015C108 end:0x8015C164
+
+auto/text_8015C310.c:
+	.text       start:0x8015C310 end:0x8015C40C
+
+auto/text_8015C730.c:
+	.text       start:0x8015C730 end:0x8015C738
+
+auto/text_8015C844.c:
+	.text       start:0x8015C844 end:0x8015C854
+
+auto/text_8015DED8.c:
+	.text       start:0x8015DED8 end:0x8015DF1C
+
+auto/text_8015E11C.c:
+	.text       start:0x8015E11C end:0x8015E158
+
+auto/text_8015EA94.c:
+	.text       start:0x8015EA94 end:0x8015EAF4
+
+auto/text_8015FE74.c:
+	.text       start:0x8015FE74 end:0x8015FEA4
+
+auto/text_801606C8.c:
+	.text       start:0x801606C8 end:0x801606D0
+
+auto/text_801607EC.c:
+	.text       start:0x801607EC end:0x801607FC
+
+auto/text_80161208.c:
+	.text       start:0x80161208 end:0x80161210
+
+auto/text_801632EC.c:
+	.text       start:0x801632EC end:0x80163364
+
+auto/text_80163478.c:
+	.text       start:0x80163478 end:0x80163488
+
+auto/text_801635DC.c:
+	.text       start:0x801635DC end:0x801635E4
+
+auto/text_8016365C.c:
+	.text       start:0x8016365C end:0x80163670
+
+auto/text_801636C0.c:
+	.text       start:0x801636C0 end:0x80163788
+
+auto/text_801637BC.c:
+	.text       start:0x801637BC end:0x801638D4
+
+auto/text_801639E4.c:
+	.text       start:0x801639E4 end:0x80163A18
+
+auto/text_80163A70.c:
+	.text       start:0x80163A70 end:0x80163A80
+
+auto/text_80163F20.c:
+	.text       start:0x80163F20 end:0x80163F28
+
+auto/text_80164178.c:
+	.text       start:0x80164178 end:0x801641F0
+
+auto/text_801643F0.c:
+	.text       start:0x801643F0 end:0x80164414
+
+auto/text_80164574.c:
+	.text       start:0x80164574 end:0x80164584
+
+auto/text_801650F0.c:
+	.text       start:0x801650F0 end:0x801650F8
+
+auto/text_8016B564.c:
+	.text       start:0x8016B564 end:0x8016B57C
+
+auto/text_8016BAA0.c:
+	.text       start:0x8016BAA0 end:0x8016BAC8
+
+auto/text_8016BAF0.c:
+	.text       start:0x8016BAF0 end:0x8016BAF8
+
+auto/text_8016C9E0.c:
+	.text       start:0x8016C9E0 end:0x8016CC50
+
+auto/text_8016E084.c:
+	.text       start:0x8016E084 end:0x8016E0B0
+
+auto/text_8016E0D8.c:
+	.text       start:0x8016E0D8 end:0x8016E0E0
+
+auto/text_8016E2E8.c:
+	.text       start:0x8016E2E8 end:0x8016E2F8
+
+auto/text_8016E474.c:
+	.text       start:0x8016E474 end:0x8016E4D4
+
+auto/text_8016F964.c:
+	.text       start:0x8016F964 end:0x8016F9A0
+
+auto/text_8016FA30.c:
+	.text       start:0x8016FA30 end:0x8016FA80
+
+auto/text_8017025C.c:
+	.text       start:0x8017025C end:0x8017042C
+
+auto/text_80170708.c:
+	.text       start:0x80170708 end:0x80170728
+
+auto/text_80170788.c:
+	.text       start:0x80170788 end:0x80170798
+
+auto/text_80170CF0.c:
+	.text       start:0x80170CF0 end:0x80170CF8
+
+auto/text_80170EC4.c:
+	.text       start:0x80170EC4 end:0x80170ECC
+
+auto/text_80171064.c:
+	.text       start:0x80171064 end:0x80171098
+
+auto/text_80171334.c:
+	.text       start:0x80171334 end:0x8017133C
+
+auto/text_801714BC.c:
+	.text       start:0x801714BC end:0x801714FC
+
+auto/text_801715CC.c:
+	.text       start:0x801715CC end:0x801715D0
+
+auto/text_80171830.c:
+	.text       start:0x80171830 end:0x80171838
+
+auto/text_801753B8.c:
+	.text       start:0x801753B8 end:0x801756D8
+
+auto/text_80175804.c:
+	.text       start:0x80175804 end:0x80175938
+
+auto/text_80176908.c:
+	.text       start:0x80176908 end:0x80176910
+
+auto/text_80177AEC.c:
+	.text       start:0x80177AEC end:0x80177B14
+
+auto/text_80177BA0.c:
+	.text       start:0x80177BA0 end:0x80177BD4
+
+auto/text_80177CF8.c:
+	.text       start:0x80177CF8 end:0x80177D88
+
+auto/text_80177EB0.c:
+	.text       start:0x80177EB0 end:0x80177EC4
+
+auto/text_80178048.c:
+	.text       start:0x80178048 end:0x80178124
+
+auto/text_801783D4.c:
+	.text       start:0x801783D4 end:0x801783E4
+
+auto/text_80179B00.c:
+	.text       start:0x80179B00 end:0x80179B20
+
+auto/text_80179CE4.c:
+	.text       start:0x80179CE4 end:0x80179CF4
+
+auto/text_80179E68.c:
+	.text       start:0x80179E68 end:0x80179E70
+
+auto/text_8017A8D4.c:
+	.text       start:0x8017A8D4 end:0x8017A8DC
+
+auto/text_8017ABDC.c:
+	.text       start:0x8017ABDC end:0x8017ABE4
+
+auto/text_8017B938.c:
+	.text       start:0x8017B938 end:0x8017B9D8
+
+auto/text_8017BB64.c:
+	.text       start:0x8017BB64 end:0x8017BB84
+
+auto/text_8017C73C.c:
+	.text       start:0x8017C73C end:0x8017C740
+
+auto/text_8017C964.c:
+	.text       start:0x8017C964 end:0x8017C994
+
+auto/text_8017D184.c:
+	.text       start:0x8017D184 end:0x8017D18C
+
+auto/text_8017DE50.c:
+	.text       start:0x8017DE50 end:0x8017DEA8
+
+auto/text_8017E040.c:
+	.text       start:0x8017E040 end:0x8017E05C
+
+auto/text_8017E9EC.c:
+	.text       start:0x8017E9EC end:0x8017E9F4
+
+auto/text_8017EDA0.c:
+	.text       start:0x8017EDA0 end:0x8017EDA8
+
+auto/text_8017EE1C.c:
+	.text       start:0x8017EE1C end:0x8017EEFC
+
+auto/text_8017F180.c:
+	.text       start:0x8017F180 end:0x8017F1E4
+
+auto/text_8017F2A8.c:
+	.text       start:0x8017F2A8 end:0x8017F2B8
+
+auto/text_8017F368.c:
+	.text       start:0x8017F368 end:0x8017F378
+
+auto/text_8017F42C.c:
+	.text       start:0x8017F42C end:0x8017F43C
+
+auto/text_801800D0.c:
+	.text       start:0x801800D0 end:0x801800D8
+
+auto/text_801804F0.c:
+	.text       start:0x801804F0 end:0x801804F4
+
+auto/text_801805F8.c:
+	.text       start:0x801805F8 end:0x80180600
+
+auto/text_80180E7C.c:
+	.text       start:0x80180E7C end:0x80180ECC
+
+auto/text_80182AA4.c:
+	.text       start:0x80182AA4 end:0x80182AAC
+
+auto/text_8018467C.c:
+	.text       start:0x8018467C end:0x80184A24
+
+auto/text_801850F4.c:
+	.text       start:0x801850F4 end:0x801850FC
+
+auto/text_801859B8.c:
+	.text       start:0x801859B8 end:0x801859DC
+
+auto/text_80185A54.c:
+	.text       start:0x80185A54 end:0x80185A78
+
+auto/text_80185EAC.c:
+	.text       start:0x80185EAC end:0x80185FF0
+
+auto/text_80186B0C.c:
+	.text       start:0x80186B0C end:0x80186B30
+
+auto/text_801874E0.c:
+	.text       start:0x801874E0 end:0x801874E8
+
+auto/text_801890C0.c:
+	.text       start:0x801890C0 end:0x801891E4
+
+auto/text_80189808.c:
+	.text       start:0x80189808 end:0x80189BA4
+
+auto/text_8018A698.c:
+	.text       start:0x8018A698 end:0x8018A6A0
+
+auto/text_8018A6F8.c:
+	.text       start:0x8018A6F8 end:0x8018A704
+
+auto/text_8018AEE4.c:
+	.text       start:0x8018AEE4 end:0x8018AEEC
+
+auto/text_8018AF4C.c:
+	.text       start:0x8018AF4C end:0x8018AF54
+
+auto/text_8018AFD4.c:
+	.text       start:0x8018AFD4 end:0x8018AFF4
+
+auto/text_8018B2A0.c:
+	.text       start:0x8018B2A0 end:0x8018B2FC
+
+auto/text_8018B500.c:
+	.text       start:0x8018B500 end:0x8018B58C
+
+auto/text_8018B9C8.c:
+	.text       start:0x8018B9C8 end:0x8018BB70
+
+auto/text_8018BF8C.c:
+	.text       start:0x8018BF8C end:0x8018C0DC
+
+auto/text_8018D1E0.c:
+	.text       start:0x8018D1E0 end:0x8018D1F4
+
+auto/text_8018DE24.c:
+	.text       start:0x8018DE24 end:0x8018DE44
+
+auto/text_8018E1E8.c:
+	.text       start:0x8018E1E8 end:0x8018E20C
+
+auto/text_8018E2AC.c:
+	.text       start:0x8018E2AC end:0x8018E2D0
+
+auto/text_8018EE08.c:
+	.text       start:0x8018EE08 end:0x8018EE6C
+
+auto/text_8018EEF8.c:
+	.text       start:0x8018EEF8 end:0x8018EEFC
+
+auto/text_8018F358.c:
+	.text       start:0x8018F358 end:0x8018F380
+
+auto/text_8018F670.c:
+	.text       start:0x8018F670 end:0x8018F68C
+
+auto/text_8018F990.c:
+	.text       start:0x8018F990 end:0x8018F9A0
+
+auto/text_8018FD40.c:
+	.text       start:0x8018FD40 end:0x8018FFC4
+
+auto/text_80190348.c:
+	.text       start:0x80190348 end:0x80190368
+
+auto/text_80190C94.c:
+	.text       start:0x80190C94 end:0x80190C98
+
+auto/text_80190DEC.c:
+	.text       start:0x80190DEC end:0x80190DFC
+
+auto/text_80192480.c:
+	.text       start:0x80192480 end:0x80192488
+
+auto/text_80193BD0.c:
+	.text       start:0x80193BD0 end:0x80193C7C
+
+auto/text_801951BC.c:
+	.text       start:0x801951BC end:0x801952A0
+
+auto/text_801958A4.c:
+	.text       start:0x801958A4 end:0x8019598C
+
+auto/text_8019626C.c:
+	.text       start:0x8019626C end:0x8019628C
+
+auto/text_80196590.c:
+	.text       start:0x80196590 end:0x80196598
+
+auto/text_801965E0.c:
+	.text       start:0x801965E0 end:0x80196600
+
+auto/text_8019667C.c:
+	.text       start:0x8019667C end:0x80196688
+
+auto/text_80197A50.c:
+	.text       start:0x80197A50 end:0x80197A58
+
+auto/text_80197D54.c:
+	.text       start:0x80197D54 end:0x80197D60
+
+auto/text_80198014.c:
+	.text       start:0x80198014 end:0x80198038
+
+auto/text_80199874.c:
+	.text       start:0x80199874 end:0x801998D4
+
+auto/text_80199910.c:
+	.text       start:0x80199910 end:0x80199A98
+
+auto/text_80199F18.c:
+	.text       start:0x80199F18 end:0x80199F54
+
+auto/text_8019A3A4.c:
+	.text       start:0x8019A3A4 end:0x8019A3B0
+
+auto/text_8019A4B0.c:
+	.text       start:0x8019A4B0 end:0x8019A4CC
+
+auto/text_8019B990.c:
+	.text       start:0x8019B990 end:0x8019BB1C
+
+auto/text_8019CF90.c:
+	.text       start:0x8019CF90 end:0x8019CF98
+
+auto/text_8019E7C0.c:
+	.text       start:0x8019E7C0 end:0x8019E7C8
+
+auto/text_8019E858.c:
+	.text       start:0x8019E858 end:0x8019E860
+
+auto/text_8019F188.c:
+	.text       start:0x8019F188 end:0x8019F1B0
+
+auto/text_8019F8FC.c:
+	.text       start:0x8019F8FC end:0x8019F924
+
+auto/text_801A0070.c:
+	.text       start:0x801A0070 end:0x801A0098
+
+auto/text_801A0CB8.c:
+	.text       start:0x801A0CB8 end:0x801A0CBC
+
+auto/text_801A0D94.c:
+	.text       start:0x801A0D94 end:0x801A0DA4
+
+auto/text_801A151C.c:
+	.text       start:0x801A151C end:0x801A1538
+
+auto/text_801A202C.c:
+	.text       start:0x801A202C end:0x801A2034
+
+auto/text_801A21CC.c:
+	.text       start:0x801A21CC end:0x801A21DC
+
+auto/text_801A2664.c:
+	.text       start:0x801A2664 end:0x801A2670
+
+auto/text_801A2A8C.c:
+	.text       start:0x801A2A8C end:0x801A2A98
+
+auto/text_801A32D8.c:
+	.text       start:0x801A32D8 end:0x801A32FC
+
+auto/text_801A33CC.c:
+	.text       start:0x801A33CC end:0x801A3408
+
+auto/text_801A38C4.c:
+	.text       start:0x801A38C4 end:0x801A38E0
+
+auto/text_801A38F0.c:
+	.text       start:0x801A38F0 end:0x801A38FC
+
+auto/text_801A3B54.c:
+	.text       start:0x801A3B54 end:0x801A3B68
+
+auto/text_801A4384.c:
+	.text       start:0x801A4384 end:0x801A438C
+
+auto/text_801A43C8.c:
+	.text       start:0x801A43C8 end:0x801A43CC
+
+auto/text_801A4664.c:
+	.text       start:0x801A4664 end:0x801A466C
+
+auto/text_801A46D4.c:
+	.text       start:0x801A46D4 end:0x801A46D8
+
+auto/text_801A4C80.c:
+	.text       start:0x801A4C80 end:0x801A4C88
+
+auto/text_801A4CCC.c:
+	.text       start:0x801A4CCC end:0x801A4CD0
+
+auto/text_801A4F54.c:
+	.text       start:0x801A4F54 end:0x801A4F5C
+
+auto/text_801A5128.c:
+	.text       start:0x801A5128 end:0x801A5188
+
+auto/text_801A51B4.c:
+	.text       start:0x801A51B4 end:0x801A51B8
+
+auto/text_801A5304.c:
+	.text       start:0x801A5304 end:0x801A531C
+
+auto/text_801A5384.c:
+	.text       start:0x801A5384 end:0x801A53B0
+
+auto/text_801A5550.c:
+	.text       start:0x801A5550 end:0x801A5560
+
+auto/text_801A6380.c:
+	.text       start:0x801A6380 end:0x801A6400
+
+auto/text_801A6848.c:
+	.text       start:0x801A6848 end:0x801A6850
+
+auto/text_801A69EC.c:
+	.text       start:0x801A69EC end:0x801A6A04
+
+auto/text_801A6A24.c:
+	.text       start:0x801A6A24 end:0x801A6A3C
+
+auto/text_801A6EB0.c:
+	.text       start:0x801A6EB0 end:0x801A6EB8
+
+auto/text_801A717C.c:
+	.text       start:0x801A717C end:0x801A73D8
+
+auto/text_801A76D8.c:
+	.text       start:0x801A76D8 end:0x801A76E0
+
+auto/text_801A7EFC.c:
+	.text       start:0x801A7EFC end:0x801A7F08
+
+auto/text_801AA2A4.c:
+	.text       start:0x801AA2A4 end:0x801AA2AC
+
+auto/text_801AA780.c:
+	.text       start:0x801AA780 end:0x801AA78C
+
+auto/text_801AAD7C.c:
+	.text       start:0x801AAD7C end:0x801AADCC
+
+auto/text_801AAF74.c:
+	.text       start:0x801AAF74 end:0x801AAFAC
+
+auto/text_801AD610.c:
+	.text       start:0x801AD610 end:0x801AD6B4
+
+auto/text_801AD740.c:
+	.text       start:0x801AD740 end:0x801AD748
+
+auto/text_801AD758.c:
+	.text       start:0x801AD758 end:0x801AD760
+
+auto/text_801AE438.c:
+	.text       start:0x801AE438 end:0x801AE43C
+
+auto/text_801AE768.c:
+	.text       start:0x801AE768 end:0x801AE770
+
+auto/text_801AF20C.c:
+	.text       start:0x801AF20C end:0x801AF218
+
+auto/text_801B285C.c:
+	.text       start:0x801B285C end:0x801B2864
+
+auto/text_801B2B44.c:
+	.text       start:0x801B2B44 end:0x801B2B50
+
+auto/text_801B2BB4.c:
+	.text       start:0x801B2BB4 end:0x801B2BBC
+
+auto/text_801B2C00.c:
+	.text       start:0x801B2C00 end:0x801B2C04
+
+auto/text_801B2DA8.c:
+	.text       start:0x801B2DA8 end:0x801B2DB0
+
+auto/text_801B2DF4.c:
+	.text       start:0x801B2DF4 end:0x801B2DF8
+
+auto/text_801B31F0.c:
+	.text       start:0x801B31F0 end:0x801B31F8
+
+auto/text_801B3418.c:
+	.text       start:0x801B3418 end:0x801B341C
+
+auto/text_801B36F4.c:
+	.text       start:0x801B36F4 end:0x801B36FC
+
+auto/text_801B3A44.c:
+	.text       start:0x801B3A44 end:0x801B3A48
+
+auto/text_801B3EA8.c:
+	.text       start:0x801B3EA8 end:0x801B3EB0
+
+auto/text_801B89B4.c:
+	.text       start:0x801B89B4 end:0x801B8A54
+
+auto/text_801B8CB8.c:
+	.text       start:0x801B8CB8 end:0x801B8CC4
+
+auto/text_801B8D28.c:
+	.text       start:0x801B8D28 end:0x801B8D30
+
+auto/text_801BA0C0.c:
+	.text       start:0x801BA0C0 end:0x801BA0CC
+
+auto/text_801BA130.c:
+	.text       start:0x801BA130 end:0x801BA138
+
+auto/text_801BAFB4.c:
+	.text       start:0x801BAFB4 end:0x801BAFC0
+
+auto/text_801BB024.c:
+	.text       start:0x801BB024 end:0x801BB02C
+
+auto/text_801BB1E0.c:
+	.text       start:0x801BB1E0 end:0x801BB1EC
+
+auto/text_801BB250.c:
+	.text       start:0x801BB250 end:0x801BB258
+
+auto/text_801BB4E0.c:
+	.text       start:0x801BB4E0 end:0x801BB4E8
+
+auto/text_801BBD1C.c:
+	.text       start:0x801BBD1C end:0x801BBD50
+
+auto/text_801BBDB4.c:
+	.text       start:0x801BBDB4 end:0x801BBDBC
+
+auto/text_801BC944.c:
+	.text       start:0x801BC944 end:0x801BC950
+
+auto/text_801BC9B8.c:
+	.text       start:0x801BC9B8 end:0x801BC9C0
+
+auto/text_801BD054.c:
+	.text       start:0x801BD054 end:0x801BD060
+
+auto/text_801BD20C.c:
+	.text       start:0x801BD20C end:0x801BD37C
+
+auto/text_801BD568.c:
+	.text       start:0x801BD568 end:0x801BD570
+
+auto/text_801BD5B4.c:
+	.text       start:0x801BD5B4 end:0x801BD5B8
+
+auto/text_801BD874.c:
+	.text       start:0x801BD874 end:0x801BDA0C
+
+auto/text_801BDAC8.c:
+	.text       start:0x801BDAC8 end:0x801BDB70
+
+auto/text_801BDCBC.c:
+	.text       start:0x801BDCBC end:0x801BDCCC
+
+auto/text_801C0704.c:
+	.text       start:0x801C0704 end:0x801C0834
+
+auto/text_801C0BB4.c:
+	.text       start:0x801C0BB4 end:0x801C0C70
+
+auto/text_801C126C.c:
+	.text       start:0x801C126C end:0x801C1274
+
+auto/text_801C1758.c:
+	.text       start:0x801C1758 end:0x801C1774
+
+auto/text_801C27C8.c:
+	.text       start:0x801C27C8 end:0x801C2800
+
+auto/text_801C30E0.c:
+	.text       start:0x801C30E0 end:0x801C30E8
+
+auto/text_801C3D84.c:
+	.text       start:0x801C3D84 end:0x801C3DD8
+
+auto/text_801C3FD0.c:
+	.text       start:0x801C3FD0 end:0x801C404C
+
+auto/text_801C420C.c:
+	.text       start:0x801C420C end:0x801C4214
+
+auto/text_801C4AB8.c:
+	.text       start:0x801C4AB8 end:0x801C4AC4
+
+auto/text_801C4B28.c:
+	.text       start:0x801C4B28 end:0x801C4B5C
+
+auto/text_801C4C40.c:
+	.text       start:0x801C4C40 end:0x801C4C88
+
+auto/text_801C4EA0.c:
+	.text       start:0x801C4EA0 end:0x801C4ED4
+
+auto/text_801C61AC.c:
+	.text       start:0x801C61AC end:0x801C61B8
+
+auto/text_801C621C.c:
+	.text       start:0x801C621C end:0x801C6224
+
+auto/text_801C6328.c:
+	.text       start:0x801C6328 end:0x801C6330
+
+auto/text_801C666C.c:
+	.text       start:0x801C666C end:0x801C6674
+
+auto/text_801C6D70.c:
+	.text       start:0x801C6D70 end:0x801C6D74
+
+auto/text_801CB29C.c:
+	.text       start:0x801CB29C end:0x801CB2A8
+
+auto/text_801CB30C.c:
+	.text       start:0x801CB30C end:0x801CB314
+
+auto/text_801CB6F8.c:
+	.text       start:0x801CB6F8 end:0x801CB700
+
+auto/text_801CBBF8.c:
+	.text       start:0x801CBBF8 end:0x801CBC24
+
+auto/text_801CBE28.c:
+	.text       start:0x801CBE28 end:0x801CBE5C
+
+auto/text_801CBEC4.c:
+	.text       start:0x801CBEC4 end:0x801CBECC
+
+auto/text_801CC648.c:
+	.text       start:0x801CC648 end:0x801CC64C
+
+auto/text_801CCF18.c:
+	.text       start:0x801CCF18 end:0x801CD014
+
+auto/text_801CDA60.c:
+	.text       start:0x801CDA60 end:0x801CDA64
+
+auto/text_801CE630.c:
+	.text       start:0x801CE630 end:0x801CE67C
+
+auto/text_801CEAA8.c:
+	.text       start:0x801CEAA8 end:0x801CEAB0
+
+auto/text_801CEAC0.c:
+	.text       start:0x801CEAC0 end:0x801CEAC8
+
+auto/text_801CEB80.c:
+	.text       start:0x801CEB80 end:0x801CEB9C
+
+auto/text_801CECE8.c:
+	.text       start:0x801CECE8 end:0x801CECFC
+
+auto/text_801D11F4.c:
+	.text       start:0x801D11F4 end:0x801D12BC
+
+auto/text_801D1D6C.c:
+	.text       start:0x801D1D6C end:0x801D1D78
+
+auto/text_801D1DE0.c:
+	.text       start:0x801D1DE0 end:0x801D1DE8
+
+auto/text_801D2984.c:
+	.text       start:0x801D2984 end:0x801D29F8
+
+auto/text_801D2F44.c:
+	.text       start:0x801D2F44 end:0x801D3020
+
+auto/text_801D46D4.c:
+	.text       start:0x801D46D4 end:0x801D4734
+
+auto/text_801D6910.c:
+	.text       start:0x801D6910 end:0x801D69C0
+
+auto/text_801D6B9C.c:
+	.text       start:0x801D6B9C end:0x801D6BA8
+
+auto/text_801DB00C.c:
+	.text       start:0x801DB00C end:0x801DB01C
+
+auto/text_801DB204.c:
+	.text       start:0x801DB204 end:0x801DB220
+
+auto/text_801DB740.c:
+	.text       start:0x801DB740 end:0x801DB744
+
+auto/text_801DBAC0.c:
+	.text       start:0x801DBAC0 end:0x801DBACC
+
+auto/text_801DD848.c:
+	.text       start:0x801DD848 end:0x801DD8B4
+
+auto/text_801DD938.c:
+	.text       start:0x801DD938 end:0x801DD9D4
+
+auto/text_801DDD8C.c:
+	.text       start:0x801DDD8C end:0x801DDD98
+
+auto/text_801DDE58.c:
+	.text       start:0x801DDE58 end:0x801DDE84
+
+auto/text_801DE0C8.c:
+	.text       start:0x801DE0C8 end:0x801DE0D0
+
+auto/text_801DE118.c:
+	.text       start:0x801DE118 end:0x801DE120
+
+auto/text_801DE248.c:
+	.text       start:0x801DE248 end:0x801DE24C
+
+auto/text_801DE454.c:
+	.text       start:0x801DE454 end:0x801DE464
+
+auto/text_801DEF48.c:
+	.text       start:0x801DEF48 end:0x801DEF58
+
+auto/text_801DF570.c:
+	.text       start:0x801DF570 end:0x801DF574
+
+auto/text_801DFE4C.c:
+	.text       start:0x801DFE4C end:0x801DFE74
+
+auto/text_801E11A0.c:
+	.text       start:0x801E11A0 end:0x801E11D8
+
+auto/text_801E18F4.c:
+	.text       start:0x801E18F4 end:0x801E1B1C
+
+auto/text_801E2448.c:
+	.text       start:0x801E2448 end:0x801E24A8
+
+auto/text_801E2698.c:
+	.text       start:0x801E2698 end:0x801E26B0
+
+auto/text_801E32DC.c:
+	.text       start:0x801E32DC end:0x801E337C
+
+auto/text_801E3750.c:
+	.text       start:0x801E3750 end:0x801E3758
+
+auto/text_801E4564.c:
+	.text       start:0x801E4564 end:0x801E456C
+
+auto/text_801E4754.c:
+	.text       start:0x801E4754 end:0x801E4768
+
+auto/text_801E47B8.c:
+	.text       start:0x801E47B8 end:0x801E47DC
+
+auto/text_801E4CA8.c:
+	.text       start:0x801E4CA8 end:0x801E4CD0
+
+auto/text_801E5944.c:
+	.text       start:0x801E5944 end:0x801E598C
+
+auto/text_801E5C2C.c:
+	.text       start:0x801E5C2C end:0x801E5C38
+
+auto/text_801E5CA0.c:
+	.text       start:0x801E5CA0 end:0x801E5CC4
+
+auto/text_801E5FE8.c:
+	.text       start:0x801E5FE8 end:0x801E5FF0
+
+auto/text_801E6430.c:
+	.text       start:0x801E6430 end:0x801E6474
+
+auto/text_801E66F4.c:
+	.text       start:0x801E66F4 end:0x801E66FC
+
+auto/text_801E6CF0.c:
+	.text       start:0x801E6CF0 end:0x801E6CF8
+
+auto/text_801E872C.c:
+	.text       start:0x801E872C end:0x801E8754
+
+auto/text_801E9660.c:
+	.text       start:0x801E9660 end:0x801E96A0
+
+auto/text_801EA458.c:
+	.text       start:0x801EA458 end:0x801EA460
+
+auto/text_801EA5FC.c:
+	.text       start:0x801EA5FC end:0x801EA624
+
+auto/text_801EA688.c:
+	.text       start:0x801EA688 end:0x801EA69C
+
+auto/text_801EAA6C.c:
+	.text       start:0x801EAA6C end:0x801EAA74
+
+auto/text_801EAEE4.c:
+	.text       start:0x801EAEE4 end:0x801EAF1C
+
+auto/text_801EB724.c:
+	.text       start:0x801EB724 end:0x801EB738
+
+auto/text_801EB764.c:
+	.text       start:0x801EB764 end:0x801EB7B0
+
+auto/text_801EB864.c:
+	.text       start:0x801EB864 end:0x801EB890
+
+auto/text_801ECAC0.c:
+	.text       start:0x801ECAC0 end:0x801ECB44
+
+auto/text_801ECD9C.c:
+	.text       start:0x801ECD9C end:0x801ECDF0
+
+auto/text_801EDADC.c:
+	.text       start:0x801EDADC end:0x801EDAE4
+
+auto/text_801EF630.c:
+	.text       start:0x801EF630 end:0x801EF648
+
+auto/text_801EFA90.c:
+	.text       start:0x801EFA90 end:0x801EFB30
+
+auto/text_801F10E8.c:
+	.text       start:0x801F10E8 end:0x801F10F8
+
+auto/text_801F12C4.c:
+	.text       start:0x801F12C4 end:0x801F12E0
+
+auto/text_801F2F54.c:
+	.text       start:0x801F2F54 end:0x801F2F78
+
+auto/text_801F3738.c:
+	.text       start:0x801F3738 end:0x801F375C
+
+auto/text_801F37A4.c:
+	.text       start:0x801F37A4 end:0x801F37B0
+
+auto/text_801F3990.c:
+	.text       start:0x801F3990 end:0x801F3A88
+
+auto/text_801F4424.c:
+	.text       start:0x801F4424 end:0x801F4430
+
+auto/text_801F45BC.c:
+	.text       start:0x801F45BC end:0x801F45C4
+
+auto/text_801F4708.c:
+	.text       start:0x801F4708 end:0x801F474C
+
+auto/text_801F5148.c:
+	.text       start:0x801F5148 end:0x801F5150
+
+auto/text_801F591C.c:
+	.text       start:0x801F591C end:0x801F59EC
+
+auto/text_801F5C24.c:
+	.text       start:0x801F5C24 end:0x801F5D6C
+
+auto/text_801F5D98.c:
+	.text       start:0x801F5D98 end:0x801F5DC8
+
+auto/text_801F5DF4.c:
+	.text       start:0x801F5DF4 end:0x801F5E3C
+
+auto/text_801F6258.c:
+	.text       start:0x801F6258 end:0x801F6334
+
+auto/text_801F66EC.c:
+	.text       start:0x801F66EC end:0x801F6728
+
+auto/text_801F74D8.c:
+	.text       start:0x801F74D8 end:0x801F7518
+
+auto/text_801F7928.c:
+	.text       start:0x801F7928 end:0x801F7B04
+
+auto/text_801F9F5C.c:
+	.text       start:0x801F9F5C end:0x801FA060
+
+auto/text_801FA118.c:
+	.text       start:0x801FA118 end:0x801FA224
+
+auto/text_801FA800.c:
+	.text       start:0x801FA800 end:0x801FA890
+
+auto/text_801FB640.c:
+	.text       start:0x801FB640 end:0x801FB680
+
+auto/text_801FB6E8.c:
+	.text       start:0x801FB6E8 end:0x801FB700
+
+auto/text_801FB840.c:
+	.text       start:0x801FB840 end:0x801FB850
+
+auto/text_801FB984.c:
+	.text       start:0x801FB984 end:0x801FBA4C
+
+auto/text_801FBC74.c:
+	.text       start:0x801FBC74 end:0x801FBCC4
+
+auto/text_801FC7F8.c:
+	.text       start:0x801FC7F8 end:0x801FC834
+
+auto/text_801FCB40.c:
+	.text       start:0x801FCB40 end:0x801FCB64
+
+auto/text_801FCF8C.c:
+	.text       start:0x801FCF8C end:0x801FCFBC
+
+auto/text_801FD4BC.c:
+	.text       start:0x801FD4BC end:0x801FD4C4
+
+auto/text_801FD50C.c:
+	.text       start:0x801FD50C end:0x801FD52C
+
+auto/text_801FD6F8.c:
+	.text       start:0x801FD6F8 end:0x801FD714
+
+auto/text_801FDB5C.c:
+	.text       start:0x801FDB5C end:0x801FDB64
+
+auto/text_801FDC30.c:
+	.text       start:0x801FDC30 end:0x801FDD1C
+
+auto/text_801FDE2C.c:
+	.text       start:0x801FDE2C end:0x801FDE74
+
+auto/text_801FE454.c:
+	.text       start:0x801FE454 end:0x801FE48C
+
+auto/text_801FE500.c:
+	.text       start:0x801FE500 end:0x801FE510
+
+auto/text_801FE7E4.c:
+	.text       start:0x801FE7E4 end:0x801FE7EC
+
+auto/text_801FE878.c:
+	.text       start:0x801FE878 end:0x801FE894
+
+auto/text_801FF6A4.c:
+	.text       start:0x801FF6A4 end:0x801FF6A8
+
+auto/text_801FF8A4.c:
+	.text       start:0x801FF8A4 end:0x801FF8C4
+
+auto/text_802006C4.c:
+	.text       start:0x802006C4 end:0x802006CC
+
+auto/text_80200818.c:
+	.text       start:0x80200818 end:0x80200820
+
+auto/text_80200C20.c:
+	.text       start:0x80200C20 end:0x80200C24
+
+auto/text_8020109C.c:
+	.text       start:0x8020109C end:0x802010A0
+
+auto/text_80201454.c:
+	.text       start:0x80201454 end:0x802014AC
+
+auto/text_80201508.c:
+	.text       start:0x80201508 end:0x80201534
+
+auto/text_80201754.c:
+	.text       start:0x80201754 end:0x8020175C
+
+auto/text_80201D48.c:
+	.text       start:0x80201D48 end:0x80201D58
+
+auto/text_80201E90.c:
+	.text       start:0x80201E90 end:0x80201E9C
+
+auto/text_80201F5C.c:
+	.text       start:0x80201F5C end:0x80201F68
+
+auto/text_80202B48.c:
+	.text       start:0x80202B48 end:0x80203040
+
+auto/text_802031E0.c:
+	.text       start:0x802031E0 end:0x802031E4
+
+auto/text_8020376C.c:
+	.text       start:0x8020376C end:0x8020379C
+
+auto/text_802037EC.c:
+	.text       start:0x802037EC end:0x80203800
+
+auto/text_8020383C.c:
+	.text       start:0x8020383C end:0x80203860
+
+auto/text_80203ED8.c:
+	.text       start:0x80203ED8 end:0x80203EF8
+
+auto/text_80204454.c:
+	.text       start:0x80204454 end:0x8020445C
+
+auto/text_802044E0.c:
+	.text       start:0x802044E0 end:0x80204504
+
+auto/text_80205454.c:
+	.text       start:0x80205454 end:0x802054B0
+
+auto/text_802054EC.c:
+	.text       start:0x802054EC end:0x80205504
+
+auto/text_802056DC.c:
+	.text       start:0x802056DC end:0x80205704
+
+auto/text_80205764.c:
+	.text       start:0x80205764 end:0x80205790
+
+auto/text_8020685C.c:
+	.text       start:0x8020685C end:0x80206860
+
+auto/text_802069AC.c:
+	.text       start:0x802069AC end:0x802069C8
+
+auto/text_80206A04.c:
+	.text       start:0x80206A04 end:0x80206A1C
+
+auto/text_80207024.c:
+	.text       start:0x80207024 end:0x80207028
+
+auto/text_802070F0.c:
+	.text       start:0x802070F0 end:0x80207144
+
+auto/text_802077F8.c:
+	.text       start:0x802077F8 end:0x802078EC
+
+auto/text_802079CC.c:
+	.text       start:0x802079CC end:0x802079F0
+
+auto/text_80207CB4.c:
+	.text       start:0x80207CB4 end:0x80207CDC
+
+auto/text_802084B0.c:
+	.text       start:0x802084B0 end:0x802084D0
+
+auto/text_80208518.c:
+	.text       start:0x80208518 end:0x80208598
+
+auto/text_8020866C.c:
+	.text       start:0x8020866C end:0x802086CC
+
+auto/text_80208724.c:
+	.text       start:0x80208724 end:0x80208744
+
+auto/text_80208870.c:
+	.text       start:0x80208870 end:0x8020888C
+
+auto/text_80208924.c:
+	.text       start:0x80208924 end:0x802089D4
+
+auto/text_80208ADC.c:
+	.text       start:0x80208ADC end:0x80208AF4
+
+auto/text_80208C80.c:
+	.text       start:0x80208C80 end:0x80208CB0
+
+auto/text_80208D64.c:
+	.text       start:0x80208D64 end:0x80208D6C
+
+auto/text_80209460.c:
+	.text       start:0x80209460 end:0x80209470
+
+auto/text_8020A204.c:
+	.text       start:0x8020A204 end:0x8020A214
+
+auto/text_8020A5A0.c:
+	.text       start:0x8020A5A0 end:0x8020A5A8
+
+auto/text_8020AD80.c:
+	.text       start:0x8020AD80 end:0x8020AE14
+
+auto/text_8020AEFC.c:
+	.text       start:0x8020AEFC end:0x8020AF08
+
+auto/text_8020B004.c:
+	.text       start:0x8020B004 end:0x8020B028
+
+auto/text_8020B114.c:
+	.text       start:0x8020B114 end:0x8020B224
+
+auto/text_8020B298.c:
+	.text       start:0x8020B298 end:0x8020B2AC
+
+auto/text_8020B68C.c:
+	.text       start:0x8020B68C end:0x8020B694
+
+auto/text_8020B850.c:
+	.text       start:0x8020B850 end:0x8020B894
+
+auto/text_8020BAC8.c:
+	.text       start:0x8020BAC8 end:0x8020BACC
+
+auto/text_8020C120.c:
+	.text       start:0x8020C120 end:0x8020C12C
+
+auto/text_8020CEE8.c:
+	.text       start:0x8020CEE8 end:0x8020CFE4
+
+auto/text_8020D6C0.c:
+	.text       start:0x8020D6C0 end:0x8020D6DC
+
+auto/text_8020DDC4.c:
+	.text       start:0x8020DDC4 end:0x8020DE18
+
+auto/text_8020DE44.c:
+	.text       start:0x8020DE44 end:0x8020DE4C
+
+auto/text_8020E234.c:
+	.text       start:0x8020E234 end:0x8020E23C
+
+auto/text_8020E640.c:
+	.text       start:0x8020E640 end:0x8020E6B8
+
+auto/text_8020E704.c:
+	.text       start:0x8020E704 end:0x8020E738
+
+auto/text_8020EE2C.c:
+	.text       start:0x8020EE2C end:0x8020EEEC
+
+auto/text_8020F398.c:
+	.text       start:0x8020F398 end:0x8020F3B4
+
+auto/text_8020F424.c:
+	.text       start:0x8020F424 end:0x8020F43C
+
+auto/text_8020FFA4.c:
+	.text       start:0x8020FFA4 end:0x8020FFAC
+
+auto/text_80210828.c:
+	.text       start:0x80210828 end:0x80210830
+
+auto/text_80210CEC.c:
+	.text       start:0x80210CEC end:0x80210CFC
+
+auto/text_80210E48.c:
+	.text       start:0x80210E48 end:0x80210F20
+
+auto/text_8021138C.c:
+	.text       start:0x8021138C end:0x802113B0
+
+auto/text_802113F8.c:
+	.text       start:0x802113F8 end:0x8021141C
+
+auto/text_80211474.c:
+	.text       start:0x80211474 end:0x80211484
+
+auto/text_802114A4.c:
+	.text       start:0x802114A4 end:0x802114B4
+
+auto/text_802117D0.c:
+	.text       start:0x802117D0 end:0x802117E4
+
+auto/text_802118F4.c:
+	.text       start:0x802118F4 end:0x802118FC
+
+auto/text_80212114.c:
+	.text       start:0x80212114 end:0x8021211C
+
+auto/text_802127F0.c:
+	.text       start:0x802127F0 end:0x80212860
+
+auto/text_802128BC.c:
+	.text       start:0x802128BC end:0x80212998
+
+auto/text_80212D9C.c:
+	.text       start:0x80212D9C end:0x80212DA4
+
+auto/text_8021324C.c:
+	.text       start:0x8021324C end:0x80213268
+
+auto/text_80213428.c:
+	.text       start:0x80213428 end:0x80213454
+
+auto/text_802134C4.c:
+	.text       start:0x802134C4 end:0x802134DC
+
+auto/text_802147DC.c:
+	.text       start:0x802147DC end:0x802147E4
+
+auto/text_80214834.c:
+	.text       start:0x80214834 end:0x8021488C
+
+auto/text_80215414.c:
+	.text       start:0x80215414 end:0x80215450
+
+auto/text_80215BF4.c:
+	.text       start:0x80215BF4 end:0x80215BFC
+
+auto/text_8021616C.c:
+	.text       start:0x8021616C end:0x80216194
+
+auto/text_80216578.c:
+	.text       start:0x80216578 end:0x80216590
+
+auto/text_80216714.c:
+	.text       start:0x80216714 end:0x80216738
+
+auto/text_80216B48.c:
+	.text       start:0x80216B48 end:0x80216B50
+
+auto/text_80216BD4.c:
+	.text       start:0x80216BD4 end:0x80216BEC
+
+auto/text_80216DA0.c:
+	.text       start:0x80216DA0 end:0x80216DB8
+
+auto/text_80216E7C.c:
+	.text       start:0x80216E7C end:0x80216E9C
+
+auto/text_80217880.c:
+	.text       start:0x80217880 end:0x802178B8
+
+auto/text_802181D0.c:
+	.text       start:0x802181D0 end:0x8021820C
+
+auto/text_80218720.c:
+	.text       start:0x80218720 end:0x802194C0
+
+auto/text_802195E0.c:
+	.text       start:0x802195E0 end:0x8021962C
+
+auto/text_80219B60.c:
+	.text       start:0x80219B60 end:0x80219B68
+
+auto/text_8021AA24.c:
+	.text       start:0x8021AA24 end:0x8021AA2C
+
+auto/text_8021B2D0.c:
+	.text       start:0x8021B2D0 end:0x8021B2FC
+
+auto/text_8021B36C.c:
+	.text       start:0x8021B36C end:0x8021B384
+
+auto/text_8021BB60.c:
+	.text       start:0x8021BB60 end:0x8021BB88
+
+auto/text_8021C33C.c:
+	.text       start:0x8021C33C end:0x8021C34C
+
+auto/text_8021C9C0.c:
+	.text       start:0x8021C9C0 end:0x8021C9C8
+
+auto/text_8021CA10.c:
+	.text       start:0x8021CA10 end:0x8021CC4C
+
+auto/text_8021CC7C.c:
+	.text       start:0x8021CC7C end:0x8021CD34
+
+auto/text_8021CD88.c:
+	.text       start:0x8021CD88 end:0x8021CD98
+
+auto/text_8021EFA8.c:
+	.text       start:0x8021EFA8 end:0x8021EFF4
+
+auto/text_802200D0.c:
+	.text       start:0x802200D0 end:0x802200D8
+
+auto/text_80220560.c:
+	.text       start:0x80220560 end:0x80220568
+
+auto/text_80220820.c:
+	.text       start:0x80220820 end:0x80220828
+
+auto/text_80220994.c:
+	.text       start:0x80220994 end:0x802209B8
+
+auto/text_80220A20.c:
+	.text       start:0x80220A20 end:0x80220C38
+
+auto/text_80221508.c:
+	.text       start:0x80221508 end:0x80221510
+
+auto/text_80221EAC.c:
+	.text       start:0x80221EAC end:0x8022202C
+
+auto/text_8022215C.c:
+	.text       start:0x8022215C end:0x80222160
+
+auto/text_802223B8.c:
+	.text       start:0x802223B8 end:0x802223C0
+
+auto/text_80222420.c:
+	.text       start:0x80222420 end:0x80222514
+
+auto/text_802226F0.c:
+	.text       start:0x802226F0 end:0x80222740
+
+auto/text_80222798.c:
+	.text       start:0x80222798 end:0x802227B8
+
+auto/text_80222BE8.c:
+	.text       start:0x80222BE8 end:0x80222BFC
+
+auto/text_80222C34.c:
+	.text       start:0x80222C34 end:0x80222C88
+
+auto/text_8022340C.c:
+	.text       start:0x8022340C end:0x8022345C
+
+auto/text_80225EC0.c:
+	.text       start:0x80225EC0 end:0x80225FC0
+
+auto/text_80226BDC.c:
+	.text       start:0x80226BDC end:0x80226BE8
+
+auto/text_80226CEC.c:
+	.text       start:0x80226CEC end:0x80226CF0
+
+auto/text_80226F20.c:
+	.text       start:0x80226F20 end:0x8022705C
+
+auto/text_802277FC.c:
+	.text       start:0x802277FC end:0x8022780C
+
+auto/text_80227B40.c:
+	.text       start:0x80227B40 end:0x80227B4C
+
+auto/text_80227B6C.c:
+	.text       start:0x80227B6C end:0x80227B70
+
+auto/text_80227DC8.c:
+	.text       start:0x80227DC8 end:0x80227DCC
+
+auto/text_80229734.c:
+	.text       start:0x80229734 end:0x80229744
+
+auto/text_80229770.c:
+	.text       start:0x80229770 end:0x80229780
+
+auto/text_80229B70.c:
+	.text       start:0x80229B70 end:0x80229B78
+
+auto/text_80229BB0.c:
+	.text       start:0x80229BB0 end:0x80229BB4
+
+auto/text_8022A76C.c:
+	.text       start:0x8022A76C end:0x8022A7A8
+
+auto/text_8022ACD8.c:
+	.text       start:0x8022ACD8 end:0x8022AD0C
+
+auto/text_8022B608.c:
+	.text       start:0x8022B608 end:0x8022B618
+
+auto/text_8022BBE4.c:
+	.text       start:0x8022BBE4 end:0x8022BBF4
+
+auto/text_8022BCC8.c:
+	.text       start:0x8022BCC8 end:0x8022BCD8
+
+auto/text_8022C558.c:
+	.text       start:0x8022C558 end:0x8022C59C
+
+auto/text_8022C7A4.c:
+	.text       start:0x8022C7A4 end:0x8022C8EC
+
+auto/text_8022CB30.c:
+	.text       start:0x8022CB30 end:0x8022CBD4
+
+auto/text_8022D694.c:
+	.text       start:0x8022D694 end:0x8022D6FC
+
+auto/text_8022D830.c:
+	.text       start:0x8022D830 end:0x8022D9AC
+
+auto/text_8022DA58.c:
+	.text       start:0x8022DA58 end:0x8022DA5C
+
+auto/text_8022DAC0.c:
+	.text       start:0x8022DAC0 end:0x8022DB40
+
+auto/text_8022E018.c:
+	.text       start:0x8022E018 end:0x8022E020
+
+auto/text_8022E70C.c:
+	.text       start:0x8022E70C end:0x8022E738
+
+auto/text_8022EAB4.c:
+	.text       start:0x8022EAB4 end:0x8022EB48
+
+auto/text_8022F4E0.c:
+	.text       start:0x8022F4E0 end:0x8022F50C
+
+auto/text_8022FA4C.c:
+	.text       start:0x8022FA4C end:0x8022FA58
+
+auto/text_80230924.c:
+	.text       start:0x80230924 end:0x80230928
+
+auto/text_80233F18.c:
+	.text       start:0x80233F18 end:0x80233F44
+
+auto/text_80234C88.c:
+	.text       start:0x80234C88 end:0x80234C94
+
+auto/text_80236A0C.c:
+	.text       start:0x80236A0C end:0x80236A88
+
+auto/text_80236CB0.c:
+	.text       start:0x80236CB0 end:0x80236D24
+
+auto/text_80236E0C.c:
+	.text       start:0x80236E0C end:0x80236E10
+
+auto/text_80239540.c:
+	.text       start:0x80239540 end:0x8023954C
+
+auto/text_8023994C.c:
+	.text       start:0x8023994C end:0x80239AA4
+
+auto/text_8023A138.c:
+	.text       start:0x8023A138 end:0x8023A194
+
+auto/text_8023A51C.c:
+	.text       start:0x8023A51C end:0x8023A548
+
+auto/text_8023A630.c:
+	.text       start:0x8023A630 end:0x8023A638
+
+auto/text_8023A820.c:
+	.text       start:0x8023A820 end:0x8023A824
+
+auto/text_8023B320.c:
+	.text       start:0x8023B320 end:0x8023B35C
+
+auto/text_8023B530.c:
+	.text       start:0x8023B530 end:0x8023B538
+
+auto/text_8023B710.c:
+	.text       start:0x8023B710 end:0x8023B738
+
+auto/text_8023BC68.c:
+	.text       start:0x8023BC68 end:0x8023BC90
+
+auto/text_8023BD14.c:
+	.text       start:0x8023BD14 end:0x8023BD28
+
+auto/text_8023C398.c:
+	.text       start:0x8023C398 end:0x8023C3BC
+
+auto/text_8023C720.c:
+	.text       start:0x8023C720 end:0x8023C774
+
+auto/text_8023C7CC.c:
+	.text       start:0x8023C7CC end:0x8023C7EC
+
+auto/text_8023C824.c:
+	.text       start:0x8023C824 end:0x8023C894
+
+auto/text_8023C9A0.c:
+	.text       start:0x8023C9A0 end:0x8023C9B0
+
+auto/text_8023C9E8.c:
+	.text       start:0x8023C9E8 end:0x8023C9FC
+
+auto/text_8023CE8C.c:
+	.text       start:0x8023CE8C end:0x8023CE94
+
+auto/text_8023D0CC.c:
+	.text       start:0x8023D0CC end:0x8023D104
+
+auto/text_8023D198.c:
+	.text       start:0x8023D198 end:0x8023D1BC
+
+auto/text_8023D2AC.c:
+	.text       start:0x8023D2AC end:0x8023D2D8
+
+auto/text_8023D494.c:
+	.text       start:0x8023D494 end:0x8023D5C4
+
+auto/text_8023D65C.c:
+	.text       start:0x8023D65C end:0x8023D6BC
+
+auto/text_8023DC00.c:
+	.text       start:0x8023DC00 end:0x8023DC24
+
+auto/text_8023E120.c:
+	.text       start:0x8023E120 end:0x8023E138
+
+auto/text_8023E8EC.c:
+	.text       start:0x8023E8EC end:0x8023E96C
+
+auto/text_8023EC40.c:
+	.text       start:0x8023EC40 end:0x8023EC58
+
+auto/text_8023F1D4.c:
+	.text       start:0x8023F1D4 end:0x8023F1DC
+
+auto/text_8023F5E8.c:
+	.text       start:0x8023F5E8 end:0x8023F5FC
+
+auto/text_80242168.c:
+	.text       start:0x80242168 end:0x80242174
+
+auto/text_80242198.c:
+	.text       start:0x80242198 end:0x802421C0
+
+auto/text_80242748.c:
+	.text       start:0x80242748 end:0x80242750
+
+auto/text_80242AA4.c:
+	.text       start:0x80242AA4 end:0x80242AC8
+
+auto/text_80242B00.c:
+	.text       start:0x80242B00 end:0x80242B20
+
+auto/text_80243438.c:
+	.text       start:0x80243438 end:0x80243440
+
+auto/text_80243990.c:
+	.text       start:0x80243990 end:0x802439BC
+
+auto/text_80243F5C.c:
+	.text       start:0x80243F5C end:0x80243F90
+
+auto/text_80243FC8.c:
+	.text       start:0x80243FC8 end:0x80243FD8
+
+auto/text_8024453C.c:
+	.text       start:0x8024453C end:0x80244544
+
+auto/text_8024457C.c:
+	.text       start:0x8024457C end:0x80244594
+
+auto/text_80244D3C.c:
+	.text       start:0x80244D3C end:0x80244D40
+
+auto/text_802455A0.c:
+	.text       start:0x802455A0 end:0x802455E0
+
+auto/text_80245D9C.c:
+	.text       start:0x80245D9C end:0x80245F9C
+
+auto/text_80247A94.c:
+	.text       start:0x80247A94 end:0x80247A9C
+
+auto/text_80247AD4.c:
+	.text       start:0x80247AD4 end:0x80247AE4
+
+auto/text_802482B8.c:
+	.text       start:0x802482B8 end:0x802482C0
+
+auto/text_80248E6C.c:
+	.text       start:0x80248E6C end:0x80248E74
+
+auto/text_802492CC.c:
+	.text       start:0x802492CC end:0x802492F0
+
+auto/text_80249960.c:
+	.text       start:0x80249960 end:0x80249968
+
+auto/text_80249FD4.c:
+	.text       start:0x80249FD4 end:0x80249FDC
+
+auto/text_8024A274.c:
+	.text       start:0x8024A274 end:0x8024A27C
+
+auto/text_8024A334.c:
+	.text       start:0x8024A334 end:0x8024A340
+
+auto/text_8024A388.c:
+	.text       start:0x8024A388 end:0x8024A398
+
+auto/text_8024B6D0.c:
+	.text       start:0x8024B6D0 end:0x8024B6D8
+
+auto/text_8024B710.c:
+	.text       start:0x8024B710 end:0x8024B754
+
+auto/text_8024BA84.c:
+	.text       start:0x8024BA84 end:0x8024BADC
+
+auto/text_8024C118.c:
+	.text       start:0x8024C118 end:0x8024C120
+
+auto/text_8024D7E4.c:
+	.text       start:0x8024D7E4 end:0x8024D814
+
+auto/text_8024FC04.c:
+	.text       start:0x8024FC04 end:0x8024FC0C
+
+auto/text_80250164.c:
+	.text       start:0x80250164 end:0x8025019C
+
+auto/text_80250B2C.c:
+	.text       start:0x80250B2C end:0x80250B34
+
+auto/text_80250E34.c:
+	.text       start:0x80250E34 end:0x80250E48
+
+auto/text_80251380.c:
+	.text       start:0x80251380 end:0x80251388
+
+auto/text_80251FB4.c:
+	.text       start:0x80251FB4 end:0x80251FC8
+
+auto/text_802522D4.c:
+	.text       start:0x802522D4 end:0x802522DC
+
+auto/text_80252344.c:
+	.text       start:0x80252344 end:0x80252348
+
+auto/text_802523B8.c:
+	.text       start:0x802523B8 end:0x8025240C
+
+auto/text_8025245C.c:
+	.text       start:0x8025245C end:0x8025248C
+
+auto/text_802524C4.c:
+	.text       start:0x802524C4 end:0x80252558
+
+auto/text_80252ACC.c:
+	.text       start:0x80252ACC end:0x80252AD4
+
+auto/text_80252D60.c:
+	.text       start:0x80252D60 end:0x80252D78
+
+auto/text_80253498.c:
+	.text       start:0x80253498 end:0x802534A0
+
+auto/text_802538C0.c:
+	.text       start:0x802538C0 end:0x80253900
+
+auto/text_80253938.c:
+	.text       start:0x80253938 end:0x8025396C
+
+auto/text_802539B4.c:
+	.text       start:0x802539B4 end:0x802539C4
+
+auto/text_802539FC.c:
+	.text       start:0x802539FC end:0x80253A48
+
+auto/text_80253E30.c:
+	.text       start:0x80253E30 end:0x80253E40
+
+auto/text_80253FBC.c:
+	.text       start:0x80253FBC end:0x80253FC0
+
+auto/text_802540E0.c:
+	.text       start:0x802540E0 end:0x802540E4
+
+auto/text_80254C88.c:
+	.text       start:0x80254C88 end:0x80254C94
+
+auto/text_80254CE4.c:
+	.text       start:0x80254CE4 end:0x80254DB4
+
+auto/text_802557D8.c:
+	.text       start:0x802557D8 end:0x802557E0
+
+auto/text_80255858.c:
+	.text       start:0x80255858 end:0x80255878
+
+auto/text_80255984.c:
+	.text       start:0x80255984 end:0x80255988
+
+auto/text_80255AD0.c:
+	.text       start:0x80255AD0 end:0x80255B0C
+
+auto/text_80255B54.c:
+	.text       start:0x80255B54 end:0x80255B64
+
+auto/text_80255B9C.c:
+	.text       start:0x80255B9C end:0x80255BD4
+
+auto/text_802563F0.c:
+	.text       start:0x802563F0 end:0x802563FC
+
+auto/text_80256894.c:
+	.text       start:0x80256894 end:0x80256898
+
+auto/text_802575F0.c:
+	.text       start:0x802575F0 end:0x8025764C
+
+auto/text_80257A4C.c:
+	.text       start:0x80257A4C end:0x80257A98
+
+auto/text_8025AEC4.c:
+	.text       start:0x8025AEC4 end:0x8025AEE8
+
+auto/text_8025E920.c:
+	.text       start:0x8025E920 end:0x8025E940
+
+auto/text_8025EDC0.c:
+	.text       start:0x8025EDC0 end:0x8025EE24
+
+auto/text_8025EED4.c:
+	.text       start:0x8025EED4 end:0x8025EF10
+
+auto/text_8025F808.c:
+	.text       start:0x8025F808 end:0x8025F8A4
+
+auto/text_8025F988.c:
+	.text       start:0x8025F988 end:0x8025F990
+
+auto/text_8025FF80.c:
+	.text       start:0x8025FF80 end:0x8025FF94
+
+auto/text_8026075C.c:
+	.text       start:0x8026075C end:0x80260764
+
+auto/text_802611B4.c:
+	.text       start:0x802611B4 end:0x802611B8
+
+auto/text_80261914.c:
+	.text       start:0x80261914 end:0x80261978
+
+auto/text_80261AA8.c:
+	.text       start:0x80261AA8 end:0x80261AD4
+
+auto/text_80261D10.c:
+	.text       start:0x80261D10 end:0x80261D18
+
+auto/text_80262FA0.c:
+	.text       start:0x80262FA0 end:0x8026300C
+
+auto/text_80264680.c:
+	.text       start:0x80264680 end:0x80264684
+
+auto/text_80264840.c:
+	.text       start:0x80264840 end:0x80264884
+
+auto/text_80266828.c:
+	.text       start:0x80266828 end:0x80266834
+
+auto/text_80268004.c:
+	.text       start:0x80268004 end:0x80268020
+
+auto/text_80268178.c:
+	.text       start:0x80268178 end:0x80268290
+
+auto/text_8026848C.c:
+	.text       start:0x8026848C end:0x80268504
+
+auto/text_80268A70.c:
+	.text       start:0x80268A70 end:0x80268A8C
+
+auto/text_8026A11C.c:
+	.text       start:0x8026A11C end:0x8026A124
+
+auto/text_8026A4F4.c:
+	.text       start:0x8026A4F4 end:0x8026A50C
+
+auto/text_8026EDCC.c:
+	.text       start:0x8026EDCC end:0x8026EDD4
+
+auto/text_8026F000.c:
+	.text       start:0x8026F000 end:0x8026F020
+
+auto/text_8026F0EC.c:
+	.text       start:0x8026F0EC end:0x8026F0F4
+
+auto/text_8026F260.c:
+	.text       start:0x8026F260 end:0x8026F290
+
+auto/text_8026F5CC.c:
+	.text       start:0x8026F5CC end:0x8026F5E8
+
+auto/text_8026F640.c:
+	.text       start:0x8026F640 end:0x8026F660
+
+auto/text_80270840.c:
+	.text       start:0x80270840 end:0x80270870
+
+auto/text_8027182C.c:
+	.text       start:0x8027182C end:0x80271830
+
+auto/text_8027245C.c:
+	.text       start:0x8027245C end:0x80272500
+
+auto/text_80272E68.c:
+	.text       start:0x80272E68 end:0x80272E90
+
+auto/text_80272EC8.c:
+	.text       start:0x80272EC8 end:0x80272ED0
+
+auto/text_80272F0C.c:
+	.text       start:0x80272F0C end:0x80272F28
+
+auto/text_802737E8.c:
+	.text       start:0x802737E8 end:0x80273808
+
+auto/text_80273970.c:
+	.text       start:0x80273970 end:0x802739A0
+
+auto/text_802739F0.c:
+	.text       start:0x802739F0 end:0x80273A20
+
+auto/text_80273A58.c:
+	.text       start:0x80273A58 end:0x80273A88
+
+auto/text_80273CC4.c:
+	.text       start:0x80273CC4 end:0x80273D38
+
+auto/text_80273D98.c:
+	.text       start:0x80273D98 end:0x80273DD8
+
+auto/text_80273E10.c:
+	.text       start:0x80273E10 end:0x80293ED8

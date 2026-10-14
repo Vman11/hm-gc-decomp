@@ -1,0 +1,2 @@
+/* Functions from 0x801122C0 to 0x801122C8, found by decomp-toolkit. */
+#include "common.h"

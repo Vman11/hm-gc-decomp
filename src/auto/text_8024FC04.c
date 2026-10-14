@@ -1,0 +1,2 @@
+/* Functions from 0x8024FC04 to 0x8024FC0C, found by decomp-toolkit. */
+#include "common.h"
