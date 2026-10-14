@@ -3,3 +3,7 @@
 
 void fn_8002FAE0(void) {
 }
+
+void fn_8002FAE4(void) {
+}
+
