@@ -1027,6 +1027,10 @@ void fn_800CCC78(void) {
 
 }
 
+s32 fn_800CF4C0(void *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x88);
+}
+
 s32 fn_800D0420(s32 chan) {
     extern s32 fn_800CFCD8(s32);
     extern s32 fn_800CFF5C(s32, s32);
