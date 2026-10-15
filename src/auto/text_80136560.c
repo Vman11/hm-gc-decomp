@@ -36,3 +36,14 @@ typedef struct IdList {
     u32 ids[8];
     s32 numIds;
 } IdList;
+
+void fn_80136560(IdList* p) {
+    u32 i;
+    p->numIds = 0;
+    for (i = 0; i < p->entryCount; i++) {
+        Entry20* e = &p->list->entries[i];
+        if (e->flags & 0x1C00) {
+            p->ids[p->numIds++] = e->id;
+        }
+    }
+}
