@@ -5,6 +5,10 @@ void fn_80119C34(void) {
 
 }
 
+void fn_80119C38(void) {
+
+}
+
 void fn_80119C3C(void) {
 
 }
