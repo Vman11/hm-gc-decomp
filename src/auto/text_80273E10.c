@@ -558,7 +558,7 @@ void fn_80276E38(u8* arg0) {
 #pragma pop
 extern s32 lbl_802F3864[];
 extern s32 lbl_803580C0[];
-extern s32 lbl_802F3868;
+extern s32 lbl_802F3868[];
 extern u32 lbl_802F3870;
 extern u32 lbl_802F3874[];
 extern s32 lbl_802F385C;
@@ -571,7 +571,7 @@ void fn_80276FA0(s32 arg0, s32 arg1) {
 #pragma optimize_for_size on
 #pragma opt_unroll_loops off
 void fn_80276FB4(s32 arg0) {
-    lbl_802F3868 = arg0;
+    lbl_802F3868[0] = arg0;
 }
 void fn_80276FD8(u32 count, u32 *src) {
     u32 i;
