@@ -5,3 +5,9 @@ extern s32 lbl_8035AA50;
 void fn_80106E74(s32 arg0) {
     lbl_8035AA50 = arg0;
 }
+
+extern s32 lbl_8035AA58;
+void fn_80106E7C(s32 arg0) {
+    lbl_8035AA58 = arg0;
+}
+
