@@ -13,3 +13,7 @@ s32 fn_8016C9F0(s32 arg0) {
     return arg0 + 0x27B8;
 }
 
+s32 fn_8016CC38(s32 arg0) {
+    return arg0 + 0x410;
+}
+
