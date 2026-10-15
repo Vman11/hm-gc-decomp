@@ -38,6 +38,10 @@ s32 fn_80153F1C(void) {
     return 0;
 }
 
+s32 fn_80153F24(void) {
+    return 4;
+}
+
 s32 fn_80153F3C(void) {
     return 0x10;
 }
