@@ -3,6 +3,8 @@
 
 extern s32 lbl_8035B1D4;
 
+void fn_80211474(s32 arg0) { lbl_8035B1D4 = arg0; }
+
 s32 fn_8021147C(void) {
     return 0x15;
 }
