@@ -44,6 +44,21 @@ void fn_802749D4(s32 arg0) {
     lbl_8035B884 = arg0;
 }
 
+extern u32* lbl_8035B87C;
+void* OSGetArenaLo(void);
+void OSSetArenaLo(void*);
+void fn_80274C8C(void) {
+    s32 i;
+    for (i = 0; i < 0x1000; i++) {
+        lbl_8035B87C[i] = 0;
+    }
+}
+
+extern u32 lbl_8035B878;
+u32 fn_80274D04(u32 arg0) {
+    return ((arg0 >> 19) & 0x38) | (lbl_8035B878 | ((arg0 >> 6) & 0xFFC0));
+}
+
 void fn_80274D1C(void) {
     u32 addr = 0;
     int i;
@@ -560,9 +575,35 @@ u8 *fn_8027A710(void) {
     return lbl_802F3898;
 }
 
-u32 fn_8027B4CC(void *arg0, u32 arg1) {
-    arg1 += 0xFFF;
-    return arg1 & ~0xFFF;
+s32 fn_8027B0D4(u8 *arg0) {
+    if (*(s32 *)(arg0 + 0x1C) != 0) {
+        return 0;
+    }
+    switch (DVDGetDriveStatus()) {
+    case 0:
+        fn_8027AFC0(arg0);
+        break;
+    case 1:
+    case 2:
+    case 10:
+        break;
+    case -1:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 11:
+        *(s32 *)(arg0 + 0x1C) = 1;
+        break;
+    }
+    return *(s32 *)(arg0 + 0x20);
+}
+
+u32 fn_8027B4CC(void *arg0, void *arg1) {
+    return ((u32)arg1 + 0xFFF) & ~0xFFF;
 }
 
 void fn_8027B168(void *);
@@ -922,23 +963,25 @@ void fn_802820C4(s32 arg0, s32 count) {
 }
 
 s32 fn_80282124(s32 count, s32 base) {
-    s32 n = count;
+    register s32 n = count;
     do {
         u32 a, b, v;
         u8 *p = lbl_80300860[2];
+        register u32 *dst = (u32 *)lbl_80300860[0];
         n -= 2;
         b = p[1] << 16;
         a = p[0];
         lbl_80300860[2] = p + 2;
         v = a | (b | 0x80000000 | 0x8000);
-        *(u32 *)lbl_80300860[0] = v;
+        *dst = v;
         *(u32 *)(lbl_80300860[0] + (u32)lbl_80300860[17]) = v;
         p = lbl_80300860[3];
+        dst = (u32 *)lbl_80300860[1];
         b = p[1] << 16;
         a = p[0];
         lbl_80300860[3] = p + 2;
         v = a | (b | 0x80000000 | 0x8000);
-        *(u32 *)lbl_80300860[1] = v;
+        *dst = v;
         *(u32 *)(lbl_80300860[1] + (u32)lbl_80300860[17]) = v;
         lbl_80300860[0] += 4;
         lbl_80300860[1] += 4;
