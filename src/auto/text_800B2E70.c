@@ -83,6 +83,11 @@ s32 PPCMfhid2(void) { return __mfspr(920); }
 
 void PPCMthid2(u32 value) { __mtspr(920, value); }
 
+void __DBExceptionDestination(void) {
+    __MTMSR(__MFMSR() | 0x30);
+    fn_800B2FB8();
+}
+
 u32 __DBIsExceptionMarked(u8 exception) {
     return __DBInterface->exceptionMask & (1 << exception);
 }
@@ -601,6 +606,9 @@ s32 fn_800CA098(void) {
 extern s32 lbl_8035A8D0;
 s32 fn_800CC224(void) {
     return lbl_8035A8D0;
+}
+
+void fn_800CC3A4(char* str, ...) {
 }
 
 void fn_800CCC78(void) {
