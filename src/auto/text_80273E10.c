@@ -200,13 +200,14 @@ void *arg0;
     fn_8027564C((u8 *)arg0 + 0x78, 0);
 }
 
-s32 fn_80275DD8(void *, void *);
+s32 fn_80275DD8();
 void fn_80275F18(void *);
 void fn_80275F08(void);
 void fn_80275FC0(void *arg0) {
     u8 *p = arg0;
     void *callback;
-    if (*(u32 *)(p + 0x100) >= *(u32 *)(p + 0x108) && *(s32 *)(p + 0xFC) == 0 && *(s32 *)(p + 0xC4) == 0) {
+    u32 size = *(u32 *)(p + 0x100);
+    if (size >= *(u32 *)(p + 0x108) && *(s32 *)(p + 0xFC) == 0 && *(s32 *)(p + 0xC4) == 0) {
         *(s32 *)(p + 0xC4) = 1;
         if (*(s32 *)(p + 0xF8) == 0) {
             *(s32 *)(p + 0xF8) = 1;
@@ -214,7 +215,7 @@ void fn_80275FC0(void *arg0) {
         } else {
             callback = fn_80275F08;
         }
-        *(u32 *)(p + 0x100) -= fn_80275DD8(p, callback);
+        *(u32 *)(p + 0x100) -= ((s32 (*)(void *, u32, void *))fn_80275DD8)(p, size, callback);
         *(u32 *)(p + 0x108) = *(u32 *)(p + 0xE0);
     }
 }
@@ -271,29 +272,22 @@ void fn_80275D6C(s16 *, u8 *, u8 *, u32);
 #pragma push
 #pragma optimize_for_size on
 #pragma use_lmw_stmw on
-#pragma scheduling off
 s32 fn_802763BC(u8 *arg0, u32 arg1) {
-    register u32 n;
-    register u32 end;
-    register u8 *p;
-    u32 pos;
-    p = arg0;
-    n = arg1 >> 1;
-    pos = *(u32 *)(p + 0xF0);
-    end = pos + n;
-    if (end >= *(u32 *)(p + 0xDC)) {
+    u32 n = arg1 >> 1;
+    u32 pos = *(u32 *)(arg0 + 0xF0);
+    u32 end = pos + n;
+    if (end >= *(u32 *)(arg0 + 0xDC)) {
         u32 d;
-        fn_80275D6C(*(s16 **)(p + 0xEC), *(u8 **)(p + 0xE4) + pos, *(u8 **)(p + 0xE8) + pos, *(u32 *)(p + 0xDC) - pos);
-        d = *(u32 *)(p + 0xDC) - *(u32 *)(p + 0xF0);
-        d += d;
-        fn_80275D6C((s16 *)(*(u8 **)(p + 0xEC) + d), *(u8 **)(p + 0xE4), *(u8 **)(p + 0xE8), end - *(u32 *)(p + 0xDC));
-        *(u32 *)(p + 0xF0) = end - *(u32 *)(p + 0xDC);
+        fn_80275D6C(*(s16 **)(arg0 + 0xEC), *(u8 **)(arg0 + 0xE4) + pos, *(u8 **)(arg0 + 0xE8) + pos, *(u32 *)(arg0 + 0xDC) - pos);
+        d = *(u32 *)(arg0 + 0xDC) - *(u32 *)(arg0 + 0xF0);
+        fn_80275D6C((s16 *)(*(u8 **)(arg0 + 0xEC) + (d + d)), *(u8 **)(arg0 + 0xE4), *(u8 **)(arg0 + 0xE8), end - *(u32 *)(arg0 + 0xDC));
+        *(u32 *)(arg0 + 0xF0) = end - *(u32 *)(arg0 + 0xDC);
     } else {
-        fn_80275D6C(*(s16 **)(p + 0xEC), *(u8 **)(p + 0xE4) + pos, *(u8 **)(p + 0xE8) + pos, n);
-        *(u32 *)(p + 0xF0) = end;
+        fn_80275D6C(*(s16 **)(arg0 + 0xEC), *(u8 **)(arg0 + 0xE4) + pos, *(u8 **)(arg0 + 0xE8) + pos, n);
+        *(u32 *)(arg0 + 0xF0) = end;
     }
-    *(s32 *)(p + 0x100) += n;
-    fn_80275FC0(p);
+    *(s32 *)(arg0 + 0x100) += n;
+    fn_80275FC0(arg0);
     return 1;
 }
 #pragma pop
@@ -343,8 +337,10 @@ extern s32 fn_802753F0(void);
 extern s32 fn_80275DD8(void *, void *);
 extern void fn_80275F08(void);
 extern void fn_80275F18(void *);
+#pragma push
+#pragma optimize_for_size on
 void fn_802767C0(void) { fn_80275C64(); }
-
+#pragma pop
 void *fn_80276930(u32 *arg0)
 {
     if (arg0 == 0) {
@@ -649,14 +645,22 @@ void fn_8027F894(s32 arg0, s32 n) {
     }
 }
 
-void fn_8028256C(s32 arg0, s32 n) {
+void fn_8028256C(s32 arg0, register s32 n) {
+ register u8 **state = lbl_80300860;
  n -= 2;
  if(n >= 0) do {
- u32 v = lbl_80300860[2][0] | (*lbl_80300860[4]++ << 8) | (lbl_80300860[2][1] << 16) | (*lbl_80300860[5]++ << 24);
- lbl_80300860[2] += 2;
- *(u32 *)lbl_80300860[0] = v;
- *(u32 *)(lbl_80300860[0] + (u32)lbl_80300860[17]) = v;
- lbl_80300860[0] += 4;
+ u8 *p = state[2];
+ s32 b = *state[4] << 8;
+ s32 c = p[1] << 16;
+ s32 d = *state[5] << 24;
+ u32 v = p[0] | b | c;
+ state[4]++;
+ state[5]++;
+ v |= d;
+ state[2] = p + 2;
+ *(u32 *)state[0] = v;
+ *(u32 *)(state[0] + (u32)state[17]) = v;
+ state[0] += 4;
  n -= 2;
  } while(n >= 0);
 }
@@ -679,13 +683,13 @@ s32 fn_80282730(s32 arg0, s32 arg1) {
         u8 *p = lbl_80300860[2];
         u32 b = p[1];
         register u32 *dst = (u32 *)lbl_80300860[0];
-        u32 v = p[0] | ((b << 16) | 0x80008000);
+        u32 v = p[0] | (b << 16) | 0x80008000;
         lbl_80300860[2] = p + 2;
         *dst = v;
         p = lbl_80300860[3];
         b = p[1];
         dst = (u32 *)lbl_80300860[1];
-        v = p[0] | ((b << 16) | 0x80008000);
+        v = p[0] | (b << 16) | 0x80008000;
         lbl_80300860[3] = p + 2;
         *dst = v;
         lbl_80300860[0] += 4;
@@ -727,10 +731,10 @@ extern f64 lbl_80301C18[];
 f32 fn_80282BE0(s32 arg0) {
     union { f64 d; u32 w[2]; } v;
     f32 result;
-    v.w[1] = ((u32)arg0 & 0xEFFFFFFF) >> 5;
     v.w[0] = 0x43300000;
-    result = (v.d - *(&lbl_802AAB60)) * lbl_80301C18[arg0 & 31];
-    if ((u32)arg0 >> 28 & 1) result = -result;
+    v.w[1] = ((u32)arg0 & 0xEFFFFFFF) >> 5;
+    result = (v.d - lbl_802AAB60) * lbl_80301C18[arg0 & 31];
+    if (arg0 & 0x10000000) result = -result;
     return result;
 }
 
@@ -759,7 +763,7 @@ void fn_80282C94(s16 *dst, f32 *src, s32 count, f32 scale) {
  if(v <= 0x7FFE) { out = -0x8000; if(v > -0x8000) out = v; }
  else out = 0x7FFF;
  *dst++ = out;
- v = (s32)(*(f32 *)((u8 *)src + count * 4) * scale);
+ v = (s32)(src[count] * scale);
  if(v <= 0x7FFE) { out = -0x8000; if(v > -0x8000) out = v; }
  else out = 0x7FFF;
  *dst++ = out;
@@ -840,6 +844,7 @@ void fn_8028F7A4(f32 *a);
 #pragma optimize_for_size off
 void fn_8028BDF4(s32 n, f32 *a, s32 *ip, s32 nw, f32 *w) {
     s32 m;
+
     if (n > 32) {
         m = n >> 2;
         fn_8028CA0C(n, a, &w[nw - m]);
