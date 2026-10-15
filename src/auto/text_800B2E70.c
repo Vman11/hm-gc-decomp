@@ -143,14 +143,7 @@ extern void OSDisableInterrupts(void);
 extern void OSRestoreInterrupts(void);
 extern void fn_800C05F0(void);
 extern char lbl_802DA610[];
-unsigned int fn_800C0BD0(unsigned int arg0) {
-    volatile u32 pad[2];
-    unsigned int old = lbl_8035A6F0;
-    OSDisableInterrupts();
-    lbl_8035A6F0 = arg0;
-    OSRestoreInterrupts();
-    return old;
-}
+unsigned int fn_800C0BD0(unsigned int arg0) { volatile u32 pad[2]; unsigned int old=lbl_8035A6F0; OSDisableInterrupts(); lbl_8035A6F0=arg0; OSRestoreInterrupts(); return old; }
 
 char *fn_800C0C14(u32 arg0) {
     switch (arg0) {
