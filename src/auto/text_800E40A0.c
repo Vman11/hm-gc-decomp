@@ -18,6 +18,13 @@ u8 *fn_800E4108(void) {
     return lbl_8029BFB0;
 }
 
+s32 fn_800E7F00(s32 arg0) {
+    s32 temp_r4;
+
+    temp_r4 = arg0 >> 0x1F;
+    return (temp_r4 ^ arg0) - temp_r4;
+}
+
 void __end_critical_region(void) {
 
 }
