@@ -39,6 +39,22 @@ s32 fn_80273EBC(void) {
     return lbl_80359F08;
 }
 
+void fn_802740E4(void) {
+    M2C_UNK fn_80274128();
+    M2C_UNK fn_802742F8();
+    M2C_UNK fn_8027438C();
+    extern s32 lbl_80359F14;
+    if ((s32) lbl_80359F14 == 0) {
+        fn_80274128();
+        return;
+    }
+    if ((s32) lbl_80359F14 == 1) {
+        fn_802742F8();
+        return;
+    }
+    fn_8027438C();
+}
+
 extern u32* lbl_8035B87C;
 void* OSGetArenaLo(void);
 void OSSetArenaLo(void*);
