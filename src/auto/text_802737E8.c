@@ -4,3 +4,8 @@
 void fn_802737E8(void) {
 
 }
+
+void fn_802737EC(void) {
+
+}
+
