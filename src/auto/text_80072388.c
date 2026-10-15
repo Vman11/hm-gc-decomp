@@ -32,6 +32,10 @@ void fn_80072438(void *arg0, u32 arg1) {
     }
 }
 
+void fn_8007249C(void *arg0, s32 arg1) {
+    lbl_8035A238 = arg1;
+}
+
 s32 fn_800724A4(void) {
     return lbl_8035A238;
 }
