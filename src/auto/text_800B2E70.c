@@ -92,8 +92,6 @@ u32 __DBIsExceptionMarked(u8 exception) {
     return __DBInterface->exceptionMask & (1 << exception);
 }
 
-void OSReport(const char* msg, ...);
-void OSDumpContext(void* context);
 void DBPrintf(char* str, ...) {
 }
 
@@ -492,6 +490,28 @@ s32 fn_800C2600(void) {
 
 void fn_800C6C2C(void) {
 
+}
+
+extern s32 lbl_80308680[32];
+extern s32 lbl_80308700[32];
+extern s32 lbl_8035A7E8;
+void fn_800C70AC(void);
+void fn_800C9944(void);
+void fn_800C8C94(void);
+void fn_800C75C0(void);
+void fn_800C807C(void);
+void fn_800C8804(void);
+void* fn_800C7190(void);
+void fn_800C71AC(void*);
+void fn_800C7160(void*);
+void fn_800C6FF8(void) {
+    s32 i;
+
+    lbl_8035A7E8 = 0;
+    for (i = 0; i < 32; i++) {
+        lbl_80308700[i] = 0;
+        lbl_80308680[i] = 0;
+    }
 }
 
 void fn_800C75D0(void** arg0) {
