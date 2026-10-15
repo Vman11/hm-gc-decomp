@@ -21,3 +21,7 @@ void fn_80253A3C(void) {
 
 }
 
+void fn_80253A44(void) {
+
+}
+
