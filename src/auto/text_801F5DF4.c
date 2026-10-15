@@ -12,3 +12,10 @@ typedef struct Outer {
     s32 unk4;
     s32 unk8;
 } Outer;
+
+void fn_801F5DF4(Outer *arg0, s32 arg1, s32 arg2) {
+    arg0->unk4 = arg1;
+    (**arg0->unk0)->unk4 = arg0->unk4;
+    (**arg0->unk0)->unk8 = arg0->unk4 + arg2;
+    arg0->unk8 = (**arg0->unk0)->unk8;
+}
