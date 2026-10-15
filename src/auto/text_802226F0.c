@@ -10,6 +10,16 @@ typedef struct {
 
 extern f32 lbl_80365A4C;
 extern f32 lbl_80365A30;
+void fn_802226F0(unkStruct_80222798* arg0, s32 arg1) {
+    if ((u32)arg0->unkC != 0) {
+        arg0->unk0 = lbl_80365A4C;
+        arg0->unk4 = lbl_80365A30;
+        arg0->unk8 = 0;
+        arg0->unkC = 0;
+    }
+    arg0->unkC = arg1;
+}
+
 void fn_80222720(unkStruct_80222798* arg0) {
     arg0->unk0 = lbl_80365A4C;
     arg0->unk4 = lbl_80365A30;
