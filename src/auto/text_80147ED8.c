@@ -101,3 +101,15 @@ void fn_80148154(UnkStruct80148118* arg0, s32 arg1) {
     }
 }
 
+void fn_80148194(UnkStruct80148118* arg0, s32 arg1) {
+    arg0->unk0 = 0x20;
+    arg0->unk2 = 4;
+    arg0->unk4 = 0;
+    arg0->unk8 = 0;
+    arg0->unkC = 0;
+    arg0->unk10 = 0;
+    if (arg1 != 0) {
+        arg0->unk0 |= lbl_803643A0;
+    }
+}
+
