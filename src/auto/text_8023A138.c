@@ -9,6 +9,10 @@ s32 fn_8023A14C(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x1C);
 }
 
+u8 fn_8023A154(void *arg0) {
+    return (u8)((*(u32 *)((u8 *)arg0 + 8) >> 31) ^ 1);
+}
+
 void fn_8023A168(s32* arg0) {
     arg0[2] = -1;
     arg0[7] = 0;
