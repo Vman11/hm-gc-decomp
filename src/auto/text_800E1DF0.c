@@ -9,7 +9,7 @@ typedef struct DestructorChain {
     void* object;
 } DestructorChain;
 
-DestructorChain* __global_destructor_chain;
+extern DestructorChain* __global_destructor_chain;
 
 void* __register_global_object(void* object, void* destructor, void* regmem) {
     ((DestructorChain*)regmem)->next = __global_destructor_chain;
