@@ -16,3 +16,33 @@ void fn_80135ADC(void *arg0, f32 arg1) {
     *(f32 *)((u8 *)arg0 + 0x14) = arg1;
 }
 
+extern f32 lbl_8032E4A8[3];
+extern f32 lbl_80364100;
+extern f32 lbl_80364104;
+void fn_80135AE4(u8 *arg0, u8 *arg1) {
+arg0[0x10] = arg1[0];
+arg0[0x11] = arg1[1];
+arg0[0x12] = arg1[2];
+arg0[0x13] = arg1[3];
+}
+
+void fn_80135B08(u8 *arg0) {
+*(s32 *)(arg0 + 0) = 0;
+*(s32 *)(arg0 + 4) = 0;
+*(s32 *)(arg0 + 8) = 0;
+*(s32 *)(arg0 + 12) = 0;
+*(f32 *)(arg0 + 0x14) = lbl_80364100;
+*(s32 *)(arg0 + 0x18) = 0;
+*(f32 *)(arg0 + 0x1c) = lbl_80364104;
+arg0[0x10] = 0;
+arg0[0x11] = 0;
+arg0[0x12] = 0;
+arg0[0x13] = 255;
+*(s32 *)(arg0 + 0x124) = 0;
+lbl_8032E4A8[0] = lbl_80364104;
+lbl_8032E4A8[1] = lbl_80364104;
+lbl_8032E4A8[2] = lbl_80364104;
+*(f32 **)(arg0 + 0x192c) = lbl_8032E4A8;
+*(s32 *)(arg0 + 0x1928) = 0;
+}
+
