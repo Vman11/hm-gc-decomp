@@ -120,6 +120,12 @@ void fn_800CCC78(void) {
 
 }
 
+void fn_800D79CC(void *lt_obj, f32 *nx, f32 *ny, f32 *nz) {
+    *nx = -*(f32 *)((u8 *)lt_obj + 0x34);
+    *ny = -*(f32 *)((u8 *)lt_obj + 0x38);
+    *nz = -*(f32 *)((u8 *)lt_obj + 0x3C);
+}
+
 void fn_800D8F00(void) {
 
 }
