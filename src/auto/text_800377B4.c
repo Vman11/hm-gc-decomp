@@ -17,3 +17,9 @@ void fn_800377DC(void) {
 
 }
 
+void fn_80037870(void *arg0) {
+    M2C_FIELD(arg0, s32 *, 4) = 0;
+    M2C_FIELD(arg0, s32 *, 8) = 0;
+    M2C_FIELD(arg0, s32 *, 0xC) = 0;
+}
+
