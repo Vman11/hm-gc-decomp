@@ -22,6 +22,11 @@ s32 OSGetArenaHi(void) {
     return __OSArenaHi_8035A578;
 }
 
+extern s32 __OSArenaLo_80359538;
+s32 OSGetArenaLo(void) {
+    return __OSArenaLo_80359538;
+}
+
 void fn_800B9624(void) {
 
 }
@@ -32,6 +37,20 @@ void InitMetroTRK_BBA(void) {
 
 void fn_800BDA6C(void) {
 
+}
+
+extern unsigned int lbl_8035A6F0;
+extern unsigned int lbl_8035A6C0;
+extern void OSDisableInterrupts(void);
+extern void OSRestoreInterrupts(void);
+extern void fn_800C05F0(void);
+extern char lbl_802DA610[];
+unsigned int fn_800C0BD0(unsigned int arg0) {
+    unsigned int old = lbl_8035A6F0;
+    OSDisableInterrupts();
+    lbl_8035A6F0 = arg0;
+    OSRestoreInterrupts();
+    return old;
 }
 
 void fn_800C6C2C(void) {
