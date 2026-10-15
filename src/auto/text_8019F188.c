@@ -11,13 +11,11 @@ static inline void setPlane(f32 *v, f32 x, f32 y, f32 z, f32 w) {
     v[3] = w;
 }
 
-#pragma scheduling off
 void fn_8019F188(void *arg0, f32 *arg1) {
-    f32 first = lbl_80364D74;
     f32 w = *(f32 *)((u8 *)arg0 + 0x14);
-    arg1[0] = first;
-    w = -w;
+    f32 x = lbl_80364D74;
+    arg1[0] = x;
     arg1[1] = lbl_80364D70;
     arg1[2] = lbl_80364D70;
-    arg1[3] = w;
+    arg1[3] = -w;
 }
