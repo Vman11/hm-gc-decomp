@@ -64,6 +64,11 @@ f32 fn_800F0588(f32 x) {
     return fn_800EFDA4(x);
 }
 
+double fn_800EFA20(double);
+f32 fn_800F05AC(f32 x) {
+    return fn_800EFA20(x);
+}
+
 int fn_800F05D0(const char* s1, const char* s2) {
     char c1, c2;
     int c;
