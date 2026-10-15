@@ -9,3 +9,7 @@ void fn_8022BCCC(void) {
 
 }
 
+void fn_8022BCD0(void) {
+
+}
+
