@@ -19,3 +19,7 @@ void* fn_8014E3F0(Unk8014E3F0* arg0, s32 arg1) {
     return &arg0->elems[arg1];
 }
 
+s32 fn_8014E404(void) {
+    return 0;
+}
+
