@@ -369,6 +369,10 @@ void fn_800C75D0(void** arg0) {
     *arg0 = NULL;
 }
 
+void fn_800C7604(void** arg0) {
+    *arg0 = lbl_80309E00[lbl_8035A810] + 0x500;
+}
+
 extern u8 lbl_80308780[][0x780];
 extern u8 lbl_80309E00[][0x780];
 extern s32 lbl_8035A814;
