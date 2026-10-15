@@ -4,3 +4,5 @@
 extern s32 lbl_8035B248;
 
 extern s32 lbl_8035B248;
+
+extern s32 lbl_8035B248;
