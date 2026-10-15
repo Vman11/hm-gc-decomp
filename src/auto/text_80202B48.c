@@ -15,3 +15,29 @@ s32 fn_80202B68(u8* arg0) {
     return 0;
 }
 
+s32 fn_80202B8C(u8* arg0) {
+    u8* p = *(u8**)(arg0 + 0x10);
+    u32 flags;
+    u8* q;
+
+    if (p != NULL) {
+        flags = *(u32*)(p + 0x8);
+        if (flags & 0x400) {
+            if (flags & 0x80) {
+                q = *(u8**)(arg0 + 0xAC);
+                if (q != NULL && *(u16*)(q + 0x146) != 0) {
+                    return 1;
+                }
+            } else {
+                q = *(u8**)(arg0 + 0xA0);
+                if (q != NULL && *(u16*)(q + 0x146) != 0) {
+                    return 1;
+                }
+            }
+        } else if (flags & 0x800) {
+            return arg0[0x1C] & 1;
+        }
+    }
+    return 0;
+}
+
