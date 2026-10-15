@@ -42,3 +42,12 @@ s32 fn_80147F68(MaskInfo* m) {
     return n;
 }
 
+void fn_80148118(UnkStruct80148118* arg0) {
+    arg0->unk0 = 0;
+    arg0->unk2 = 0;
+    arg0->unk4 = 0;
+    arg0->unk8 = 0;
+    arg0->unkC = 0;
+    arg0->unk10 = 0;
+}
+
