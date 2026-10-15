@@ -9,3 +9,7 @@ void fn_8012C4A0(void) {
 
 }
 
+void fn_8012C4A4(void) {
+
+}
+
