@@ -1,10 +1,6 @@
 /* Functions from 0x800371D0 to 0x800372CC, found by decomp-toolkit. */
 #include "common.h"
 
-typedef struct Vec3f {
-    f32 x, y, z;
-} Vec3f;
-
 void fn_800371D0(f32 *v, f32 s) {
     v[0] *= s;
     v[1] *= s;
@@ -12,9 +8,12 @@ void fn_800371D0(f32 *v, f32 s) {
 }
 
 void fn_800371F8(f32 *dst, f32 *src) {
-    f32 x = src[0];
-    f32 y = src[1];
-    f32 z = src[2];
+    f32 z;
+    f32 y;
+    f32 x;
+    x = src[0];
+    y = src[1];
+    z = src[2];
     dst[0] = x;
     dst[1] = y;
     dst[2] = z;
@@ -30,18 +29,23 @@ void fn_8003723C(f32 *dst, f32 *a, f32 *b) {
     f32 x;
     f32 y;
     f32 z;
-    x = a[1] * b[2] - a[2] * b[1];
-    y = a[2] * b[0] - a[0] * b[2];
-    z = a[0] * b[1] - a[1] * b[0];
+    f32 a0 = a[0];
+    f32 b2 = b[2];
+    x = a[1] * b2 - a[2] * b[1];
+    y = a[2] * b[0] - a0 * b2;
+    z = a0 * b[1] - a[1] * b[0];
     dst[0] = x;
     dst[1] = y;
     dst[2] = z;
 }
 
 void fn_8003727C(f32 *dst, f32 *src) {
-    f32 x = src[0];
-    f32 y = src[1];
-    f32 z = src[2];
+    f32 z;
+    f32 y;
+    f32 x;
+    x = src[0];
+    y = src[1];
+    z = src[2];
     dst[0] = dst[0] + x;
     dst[1] = dst[1] + y;
     dst[2] = dst[2] + z;
