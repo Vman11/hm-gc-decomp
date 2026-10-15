@@ -190,6 +190,63 @@ void fn_802757D0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(u32 *)(p + 0x1C) |= 0x212;
 }
 
+void fn_802757D0(void *, s32, s32, s32);
+#pragma push
+#pragma auto_inline off
+#pragma inline off
+void fn_80275844(void *arg0) {
+    u8 *p = arg0;
+    s32 v;
+    s32 a = *(s32 *)(p + 0xC8);
+    if (a != 0) {
+        v = 0;
+        if (*(s32 *)(p + 0x74) == 1) v = *(s32 *)(p + 0x80);
+        fn_802757D0((void *)a, *(s32 *)(p + 0x78), *(s32 *)(p + 0x7C), v);
+    }
+    a = *(s32 *)(p + 0xCC);
+    if (a != 0) fn_802757D0((void *)a, *(s32 *)(p + 0x78), 0, *(s32 *)(p + 0x80));
+}
+void fn_80275D00(u32 *src, u16 *left, u16 *right, u32 count) {
+    u32 i = 0;
+    u32 n = count >> 1;
+    if (i < n) do {
+        u32 a = *src++;
+        u32 b = a >> 8;
+        *left++ = ((a >> 16) & 0xFF00) | (u8)b;
+        *right++ = (b & 0xFF00) | (u8)a;
+    } while (++i < n);
+    if (count & 1) {
+        u16 a = *(u16 *)src;
+        *(u8 *)left = a >> 8;
+        *(u8 *)right = a;
+    }
+}
+#pragma pop
+void fn_80275D6C(s16 *src, u8 *left, u8 *right, u32 count) {
+    u32 i = 0;
+    u32 n = count >> 2;
+    u32 *p = (u32 *)src;
+    if (i < n) do {
+        u32 a = p[0];
+        u32 b = p[1];
+        p += 2;
+        *(u32 *)left = (a & 0xFFFF0000) | (b >> 16);
+        *(u32 *)right = (a << 16) | (u16)b;
+        left += 4;
+        right += 4;
+    } while (++i < n);
+    if (count & 3) {
+        u32 a = *p;
+        *(u16 *)left = a >> 16;
+        *(u16 *)right = a;
+    }
+}
+
+void fn_80275F08(void *arg0) {
+    u8 *p = *(u8 **)((u8 *)arg0 + 4);
+    *(s32 *)(p + 0xC4) = 0;
+}
+
 s32 fn_8027569C(void *);
 #pragma push
 #pragma auto_inline off
@@ -407,10 +464,11 @@ void fn_80276FA0(s32 arg0, s32 arg1) {
     lbl_803580C0 = arg1;
 }
 
+#pragma optimize_for_size on
+#pragma opt_unroll_loops off
 void fn_80276FB4(s32 arg0) {
     lbl_802F3868 = arg0;
 }
-
 void fn_80276FD8(u32 count, u32 *src) {
     u32 i;
     if (count > 8) {
@@ -842,6 +900,11 @@ void fn_80284068(int a, int *p, int c, unsigned int d, int e, int f, int g) {
     }
     p[11] = a;
 }
+
+void fn_8028A7A0(void) {
+
+}
+
 #pragma pop
 void fn_8028C0C4(s32 n, s32 *ip, f32 *a);
 void fn_8028C71C(f32 *a);
