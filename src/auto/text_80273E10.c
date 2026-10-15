@@ -9,6 +9,8 @@ void fn_802756B8(void *, int, int, int);
 void fn_800C9A0C(s32, int);
 s64 OSGetTime(void);
 extern s64 lbl_802F3840;
+extern u8 lbl_802FFC60[];
+extern u8 *lbl_80300860[6];
 
 extern s32 lbl_8035B854;
 s32 fn_80273EAC(void) {
@@ -32,6 +34,20 @@ void fn_802749D4(s32 arg0) {
 
 void fn_80274E0C(void) {
 
+}
+
+#pragma push
+#pragma use_lmw_stmw on
+s32 fn_802753F0(void) {
+    s64 now = OSGetTime();
+    u32 t;
+    if (lbl_802F3840 == 0) {
+        lbl_802F3840 = now;
+    }
+    now -= lbl_802F3840;
+    t = (u32)(now >> 32) * 0x19E40;
+    now -= (u64)t * 40500;
+    return (u32)(((u64)now * 0xCF2049A1ULL) >> 47) + t;
 }
 
 u32 fn_80275578(u32 hi, u32 lo, u32 d) {
@@ -78,7 +94,7 @@ void fn_8027564C(void *arg0, int arg1) {
         fn_800C9A0C(*(s32 *)((u8 *)arg0 + 0x54), arg1);
     }
 }
-
+#pragma pop
 s32 fn_80287804();
 void fn_80287810(s32);
 f32 fn_800F051C(f32, f32);
