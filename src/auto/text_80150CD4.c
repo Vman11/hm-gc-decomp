@@ -15,3 +15,10 @@ void fn_80150F34(void *arg0, f32 farg0) {
     M2C_FIELD(arg0, f32 *, 0x1C) = (f32) (M2C_FIELD(arg0, f32 *, 0x34) * farg0);
 }
 
+void fn_80150F68(void *arg0, f32 farg0) {
+    M2C_FIELD(arg0, f32 *, 0) = (f32) (M2C_FIELD(arg0, f32 *, 0) * farg0);
+    M2C_FIELD(arg0, f32 *, 4) = (f32) (M2C_FIELD(arg0, f32 *, 0x10) * farg0);
+    M2C_FIELD(arg0, f32 *, 8) = (f32) (M2C_FIELD(arg0, f32 *, 0x20) * farg0);
+    M2C_FIELD(arg0, f32 *, 0xC) = (f32) (M2C_FIELD(arg0, f32 *, 0x30) * farg0);
+}
+
