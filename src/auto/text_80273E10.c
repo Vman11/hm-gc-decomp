@@ -91,7 +91,7 @@ void fn_80274558(u32 addr) {
 
 void fn_80274590(u32 arg0) {
     extern u32* lbl_8035B86C;
-    lbl_8035B86C[arg0 >> 12] |= 0x80000000;
+    lbl_8035B86C[(arg0 & 0x1FFFFFF) >> 12] |= 0x80000000;
 }
 
 u32 fn_802745A8(u32 arg0) {
