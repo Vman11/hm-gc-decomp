@@ -198,6 +198,28 @@ s32 __OSSetExceptionHandler(u8 exception, s32 handler) {
 s32 __OSGetExceptionHandler(u8 exception) {
     return OSExceptionTable_8035A544[exception];
 }
+
+volatile u32 __DIRegs[16] : 0xCC006000;
+u32 fn_800B3B28(void) {
+    return (__DIRegs[9] & 0x000000FF);
+}
+
+void OSRegisterVersion(const char* id) {
+    extern char lbl_8035952C[];
+    OSReport(lbl_8035952C, id);
+}
+
+void OSInitAlarm(void) {
+    extern void DecrementerExceptionHandler(void);
+    extern void* __OSGetExceptionHandler(u8);
+    extern void* __OSSetExceptionHandler(u8, void*);
+    extern struct { void* head; void* tail; } AlarmQueue_8035A560;
+    if (__OSGetExceptionHandler(8) != DecrementerExceptionHandler) {
+        AlarmQueue_8035A560.head = AlarmQueue_8035A560.tail = 0;
+        __OSSetExceptionHandler(8, DecrementerExceptionHandler);
+    }
+}
+
 #pragma peephole on
 void OSCreateAlarm(s32 *arg0) {
     arg0[0] = 0;
@@ -400,6 +422,22 @@ void fn_800BB2B8(void) {
         p = *(void**)p;
     }
 }
+
+void fn_800BB2F8(void *arg0, s32 arg1, u32 arg2) {
+    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+    *(s32 *)((u8 *)arg0 + 0x8) = arg1;
+    *(f32 *)((u8 *)arg0 + 0xC) = (f32)arg2;
+}
+
+void fn_800BB678(void *arg0, s32 arg1, s32 arg2, f32 farg0) {
+    extern f32 lbl_80363068;
+    *(s32 *)((u8 *)arg0 + 0x0) = arg1;
+    *(s32 *)((u8 *)arg0 + 0x4) = arg2;
+    *(f32 *)((u8 *)arg0 + 0x8) = farg0;
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    *(f32 *)((u8 *)arg0 + 0x10) = *(f32 *)((u8 *)arg0 + 0x14) = *(f32 *)((u8 *)arg0 + 0x18) = *(f32 *)((u8 *)arg0 + 0x1C) = lbl_80363068;
+}
+
 #pragma dont_inline reset
 
 void fn_800BBBD4(UnkStep* arg0) {
@@ -462,6 +500,13 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
         *(u16*)(arg1 + 0x1F8) = lbl_802D9DD8[idx + 1];
         arg0[4] = 0;
     }
+}
+
+s32 fn_800BCF98(void) {
+    extern s32 StopAtNextInt_8035A610;
+    extern s32 lbl_8035A630;
+    lbl_8035A630 = StopAtNextInt_8035A610 = 1;
+    return 1;
 }
 
 s32 fn_800BCFAC(void) {
@@ -711,8 +756,23 @@ void fn_800B6024(GXColor a, GXColor b, u32 c);
 extern int autoInvalidation_80359574;
 int fn_800BFBA0(int arg0) { int old = autoInvalidation_80359574; autoInvalidation_80359574 = arg0; return old; }
 
+void fn_800BFF28(void) {
+    extern M2C_UNK __DVDThreadQueue;
+    fn_800BA3B4(&__DVDThreadQueue);
+}
+
 int fn_800BFF4C(void) {
 return (int)0x80000000;
+}
+
+void __DVDClearWaitingQueue(void) {
+    extern void *WaitingQueue_80308458[4][2];
+    u32 i;
+    for (i = 0; i < 4; i++) {
+        void **q = WaitingQueue_80308458[i];
+        q[0] = q;
+        q[1] = q;
+    }
 }
 
 s32 fn_800C0300(void **node) {
@@ -779,11 +839,11 @@ void fn_800C06EC(void) {
 }
 
 unsigned int fn_800C0BD0(unsigned int arg0) {
- unsigned int old = lbl_8035A6F0;
- int enabled = OSDisableInterrupts();
- lbl_8035A6F0 = arg0;
- OSRestoreInterrupts(enabled);
- return old;
+    unsigned int old = lbl_8035A6F0;
+    int enabled = OSDisableInterrupts();
+    lbl_8035A6F0 = arg0;
+    OSRestoreInterrupts(enabled);
+    return old;
 }
 
 char *fn_800C0C14(unsigned int arg0) {
