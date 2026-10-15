@@ -1221,6 +1221,10 @@ s32 fn_800D51D8(void) {
     return lbl_8035A924;
 }
 
+void fn_800D5F10(void) {
+    *(s8 *)0xCC008000 = 0x48;
+}
+
 u16 fn_800D665C(void) {
     extern void *__peReg;
     return M2C_FIELD(__peReg, u16 *, 0xE);
