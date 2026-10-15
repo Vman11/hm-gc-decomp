@@ -7,3 +7,7 @@ s32 fn_801094BC(void) {
     return 0;
 }
 
+s32 fn_801094C4(void) {
+    return 0;
+}
+
