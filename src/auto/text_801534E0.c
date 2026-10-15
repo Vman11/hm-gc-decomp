@@ -21,33 +21,24 @@ void fn_80153904(f32* m) {
     m[15] = lbl_80364564;
 }
 
-void fn_80153A0C(f32* dst, f32* src) {
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
-    dst[3] = src[3];
-    dst[4] = src[4];
-    dst[5] = src[5];
-    dst[6] = src[6];
-    dst[7] = src[7];
-    dst[8] = src[8];
-    dst[9] = src[9];
-    dst[10] = src[10];
-    dst[11] = src[11];
-    dst[12] = src[12];
-    dst[13] = src[13];
-    dst[14] = src[14];
-    dst[15] = src[15];
+void fn_80153A0C(f32 (*dst)[4], f32 (*src)[4]) {
+    s32 i, j;
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            dst[i][j] = src[i][j];
+        }
+    }
 }
 
 s32 fn_80153AC0(void) {
     return 0xFFFF;
 }
 
-u16 fn_80153AD8(u8* arg0, u32 arg1, u32 arg2) {
+u32 fn_80153AD8(u8* arg0, u32 arg1, u32 arg2) {
     u32 i;
-    u16 max = 0;
-    for (i = 0; i < *(u32*)(arg0 + 0x78); i++) {
+    u32 max = 0;
+    u32 n = *(u32*)(arg0 + 0x78);
+    for (i = 0; i < n; i++) {
         if (arg1 == *(u32*)(arg0 + 0x7C) && arg2 == *(u32*)(arg0 + 0x80)) {
             if (*(u16*)(arg0 + 0x86) > max) {
                 max = *(u16*)(arg0 + 0x86);
