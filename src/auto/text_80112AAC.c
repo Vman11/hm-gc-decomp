@@ -9,3 +9,15 @@ void fn_80112AAC(s32 *arg0) {
     arg0[2] = 0;
     arg0[0] = 0;
 }
+
+s32 fn_80112AD4(u8 *arg0, u32 arg1) {
+    u32 i;
+    u32 count = *(u32 *)(arg0 + 0x20);
+    for (i = 0; i < count; i++) {
+        if (arg1 == (*(u32 **)(arg0 + 0x24))[i]) {
+            return i;
+        }
+    }
+    return -1;
+}
+
