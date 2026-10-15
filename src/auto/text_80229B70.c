@@ -2,3 +2,7 @@
 #include "common.h"
 
 extern s32 lbl_8035B30C;
+
+void fn_80229B70(s32 arg0) {
+    lbl_8035B30C = arg0;
+}
