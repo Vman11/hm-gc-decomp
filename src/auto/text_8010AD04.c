@@ -18,3 +18,7 @@ void fn_8010AD24(void *lt_obj, u32 *color) {
     *(u32 *)((u8 *)lt_obj + 0xC) = *color;
 }
 
+s32 fn_8010AD30(u8 *arg0, s32 arg1) {
+    return (*(s32 **)(arg0 + 0x8))[arg1];
+}
+
