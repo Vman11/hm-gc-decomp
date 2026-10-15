@@ -12,3 +12,4 @@ u8 fn_80114A0C(void *arg0, void *arg1, s32 arg2) {
     }
     return lbl_802E07C8[(u8)value];
 }
+extern u8 lbl_802E07C8[];
