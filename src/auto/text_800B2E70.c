@@ -673,6 +673,10 @@ void fn_800B6024(GXColor a, GXColor b, u32 c);
 extern int autoInvalidation_80359574;
 int fn_800BFBA0(int arg0) { int old = autoInvalidation_80359574; autoInvalidation_80359574 = arg0; return old; }
 
+int fn_800BFF4C(void) {
+return (int)0x80000000;
+}
+
 s32 fn_800C0300(void **node) {
  int enabled = OSDisableInterrupts();
  void **prev = node[1];
