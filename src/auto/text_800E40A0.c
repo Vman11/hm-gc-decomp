@@ -13,6 +13,11 @@ void __kill_critical_regions(void) {
 
 }
 
+extern s32 lbl_803596A0;
+void fn_800EB1AC(s32 arg0) {
+    lbl_803596A0 = arg0;
+}
+
 extern unsigned char lbl_802E06C8[];
 extern double lbl_803636C0;
 extern s32 lbl_8035A998;
