@@ -10,3 +10,9 @@ s32 fn_8010C3BC(s32 *arg0, s32 arg1) {
     *arg0 = arg1;
     return 0;
 }
+
+s32 fn_8010C3C8(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+    return 0;
+}
+
