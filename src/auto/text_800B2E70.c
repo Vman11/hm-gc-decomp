@@ -506,6 +506,10 @@ s32 fn_800DF2F0(void) {
     return 0;
 }
 
+s32 fn_800DF2F8(void) {
+    return 0;
+}
+
 u32 fn_800E1150(u32 addr) {
     if (gTRKCPUState.unk238 & 3) {
         return addr;
