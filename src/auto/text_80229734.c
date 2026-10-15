@@ -1,2 +1,6 @@
 /* Functions from 0x80229734 to 0x80229744, found by decomp-toolkit. */
 #include "common.h"
+
+s32 fn_80229734(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 8);
+}
