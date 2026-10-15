@@ -5,3 +5,8 @@ extern u8 lbl_802AFC48[];
 extern u8 lbl_802AFC68[];
 extern u8 lbl_802AFEC0[];
 extern f32 lbl_8035C020;
+
+extern u8 lbl_802AFC48[];
+extern u8 lbl_802AFC68[];
+extern u8 lbl_802AFEC0[];
+extern f32 lbl_8035C020;
