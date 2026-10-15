@@ -36,8 +36,8 @@ static inline BOOL fn_801637C8_subHasFlag(Unk801637C8Sub *sub) {
 }
 
 static inline BOOL fn_801637C8_hasFlag(Unk801637C8Obj *obj) {
-    u32 i;
     u32 n = M2C_FIELD(obj, u32 *, 0x128);
+    u32 i;
     if (n == 0) {
         return FALSE;
     }
