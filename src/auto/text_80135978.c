@@ -45,6 +45,10 @@ s32 fn_80135A0C(void) {
     return 0;
 }
 
+s32 fn_80135A14(void) {
+    return 0;
+}
+
 void fn_80135A3C(void) {
 
 }
