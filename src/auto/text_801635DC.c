@@ -4,3 +4,8 @@
 void fn_801635DC(void) {
 
 }
+
+void fn_801635E0(void) {
+
+}
+
