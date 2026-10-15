@@ -10,3 +10,8 @@ void fn_8018F358(s32 *arg0) {
 void fn_8018F368(s32 arg0) {
     lbl_8035AE50 = arg0;
 }
+
+void fn_8018F370(s32 *arg0) {
+    arg0[1]--;
+}
+
