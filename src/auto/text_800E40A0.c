@@ -30,6 +30,22 @@ void fn_800EB1AC(s32 arg0) {
     lbl_803596A0 = arg0;
 }
 
+double fn_800F03E4(double x) {
+    double y[2];
+    int n, ix;
+
+    ix = *(int*)&x;
+    ix &= 0x7fffffff;
+    if (ix <= 0x3fe921fb) {
+        return fn_800EF80C(x, lbl_803636C0, 1);
+    } else if (ix >= 0x7ff00000) {
+        return x - x;
+    } else {
+        n = fn_800EE484(x, y);
+        return fn_800EF80C(y[0], y[1], 1 - ((n & 1) << 1));
+    }
+}
+
 extern unsigned char lbl_802E06C8[];
 extern double lbl_803636C0;
 extern s32 lbl_8035A998;
