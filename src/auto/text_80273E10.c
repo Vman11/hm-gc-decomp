@@ -55,6 +55,11 @@ void fn_802740E4(void) {
     fn_8027438C();
 }
 
+u8 fn_802749A0(s32 arg0) {
+    extern u8* lbl_8035B880;
+    return lbl_8035B880[arg0];
+}
+
 extern u8* lbl_8035B880;
 void fn_80274BB4(void);
 void fn_80274A78(void);
@@ -570,7 +575,7 @@ void fn_80276FA0(s32 arg0, s32 arg1) {
 
 #pragma optimize_for_size on
 #pragma opt_unroll_loops off
-void fn_80276FB4(s32 arg0) {
+void fn_80276FB4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     lbl_802F3868[0] = arg0;
 }
 void fn_80276FD8(u32 count, u32 *src) {
@@ -610,6 +615,30 @@ void fn_80278F28(void *arg0, s32 arg1) {
         s32 value = *(s32 *)((u8 *)arg0 + 0x2B4) + (arg1 - old);
         *(s32 *)((u8 *)arg0 + 0x27C) = 0;
         *(s32 *)((u8 *)arg0 + 0x2B4) = value;
+    }
+}
+
+void fn_8027964C(u8 *arg0, u32 arg1) {
+    s32 start;
+    u32 delta;
+    u32 max;
+    u32 prev;
+
+    start = *(s32 *)(arg0 + 0x28C);
+    if (start != 0) {
+        delta = arg1 - start;
+        max = *(u32 *)(arg0 + 0x290);
+        *(u32 *)(arg0 + 0x28C) = 0;
+        if (delta > max) {
+            prev = *(u32 *)(arg0 + 0x294);
+            *(u32 *)(arg0 + 0x298) = max;
+            *(u32 *)(arg0 + 0x294) = *(u32 *)(arg0 + 0xC);
+            *(u32 *)(arg0 + 0x29C) = prev;
+            *(u32 *)(arg0 + 0x290) = delta;
+        } else if (delta > *(u32 *)(arg0 + 0x298)) {
+            *(u32 *)(arg0 + 0x298) = delta;
+            *(u32 *)(arg0 + 0x29C) = *(u32 *)(arg0 + 0xC);
+        }
     }
 }
 
