@@ -26,3 +26,10 @@ s32 fn_802128E0(void *arg0, u32 arg1) {
     return M2C_FIELD(arg0, s32 *, 4) + (arg1 * 0xC);
 }
 
+s32 fn_80212968(void *arg0, u32 arg1) {
+    if ((arg1 >= (u16) M2C_FIELD(arg0, u16 *, 0xC)) || !(M2C_FIELD(arg0, u16 *, 0x12) & 2)) {
+        return 0;
+    }
+    return M2C_FIELD(arg0, s32 *, 0) + (arg1 * 0x14);
+}
+
