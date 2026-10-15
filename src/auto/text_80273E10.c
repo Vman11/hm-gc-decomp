@@ -55,6 +55,17 @@ void fn_802740E4(void) {
     fn_8027438C();
 }
 
+extern u8* lbl_8035B880;
+void fn_80274BB4(void);
+void fn_80274A78(void);
+void fn_802749AC(s32 arg0, s32 arg1) {
+    if (arg1 != 0) {
+        lbl_8035B880[arg0] = 1;
+    } else {
+        lbl_8035B880[arg0] = 0;
+    }
+}
+
 extern u32* lbl_8035B87C;
 void* OSGetArenaLo(void);
 void OSSetArenaLo(void*);
