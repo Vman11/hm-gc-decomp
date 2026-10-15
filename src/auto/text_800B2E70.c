@@ -809,6 +809,10 @@ s32 fn_800C4940(void) {
     return ((u32) *(u32 *)0xCC006C00 >> 1U) & 1;
 }
 
+u8 fn_800C496C(void) {
+    return (u8) *(s32 *)0xCC006C04;
+}
+
 void fn_800C6C2C(void) {
 
 }
