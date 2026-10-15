@@ -2,6 +2,7 @@
 #include "common.h"
 
 extern unsigned char lbl_80330828[];
+extern unsigned char lbl_80330828[];
 unsigned char *fn_801CBE50(void) {
     return lbl_80330828;
 }
