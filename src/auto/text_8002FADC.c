@@ -11,6 +11,11 @@ void fn_8002FAE0(void) {
 void fn_8002FAE4(void) {
 }
 
+extern s32 lbl_80359F28;
+void fn_8002FAE8(s32 arg0) {
+    lbl_80359F28 = arg0;
+}
+
 void fn_8002FAFC(void) {
 
 }
