@@ -4,3 +4,8 @@
 void* fn_801FF8A4(void* arg0, s32 arg1) {
     return *(u8**)((u8*)arg0 + 0x28) + arg1 * 0xB8;
 }
+
+void* fn_801FF8B4(void* arg0, s32 arg1) {
+    return *(u8**)((u8*)arg0 + 0x24) + arg1 * 0x70;
+}
+
