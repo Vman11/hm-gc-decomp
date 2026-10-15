@@ -63,6 +63,22 @@ void fn_802740E4(void) {
     fn_8027438C();
 }
 
+u32 fn_802744F8(u32 addr) {
+    extern u32* lbl_8035B86C;
+    void fn_80274558(u32);
+    u32 phys = lbl_8035B86C[addr >> 12] & 0x7FFFFFFF;
+    if (phys != 0) {
+        return phys;
+    }
+    fn_80274558(addr);
+    return 0;
+}
+
+BOOL fn_80274538(u32 addr) {
+    extern u32* lbl_8035B86C;
+    return (lbl_8035B86C[addr >> 12] & 0x7FFFFFFF) != 0;
+}
+
 void fn_80274558(u32 addr) {
     extern char lbl_802F37D8[];
     int fn_800E8F6C(char *, const char *, ...);
@@ -80,14 +96,15 @@ void fn_80274590(u32 arg0) {
 
 u32 fn_802745A8(u32 arg0) {
     extern u32* lbl_8035B86C;
-    return lbl_8035B86C[arg0 >> 12] >> 31;
+    return lbl_8035B86C[(arg0 & 0x1FFFFFF) >> 12] >> 31;
 }
 
 void fn_802745BC(void) {
     extern u32* lbl_8035B86C;
     u32 i;
-    lbl_8035B86C = OSGetArenaLo();
-    OSSetArenaLo((u8*)lbl_8035B86C + 0x8000);
+    u8* lo = OSGetArenaLo();
+    lbl_8035B86C = (u32*)lo;
+    OSSetArenaLo(lo + 0x8000);
     for (i = 0; i < 0x8000; i += 4) {
         *(u32*)((u8*)lbl_8035B86C + i) = 0;
     }
@@ -105,7 +122,7 @@ void fn_80274664(void) {
 
 void fn_802747D0(u32 arg0, u32 arg1, s32 arg2) {
     u32 *p = (u32 *)fn_80274D04(arg0);
-    p[0] = ((arg0 >> 22) & 0x3F) | 0x80000000;
+    p[0] = 0x80000000 | ((arg0 >> 22) & 0x3F);
     p[1] = arg1 & 0x0FFFF000;
     fn_800B48F4(p, 8);
     fn_80274990(arg2, arg0);
@@ -1472,6 +1489,15 @@ void fn_8028A7B8(void) {
 }
 
 void fn_8028A7BC(void) {
+}
+
+void fn_8028B428(s32 n, u32 *dst, u32 *src) {
+    while (n--) {
+        u32 v = *src++;
+        dst[0] = (v & 0xFF000000) + ((v >> 8) & 0xFF00) + 0x800080;
+        dst[1] = ((v << 16) & 0xFF000000) + ((v & 0xFF) << 8) + 0x800080;
+        dst += 2;
+    }
 }
 
 void fn_8028B480(s32 n, u32 *dst, u32 *src) {
