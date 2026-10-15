@@ -65,6 +65,11 @@ void fn_80274970(u32 arg0) {
     __tlbie(arg0 & 0x3F000);
 }
 
+u32 fn_80274980(s32 arg0) {
+    extern u32* lbl_8035B87C;
+    return lbl_8035B87C[arg0];
+}
+
 void fn_80274990(s32 arg0, u32 arg1) {
     extern u32* lbl_8035B87C;
     lbl_8035B87C[arg0] = arg1;
