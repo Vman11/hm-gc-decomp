@@ -1,9 +1,6 @@
 /* Functions from 0x80135978 to 0x80135A78, found by decomp-toolkit. */
 #include "common.h"
 
-typedef struct {
-    f32 x, y, z, w;
-} Unk80135994;
 
 typedef struct {
     f32 unk0;
@@ -38,26 +35,18 @@ s32 fn_8013598C(void) {
 
 void fn_80135994(f32 *arg0, s32 arg1, f32 *arg2) {
     f32 *dest = arg0 + arg1 * 4;
-    f32 a = arg2[0];
-    f32 b = arg2[1];
-    dest[0x1128 / 4] = a;
-    a = arg2[2];
-    dest[0x112C / 4] = b;
-    b = arg2[3];
-    dest[0x1130 / 4] = a;
-    dest[0x1134 / 4] = b;
+    dest[0x1128 / 4] = arg2[0];
+    dest[0x112C / 4] = arg2[1];
+    dest[0x1130 / 4] = arg2[2];
+    dest[0x1134 / 4] = arg2[3];
 }
 
-void fn_801359C0(f32 *arg0, s32 arg1, f32 *arg2) {
-    f32 *dest = arg0 + arg1 * 4;
-    f32 a = arg2[0];
-    f32 b = arg2[1];
-    dest[0x128 / 4] = a;
-    a = arg2[2];
-    dest[0x12C / 4] = b;
-    b = arg2[3];
-    dest[0x130 / 4] = a;
-    dest[0x134 / 4] = b;
+void fn_801359C0(Unk801359C0 *arg0, s32 arg1, Unk801359C0 *arg2) {
+    Unk801359C0 *dest = arg0 + arg1;
+    *(f32 *)((u8 *)dest + 0x128) = arg2->unk0;
+    *(f32 *)((u8 *)dest + 0x12C) = arg2->unk4;
+    *(f32 *)((u8 *)dest + 0x130) = arg2->unk8;
+    *(f32 *)((u8 *)dest + 0x134) = arg2->unkC;
 }
 
 s32 fn_801359EC(void) {
