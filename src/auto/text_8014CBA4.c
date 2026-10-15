@@ -16,3 +16,15 @@ typedef struct {
 
 extern f32 lbl_803644E0;
 extern f32 lbl_803644E4;
+
+void fn_8014CBA4(QuadXY *dst, QuadXY *src) {
+    dst->q = src->q;
+    dst->x = src->x;
+    dst->y = src->y;
+}
+
+void fn_8014CBD8(QuadXY *p) {
+    p->x = lbl_803644E0;
+    p->y = lbl_803644E4;
+}
+
