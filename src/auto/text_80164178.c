@@ -5,6 +5,10 @@ void fn_80164178(void) {
 
 }
 
+s32 fn_8016417C(void *arg0, s32 arg1) {
+    return ((s32 *)(M2C_FIELD(arg0, u8 **, 0x1934) + 0x3ABC))[arg1];
+}
+
 void fn_80164190(void *arg0, s32 arg1, s32 arg2) {
     ((s32 *)(M2C_FIELD(arg0, u8 **, 0x1934) + 0x3ABC))[arg1] = arg2;
 }
