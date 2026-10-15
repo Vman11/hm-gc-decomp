@@ -1,5 +1,6 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
+s32 fn_800DF4D0(void*);
 extern char* lbl_803595E8;
 void OSRegisterVersion(const char*);
 void fn_800C9744(void);
