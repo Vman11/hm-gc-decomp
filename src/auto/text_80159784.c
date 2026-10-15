@@ -4,3 +4,6 @@
 s32 fn_80159784(void) { return 0x3000; }
 
 s32 fn_8015978C(void) { return 0x1000; }
+
+s32 fn_80159794(void) { return 0x1000; }
+
