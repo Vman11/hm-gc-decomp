@@ -10,6 +10,10 @@ void fn_801033E8(void) {
 
 }
 
+s32 fn_801033EC(void) {
+    return 0;
+}
+
 void fn_801033F4(void) {
 
 }
