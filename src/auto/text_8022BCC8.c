@@ -4,3 +4,8 @@
 void fn_8022BCC8(void) {
 
 }
+
+void fn_8022BCCC(void) {
+
+}
+
