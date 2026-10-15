@@ -14,6 +14,11 @@ void fn_8009F130(void) {
 
 }
 
+void fn_8009F134(Unk8009F130 *arg0, u32 arg1) {
+    arg0->unk148 = arg0->unk144;
+    arg0->unk144 = (arg0->unk144 & 0xFFFF) | (arg1 << 16);
+}
+
 void fn_8009F150(Unk8009F130 *arg0, s32 arg1) {
     arg0->unk7C = arg1;
 }
