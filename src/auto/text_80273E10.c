@@ -40,6 +40,18 @@ void fn_80274E0C(void) {
 
 }
 
+void OSClearContext(OSContext *);
+void OSSetCurrentContext(OSContext *);
+void OSLoadContext(OSContext *);
+void fn_802750D0(OSContext *ctx, s32 arg) {
+    OSContext tmp;
+    OSClearContext(&tmp);
+    OSSetCurrentContext(&tmp);
+    ((void (*)(s32))lbl_8035B884)(arg);
+    OSSetCurrentContext(ctx);
+    OSLoadContext(ctx);
+}
+
 #pragma push
 #pragma use_lmw_stmw on
 s32 fn_802753F0(void) {
@@ -299,6 +311,8 @@ void fn_8027E788(s32 arg0, s32 n) {
     }
 }
 
+#pragma push
+#pragma opt_unroll_loops off
 void fn_8027F794(s32 arg0, s32 n) {
     u16 v;
     while (n-- != 0) {
@@ -308,7 +322,6 @@ void fn_8027F794(s32 arg0, s32 n) {
         lbl_80300860[0] += 2;
     }
 }
-
 s32 fn_8027F7FC(s32 n, s32 arg1) {
     u16 v;
     s32 i = n;
