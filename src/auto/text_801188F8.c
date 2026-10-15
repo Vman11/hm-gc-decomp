@@ -10,6 +10,10 @@ void fn_80118944(void *arg0, f32 farg0) {
     M2C_FIELD(arg0, f32 *, 0x20) = farg0;
 }
 
+void fn_8011894C(void *arg0, f32 farg0) {
+    M2C_FIELD(arg0, f32 *, 0x1C) = farg0;
+}
+
 void fn_8011895C(void *arg0, f32 arg1) {
     *(f32 *)((u8 *)arg0 + 0x14) = arg1;
 }
