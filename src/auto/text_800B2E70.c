@@ -83,6 +83,11 @@ s32 PPCMfhid2(void) { return __mfspr(920); }
 
 void PPCMthid2(u32 value) { __mtspr(920, value); }
 
+void OSReport(const char* msg, ...);
+void OSDumpContext(void* context);
+void DBPrintf(char* str, ...) {
+}
+
 void OSCreateAlarm(s32 *arg0) {
     arg0[0] = 0;
     arg0[1] = 0;
