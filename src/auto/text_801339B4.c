@@ -9,3 +9,7 @@ void fn_801339CC(void) {
 
 }
 
+s32 fn_801339D0(void) {
+    return 0;
+}
+
