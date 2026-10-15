@@ -2,3 +2,5 @@
 #include "common.h"
 
 extern void *lbl_8035B624;
+
+extern void *lbl_8035B624;
