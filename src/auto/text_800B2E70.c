@@ -1048,6 +1048,10 @@ s32 fn_800CA098(void) {
     return lbl_8035A8C8;
 }
 
+s32 fn_800CC114(void) {
+    return ((u16) *(u16 *)0xCC005000 >> 0xFU) & 1;
+}
+
 extern s32 lbl_8035A8D0;
 s32 fn_800CC224(void) {
     return lbl_8035A8D0;
