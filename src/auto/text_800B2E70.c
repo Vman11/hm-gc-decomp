@@ -33,3 +33,7 @@ void fn_800CCC78(void) {
 
 }
 
+void fn_800D8F00(void) {
+
+}
+
