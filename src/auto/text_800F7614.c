@@ -38,3 +38,32 @@ void fn_800F7614(UnkHeap800F7520* arg0) {
     arg0->unk4 = NULL;
     arg0->unk24 = 0;
 }
+
+s32 fn_800F7640(UnkHeap800F7520* arg0) {
+    s32 max = 0;
+    s32* node;
+    for (node = (s32*)arg0->unk8; node != NULL; node = (s32*)node[1]) {
+        if (node[0] > max) max = node[0];
+    }
+    return max & ~63;
+}
+
+void fn_800F7670(UnkManager800F7670* arg0, UnkHeap800F7520* arg1, UnkHeap800F7520* arg2) {
+    UnkHeap800F7520* p;
+    u32 value;
+    u32 i;
+    do {
+        ++arg0->unk28C;
+        for (p = arg0->entries; p < arg0->entries + 16; ++p) {
+            if (arg0->unk28C == (u32)p->unk24) break;
+        }
+    } while (p < arg0->entries + 16);
+    value = arg1->unk24;
+    for (i = 0; i < 2; ++i) {
+        for (p = arg0->entries; p < arg0->entries + 16; ++p) {
+            if (value == (u32)p->unk24) p->unk24 = arg0->unk28C;
+        }
+        value = arg2->unk24;
+    }
+}
+
