@@ -5,6 +5,10 @@ void fn_80216BDC(void) {
 
 }
 
+void fn_80216BE0(void) {
+
+}
+
 void fn_80216BE4(void) {
 
 }
