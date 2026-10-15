@@ -9,6 +9,10 @@ s32 fn_801714C4(void) {
     return 0;
 }
 
+s32 fn_801714DC(void) {
+    return 0;
+}
+
 void fn_801714F4(void) {
 
 }
