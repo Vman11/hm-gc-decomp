@@ -6,6 +6,22 @@ void fn_801951BC(s32 arg0) {
     lbl_8035AE68 = arg0;
 }
 
+void fn_801951C4(void *arg0, s32 arg1) {
+    struct List { u8 pad[0x14]; void *heads[1]; };
+    void *prev = M2C_FIELD(arg0, void **, 0x18);
+    void *next;
+
+    if (prev != NULL) {
+        M2C_FIELD(prev, void **, 0x1C) = M2C_FIELD(arg0, void **, 0x1C);
+    }
+    next = M2C_FIELD(arg0, void **, 0x1C);
+    if (next != NULL) {
+        M2C_FIELD(next, void **, 0x18) = M2C_FIELD(arg0, void **, 0x18);
+    } else {
+        M2C_FIELD(arg0, struct List **, 8)->heads[arg1] = M2C_FIELD(arg0, void **, 0x18);
+    }
+}
+
 void fn_80195208(void *arg0, void *arg1) {
     void *temp_r0;
 
