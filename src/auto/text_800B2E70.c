@@ -194,7 +194,11 @@ s32 __OSSetExceptionHandler(u8 exception, s32 handler) {
     return oldHandler;
 }
 
-#pragma optimization_level 4
+#pragma peephole off
+s32 __OSGetExceptionHandler(u8 exception) {
+    return OSExceptionTable_8035A544[exception];
+}
+#pragma peephole on
 void OSCreateAlarm(s32 *arg0) {
     arg0[0] = 0;
     arg0[1] = 0;
@@ -846,7 +850,7 @@ void fn_800C8058(void);
 void fn_800C8464(s32);
 void fn_800C6EEC(s32);
 void fn_800C6FF8(void) {
-    s32 i;
+    u32 i;
     lbl_8035A7E8 = 0;
     for (i = 0; i < 32; i++) {
         lbl_80308700[i] = 0;
@@ -876,9 +880,9 @@ void* fn_800C7190(void) {
 }
 
 void fn_800C71AC(void* arg0) {
-    s32 idx = *(s32*)((u8*)arg0 + 0xC);
-    void** head = (void**)&lbl_80308680[idx];
-    void** tail = (void**)&lbl_80308700[idx];
+    s32 offs = *(s32*)((u8*)arg0 + 0xC) * 4;
+    void** head = (void**)((u8*)lbl_80308680 + offs);
+    void** tail = (void**)((u8*)lbl_80308700 + offs);
 
     if (*head == *tail) {
         *tail = NULL;
