@@ -1318,6 +1318,11 @@ void fn_800DAA70(void) {
     M2C_FIELD(__cpReg, s16 *, 4) = 4;
 }
 
+void TRKDestructEvent(void *arg0) {
+    M2C_UNK fn_800DBB10(s32);
+    fn_800DBB10(M2C_FIELD(arg0, s32 *, 8));
+}
+
 void fn_800DAB9C(void *arg0, s8 arg1) {
     M2C_FIELD(arg0, s8 *, 0) = arg1;
     M2C_FIELD(arg0, s32 *, 4) = 0;
