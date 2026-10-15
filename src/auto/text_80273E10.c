@@ -379,9 +379,6 @@ s32 fn_802762FC(u8 *arg0, u32 arg1) {
 
 void fn_80275D6C(s16 *, u8 *, u8 *, u32);
 #pragma push
-#pragma auto_inline off
-#pragma inline off
-#pragma push
 #pragma optimize_for_size on
 #pragma use_lmw_stmw on
 s32 fn_802763BC(u8 *arg0, u32 arg1) {
@@ -402,7 +399,6 @@ s32 fn_802763BC(u8 *arg0, u32 arg1) {
     fn_80275FC0(arg0);
     return 1;
 }
-#pragma pop
 #pragma pop
 s32 fn_802766C8(u8 *arg0, s32 arg1) {
     if (arg1 != 0) {
@@ -560,11 +556,9 @@ u8 *fn_8027A710(void) {
     return lbl_802F3898;
 }
 
-s32 DVDGetDriveStatus(void);
-void fn_800BFE7C(void *);
-void fn_8027AFC0(void *);
 u32 fn_8027B4CC(void *arg0, u32 arg1) {
-    return (arg1 + 0xFFF) & ~0xFFF;
+    arg1 += 0xFFF;
+    return arg1 & ~0xFFF;
 }
 
 void fn_8027B168(void *);
@@ -637,14 +631,18 @@ void fn_8027B8B4(void *arg0) {
 
 void fn_8027D938(s32 unused,s32 count) {
 extern u32 lbl_80300460[];
-while(count-- != 0) {
-u32 v=lbl_80300460[*lbl_80300860[2]++];
+s32 n=count-1;
+if(count != 0) do {
+u8 index=*lbl_80300860[2];
+u32 v;
+lbl_80300860[2]++;
+v=lbl_80300460[index];
 ((u32 *)lbl_80300860[0])[0]=v;
 ((u32 *)lbl_80300860[0])[1]=v;
 *(u32 *)(lbl_80300860[0]+(s32)lbl_80300860[17])=v;
-*(u32 *)(lbl_80300860[0]+(s32)lbl_80300860[17]+4)=v;
+((u32 *)(lbl_80300860[0]+(s32)lbl_80300860[17]))[1]=v;
 lbl_80300860[0]+=8;
-}
+} while(n-- != 0);
 }
 
 s32 fn_8027D9B4(s32 count,s32 offset) {
@@ -872,6 +870,103 @@ lbl_80300860[1]+=2;
 return base+count;
 }
 
+void fn_80281E08(s32 arg0, s32 count) {
+    count -= 2;
+    if (count >= 0) do {
+        u32 a, b, v, w;
+        count -= 2;
+        a = lbl_80300860[2][0];
+        b = lbl_80300860[2][1];
+        v = a | ((a << 16) | 0x80000000 | 0x8000);
+        w = b | ((b << 16) | 0x80000000 | 0x8000);
+        ((u32 *)lbl_80300860[0])[0] = v;
+        ((u32 *)lbl_80300860[0])[1] = w;
+        *(u32 *)(lbl_80300860[0] + (u32)lbl_80300860[17]) = v;
+        *(u32 *)(lbl_80300860[0] + (u32)lbl_80300860[17] + 4) = w;
+        lbl_80300860[2] += 2;
+        lbl_80300860[0] += 8;
+    } while (count >= 0);
+}
+
+void fn_80281F90(s32 arg0, s32 count) {
+    count -= 2;
+    if (count >= 0) do {
+        u32 a, b;
+        count -= 2;
+        a = lbl_80300860[2][0];
+        *(u32 *)lbl_80300860[0] = a | ((a << 16) | 0x80000000 | 0x8000);
+        b = lbl_80300860[2][1];
+        lbl_80300860[2] += 2;
+        ((u32 *)lbl_80300860[0])[1] = b | ((b << 16) | 0x80000000 | 0x8000);
+        lbl_80300860[0] += 8;
+    } while (count >= 0);
+}
+
+void fn_802820C4(s32 arg0, s32 count) {
+    count -= 2;
+    if (count >= 0) do {
+        u32 a, b, v;
+        count -= 2;
+        a = lbl_80300860[2][0];
+        b = lbl_80300860[2][1] << 16;
+        lbl_80300860[2] += 2;
+        v = a | (b | 0x80000000 | 0x8000);
+        *(u32 *)lbl_80300860[0] = v;
+        *(u32 *)(lbl_80300860[0] + (u32)lbl_80300860[17]) = v;
+        lbl_80300860[0] += 4;
+    } while (count >= 0);
+}
+
+s32 fn_80282124(s32 count, s32 base) {
+    s32 n = count;
+    do {
+        u32 v;
+        u8 *s = lbl_80300860[2];
+        v = s[0] | ((s[1] << 16) | 0x80008000);
+        lbl_80300860[2] = s + 2;
+        *(u32 *)lbl_80300860[0] = v;
+        *(u32 *)(lbl_80300860[0] + (u32)lbl_80300860[17]) = v;
+        s = lbl_80300860[3];
+        v = s[0] | ((s[1] << 16) | 0x80008000);
+        lbl_80300860[3] = s + 2;
+        *(u32 *)lbl_80300860[1] = v;
+        *(u32 *)(lbl_80300860[1] + (u32)lbl_80300860[17]) = v;
+        lbl_80300860[0] += 4;
+        lbl_80300860[1] += 4;
+    } while ((n -= 2) > 0);
+    return base + count;
+}
+
+void fn_802821C8(s32 unused, s32 count) {
+    while ((count -= 2) >= 0) {
+        u8 *s = lbl_80300860[2];
+        u32 v, w;
+        v = s[0] | (*lbl_80300860[4] << 8) | (s[0] << 16) | (*lbl_80300860[5] << 24);
+        lbl_80300860[4]++;
+        lbl_80300860[5]++;
+        ((u32 *)lbl_80300860[0])[0] = v;
+        w = (v & 0xFF00FF00) | s[1] | (s[1] << 16);
+        ((u32 *)lbl_80300860[0])[1] = w;
+        *(u32 *)(lbl_80300860[0] + (u32)lbl_80300860[17]) = v;
+        *(u32 *)(lbl_80300860[0] + (u32)lbl_80300860[17] + 4) = w;
+        lbl_80300860[2] += 2;
+        lbl_80300860[0] += 8;
+    }
+}
+
+void fn_802823C4(s32 unused, s32 count) {
+    while ((count -= 2) >= 0) {
+        u8 *s = lbl_80300860[2];
+        u32 v = s[0] | (*lbl_80300860[4] << 8) | (s[0] << 16) | (*lbl_80300860[5] << 24);
+        lbl_80300860[5]++;
+        lbl_80300860[4]++;
+        ((u32 *)lbl_80300860[0])[0] = v;
+        ((u32 *)lbl_80300860[0])[1] = (v & 0xFF00FF00) | lbl_80300860[2][1] | (lbl_80300860[2][1] << 16);
+        lbl_80300860[2] += 2;
+        lbl_80300860[0] += 8;
+    }
+}
+
 void fn_8028256C(s32 arg0, register s32 n) {
  register u8 **state = lbl_80300860;
  n -= 2;
@@ -999,15 +1094,14 @@ void fn_80282C94(s16 *dst, f32 *src, s32 count, f32 scale) {
  }
 }
 
+#pragma push
+#pragma optimize_for_size on
 void fn_80283D04(void *arg0) {
     while (fn_80283C94(arg0) == 0) {
         fn_800B9CD8();
     }
 }
-
-#pragma push
-#pragma optimize_for_size on
-#pragma use_lmw_stmw on
+#pragma pop
 void fn_800B9CD8(void);
 s32 fn_80283DFC(s32, void *);
 void fn_80283E90(s32 a, void *b) {
@@ -1104,9 +1198,14 @@ void fn_8028F69C(f32 *a);
 void fn_8028F7A4(f32 *a);
 #pragma scheduling on
 #pragma optimize_for_size off
-void fn_8028BDF4(s32 n, f32 *a, s32 *ip, s32 nw, f32 *w) {
+void fn_8028BDF4(n, a, ip, nw, w)
+s32 *ip;
+s32 n;
+f32 *a;
+f32 *w;
+s32 nw;
+{
     s32 m;
-
     if (n > 32) {
         m = n >> 2;
         fn_8028CA0C(n, a, &w[nw - m]);
