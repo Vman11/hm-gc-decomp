@@ -38,28 +38,39 @@ void fn_800FC3E8(s32* arg0) {
     arg0[2] = 0;
 }
 
-void fn_800FC408(s32* arg0, f32* arg1, f32* arg2) {
-    f32* m = (f32*)arg0;
-    m[1] = arg1[0];
-    m[2] = arg1[1];
-    m[3] = arg1[2];
-    m[4] = arg2[0];
-    m[5] = arg2[1];
-    m[6] = arg2[2];
-    m[15] = m[1];
-    m[16] = m[2];
-    m[17] = m[3];
-    m[18] = m[4];
-    m[19] = m[5];
-    m[20] = m[6];
-    m[9] = m[1];
-    m[10] = m[2];
-    m[11] = m[3];
-    m[12] = m[4];
-    m[13] = m[5];
-    m[14] = m[6];
-    arg0[0] &= ~8;
-    arg0[0] |= 5;
+void fn_800FC408(UnkBox* box, UnkVec3* a, UnkVec3* b) {
+    f32 bz;
+    f32 by;
+    f32 bx;
+    f32 az;
+    f32 ay;
+    f32 ax;
+    ax = a->x;
+    ay = a->y;
+    box->unk4.x = ax;
+    az = a->z;
+    box->unk4.y = ay;
+    bx = b->x;
+    box->unk4.z = az;
+    by = b->y;
+    box->unk10.x = bx;
+    bz = b->z;
+    box->unk10.y = by;
+    box->unk10.z = bz;
+    box->unk3C.x = ax;
+    box->unk3C.y = ay;
+    box->unk3C.z = az;
+    box->unk48.x = bx;
+    box->unk48.y = by;
+    box->unk48.z = bz;
+    box->unk24.x = ax;
+    box->unk24.y = ay;
+    box->unk24.z = az;
+    box->unk30.x = bx;
+    box->unk30.y = by;
+    box->unk30.z = bz;
+    box->flags &= ~8;
+    box->flags |= 5;
 }
 
 void fn_800FC484(UnkPairList* list) {
