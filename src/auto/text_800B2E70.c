@@ -188,8 +188,8 @@ s32 fn_800BDD64(u32 error) {
     if (error == 0x62800 || error == 0x23A00 || error == 0xB5A01) {
         return 0;
     }
-    lbl_8035A6AC++;
-    if (lbl_8035A6AC == 2) {
+    (*(volatile s32 *)&lbl_8035A6AC)++;
+    if (*(volatile s32 *)&lbl_8035A6AC == 2) {
         if (error == lbl_8035A6A8) {
             lbl_8035A6A8 = error;
             return 1;
