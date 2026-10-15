@@ -12,3 +12,7 @@ void fn_80135AD0(void) {
 
 void fn_80135AD4(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
 
+void fn_80135ADC(void *arg0, f32 arg1) {
+    *(f32 *)((u8 *)arg0 + 0x14) = arg1;
+}
+
