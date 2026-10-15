@@ -1,6 +1,9 @@
 /* Functions from 0x80273E10 to 0x80293ED8, found by decomp-toolkit. */
 #include "common.h"
 
+void fn_8028ED28(f32 *, f32 *);
+void fn_8028F484(f32 *, f32 *);
+
 void fn_80275C64(void);
 void fn_80275F98();
 void fn_80276058(void *);
@@ -204,11 +207,7 @@ void fn_8027564C(void *arg0, int arg1) {
 }
 
 s32 fn_8027569C(void *arg0) {
-    u8 *p = *(u8 **)((u8 *)arg0 + 0x50);
-    u32 shift = *(u32 *)((u8 *)arg0 + 0x60);
-    u32 value = *(u32 *)(p + 0x1B2);
-    u32 base = *(u32 *)((u8 *)arg0 + 0x58);
-    return (value << shift) - base;
+    return (*(u32 *)(*(u8 **)((u8 *)arg0 + 0x50) + 0x1B2) << *(u32 *)((u8 *)arg0 + 0x60)) - *(u32 *)((u8 *)arg0 + 0x58);
 }
 
 void *memset();
@@ -539,8 +538,9 @@ void fn_802771D4(u8* arg0, s32 arg1) {
 void fn_80278F28(void *arg0, s32 arg1) {
     s32 old = *(s32 *)((u8 *)arg0 + 0x27C);
     if (old != 0) {
+        s32 value = *(s32 *)((u8 *)arg0 + 0x2B4) + (arg1 - old);
         *(s32 *)((u8 *)arg0 + 0x27C) = 0;
-        *(s32 *)((u8 *)arg0 + 0x2B4) += arg1 - old;
+        *(s32 *)((u8 *)arg0 + 0x2B4) = value;
     }
 }
 
@@ -726,6 +726,24 @@ void fn_8027E8C4(s32 unused, s32 count) {
         lbl_80300860[0] += 8;
     }
 }
+
+void fn_8027F354(s32 unused, s32 count) {
+s32 n=count-1;
+if(count) do {
+u8 *src=lbl_80300860[2], *alpha=lbl_80300860[6];
+u32 v=lbl_80300460[*src++] | ((u32)*alpha++<<24);
+*(u32 *)lbl_80300860[0]=v;
+lbl_80300860[6]=alpha;
+lbl_80300860[2]=src;
+lbl_80300860[0]+=4;
+} while(n-- != 0);
+}
+
+void fn_8027F738(s32 a0,s32 a1,s32 a2,s32 a3,s32 a4,s32 a5,s32 a6,s32 a7,s32 a8,s32 a9,s32 a10,s32 a11,s32 a12) {
+extern u8 lbl_803019A0[];
+fn_8027BFB8(a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a12,a11,lbl_803019A0);
+}
+
 #pragma pop
 void fn_8027F794(s32 arg0, s32 n) {
     u16 v;
@@ -760,6 +778,34 @@ void fn_8027F894(s32 arg0, s32 n) {
         ((u16 *)lbl_80300860[0])[1] = v;
         lbl_80300860[0] += 4;
     }
+}
+
+void fn_80280484(s32 unused, s32 count) {
+s32 n=count-1;
+if(count) do {
+u32 index;
+u8 *src=lbl_80300860[2];
+u16 *dst=(u16 *)lbl_80300860[0];
+index=*src;
+lbl_80300860[2]=src+1;
+*dst = *(u16 *)(lbl_802FFC60+index*4+2);
+lbl_80300860[0]+=2;
+} while(n-- != 0);
+}
+
+s32 fn_802804E0(s32 count,s32 base) {
+u32 n=count;
+do {
+u32 index=*lbl_80300860[2];
+lbl_80300860[2]++;
+*(u16 *)lbl_80300860[0] = *(u16 *)(lbl_802FFC60+index*4+2);
+index=*lbl_80300860[3];
+lbl_80300860[3]++;
+*(u16 *)lbl_80300860[1] = *(u16 *)(lbl_802FFC60+index*4+2);
+lbl_80300860[0]+=2;
+lbl_80300860[1]+=2;
+} while(--n);
+return base+count;
 }
 
 void fn_8028256C(s32 arg0, register s32 n) {
@@ -1019,6 +1065,40 @@ void fn_8028BDF4(s32 n, f32 *a, s32 *ip, s32 nw, f32 *w) {
         fn_8028F7A4(a);
     }
 }
+
+void fn_8028C998(f32 *a) {
+    f32 x1r, x1i, x2r, x2i, x3r, x3i, x4r, x4i;
+    f32 x5r, x5i, x6r, x6i, x7r, x7i;
+    x1r = a[2];
+    x1i = a[3];
+    x2r = a[4];
+    x2i = a[5];
+    x3r = a[6];
+    x3i = a[7];
+    x4r = a[8];
+    x4i = a[9];
+    x5r = a[10];
+    x5i = a[11];
+    x6r = a[12];
+    x6i = a[13];
+    x7r = a[14];
+    x7i = a[15];
+    a[15] = x4i;
+    a[2] = x7r;
+    a[3] = x7i;
+    a[4] = x3r;
+    a[5] = x3i;
+    a[6] = x5r;
+    a[7] = x5i;
+    a[8] = x1r;
+    a[9] = x1i;
+    a[10] = x6r;
+    a[11] = x6i;
+    a[12] = x2r;
+    a[13] = x2i;
+    a[14] = x4r;
+}
+
 void fn_8028F69C(f32 *a) {
     f32 t0, t1, t2, t3, t4, t5, t6, t7;
     f32 s0, s1, s2, s3, d0, d1, d2, d3;
@@ -1170,7 +1250,9 @@ void fn_8028F948(s32 n, f32 *a, s32 nc, f32 *c) {
     a[m] *= c[0];
 }
 #pragma pop
+void fn_8028ED28(f32 *, f32 *);
+void fn_8028F484(f32 *, f32 *);
 void fn_80290190(s32 n, f32 *a, s32 nc, s32 idx) {
-    fn_8028F9D8(n, a, nc, (f32 *)((char *)lbl_802AD300 + (idx << 8)));
+    fn_8028F9D8(n, a, nc, lbl_802AD300[idx]);
 }
 
