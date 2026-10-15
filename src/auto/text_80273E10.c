@@ -191,6 +191,13 @@ u8 *fn_8027A710(void) {
     return lbl_802F3898;
 }
 
+void fn_80283D04(void *);
+void fn_800B3EF8(void *);
+void fn_8027B790(void *);
+s32 fn_80284060(void) {
+    return 0x1C;
+}
+
 extern f32 lbl_802AB290;
 extern f32 lbl_802AB294;
 extern f32 lbl_802AD300[][64];
