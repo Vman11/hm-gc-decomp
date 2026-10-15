@@ -396,6 +396,11 @@ void fn_800C76F0(void** arg0) {
     *arg0 = lbl_80309E00[lbl_8035A818];
 }
 
+extern s32 lbl_8035A81C;
+void fn_800C770C(void** arg0) {
+    *arg0 = lbl_80309E00[lbl_8035A81C];
+}
+
 extern s32 lbl_8035A830;
 s32 fn_800C7964(void) {
     return lbl_8035A830;
