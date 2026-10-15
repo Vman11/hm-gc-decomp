@@ -415,6 +415,15 @@ void fn_800C7680(void** arg0) {
     *arg0 = lbl_80309E00[lbl_8035A814] + 0x500;
 }
 
+extern u32 lbl_8035A7F4;
+void fn_800C76A0(void** arg0) {
+    if (lbl_8035A7F4 != 0) {
+        *arg0 = lbl_80309E00[lbl_8035A810];
+        return;
+    }
+    *arg0 = NULL;
+}
+
 void fn_800C76D4(void** arg0) {
     *arg0 = lbl_80309E00[lbl_8035A814];
 }
