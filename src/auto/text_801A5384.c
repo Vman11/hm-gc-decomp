@@ -2,6 +2,7 @@
 #include "common.h"
 
 extern s32 lbl_8035AEDC;
+extern u8 lbl_802EA470[];
 
 void fn_801A53A8(s32 arg0);
 
