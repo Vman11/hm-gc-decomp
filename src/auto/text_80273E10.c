@@ -257,6 +257,8 @@ void fn_80275D00(u32 *src, u16 *left, u16 *right, u32 count) {
     }
 }
 #pragma pop
+#pragma push
+#pragma dont_inline on
 void fn_80275D6C(s16 *src, u8 *left, u8 *right, u32 count) {
     u32 i = 0;
     u32 n = count >> 2;
@@ -558,6 +560,13 @@ u8 *fn_8027A710(void) {
     return lbl_802F3898;
 }
 
+s32 DVDGetDriveStatus(void);
+void fn_800BFE7C(void *);
+void fn_8027AFC0(void *);
+u32 fn_8027B4CC(void *arg0, u32 arg1) {
+    return (arg1 + 0xFFF) & ~0xFFF;
+}
+
 void fn_8027B168(void *);
 void fn_800BD474(void *);
 int OSDisableInterrupts();
@@ -640,18 +649,23 @@ lbl_80300860[0]+=8;
 
 s32 fn_8027D9B4(s32 count,s32 offset) {
 extern u32 lbl_80300460[];
-s32 n=count;
+u32 n=count;
 do {
-u32 v=lbl_80300460[*lbl_80300860[2]++];
+u8 index=*lbl_80300860[2];
+u32 v;
+lbl_80300860[2]++;
+v=lbl_80300460[index];
 ((u32 *)lbl_80300860[0])[0]=v;
 ((u32 *)lbl_80300860[0])[1]=v;
 *(u32 *)(lbl_80300860[0]+(s32)lbl_80300860[17])=v;
-*(u32 *)(lbl_80300860[0]+(s32)lbl_80300860[17]+4)=v;
-v=lbl_80300460[*lbl_80300860[3]++];
+((u32 *)(lbl_80300860[0]+(s32)lbl_80300860[17]))[1]=v;
+index=*lbl_80300860[3];
+lbl_80300860[3]++;
+v=lbl_80300460[index];
 ((u32 *)lbl_80300860[1])[0]=v;
 ((u32 *)lbl_80300860[1])[1]=v;
 *(u32 *)(lbl_80300860[1]+(s32)lbl_80300860[17])=v;
-*(u32 *)(lbl_80300860[1]+(s32)lbl_80300860[17]+4)=v;
+((u32 *)(lbl_80300860[1]+(s32)lbl_80300860[17]))[1]=v;
 lbl_80300860[0]+=8;
 lbl_80300860[1]+=8;
 } while(--n != 0);
@@ -660,11 +674,13 @@ return offset+count;
 
 void fn_8027E2A8(s32 unused,s32 count) {
 extern u32 lbl_80300460[];
-while(count-- != 0) {
-*(u32 *)lbl_80300860[0]=lbl_80300460[*lbl_80300860[2]];
-lbl_80300860[2]++;
+s32 n=count-1;
+if(count != 0) do {
+u8 *src=lbl_80300860[2];
+*(u32 *)lbl_80300860[0]=lbl_80300460[*src++];
+lbl_80300860[2]=src;
 lbl_80300860[0]+=4;
-}
+} while(n-- != 0);
 }
 
 #pragma push
@@ -981,6 +997,12 @@ void fn_80282C94(s16 *dst, f32 *src, s32 count, f32 scale) {
  src++;
  } while(remain-- != 0);
  }
+}
+
+void fn_80283D04(void *arg0) {
+    while (fn_80283C94(arg0) == 0) {
+        fn_800B9CD8();
+    }
 }
 
 #pragma push
