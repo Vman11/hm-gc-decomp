@@ -18,3 +18,9 @@ s32 fn_801348FC(void) {
 void fn_80134904(void) {
 
 }
+
+extern u16 lbl_803640E0;
+void fn_80134908(void* arg0) {
+    *(u16*)((u8*)arg0 + 0x1A) &= ~2;
+}
+
