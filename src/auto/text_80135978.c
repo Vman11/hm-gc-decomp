@@ -53,6 +53,10 @@ s32 fn_80135A1C(void) {
     return 0;
 }
 
+s32 fn_80135A24(void) {
+    return 0;
+}
+
 void fn_80135A3C(void) {
 
 }
