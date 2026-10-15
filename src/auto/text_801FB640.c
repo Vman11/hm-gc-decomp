@@ -15,3 +15,7 @@ void fn_801FB648(s32* arg0) {
     arg0[5] = 0;
 }
 
+void fn_801FB668(s32 *arg0) {
+    *arg0 = 0;
+}
+
