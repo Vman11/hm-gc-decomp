@@ -1,2 +1,6 @@
 /* Functions from 0x80096A30 to 0x80096A38, found by decomp-toolkit. */
 #include "common.h"
+
+s32 fn_80096A30(void) {
+    return 1;
+}
