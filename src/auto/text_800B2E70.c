@@ -13,6 +13,10 @@ void fn_800BDA6C(void) {
 
 }
 
+void fn_800C6C2C(void) {
+
+}
+
 void fn_800C807C(void) {
 
 }
