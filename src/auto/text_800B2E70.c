@@ -108,6 +108,8 @@ void OSDumpContext(void* context);
 extern s32 __OSArenaHi_8035A578;
 s32 PPCMfmsr(void) { return __MFMSR(); }
 
+void PPCMtmsr(u32 value) { __MTMSR(value); }
+
 void PPCMtl2cr(u32 value) { __mtspr(1017, value); }
 
 void PPCMtdec(u32 value) { __mtspr(22, value); }
@@ -132,6 +134,14 @@ s32 PPCMfhid2(void) { return __mfspr(920); }
 
 void PPCMthid2(u32 value) { __mtspr(920, value); }
 
+#pragma scheduling on
+void DBInit(void) {
+    extern s32 DBVerbose;
+    extern void __DBExceptionDestination(void);
+    __DBInterface = (DBInterface*)0x80000040;
+    *(u32*)0x80000048 = (u32)__DBExceptionDestination + 0x80000000;
+    DBVerbose = 1;
+}
 void fn_800B2FB8(void) {
     u32* contextAddr = (u32*)0x00C0;
     void* context = (void*)(0x80000000 + *contextAddr);
@@ -152,6 +162,38 @@ u32 __DBIsExceptionMarked(u8 exception) {
 void DBPrintf(char* str, ...) {
 }
 
+#pragma push
+#pragma peephole off
+u32 fn_800B31A4(void) {
+    extern u32* BootInfo_8035A520;
+    u32 result;
+    if (BootInfo_8035A520 == NULL || (result = BootInfo_8035A520[11]) == 0) {
+        result = 0x10000002;
+    }
+    return result;
+}
+#pragma pop
+void InquiryCallback(s32 result, s32* block) {
+    extern u16 DriveInfo_80307500[];
+    switch (block[3]) {
+    case 0:
+        *(u16*)0x800030E6 = DriveInfo_80307500[1] | 0x8000;
+        break;
+    default:
+        *(u16*)0x800030E6 = 1;
+        break;
+    }
+}
+
+extern s32* OSExceptionTable_8035A544;
+s32 __OSSetExceptionHandler(u8 exception, s32 handler) {
+    s32* entry = (s32*)((u32)OSExceptionTable_8035A544 + (exception * 4));
+    s32 oldHandler = *entry;
+    *entry = handler;
+    return oldHandler;
+}
+
+#pragma optimization_level 4
 void OSCreateAlarm(s32 *arg0) {
     arg0[0] = 0;
     arg0[1] = 0;
@@ -346,6 +388,41 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
     }
 }
 
+s32 fn_800BD338(s32 arg0, void *arg1) {
+    extern u32 MaxEntryNum_8035A664;
+    if (arg0 < 0 || (u32)arg0 >= MaxEntryNum_8035A664 || entryIsDir(arg0)) {
+        return 0;
+    }
+    *(u32 *)((u8 *)arg1 + 0x30) = FstStart_8035A65C[arg0].parentOrPosition;
+    *(u32 *)((u8 *)arg1 + 0x34) = FstStart_8035A65C[arg0].nextEntryOrLength;
+    *(u32 *)((u8 *)arg1 + 0x38) = 0;
+    *(u32 *)((u8 *)arg1 + 0xC) = 0;
+    return 1;
+}
+
+s32 fn_800BD474(void) {
+    extern void fn_800BFE7C(void);
+    fn_800BFE7C();
+    return 1;
+}
+
+s32 fn_800BD810(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    extern void fn_800B5520(char *, int, char *, ...);
+    extern char lbl_80359568[];
+    extern char lbl_802D9F38[];
+    extern void fn_800BD8D0(void);
+    extern s32 fn_800BF658(void *, s32, s32, s32, void (*)(void), s32);
+    s32 end;
+    if (arg3 < 0 || (u32)arg3 >= *(u32 *)((u8 *)arg0 + 0x34))
+        fn_800B5520(lbl_80359568, 0x2EA, lbl_802D9F38);
+    end = arg3 + arg2;
+    if (end < 0 || (u32)end >= *(u32 *)((u8 *)arg0 + 0x34) + 0x20)
+        fn_800B5520(lbl_80359568, 0x2F0, lbl_802D9F38);
+    *(s32 *)((u8 *)arg0 + 0x38) = arg4;
+    fn_800BF658(arg0, arg1, arg2, *(s32 *)((u8 *)arg0 + 0x30) + arg3, fn_800BD8D0, arg5);
+    return 1;
+}
+
 BOOL fn_800BD9C0(DVDDir* dir, DVDDirEntry* dirent) {
     u32 loc = dir->location;
     if ((loc <= dir->entryNum) || (dir->next <= loc)) {
@@ -521,6 +598,39 @@ void fn_800B6024(GXColor a, GXColor b, u32 c);
 extern int autoInvalidation_80359574;
 int fn_800BFBA0(int arg0) { int old = autoInvalidation_80359574; autoInvalidation_80359574 = arg0; return old; }
 
+s32 fn_800C0300(void **node) {
+ int enabled = OSDisableInterrupts();
+ void **prev = node[1];
+ void **next = node[0];
+ if(prev == 0 || next == 0) {
+ OSRestoreInterrupts(enabled);
+ return 0;
+ }
+ prev[0] = next;
+ next[1] = prev;
+ OSRestoreInterrupts(enabled);
+ return 1;
+}
+
+void __DVDStoreErrorCode(u32 code) {
+ extern u8 ErrorCode2Num(u32);
+ extern void *__OSLockSramEx(void);
+ extern int __OSUnlockSramEx(int);
+ u32 value;
+ u32 status;
+ u8 error;
+ if(code == 0x01234567) value = 0xFF;
+ else if(code == 0x01234568) value = 0xFE;
+ else {
+ status = code >> 24;
+ error = ErrorCode2Num(code & 0xFFFFFF);
+ if(status >= 6) status = 6;
+ value = error + status * 30;
+ }
+ ((u8 *)__OSLockSramEx())[0x24] = value;
+ __OSUnlockSramEx(1);
+}
+
 void fn_800C05F0(void) {
     GXColor c0 = lbl_803630B8;
     GXColor c1 = lbl_803630BC;
@@ -552,11 +662,11 @@ void fn_800C06EC(void) {
 }
 
 unsigned int fn_800C0BD0(unsigned int arg0) {
-    unsigned int old = lbl_8035A6F0;
-    int enabled = OSDisableInterrupts();
-    lbl_8035A6F0 = arg0;
-    OSRestoreInterrupts(enabled);
-    return old;
+ unsigned int old = lbl_8035A6F0;
+ int enabled = OSDisableInterrupts();
+ lbl_8035A6F0 = arg0;
+ OSRestoreInterrupts(enabled);
+ return old;
 }
 
 char *fn_800C0C14(unsigned int arg0) {
@@ -582,6 +692,18 @@ char *fn_800C0C14(unsigned int arg0) {
     }
 }
 
+void fn_800C1364(void) {
+ extern s32 lbl_8035A6DC;
+ extern u32 lbl_8035A6E4[2];
+ extern void fn_800BA2C8(void *);
+ int enabled = OSDisableInterrupts();
+ u32 count = lbl_8035A6DC;
+ do {
+ fn_800BA2C8(lbl_8035A6E4);
+ } while(count == (u32)lbl_8035A6DC);
+ OSRestoreInterrupts(enabled);
+}
+
 extern s32 lbl_8035A6DC;
 s32 fn_800C2600(void) {
     return lbl_8035A6DC;
@@ -589,6 +711,18 @@ s32 fn_800C2600(void) {
 
 void fn_800C6C2C(void) {
 
+}
+
+void fn_800C6EC8(void) { fn_800C6EEC(0); }
+
+void fn_800C6EEC(s32 arg0) {
+    OSRegisterVersion(lbl_803595E8);
+    fn_800C6FF8();
+    fn_800C9744();
+    fn_800C8C68();
+    fn_800C74DC();
+    fn_800C8058();
+    fn_800C8464(arg0);
 }
 
 void fn_800C6F38(void) {
@@ -649,12 +783,14 @@ void fn_800C6FF8(void) {
     }
 }
 
+#pragma scheduling on
 void fn_800C7160(void* arg0) {
-    *(s32*)arg0 = lbl_80308680[0];
-    lbl_80308680[0] = (s32)arg0;
+    s32* p = lbl_80308680;
+    *(s32*)arg0 = *p;
+    *p = (s32)arg0;
     *(s32*)((u8*)arg0 + 0xC) = 0;
 }
-
+#pragma scheduling reset
 void fn_800C75D0(void** arg0) {
     if (lbl_8035A7F0 != 0) {
         *arg0 = lbl_80308780[lbl_8035A810];
@@ -776,6 +912,16 @@ void fn_800CCC78(void) {
 
 }
 
+s32 fn_800D0A3C(s32 chan) {
+    extern void fn_800CCC7C(void);
+    extern s32 fn_800D04AC(s32, void *, void *);
+    extern s32 fn_800CDEF8(s32);
+    s32 value;
+    s32 result = fn_800D04AC(chan, &value, fn_800CCC7C);
+    if (result < 0 || &value == 0) return result;
+    return fn_800CDEF8(chan);
+}
+
 extern u8 lbl_80323560[];
 s32 fn_800D1258(s32 chan, void *buf, s32 len, void *cb);
 s32 fn_800CDEF8(s32 chan);
@@ -840,8 +986,8 @@ s32 fn_800D1D24(s32 chan) {
 
 s32 fn_800CDEF8(s32);
 s32 fn_800D1D78(void *arg0, char *name) {
-    char a, b;
     char *p = (char *)arg0 + 8;
+    char a, b;
     s32 n = 32;
     while (--n >= 0) {
         a = *p++;
@@ -849,7 +995,9 @@ s32 fn_800D1D78(void *arg0, char *name) {
         if (a != b) return 0;
         if (b == 0) return 1;
     }
-    if (*name != 0) return 0;
+    if (*name == 0) goto equal;
+    return 0;
+equal:
     return 1;
 }
 
@@ -912,7 +1060,7 @@ s32 fn_800DF300(void) {
 }
 
 u32 fn_800E1150(u32 addr) {
-    if (gTRKCPUState.unk238 & 3) {
+    if (addr >= lbl_80325D58[0] && addr < lbl_80325D58[0] + 0x4000 && (gTRKCPUState.unk238 & 3)) {
         return addr;
     }
     if (addr >= 0x7E000000 && addr <= 0x80000000) {
@@ -929,6 +1077,21 @@ void EnableMetroTRKInterrupts(void) {
 
 s32 fn_800E1538(void) {
     return 0x54;
+}
+
+s32 TRKInitializeNub(void);
+void TRKNubWelcome(void);
+void TRKNubMainLoop(void);
+s32 TRKTerminateNub(void);
+extern s32 TRK_mainError_80325D60;
+void TRK_main(void) {
+    s32 result = TRKInitializeNub();
+    TRK_mainError_80325D60 = result;
+    if (result == 0) {
+        TRKNubWelcome();
+        TRKNubMainLoop();
+    }
+    TRK_mainError_80325D60 = TRKTerminateNub();
 }
 
 void TRKUARTInterruptHandler(void) {
