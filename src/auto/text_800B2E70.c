@@ -25,3 +25,7 @@ void fn_800C8C94(void) {
 
 }
 
+void fn_800C9944(void) {
+
+}
+
