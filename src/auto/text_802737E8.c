@@ -9,6 +9,12 @@ void fn_802737EC(void) {
 
 }
 
+void fn_802737F0(s32 *arg0) {
+    s32 temp = arg0[1];
+    arg0[1] = 0;
+    arg0[1] = temp;
+}
+
 void fn_80273804(void) {
 
 }
