@@ -20,3 +20,22 @@ void fn_8023E8EC(UnkList_8023E8EC* arg0) {
     }
     arg0->head = NULL;
 }
+
+void fn_8023E914(UnkList_8023E8EC* arg0, UnkNode_8023E8EC* arg1) {
+    UnkNode_8023E8EC* head = arg0->head;
+    UnkNode_8023E8EC* node = head;
+    UnkNode_8023E8EC* prev = head;
+    while (arg1 != node && node != NULL) {
+        prev = node;
+        node = node->next;
+    }
+    if (node != NULL) {
+        if (node == head) {
+            arg0->head = head->next;
+        } else {
+            prev->next = node->next;
+        }
+        node->unk10 = 1;
+    }
+}
+
