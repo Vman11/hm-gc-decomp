@@ -34,6 +34,10 @@ f32 fn_80153F14(void) {
     return lbl_80364568;
 }
 
+s32 fn_80153F1C(void) {
+    return 0;
+}
+
 s32 fn_80153F3C(void) {
     return 0x10;
 }
