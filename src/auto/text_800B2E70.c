@@ -311,6 +311,9 @@ void fn_800BE0AC(u32 intType) {
     fn_800BCBF4(fn_800BE114);
 }
 
+extern int autoInvalidation_80359574;
+int fn_800BFBA0(int arg0) { int old = autoInvalidation_80359574; autoInvalidation_80359574 = arg0; return old; }
+
 extern unsigned int lbl_8035A6F0;
 extern unsigned int lbl_8035A6C0;
 extern void OSDisableInterrupts(void);
