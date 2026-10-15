@@ -1,6 +1,19 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
 
+extern s32 lbl_80308680[32];
+extern s32 lbl_80308700[32];
+extern s32 lbl_8035A7E8;
+void fn_800C70AC(void);
+void fn_800C9944(void);
+void fn_800C8C94(void);
+void fn_800C75C0(void);
+void fn_800C807C(void);
+void fn_800C8804(void);
+void* fn_800C7190(void);
+void fn_800C71AC(void*);
+void fn_800C7160(void*);
+
 extern u8 lbl_80308780[][0x780];
 extern u8 lbl_80309E00[][0x780];
 extern s32 lbl_8035A814;
@@ -84,6 +97,14 @@ s32 PPCMffpscr(void) {
 s32 PPCMfhid2(void) { return __mfspr(920); }
 
 void PPCMthid2(u32 value) { __mtspr(920, value); }
+
+void fn_800B2FB8(void) {
+    u32* contextAddr = (u32*)0x00C0;
+    void* context = (void*)(0x80000000 + *contextAddr);
+    OSReport("DBExceptionDestination\n");
+    OSDumpContext(context);
+    PPCHalt();
+}
 
 void __DBExceptionDestination(void) {
     __MTMSR(__MFMSR() | 0x30);
