@@ -1086,12 +1086,12 @@ s32 TRKTerminateNub(void);
 extern s32 TRK_mainError_80325D60[];
 void TRK_main(void) {
     s32 result = TRKInitializeNub();
-    *(s32*)&TRK_mainError_80325D60 = result;
+    TRK_mainError_80325D60[0] = result;
     if (result == 0) {
         TRKNubWelcome();
         TRKNubMainLoop();
     }
-    *(s32*)&TRK_mainError_80325D60 = TRKTerminateNub();
+    TRK_mainError_80325D60[0] = TRKTerminateNub();
 }
 
 void TRKUARTInterruptHandler(void) {
