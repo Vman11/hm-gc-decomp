@@ -25,3 +25,7 @@ return 1;
 
 int fn_8002FBA8(void) {return 1;}
 
+int fn_8002FBB0(void) {
+return 1;
+}
+
