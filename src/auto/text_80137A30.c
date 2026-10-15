@@ -10,6 +10,10 @@ s32 fn_80137A44(void) {
     return 0;
 }
 
+void fn_80137A4C(u8 *arg0) {
+    *(u16 *)(arg0 + 0xC) &= ~0x8;
+}
+
 void fn_80137A90(void) {
 
 }
