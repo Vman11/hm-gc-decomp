@@ -49,6 +49,13 @@ extern TRKState_unk gTRKState;
 extern TRKCPUState_unk gTRKCPUState;
 extern u32 lbl_80325D58[];
 
+typedef struct DBInterface {
+    u32 bAllocated;
+    u32 exceptionMask;
+} DBInterface;
+
+extern DBInterface* __DBInterface;
+
 extern s32 __OSArenaHi_8035A578;
 s32 PPCMfmsr(void) { return __MFMSR(); }
 
@@ -403,6 +410,36 @@ void fn_800B6024(GXColor a, GXColor b, u32 c);
 extern int autoInvalidation_80359574;
 int fn_800BFBA0(int arg0) { int old = autoInvalidation_80359574; autoInvalidation_80359574 = arg0; return old; }
 
+void fn_800C05F0(void) {
+    GXColor c0 = lbl_803630B8;
+    GXColor c1 = lbl_803630BC;
+    u32 v;
+    if (VIGetTvFormat() == 0) {
+        if (fn_800B6B0C() == 1) {
+            v = lbl_80359588;
+        } else {
+            v = lbl_8035958C;
+        }
+    } else {
+        v = lbl_8029BDC0[fn_800B92DC()];
+    }
+    fn_800B6024(c1, c0, v);
+}
+
+int fn_800C067C(int arg0) {
+    int enabled = OSDisableInterrupts();
+    int old = lbl_8035A6C0 != 0 ? 1 : 0;
+    lbl_8035A6C0 = arg0 ? (unsigned int)fn_800C05F0 : 0;
+    OSRestoreInterrupts(enabled);
+    return old;
+}
+
+void fn_800C06EC(void) {
+    if ((void (*)(void))lbl_8035A6C0 != 0) {
+        ((void (*)(void))lbl_8035A6C0)();
+    }
+}
+
 unsigned int fn_800C0BD0(unsigned int arg0) {
     unsigned int old = lbl_8035A6F0;
     int enabled = OSDisableInterrupts();
@@ -559,6 +596,61 @@ s32 fn_800CC224(void) {
 
 void fn_800CCC78(void) {
 
+}
+
+extern u8 lbl_80323560[];
+s32 fn_800D1258(s32 chan, void *buf, s32 len, void *cb);
+s32 fn_800CDEF8(s32 chan);
+void fn_800CCC7C(void);
+void fn_800F2540(s32, s32);
+void fn_800F2970(s32);
+void fn_800B3EF8(void *);
+s32 fn_800CDBD8(s32 chan, void *out);
+s32 fn_800F2730(s32 chan);
+s32 fn_800D13F8(s32 chan, void *buf, s32 len) {
+    s32 result = fn_800D1258(chan, buf, len, fn_800CCC7C);
+    if (result < 0) {
+        return result;
+    }
+    return fn_800CDEF8(chan);
+}
+
+void fn_800D1440(s32 chan, s32 arg1) {
+    u8 *p = lbl_80323560 + chan * 0x110;
+    int enabled = OSDisableInterrupts();
+    if (*(s32 *)(p + 0x0) != 0) {
+        fn_800F2540(chan, 0);
+        fn_800F2970(chan);
+        fn_800B3EF8(p + 0xE0);
+        *(s32 *)(p + 0x0) = 0;
+        *(s32 *)(p + 0x4) = arg1;
+        *(s32 *)(p + 0x24) = 0;
+    }
+    OSRestoreInterrupts(enabled);
+}
+
+s32 fn_800D14DC(s32 chan) {
+    s32 result;
+    u8 *p;
+    int enabled;
+    u8 buf[4];
+
+    result = fn_800CDBD8(chan, buf);
+    if (result < 0) {
+        return result;
+    }
+    p = lbl_80323560 + chan * 0x110;
+    enabled = OSDisableInterrupts();
+    if (*(s32 *)(p + 0x0) != 0) {
+        fn_800F2540(chan, 0);
+        fn_800F2970(chan);
+        fn_800B3EF8(p + 0xE0);
+        *(s32 *)(p + 0x0) = 0;
+        *(s32 *)(p + 0x4) = -3;
+        *(s32 *)(p + 0x24) = 0;
+    }
+    OSRestoreInterrupts(enabled);
+    return 0;
 }
 
 s32 fn_800D2460(void) {
