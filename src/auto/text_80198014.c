@@ -5,14 +5,17 @@ typedef struct {
     f32 x, y, z, w;
 } Vec4f;
 
-void fn_80198014(void* arg0, f32* arg1) {
-    f32 a, b;
-    a = *(f32*)((u8*)arg0 + 0x14);
-    b = *(f32*)((u8*)arg0 + 0x18);
-    arg1[0] = a;
-    a = *(f32*)((u8*)arg0 + 0x1C);
-    arg1[1] = b;
-    b = *(f32*)((u8*)arg0 + 0x20);
-    arg1[2] = a;
-    arg1[3] = b;
+void fn_80198014(void* arg0, Vec4f* arg1) {
+    Vec4f* src = (Vec4f*)((u8*)arg0 + 0x14);
+    f32 a;
+    f32 b;
+    f32 c;
+    b = src->y;
+    c = src->x;
+    arg1->x = c;
+    a = src->z;
+    arg1->y = b;
+    b = src->w;
+    arg1->z = a;
+    arg1->w = b;
 }

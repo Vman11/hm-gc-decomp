@@ -4,3 +4,16 @@
 s32 fn_800B2A34(void) {
     return 1;
 }
+
+s32 fn_800B2A3C(void *arg0, s32 arg1) {
+    void *temp = *(void **)((char *)arg0 + 0x98);
+    if (temp != NULL) {
+        return *(s32 *)((char *)*(void **)((char *)temp + 0xC) + arg1 * 4);
+    }
+    if (arg1 == 0) {
+        return 1;
+    } else {
+        return 1;
+    }
+}
+

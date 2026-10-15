@@ -7,5 +7,5 @@ extern s32 lbl_8035B694;
 
 void fn_80255B54(s32 arg0) {
     lbl_8035B690 = arg0;
-    lbl_8035B694 = 0;
+    (&lbl_8035B690)[1] = 0;
 }

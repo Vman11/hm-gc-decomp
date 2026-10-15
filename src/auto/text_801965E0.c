@@ -5,6 +5,10 @@ extern void* lbl_802E96E0;
 
 extern s32 lbl_8035AE70;
 
+void fn_801965E0(void** arg0) {
+    *arg0 = lbl_802E96E0;
+}
+
 void fn_801965F0(void) {
 
 }

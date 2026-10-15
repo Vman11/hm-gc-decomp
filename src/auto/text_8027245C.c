@@ -12,7 +12,7 @@ typedef struct {
 } UnkStruct8027245C;
 
 void fn_8027245C(UnkStruct8027245C* arg0) {
-    s32 i;
+    u32 i;
 
     for (i = 0; i < 60; i++) {
         arg0->unk4[i] = 0;

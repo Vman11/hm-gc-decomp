@@ -12,14 +12,14 @@ typedef struct {
 extern Vec4f lbl_8032F718[];
 extern f32 lbl_80364790;
 
-void fn_80177BA0(void *arg0, s32 arg1, Vec3f arg2) {
-    f32 (*p)[4] = (f32 (*)[4])lbl_8032F718;
-    f32 x = arg2.x;
-    f32 y = arg2.y;
-    f32 z = arg2.z;
-
-    p[arg1][0] = x;
-    p[arg1][1] = y;
-    p[arg1][2] = z;
-    p[arg1][3] = lbl_80364790;
+void fn_80177BA0(void *arg0, s32 arg1, Vec3f *arg2) {
+    volatile f32 *src = (volatile f32 *)arg2;
+    f32 x = src[0];
+    f32 y = src[1];
+    volatile f32 *dst = (volatile f32 *)lbl_8032F718 + arg1 * 4;
+    f32 z = src[2];
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
+    dst[3] = lbl_80364790;
 }

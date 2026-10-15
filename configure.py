@@ -1283,7 +1283,7 @@ config.libs = [
             Object(Matching, "auto/text_8024453C.c"),
             Object(Matching, "auto/text_8024457C.c"),
             Object(Matching, "auto/text_80244D3C.c"),
-            Object(NonMatching, "auto/text_802455A0.c"),
+            Object(Matching, "auto/text_802455A0.c"),
             Object(NonMatching, "auto/text_80245D9C.c"),
             Object(Matching, "auto/text_80247A94.c"),
             Object(Matching, "auto/text_80247AD4.c"),

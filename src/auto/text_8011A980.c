@@ -3,6 +3,11 @@
 
 extern u8 lbl_802E3C98;
 
+void fn_8011A980(void *arg0) {
+    *(u32 *)((u8 *)arg0 + 8) = (u32)(&lbl_802E3C98 + 0x10000) - 0x10000;
+    *(u32 *)((u8 *)arg0 + 4) = 0;
+}
+
 void fn_8011A998(void) {
 
 }

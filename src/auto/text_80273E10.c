@@ -102,6 +102,14 @@ void fn_80276A90(s8 *dst, s16 *src, u32 len) {
         *dst++ = *src++ >> 8;
     }
 }
+
+void fn_80276E38(u8* arg0) {
+    if (*(s32*)(arg0 + 0x280) == 0) {
+        *(s32*)(arg0 + 0x280) = fn_802753F0();
+        *(s32*)(arg0 + 0x284) = *(s32*)(arg0 + 0x270) - 1;
+    }
+}
+
 #pragma pop
 extern s32 lbl_802F3864;
 extern s32 lbl_803580C0;
