@@ -5,6 +5,10 @@ void fn_801639E4(void) {
 
 }
 
+void fn_801639E8(void) {
+
+}
+
 void fn_801639EC(void) {
 
 }
