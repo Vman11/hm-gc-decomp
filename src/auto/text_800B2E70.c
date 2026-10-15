@@ -1291,6 +1291,12 @@ void fn_800DAA70(void) {
     M2C_FIELD(__cpReg, s16 *, 4) = 4;
 }
 
+void fn_800DAB9C(void *arg0, s8 arg1) {
+    M2C_FIELD(arg0, s8 *, 0) = arg1;
+    M2C_FIELD(arg0, s32 *, 4) = 0;
+    M2C_FIELD(arg0, s32 *, 8) = -1;
+}
+
 s32 fn_800DBCDC(void) {
     return 0;
 }
