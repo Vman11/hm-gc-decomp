@@ -97,6 +97,10 @@ s32 fn_80153AA8(void) {
     return 0;
 }
 
+s32 fn_80153AB0(void) {
+    return 0;
+}
+
 s32 fn_80153AC0(void) {
     return 0xFFFF;
 }
