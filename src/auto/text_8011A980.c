@@ -12,3 +12,7 @@ void fn_8011A9A0(void) {
 
 }
 
+void fn_8011A9A4(void) {
+
+}
+
