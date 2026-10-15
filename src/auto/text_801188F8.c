@@ -44,3 +44,10 @@ f32 fn_80118AB0(void *arg0) {
     return M2C_FIELD(arg0, f32 *, 0x28);
 }
 
+f32 fn_80118ACC(void *arg0) {
+    if ((s32) M2C_FIELD(arg0, s32 *, 4) == 0) {
+        return M2C_FIELD(arg0, f32 *, 0x2C);
+    }
+    return M2C_FIELD(arg0, f32 *, 0x24);
+}
+
