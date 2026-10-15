@@ -55,6 +55,16 @@ void fn_802740E4(void) {
     fn_8027438C();
 }
 
+u32 fn_80274D04(u32 arg0);
+u32 fn_802748F8(u32 arg0) {
+    return (((u32*)fn_80274D04(arg0))[1] >> 7) & 1;
+}
+
+void fn_80274970(u32 arg0) {
+    __tlbsync();
+    __tlbie(arg0 & 0x3F000);
+}
+
 void fn_80274990(s32 arg0, u32 arg1) {
     extern u32* lbl_8035B87C;
     lbl_8035B87C[arg0] = arg1;
