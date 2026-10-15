@@ -14,6 +14,11 @@ void fn_801FBC8C(s32 *arg0) {
     *arg0 |= lbl_803655AC;
 }
 
+extern s32 lbl_803655B0;
+void fn_801FBCA0(s32 *arg0) {
+    *arg0 |= lbl_803655B0;
+}
+
 void fn_801FBCB4(s32 *arg0) {
     *arg0 &= 0xFFFFFFFE;
 }
