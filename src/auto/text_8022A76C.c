@@ -11,3 +11,8 @@ s32 fn_8022A784(void *arg0) { return *(s32 *)((u8 *)arg0 + 0xC); }
 s32 fn_8022A78C(void) {
     return lbl_8035B65C;
 }
+
+s32 fn_8022A7A0(void *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x58);
+}
+
