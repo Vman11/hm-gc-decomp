@@ -2,6 +2,10 @@
 #include "common.h"
 
 extern s32 lbl_8035B65C;
+s32 fn_8022A76C(void *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x54);
+}
+
 s32 fn_8022A784(void *arg0) { return *(s32 *)((u8 *)arg0 + 0xC); }
 
 s32 fn_8022A78C(void) {
