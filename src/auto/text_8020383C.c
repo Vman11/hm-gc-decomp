@@ -4,3 +4,8 @@
 void fn_8020383C(void) {
 
 }
+
+void* fn_80203840(void* arg0, s32 arg1) {
+    return *(u8**)((u8*)arg0 + 0x28) + arg1 * 0x60;
+}
+
