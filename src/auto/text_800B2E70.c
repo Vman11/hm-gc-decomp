@@ -1507,6 +1507,19 @@ s32 fn_800E0070(void *arg0) {
     return 0;
 }
 
+s32 fn_800E0C00(void *data, u32 start) {
+    s32 fn_800E0C4C(void *, u32, u32 *, s32, s32);
+    u32 len;
+    s32 error;
+
+    len = 4;
+    error = fn_800E0C4C(data, start, &len, 0, 1);
+    if (error == 0 && len != 4) {
+        error = 0x700;
+    }
+    return error;
+}
+
 s32 TRKInitializeTarget(void) {
     gTRKState.unk98 = 1;
     gTRKState.unk8C = fn_800DF4D0(&gTRKState);
