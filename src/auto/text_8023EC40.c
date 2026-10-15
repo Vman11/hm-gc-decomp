@@ -1,7 +1,7 @@
 /* Functions from 0x8023EC40 to 0x8023EC58, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8023EC40(void *arg1) {
+void fn_8023EC40(void *unused, void *arg1) {
     *(int *)((char *)arg1 + 0x14) = 1;
 }
 
