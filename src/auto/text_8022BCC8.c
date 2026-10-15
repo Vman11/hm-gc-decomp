@@ -13,3 +13,7 @@ void fn_8022BCD0(void) {
 
 }
 
+void fn_8022BCD4(void) {
+
+}
+
