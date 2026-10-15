@@ -2,6 +2,11 @@
 #include "common.h"
 
 extern s32 lbl_8035ADD0;
+void fn_8017DE78(void* arg0, void* arg1) {
+    *(void**)((char*)arg1 + 8) = *(void**)((char*)arg0 + 0x240);
+    *(void**)((char*)arg0 + 0x240) = arg1;
+}
+
 s32 fn_8017DE88(void* arg0) {
     return *(s32*)((char*)arg0 + 0x230);
 }
