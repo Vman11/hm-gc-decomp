@@ -1,6 +1,10 @@
 /* Functions from 0x80116DC0 to 0x80116E1C, found by decomp-toolkit. */
 #include "common.h"
 
+s32 fn_80116DD8(void) {
+    return 0;
+}
+
 void* fn_80116DE0(void* arg0, u32 arg1) {
     if (arg1 < *(u32*)((u8*)arg0 + 0x4)) {
         return *(u8**)((u8*)arg0 + 0xD4) + (arg1 << 6);
