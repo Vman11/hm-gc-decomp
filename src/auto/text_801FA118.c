@@ -41,3 +41,12 @@ void fn_801FA198(void *arg0, f32 farg0, f32 farg1) {
     M2C_FIELD(arg0, f32 *, 0x84) = farg1;
 }
 
+void fn_801FA1C0(s32 *arg0, s32 arg1) {
+    extern s32 lbl_80365564;
+    if (arg1 == 1) {
+        *arg0 |= lbl_80365564;
+        return;
+    }
+    *arg0 &= 0xFFFFFEFF;
+}
+
