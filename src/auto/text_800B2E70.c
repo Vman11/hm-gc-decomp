@@ -518,6 +518,8 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
     *color = *(u32 *)((u8 *)lt_obj + 0xC);
 }
 
+void fn_800D8238(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
+
 void fn_800D8F00(void) {
 
 }
