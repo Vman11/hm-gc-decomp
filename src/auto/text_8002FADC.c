@@ -130,3 +130,7 @@ int fn_8002FBD8(void) {
 return 1;
 }
 
+int fn_8002FBE0(void) {
+return 1;
+}
+
