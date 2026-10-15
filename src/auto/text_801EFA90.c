@@ -5,6 +5,17 @@ typedef struct {
     s32 a, b, c;
 } Vec3i_801EFA90;
 
+typedef struct {
+    void *vtbl;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    Vec3i_801EFA90 unk10;
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+} Obj_801EFA90;
+
 extern u8 lbl_802E2558[];
 extern u8 lbl_802EE7A8[];
 extern Vec3i_801EFA90 lbl_8029BF10;
