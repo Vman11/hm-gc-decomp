@@ -46,6 +46,10 @@ s32 fn_80153F2C(void) {
     return 8;
 }
 
+s32 fn_80153F34(void) {
+    return 8;
+}
+
 s32 fn_80153F3C(void) {
     return 0x10;
 }
