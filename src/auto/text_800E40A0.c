@@ -42,6 +42,14 @@ void fn_800EB1AC(s32 arg0) {
     lbl_803596A0 = arg0;
 }
 
+s32 fn_800EB1B4(void) {
+    u32 temp_r0;
+
+    temp_r0 = (lbl_803596A0 * 0x41C64E6D) + 0x3039;
+    lbl_803596A0 = temp_r0;
+    return (temp_r0 >> 0x10U) & 0x7FFF;
+}
+
 double fn_800F03E4(double x) {
     double y[2];
     int n, ix;
