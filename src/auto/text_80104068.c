@@ -2,6 +2,15 @@
 #include "common.h"
 
 extern f32 lbl_80363874;
+void fn_801040B0(u8 *arg0, u8 *arg1) {
+ if (*(u8 **)arg1 != arg0) {
+ *(u8 **)arg1 = arg0;
+ *(u8 **)(arg1 + 4) = *(u8 **)(arg0 + 8);
+ *(u8 **)(arg0 + 8) = arg1;
+ *(u32 *)(arg1 + 0x20) = 0x2B;
+ }
+}
+
 f32 fn_801040D8(void) {
     return lbl_80363874;
 }
