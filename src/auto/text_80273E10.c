@@ -909,6 +909,10 @@ void fn_8028A7A4(void) {
 
 }
 
+void fn_8028A7A8(void) {
+
+}
+
 #pragma pop
 void fn_8028C0C4(s32 n, s32 *ip, f32 *a);
 void fn_8028C71C(f32 *a);
