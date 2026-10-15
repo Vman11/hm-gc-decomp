@@ -48,9 +48,9 @@ extern u32* lbl_8035B87C;
 void* OSGetArenaLo(void);
 void OSSetArenaLo(void*);
 void fn_80274C8C(void) {
-    s32 i;
-    for (i = 0; i < 0x1000; i++) {
-        lbl_8035B87C[i] = 0;
+    u32 i;
+    for (i = 0; i < 0x4000; i += 4) {
+        *(u32*)((u8*)lbl_8035B87C + i) = 0;
     }
 }
 
