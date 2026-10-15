@@ -13,6 +13,25 @@ typedef struct TRKCPUState_unk {
     u32 unk238;
 } TRKCPUState_unk;
 
+typedef struct UnkInterp {
+    f32* unk0;
+    u32 unk4;
+    f32 unk8;
+    u32 unkC;
+    f32 unk10;
+    f32 unk14;
+    f32 unk18;
+    f32 unk1C;
+} UnkInterp;
+
+typedef struct UnkStep {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+} UnkStep;
+
 extern TRKState_unk gTRKState;
 extern TRKCPUState_unk gTRKCPUState;
 extern u32 lbl_80325D58;
