@@ -62,6 +62,8 @@ u32 fn_80275578(u32 hi, u32 lo, u32 d) {
 }
 
 void fn_80275C64(void);
+s32 fn_802753F0(void);
+void fn_80276B84(void* arg0);
 void fn_80275F98(void);
 void fn_80276058(void *);
 void fn_8027564C(void *, int);
