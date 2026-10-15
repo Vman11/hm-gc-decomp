@@ -55,6 +55,8 @@ typedef struct DBInterface {
 } DBInterface;
 
 extern DBInterface* __DBInterface;
+void OSReport(const char* msg, ...);
+void OSDumpContext(void* context);
 
 extern s32 __OSArenaHi_8035A578;
 s32 PPCMfmsr(void) { return __MFMSR(); }
