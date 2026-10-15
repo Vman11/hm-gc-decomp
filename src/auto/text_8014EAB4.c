@@ -4,3 +4,8 @@
 void fn_8014EAB4(void) {
 
 }
+
+void fn_8014EAB8(void) {
+
+}
+
