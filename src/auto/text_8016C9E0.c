@@ -17,3 +17,7 @@ s32 fn_8016CC38(s32 arg0) {
     return arg0 + 0x410;
 }
 
+s32 fn_8016CC40(s32 arg0) {
+    return arg0 + 0x3B8;
+}
+
