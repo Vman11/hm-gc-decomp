@@ -13,6 +13,16 @@ void fn_800377BC(void) {
 
 }
 
+void fn_800377C0(void *arg0) {
+    s32 temp_r4;
+
+    temp_r4 = M2C_FIELD(arg0, s32 *, 4);
+    M2C_FIELD(arg0, s32 *, 4) = 0;
+    M2C_FIELD(arg0, s32 *, 8) = 0;
+    M2C_FIELD(arg0, s32 *, 0xC) = 0;
+    M2C_FIELD(arg0, s32 *, 4) = temp_r4;
+}
+
 void fn_800377DC(void) {
 
 }
