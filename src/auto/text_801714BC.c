@@ -17,6 +17,10 @@ s32 fn_801714DC(void) {
     return 0;
 }
 
+void* fn_801714E4(void* arg0, s32 arg1) {
+    return *(u8**)((u8*)arg0 + 0x30) + arg1 * 0x50;
+}
+
 void fn_801714F4(void) {
 
 }
