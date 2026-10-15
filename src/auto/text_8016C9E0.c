@@ -13,6 +13,11 @@ s32 fn_8016C9F0(s32 arg0) {
     return arg0 + 0x27B8;
 }
 
+void fn_8016CA28(void *arg0, void *arg1) {
+    M2C_FIELD(arg1, void **, 0x20) = (void *) M2C_FIELD(arg0, void **, 0x1F40);
+    M2C_FIELD(arg0, void **, 0x1F40) = arg1;
+}
+
 s32 fn_8016CC38(s32 arg0) {
     return arg0 + 0x410;
 }
