@@ -4,3 +4,7 @@
 extern s32 lbl_8035B438;
 
 extern s32 lbl_8035B438;
+
+void fn_8023D0FC(s32 arg0) {
+    lbl_8035B438 = arg0;
+}
