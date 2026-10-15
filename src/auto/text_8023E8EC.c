@@ -12,3 +12,11 @@ typedef struct UnkList_8023E8EC {
     u8 unk0[0x59F4];
     UnkNode_8023E8EC* head;
 } UnkList_8023E8EC;
+
+void fn_8023E8EC(UnkList_8023E8EC* arg0) {
+    UnkNode_8023E8EC* node;
+    for (node = arg0->head; node != NULL; node = node->next) {
+        node->unk10 = 1;
+    }
+    arg0->head = NULL;
+}
