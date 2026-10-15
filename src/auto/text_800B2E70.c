@@ -41,6 +41,8 @@ s32 PPCMfmsr(void) { return __MFMSR(); }
 
 void PPCMtl2cr(u32 value) { __mtspr(1017, value); }
 
+s32 PPCMtdec(void) { return 0; }
+
 s32 PPCMffpscr(void) {
     union { f64 f; u32 u[2]; } fpscr;
     fpscr.f = __mffs();
@@ -129,6 +131,10 @@ void fn_800BDD08(void) {
     __DVDStoreErrorCode(0x01234568);
     DVDReset();
     cbForStateError(0);
+}
+
+void fn_800BDD3C(void) {
+    fn_800BCBF4(fn_800BDE18);
 }
 
 extern unsigned int lbl_8035A6F0;
