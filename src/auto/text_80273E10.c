@@ -56,6 +56,10 @@ void fn_802740E4(void) {
     fn_8027438C();
 }
 
+u32 fn_802748A8(u32 arg0) {
+    return *(u32*)fn_80274D04(arg0) >> 31;
+}
+
 u32 fn_802748D0(u32 arg0) {
     return (((u32*)fn_80274D04(arg0))[1] >> 8) & 1;
 }
