@@ -14,3 +14,7 @@ s32 fn_80170718(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0xE8);
 }
 
+s32 fn_80170720(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x44);
+}
+
