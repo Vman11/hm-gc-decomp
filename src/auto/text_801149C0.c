@@ -3,6 +3,8 @@
 
 extern u8 lbl_802E07C8[];
 extern u8 lbl_802E07C8[];
+s32 fn_801149C0(void *arg0, s32 arg1) { return *(s32 *)((u8 *)arg0 + 0xC) + arg1 * 8; }
+
 s32 fn_801149D0(void *arg0, s32 arg1) { return *(s32 *)((u8 *)arg0 + 0xC) + arg1 * 4; }
 
 u8 fn_80114A0C(void *arg0, void *arg1, s32 arg2) {
