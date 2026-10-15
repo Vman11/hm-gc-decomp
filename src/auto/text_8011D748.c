@@ -22,3 +22,10 @@ void fn_8011D764(void* arg0) {
     *(s32*)((u8*)arg0 + 0xC0) = 1;
 }
 
+void fn_8011D770(void *arg0, u32 arg1, f32 arg2) {
+    if (arg1 < *(u32 *)((u8 *)arg0 + 0x8)) {
+        (*(f32 **)((u8 *)arg0 + 0xA4))[arg1] = (*(f32 **)((u8 *)arg0 + 0xA0))[arg1];
+        (*(f32 **)((u8 *)arg0 + 0xA0))[arg1] = arg2;
+    }
+}
+
