@@ -3,3 +3,7 @@
 
 void fn_80171830(void) {
 }
+
+void fn_80171834(void) {
+}
+
