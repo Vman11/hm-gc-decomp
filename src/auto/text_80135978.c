@@ -33,6 +33,10 @@ s32 fn_801359F4(void) {
     return 0;
 }
 
+s32 fn_801359FC(void) {
+    return 0;
+}
+
 void fn_80135A3C(void) {
 
 }
