@@ -21,3 +21,7 @@ s32 fn_8014D8BC(void) {
     return 12;
 }
 
+void* fn_8014D8C4(u8* arg0, s32 arg1) {
+    return arg0 + 0x24 + arg1 * 0x40;
+}
+
