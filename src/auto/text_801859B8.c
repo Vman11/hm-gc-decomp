@@ -9,3 +9,7 @@ int fn_801859BC(void) {
 return 1;
 }
 
+int fn_801859D4(void) {
+return 1;
+}
+
