@@ -4,3 +4,4 @@
 s32 fn_8021147C(void) {
     return 0x15;
 }
+extern s32 lbl_8035B1D4;
