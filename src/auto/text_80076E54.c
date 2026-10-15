@@ -2,13 +2,16 @@
 #include "common.h"
 
 f32 fn_80076E54(f32 val, f32 deadzone) {
+    extern f32 lbl_8035F3EC;
+    extern f32 lbl_8035F490;
+
     if ((f32)__fabs(val) < deadzone) {
-        return 0.0f;
+        return lbl_8035F3EC;
     }
-    if (val > 0.0f) {
+    if (val > lbl_8035F3EC) {
         val -= deadzone;
     } else {
         val += deadzone;
     }
-    return val / (1.0f - deadzone);
+    return val / (lbl_8035F490 - deadzone);
 }
