@@ -10,9 +10,10 @@ s32 fn_800B2A3C(void *arg0, s32 arg1) {
     if (temp != NULL) {
         return *(s32 *)((char *)*(void **)((char *)temp + 0xC) + arg1 * 4);
     }
-    if (arg1 == 0) {
+    switch (arg1) {
+    case 0:
         return 1;
-    } else {
+    default:
         return 1;
     }
 }
