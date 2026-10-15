@@ -423,6 +423,7 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
 }
 
 s32 fn_800BCFAC(void) {
+#pragma scheduling off
     extern s32 Callback_8035A618;
     extern s32 WaitingCoverClose_8035A62C;
     s32 callback;
@@ -431,6 +432,7 @@ s32 fn_800BCFAC(void) {
     WaitingCoverClose_8035A62C = 0;
     Callback_8035A618 = 0;
     return callback;
+#pragma scheduling on
 }
 
 void __DVDLowSetWAType(s32 arg0, s32 arg1) {
@@ -844,7 +846,7 @@ void fn_800C8058(void);
 void fn_800C8464(s32);
 void fn_800C6EEC(s32);
 void fn_800C6FF8(void) {
-    u32 i;
+    s32 i;
     lbl_8035A7E8 = 0;
     for (i = 0; i < 32; i++) {
         lbl_80308700[i] = 0;
@@ -859,6 +861,12 @@ void fn_800C7160(void* arg0) {
     *p = (s32)arg0;
     *(s32*)((u8*)arg0 + 0xC) = 0;
 }
+
+void fn_800C7180(void* arg0) {
+    *(s32*)((u8*)arg0 + 0x8) = lbl_8035A7E8;
+    lbl_8035A7E8 = (s32)arg0;
+}
+
 #pragma scheduling reset
 void fn_800C75D0(void** arg0) {
     if (lbl_8035A7F0 != 0) {
@@ -981,6 +989,21 @@ void fn_800CCC78(void) {
 
 }
 
+s32 fn_800D0420(s32 chan) {
+    extern s32 fn_800CFCD8(s32);
+    extern s32 fn_800CFF5C(s32, s32);
+    extern s32 fn_800D019C(s32, s32);
+    s32 result = fn_800CFCD8(chan);
+    s32 first;
+    if (result < 0) return result;
+    first = fn_800CFF5C(chan, 0);
+    switch (first + fn_800D019C(chan, 0)) {
+    case 0: return 0;
+    case 1: return -6;
+    default: return -6;
+    }
+}
+
 s32 fn_800D0A3C(s32 chan) {
     extern void fn_800CCC7C(void);
     extern s32 fn_800D04AC(s32, void *, void *);
@@ -1068,6 +1091,28 @@ s32 fn_800D1D78(void *arg0, char *name) {
     return 0;
 equal:
     return 1;
+}
+
+s32 fn_800D1DE0(void *arg0, u8 *arg1) {
+    extern u8 lbl_80323780[];
+    extern s32 fn_800E8B1C(const void *, const void *, u32);
+    u8 *id = *(u8 **)((u8 *)arg0 + 0x10C);
+    if (*arg1 == 0xFF) return -4;
+    if (id == lbl_80323780 ||
+        (fn_800E8B1C(arg1, id, 4) == 0 &&
+         fn_800E8B1C(arg1 + 4, id + 4, 2) == 0)) {
+        return 0;
+    }
+    return -10;
+}
+
+s32 fn_800D240C(s32 *arg0) {
+    extern s32 fn_800CDC90(s32, s32);
+    s32 control;
+    s32 result = fn_800CDBD8(*arg0, &control);
+    if (result < 0) return result;
+    *arg0 = -1;
+    return fn_800CDC90(control, 0);
 }
 
 s32 fn_800D2460(void) {
