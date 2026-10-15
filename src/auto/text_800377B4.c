@@ -13,3 +13,7 @@ void fn_800377BC(void) {
 
 }
 
+void fn_800377DC(void) {
+
+}
+
