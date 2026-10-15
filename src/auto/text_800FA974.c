@@ -2,6 +2,12 @@
 #include "common.h"
 
 extern u8 lbl_802E1FD0[];
+void fn_800FA974(void *arg0) {
+    *(u32 *)((u8 *)arg0 + 0) = 0;
+    *(u32 *)((u8 *)arg0 + 4) = 0;
+    *(u32 *)((u8 *)arg0 + 8) = 0;
+}
+
 void fn_800FA988(s32* arg0) {
     arg0[3] = (s32)lbl_802E1FD0;
     arg0[0] = 0;
