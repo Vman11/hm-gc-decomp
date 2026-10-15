@@ -9,3 +9,10 @@ typedef struct {
 
 extern f32 lbl_80365A4C;
 extern f32 lbl_80365A30;
+
+void fn_80222798(unkStruct_80222798* arg0) {
+    arg0->unk0 = lbl_80365A4C;
+    arg0->unk4 = lbl_80365A30;
+    arg0->unk8 = 0;
+    arg0->unkC = 0;
+}
