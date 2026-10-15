@@ -150,6 +150,11 @@ void fn_800BBD40(f32 arg0) {
     lbl_8035A608 = arg0;
 }
 
+extern f32 lbl_8035A60C;
+void fn_800BBD48(f32 arg0) {
+    lbl_8035A60C = arg0;
+}
+
 void fn_800BBED4(u32* arg0, u8* arg1) {
     s32 idx;
 
