@@ -867,6 +867,36 @@ void fn_800C7180(void* arg0) {
     lbl_8035A7E8 = (s32)arg0;
 }
 
+void* fn_800C7190(void) {
+    void* p = (void*)lbl_8035A7E8;
+    if (p != NULL) {
+        lbl_8035A7E8 = *(s32*)((u8*)p + 0x8);
+    }
+    return p;
+}
+
+void fn_800C71AC(void* arg0) {
+    s32 idx = *(s32*)((u8*)arg0 + 0xC);
+    void** head = (void**)&lbl_80308680[idx];
+    void** tail = (void**)&lbl_80308700[idx];
+
+    if (*head == *tail) {
+        *tail = NULL;
+        *head = NULL;
+    } else if (arg0 == *head) {
+        *head = *(void**)arg0;
+        *(void**)((u8*)*head + 0x4) = NULL;
+    } else if (arg0 == *tail) {
+        *tail = *(void**)((u8*)arg0 + 0x4);
+        *(void**)*tail = NULL;
+    } else {
+        void** prev = *(void***)((u8*)arg0 + 0x4);
+        void* next = *(void**)arg0;
+        *prev = next;
+        *(void***)((u8*)next + 0x4) = prev;
+    }
+}
+
 #pragma scheduling reset
 void fn_800C75D0(void** arg0) {
     if (lbl_8035A7F0 != 0) {
