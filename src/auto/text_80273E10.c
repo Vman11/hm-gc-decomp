@@ -1203,6 +1203,10 @@ s32 fn_802838BC(s32 arg0, s32 arg1) {
     return 0;
 }
 
+s32 fn_80283C8C(void *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x38);
+}
+
 #pragma push
 #pragma optimize_for_size on
 void fn_80283D04(void *arg0) {
