@@ -1,6 +1,10 @@
 /* Functions from 0x801534E0 to 0x80153B24, found by decomp-toolkit. */
 #include "common.h"
 
+typedef struct {
+    f32 m[4][4];
+} Mtx44Struct;
+
 extern f32 lbl_80364564;
 void fn_80153904(f32* m) {
     m[0] = lbl_80364564;
@@ -22,12 +26,15 @@ void fn_80153904(f32* m) {
 }
 
 void fn_80153A0C(f32 (*dst)[4], f32 (*src)[4]) {
-    s32 i, j;
-    for (i = 0; i < 4; i++) {
-        for (j = 0; j < 4; j++) {
-            dst[i][j] = src[i][j];
-        }
-    }
+    f32 a, b;
+    a = src[0][0]; b = src[0][1]; dst[0][0] = a; dst[0][1] = b;
+    a = src[0][2]; b = src[0][3]; dst[0][2] = a; dst[0][3] = b;
+    a = src[1][0]; b = src[1][1]; dst[1][0] = a; dst[1][1] = b;
+    a = src[1][2]; b = src[1][3]; dst[1][2] = a; dst[1][3] = b;
+    a = src[2][0]; b = src[2][1]; dst[2][0] = a; dst[2][1] = b;
+    a = src[2][2]; b = src[2][3]; dst[2][2] = a; dst[2][3] = b;
+    a = src[3][0]; b = src[3][1]; dst[3][0] = a; dst[3][1] = b;
+    a = src[3][2]; b = src[3][3]; dst[3][2] = a; dst[3][3] = b;
 }
 
 s32 fn_80153AC0(void) {
