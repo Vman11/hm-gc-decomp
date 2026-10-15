@@ -161,6 +161,19 @@ void InitMetroTRK_BBA(void) {
 
 }
 
+typedef void (*voidfunctionptr)(void);
+extern voidfunctionptr _ctors[];
+void __init_user(void) {
+    __init_cpp();
+}
+
+void *fn_800BAC18(u32 *arg0, u32 arg1) {
+    if (*arg0 > arg1) {
+        return (u8 *)arg0 + arg1 * 0x1C + 4;
+    }
+    return NULL;
+}
+
 void fn_800BBBD4(UnkStep* arg0) {
     if (arg0->unk10 != arg0->unkC) {
         arg0->unk10 += arg0->unk8;
