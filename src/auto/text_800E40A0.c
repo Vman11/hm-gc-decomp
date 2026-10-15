@@ -13,6 +13,11 @@ int OSDisableInterrupts(void);
 int OSRestoreInterrupts(int);
 void fn_800F0CC4(u32, void*, u32);
 
+extern u8 lbl_8029BFB0[];
+u8 *fn_800E4108(void) {
+    return lbl_8029BFB0;
+}
+
 void __end_critical_region(void) {
 
 }
