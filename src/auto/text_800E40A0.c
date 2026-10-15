@@ -71,6 +71,11 @@ void fn_800F04BC(void) {
     fn_800ED618();
 }
 
+void fn_800ED954(void);
+void fn_800F04DC(void) {
+    fn_800ED954();
+}
+
 f32 fn_800F051C(f32 x) {
     return fn_800F04FC(x);
 }
