@@ -7,9 +7,8 @@ void fn_8015C310(void *arg0, s32 arg1, s32 arg2) {
         M2C_FIELD(arg0, u8 **, 0x18)[arg1] = arg2;
     } else if (flags & 0x20) {
         M2C_FIELD(arg0, s32 **, 0x18)[arg1] = arg2;
-    } else {
-        M2C_FIELD(arg0, u16 **, 0x18)[arg1] = arg2;
     }
+    M2C_FIELD(arg0, u16 **, 0x18)[arg1] = arg2;
 }
 
 s32 fn_8015C34C(void *arg0, s32 arg1) {
