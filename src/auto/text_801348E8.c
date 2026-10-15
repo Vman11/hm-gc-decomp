@@ -11,6 +11,10 @@ u8 *fn_801348F0(void) {
     return lbl_8032C2D0;
 }
 
+s32 fn_801348FC(void) {
+    return 0;
+}
+
 void fn_80134904(void) {
 
 }
