@@ -801,6 +801,10 @@ s32 fn_800C2600(void) {
     return lbl_8035A6DC;
 }
 
+s32 fn_800C4768(void) {
+    return *(s32 *)0xCC006C00 & 1;
+}
+
 void fn_800C6C2C(void) {
 
 }
