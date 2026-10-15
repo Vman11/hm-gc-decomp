@@ -24,7 +24,7 @@ void fn_80137B40(void *arg0) {
 }
 
 extern u16 lbl_80364194;
-void fn_80137B88(void *arg0, s32 arg1, s32 arg2, u8 arg3, s8 arg4) {
+void fn_80137B88(void *arg0, s32 arg1, s32 arg2, u32 arg3, s8 arg4) {
     u8 *p = arg0;
     *(s32 *)(p + 8) = arg1;
     if (arg2 != 0) {
