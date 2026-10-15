@@ -47,6 +47,21 @@ void fn_801FA158(void *arg0, f32 farg0) {
     M2C_FIELD(arg0, f32 *, 0x8C) = var_f1;
 }
 
+void fn_801FA170(void *arg0, f32 farg0) {
+    extern f32 lbl_80365558;
+    extern f32 lbl_80365560;
+    f32 var_f1;
+
+    var_f1 = farg0;
+    if (var_f1 < lbl_80365558) {
+        var_f1 = lbl_80365558;
+    }
+    if (var_f1 > lbl_80365560) {
+        var_f1 = lbl_80365560;
+    }
+    M2C_FIELD(arg0, f32 *, 0x88) = var_f1;
+}
+
 void fn_801FA198(void *arg0, f32 farg0, f32 farg1) {
     M2C_FIELD(arg0, f32 *, 0x80) = farg0;
     M2C_FIELD(arg0, f32 *, 0x84) = farg1;
