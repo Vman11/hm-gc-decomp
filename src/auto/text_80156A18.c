@@ -37,6 +37,10 @@ s32 fn_80156A98(void *arg0, s32 arg1) {
     return M2C_FIELD(arg0, s32 *, 0xB0) + (arg1 << 6);
 }
 
+s32 fn_80156AA8(void *arg0, s32 arg1) {
+    return M2C_FIELD(arg0, s32 *, 0xA8) + (arg1 << 6);
+}
+
 void fn_80156AB8(void) {
 
 }
