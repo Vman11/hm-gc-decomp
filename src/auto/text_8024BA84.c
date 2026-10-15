@@ -2,3 +2,5 @@
 #include "common.h"
 
 extern f32 lbl_8036639C;
+
+extern f32 lbl_8036639C;
