@@ -130,6 +130,17 @@ s32 fn_802753F0(void) {
     return (u32)(((u64)now * 0xCF2049A1ULL) >> 47) + t;
 }
 
+void fn_8027550C(u32 *dst) {
+    u32 high1, low, high2;
+    do {
+        high1 = __mftbu();
+        low = __mftb();
+        high2 = __mftbu();
+    } while (high1 != high2);
+    dst[0] = high1;
+    dst[1] = low;
+}
+
 u32 fn_80275578(u32 hi, u32 lo, u32 d) {
     u64 n;
     u32 inv;
@@ -173,6 +184,14 @@ void fn_8027564C(void *arg0, int arg1) {
     if (*(s32 *)((u8 *)arg0 + 0x54) != 0) {
         fn_800C9A0C(*(s32 *)((u8 *)arg0 + 0x54), arg1);
     }
+}
+
+s32 fn_8027569C(void *arg0) {
+    u8 *p = *(u8 **)((u8 *)arg0 + 0x50);
+    u32 shift = *(u32 *)((u8 *)arg0 + 0x60);
+    u32 value = *(u32 *)(p + 0x1B2);
+    u32 base = *(u32 *)((u8 *)arg0 + 0x58);
+    return (value << shift) - base;
 }
 
 void *memset();
@@ -910,6 +929,10 @@ void fn_8028A7A4(void) {
 }
 
 void fn_8028A7A8(void) {
+
+}
+
+void fn_8028A7AC(void) {
 
 }
 
