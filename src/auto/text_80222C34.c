@@ -24,3 +24,14 @@ void fn_80222C34(void *arg0) {
         lbl_8035B6E4 = 1;
     }
 }
+extern f32 lbl_80365A70;
+extern s32 lbl_8035B6E4;
+typedef struct {
+    u8 pad[0x26C];
+    f32 unk26C;
+    f32 unk270;
+    f32 unk274;
+    f32 unk278;
+    s32 unk27C;
+    s32 unk280;
+} Fn80222C34;
