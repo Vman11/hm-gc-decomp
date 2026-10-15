@@ -9,6 +9,10 @@ s32 fn_80154308(void) {
     return 0;
 }
 
+u8* fn_80154310(u8* arg0) {
+    return arg0 + 0x2C;
+}
+
 s32 fn_80154318(void) {
     return 0;
 }
