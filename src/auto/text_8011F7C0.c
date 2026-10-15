@@ -25,3 +25,7 @@ void fn_8011F7DC(void) {
 
 }
 
+void fn_8011F7E0(void) {
+
+}
+
