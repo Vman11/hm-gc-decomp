@@ -1279,6 +1279,12 @@ void fn_800D7994(void *arg0, f32 *arg1, f32 *arg2, f32 *arg3) {
     *arg3 = M2C_FIELD(arg0, f32 *, 0x30);
 }
 
+void fn_800D79B0(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
+    M2C_FIELD(arg0, f32 *, 0x34) = (f32) -farg0;
+    M2C_FIELD(arg0, f32 *, 0x38) = (f32) -farg1;
+    M2C_FIELD(arg0, f32 *, 0x3C) = (f32) -farg2;
+}
+
 void fn_800D79CC(void *lt_obj, f32 *nx, f32 *ny, f32 *nz) {
     *nx = -*(f32 *)((u8 *)lt_obj + 0x34);
     *ny = -*(f32 *)((u8 *)lt_obj + 0x38);
