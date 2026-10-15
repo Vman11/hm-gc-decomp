@@ -11,4 +11,8 @@ typedef struct {
 } UnkArg802079CC;
 
 extern Unk80356920 lbl_80356920[];
-extern s32 lbl_8035B19C;
+extern volatile s32 lbl_8035B19C;
+
+void fn_802079CC(UnkArg802079CC* arg0) {
+    lbl_8035B19C = lbl_80356920[arg0->unk4].unk20 = 0;
+}
