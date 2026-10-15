@@ -13,3 +13,8 @@ void fn_801FBC7C(s32 *arg0) {
 void fn_801FBC8C(s32 *arg0) {
     *arg0 |= lbl_803655AC;
 }
+
+void fn_801FBCB4(s32 *arg0) {
+    *arg0 &= 0xFFFFFFFE;
+}
+
