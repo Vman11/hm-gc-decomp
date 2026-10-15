@@ -1241,6 +1241,11 @@ u16 fn_800D665C(void) {
     return M2C_FIELD(__peReg, u16 *, 0xE);
 }
 
+void fn_800D746C(s32 arg0) {
+    extern void *__GXData;
+    M2C_FIELD(__GXData, s32 *, 0x1EC) = (s32) ((M2C_FIELD(__GXData, s32 *, 0x1EC) & ~0x180) | ((arg0 << 7) & 0x180));
+}
+
 void fn_800D77C8(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
     M2C_FIELD(arg0, f32 *, 0x1C) = farg0;
     M2C_FIELD(arg0, f32 *, 0x20) = farg1;
