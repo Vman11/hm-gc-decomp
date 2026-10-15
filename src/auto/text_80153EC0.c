@@ -4,6 +4,14 @@
 s32 fn_80153F50(void) {
     return 0x400;
 }
+
+s32 fn_80153F58(s32 arg0, u32 arg1) {
+    if (arg1 == 4) {
+        return 8;
+    }
+    return 4;
+}
+
 typedef struct {
     u32 unk0;
     u32 unk4;
