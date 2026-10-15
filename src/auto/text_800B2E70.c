@@ -1,6 +1,11 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
 
+extern s32 __OSArenaHi_8035A578;
+s32 OSGetArenaHi(void) {
+    return __OSArenaHi_8035A578;
+}
+
 void fn_800B9624(void) {
 
 }
