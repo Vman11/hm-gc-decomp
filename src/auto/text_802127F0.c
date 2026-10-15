@@ -9,3 +9,12 @@ typedef struct {
     s32 count;
     s32 unk14;
 } UnkBuf_802127F0;
+
+void fn_802127F0(UnkBuf_802127F0* buf) {
+    buf->start = NULL;
+    buf->end = NULL;
+    buf->unk8 = -1;
+    buf->unkC = -1;
+    buf->count = 0;
+    buf->unk14 = 0;
+}
