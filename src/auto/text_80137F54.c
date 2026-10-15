@@ -6,10 +6,10 @@ extern u8 lbl_802E55B8[];
 extern u8 lbl_802E55B8[];
 
 void fn_80137F54(void *arg0) {
-    unsigned char *p = (unsigned char *)arg0;
+    u8 *p = (u8 *)arg0;
     *(void **)(p + 0x14) = lbl_802E55B8;
-    *(unsigned int *)(p + 8) = 0;
-    *(unsigned short *)(p + 0xC) = 0;
+    *(u32 *)(p + 8) = 0;
+    *(u16 *)(p + 0xC) = 0;
     p[0xF] = 0;
     p[0x10] = 0;
     p[0xE] = 0;
