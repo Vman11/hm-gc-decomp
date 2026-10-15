@@ -3,3 +3,8 @@
 
 void fn_80206A04(void) {
 }
+
+void fn_80206A10(void) {
+
+}
+
