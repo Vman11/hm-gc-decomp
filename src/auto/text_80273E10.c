@@ -93,6 +93,16 @@ void fn_802745BC(void) {
     }
 }
 
+void fn_80274664(void) {
+    extern u32* lbl_8035B868;
+    u32 i;
+    lbl_8035B868 = OSGetArenaLo();
+    OSSetArenaLo((u8*)lbl_8035B868 + 0x4000);
+    for (i = 0; i < 0x4000; i += 4) {
+        *(u32*)((u8*)lbl_8035B868 + i) = 0;
+    }
+}
+
 void fn_802747D0(u32 arg0, u32 arg1, s32 arg2) {
     u32 *p = (u32 *)fn_80274D04(arg0);
     p[0] = ((arg0 >> 22) & 0x3F) | 0x80000000;
@@ -1462,6 +1472,21 @@ void fn_8028A7B8(void) {
 }
 
 void fn_8028A7BC(void) {
+}
+
+void fn_8028B480(s32 n, u32 *dst, u32 *src) {
+    while (n--) {
+        u32 v = *src++;
+        u32 t0 = v & 0xFF000000;
+        u32 t1 = v & 0xFF0000;
+        u32 t2 = v & 0xFF00;
+        u32 t3 = v & 0xFF;
+        dst[0] = t0 + (t0 >> 16) + 0x800080;
+        dst[1] = (t1 << 8) + (t1 >> 8) + 0x800080;
+        dst[2] = (t2 << 16) + t2 + 0x800080;
+        dst[3] = (t3 << 24) + (t3 << 8) + 0x800080;
+        dst += 4;
+    }
 }
 
 #pragma pop
