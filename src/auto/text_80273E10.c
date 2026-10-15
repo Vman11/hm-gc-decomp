@@ -200,7 +200,7 @@ void *arg0;
     fn_8027564C((u8 *)arg0 + 0x78, 0);
 }
 
-s32 fn_80275DD8();
+s32 fn_80275DD8(void *, u32, void *);
 void fn_80275F18(void *);
 void fn_80275F08(void);
 void fn_80275FC0(void *arg0) {
