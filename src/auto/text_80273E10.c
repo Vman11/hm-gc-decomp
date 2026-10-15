@@ -26,11 +26,10 @@ void fn_80274E0C(void) {
 }
 
 u32 fn_80275578(u32 hi, u32 lo, u32 d) {
-    s64 n;
+    u64 n;
     u32 inv;
     u32 d16;
     u32 q;
-    u32 t;
     s32 s;
     s32 sh;
     s32 mask;
@@ -39,24 +38,22 @@ u32 fn_80275578(u32 hi, u32 lo, u32 d) {
         s = __cntlzw(d);
         return (lo >> (31 - s)) | (hi << (s + 1));
     }
-    n = ((u64)hi << 32) | lo;
-    d16 = (d + 0xFFFF) >> 16;
     inv = 0xFFFFFFFF / d;
+    d16 = (d + 0xFFFF) >> 16;
     q = 0;
+    n = ((u64)hi << 32) | lo;
     if (d16 != 0) {
         s = __cntlzw(hi);
         q = (hi << s) / d16;
         sh = 16 - s;
         mask = sh >> 31;
         q = (q >> (-sh & mask)) << (sh & ~mask);
-        n -= (u64)q * (u64)d;
+        n -= (u64)q * d;
     }
-    if ((s32)(n >> 32) != 0) {
-        do {
-            t = inv * (u32)(n >> 32);
-            n -= (u64)t * (u64)d;
-            q += t;
-        } while ((s32)(n >> 32) != 0);
+    while ((u32)(n >> 32) != 0) {
+        u32 t = inv * (u32)(n >> 32);
+        n -= (u64)t * d;
+        q += t;
     }
     return q + (u32)n / d;
 }
@@ -137,8 +134,6 @@ void fn_80277114(u8 *arg0) {
     fn_80283E90(lbl_802F385C, arg0 + 0xFC);
 }
 
-s32 fn_802753F0(void);
-void fn_80276B84(void* arg0);
 s32 fn_802771B8(s32* arg0, s32 arg1) {
     s32 v = arg0[-1];
     if (v == arg1) {
