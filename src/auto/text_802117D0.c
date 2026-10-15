@@ -4,3 +4,8 @@
 void fn_802117D0(void) {
 
 }
+
+s32 fn_802117D4(void) {
+    return 0;
+}
+
