@@ -77,6 +77,18 @@ s32 fn_8016374C(void *arg0) {
     return M2C_FIELD(arg0, s32 *, 0x1AD4);
 }
 
+void fn_80163754(void *arg0) {
+    M2C_FIELD(arg0, s32 *, 0x1AD4) = 0;
+    M2C_FIELD(arg0, s32 *, 0x1AD8) = 0;
+    M2C_FIELD(arg0, s32 *, 0x1ADC) = 0;
+    M2C_FIELD(arg0, s32 *, 0x1AE0) = 0;
+    M2C_FIELD(arg0, s32 *, 0x1AE4) = 0;
+    M2C_FIELD(arg0, s32 *, 0x1AE8) = 0;
+    M2C_FIELD(arg0, s32 *, 0x1AEC) = 0;
+    M2C_FIELD(arg0, s32 *, 0x1AF0) = 0;
+    M2C_FIELD(arg0, s32 *, 0x1AF4) = 0;
+}
+
 s32 fn_80163780(void *arg0) {
     return M2C_FIELD(arg0, s32 *, 0x1ACC);
 }
