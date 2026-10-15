@@ -6,6 +6,11 @@ s32 fn_801348E8(void) {
     return lbl_8035AC38;
 }
 
+extern u8 lbl_8032C2D0[];
+u8 *fn_801348F0(void) {
+    return lbl_8032C2D0;
+}
+
 void fn_80134904(void) {
 
 }
