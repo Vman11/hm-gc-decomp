@@ -109,6 +109,12 @@ void cbForStateError(u32 intType) {
     stateReady();
 }
 
+void fn_800BDD08(void) {
+    __DVDStoreErrorCode(0x01234568);
+    DVDReset();
+    cbForStateError(0);
+}
+
 extern unsigned int lbl_8035A6F0;
 extern unsigned int lbl_8035A6C0;
 extern void OSDisableInterrupts(void);
