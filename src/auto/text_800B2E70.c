@@ -41,6 +41,12 @@ s32 PPCMfmsr(void) { return __MFMSR(); }
 
 void PPCMtl2cr(u32 value) { __mtspr(1017, value); }
 
+s32 PPCMffpscr(void) {
+    union { f64 f; u32 u[2]; } fpscr;
+    fpscr.f = __mffs();
+    return fpscr.u[1];
+}
+
 s32 OSGetArenaHi(void) {
     return __OSArenaHi_8035A578;
 }
@@ -140,22 +146,22 @@ unsigned int fn_800C0BD0(unsigned int arg0) {
     return old;
 }
 
-char *fn_800C0C14(unsigned int arg0) {
+char *fn_800C0C14(u32 arg0) {
     switch (arg0) {
     case 0: return lbl_802DA610 + 0x44;
-    case 1: return lbl_802DA610 + 0x6A;
+    case 1: return lbl_802DA610 + 0x6a;
     case 2: return lbl_802DA610 + 0x90;
-    case 3: return lbl_802DA610 + 0xB6;
+    case 3: return lbl_802DA610 + 0xb6;
     case 4: return lbl_802DA610 + 0x44;
-    case 5: return lbl_802DA610 + 0x6A;
-    case 6: return lbl_802DA610 + 0xDC;
+    case 5: return lbl_802DA610 + 0x6a;
+    case 6: return lbl_802DA610 + 0xdc;
     case 7: return lbl_802DA610 + 0x102;
     case 8: return lbl_802DA610 + 0x128;
-    case 9: return lbl_802DA610 + 0x14E;
+    case 9: return lbl_802DA610 + 0x14e;
     case 10: return lbl_802DA610 + 0x90;
-    case 11: return lbl_802DA610 + 0xB6;
+    case 11: return lbl_802DA610 + 0xb6;
     case 12: return lbl_802DA610 + 0x174;
-    case 13: return lbl_802DA610 + 0x19A;
+    case 13: return lbl_802DA610 + 0x19a;
     default: return 0;
     }
 }
@@ -231,6 +237,11 @@ void fn_800CCC78(void) {
 extern s32 lbl_8035A920;
 s32 fn_800D51D0(void) {
     return lbl_8035A920;
+}
+
+extern s32 lbl_8035A924;
+s32 fn_800D51D8(void) {
+    return lbl_8035A924;
 }
 
 void fn_800D79CC(void *lt_obj, f32 *nx, f32 *ny, f32 *nz) {
