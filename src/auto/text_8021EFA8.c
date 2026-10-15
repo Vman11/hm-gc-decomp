@@ -3,6 +3,10 @@
 
 extern s32 lbl_8035B258;
 extern s32 lbl_8035B25C;
+f32 fn_8021EFA8(f32 *arg0, f32 *arg1) {
+    return arg0[3] + (arg1[0] * arg0[0] + arg1[1] * arg0[1] + arg1[2] * arg0[2]);
+}
+
 void fn_8021EFD8(void) {
     lbl_8035B25C = 0;
 }
