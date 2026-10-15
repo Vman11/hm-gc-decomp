@@ -27,6 +27,17 @@ void fn_800377DC(void) {
 
 }
 
+s32 fn_800377E0(void *arg0, s32 arg1) {
+    switch (arg1) {                                 /* irregular */
+    case 0x7D:
+        return M2C_FIELD(arg0, s32 *, 8);
+    case 0x7E:
+        return M2C_FIELD(arg0, s32 *, 0xC);
+    default:
+        return 0;
+    }
+}
+
 void fn_80037870(void *arg0) {
     M2C_FIELD(arg0, s32 *, 4) = 0;
     M2C_FIELD(arg0, s32 *, 8) = 0;
