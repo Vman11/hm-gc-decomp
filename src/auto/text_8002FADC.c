@@ -158,3 +158,7 @@ int fn_8002FC10(void) {
 return 1;
 }
 
+int fn_8002FC18(void) {
+return 1;
+}
+
