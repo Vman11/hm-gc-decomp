@@ -304,6 +304,14 @@ void fn_800C6C2C(void) {
 
 }
 
+void fn_800C75D0(void** arg0) {
+    if (lbl_8035A7F0 != 0) {
+        *arg0 = lbl_80308780[lbl_8035A810];
+        return;
+    }
+    *arg0 = NULL;
+}
+
 extern u8 lbl_80308780[][0x780];
 extern u8 lbl_80309E00[][0x780];
 extern s32 lbl_8035A814;
