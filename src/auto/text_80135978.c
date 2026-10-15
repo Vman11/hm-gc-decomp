@@ -30,3 +30,7 @@ void fn_80135A40(s32 *arg0) {
     arg0[0x124 / 4] = 0;
 }
 
+void fn_80135A4C(s32 *arg0, s32 arg1) {
+    arg0[0x124 / 4] = arg1;
+}
+
