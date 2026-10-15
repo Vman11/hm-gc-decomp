@@ -43,7 +43,7 @@ void PPCMtl2cr(u32 value) { __mtspr(1017, value); }
 
 void PPCMtdec(u32 value) { __mtspr(22, value); }
 
-void fn_800B2EA8(void) {}
+void fn_800B2EA8(void) { __sc(); }
 
 void PPCHalt(void) { __sync(); for (;;) {} }
 
@@ -258,6 +258,11 @@ void fn_800C807C(void) {
 extern s32 lbl_8035A858;
 void fn_800C885C(s32 arg0) {
     lbl_8035A858 = arg0;
+}
+
+extern u8 lbl_80310520[];
+u8 *fn_800C8864(void) {
+    return lbl_80310520;
 }
 
 void fn_800C8C94(void) {
