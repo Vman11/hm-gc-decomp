@@ -277,7 +277,7 @@ s32 fn_80276758(u8 *arg0, s32 arg1) {
 void fn_80275C64(void);
 s32 fn_802753F0(void);
 void fn_80276B84(void* arg0);
-void fn_80275F98(void);
+void fn_80275F98();
 void fn_80276058(void *);
 void fn_8027564C(void *, int);
 void fn_802756B8(void *, int, int, int);
@@ -383,6 +383,17 @@ void fn_8027B790(void *);
 extern u8 lbl_802F3898[];
 u8 *fn_8027A710(void) {
     return lbl_802F3898;
+}
+
+void fn_8027B168(void *);
+void fn_800BD474(void *);
+void OSDisableInterrupts(void);
+void OSRestoreInterrupts(void);
+#pragma push
+#pragma use_lmw_stmw on
+void fn_8027B54C(void *arg0) {
+ fn_8027B168(arg0);
+ if (*(s32 *)((u8 *)arg0+0xA8)==0) fn_800BD474((u8 *)arg0+0x4C);
 }
 
 extern void (*lbl_803590CC)(void *);
@@ -511,6 +522,8 @@ s32 fn_8027E804(s32 count, s32 base) {
     return base + count;
 }
 
+#pragma push
+#pragma opt_unroll_loops off
 void fn_8027E8C4(s32 unused, s32 count) {
     extern u32 lbl_80300460[];
     while (count--) {
@@ -524,9 +537,7 @@ void fn_8027E8C4(s32 unused, s32 count) {
         lbl_80300860[0] += 8;
     }
 }
-
-#pragma push
-#pragma opt_unroll_loops off
+#pragma pop
 void fn_8027F794(s32 arg0, s32 n) {
     u16 v;
     while (n-- != 0) {
