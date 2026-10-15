@@ -16,6 +16,10 @@ void fn_8002FAE8(s32 arg0) {
     lbl_80359F28 = arg0;
 }
 
+u8 fn_8002FAF0(void* arg0, s32 arg1) {
+    return arg1 == 0;
+}
+
 void fn_8002FAFC(void) {
 
 }
