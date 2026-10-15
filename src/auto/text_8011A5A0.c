@@ -7,3 +7,8 @@ void fn_8011A5A0(void) {
 
 void fn_8011A5A4(void) {
 }
+
+void fn_8011A5A8(void) {
+
+}
+
