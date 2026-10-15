@@ -8,3 +8,10 @@ void fn_800FA988(s32* arg0) {
     arg0[1] = 0;
     arg0[2] = 0;
 }
+
+extern u8 lbl_803636E0;
+void *fn_800FA9A8(void) {
+    extern u8 lbl_803636E0;
+    return &lbl_803636E0;
+}
+
