@@ -8,3 +8,8 @@ void fn_801358BC(void) {
 void fn_801358C0(void) {
 
 }
+
+void fn_801358C4(void) {
+
+}
+
