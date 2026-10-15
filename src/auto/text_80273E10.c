@@ -76,7 +76,7 @@ u32 fn_802744F8(u32 addr) {
 
 BOOL fn_80274538(u32 addr) {
     extern u32* lbl_8035B86C;
-    return (lbl_8035B86C[addr >> 12] & 0x7FFFFFFF) != 0;
+    return (lbl_8035B86C[(addr >> 12) & 0x1FFF] & 0x7FFFFFFF) != 0;
 }
 
 void fn_80274558(u32 addr) {
