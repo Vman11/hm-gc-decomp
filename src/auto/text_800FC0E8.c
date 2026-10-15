@@ -8,3 +8,10 @@ typedef struct {
 } UnkStruct_800FC0E8;
 
 extern u8 lbl_802E21A0[];
+
+void fn_800FC0E8(UnkStruct_800FC0E8* arg0) {
+    arg0->unk8 = lbl_802E21A0;
+    arg0->unk0 = 0;
+    arg0->unk4 = 0;
+    arg0->unk6 = 0;
+}
