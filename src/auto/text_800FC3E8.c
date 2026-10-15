@@ -2,6 +2,21 @@
 #include "common.h"
 
 typedef struct {
+    f32 x, y, z;
+} UnkVec3;
+
+typedef struct {
+    u32 flags;
+    UnkVec3 unk4;
+    UnkVec3 unk10;
+    u8 pad1C[8];
+    UnkVec3 unk24;
+    UnkVec3 unk30;
+    UnkVec3 unk3C;
+    UnkVec3 unk48;
+} UnkBox;
+
+typedef struct {
     f32 key;
     u32 value;
 } UnkPair;
