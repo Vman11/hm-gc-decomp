@@ -20,6 +20,30 @@ void fn_80118F2C(UnkList_80118F3C* list, s32 arg1, s32 arg2, s32 arg3) {
     list->count = arg3;
 }
 
+BOOL fn_80118F3C(UnkList_80118F3C* list, u32 item) {
+    u32 i;
+
+    for (i = 0; item != list->items[i] && i < list->count; i++) {
+    }
+    if (item != list->items[i]) {
+        return FALSE;
+    }
+    for (; i < list->count - 1; i++) {
+        list->items[i] = list->items[i + 1];
+    }
+    list->count--;
+    return TRUE;
+}
+
 void fn_80118FC0(void) {
 
 }
+
+BOOL fn_80118FC4(UnkList_80118F3C* list, u32 item) {
+    if (list->count == (u32)list->unk4) {
+        return FALSE;
+    }
+    list->items[list->count++] = item;
+    return TRUE;
+}
+
