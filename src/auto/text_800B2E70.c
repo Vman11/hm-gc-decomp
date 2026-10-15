@@ -520,6 +520,10 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
 
 void fn_800D8238(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
 
+s32 fn_800D8318(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x14);
+}
+
 void fn_800D8F00(void) {
 
 }
