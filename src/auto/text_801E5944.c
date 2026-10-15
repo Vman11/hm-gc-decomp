@@ -13,11 +13,11 @@ void fn_801E5944(void *arg0) {
     *(s32 *)((char *)arg0 + 0x10) = 0;
     *(s32 *)((char *)arg0 + 0x4) = 0;
     *(s32 *)((char *)arg0 + 0x14) = 0;
-    *(s16 *)((char *)arg0 + 0x1A) = 0;
-    *(s16 *)((char *)arg0 + 0x1C) = 0;
-    *(s16 *)((char *)arg0 + 0x1E) = 0;
-    *(s16 *)((char *)arg0 + 0x18) = 0;
-    *(s16 *)((char *)arg0 + 0x20) = 0;
+    *(u16 *)((char *)arg0 + 0x1A) = 0;
+    *(u16 *)((char *)arg0 + 0x1C) = 0;
+    *(u16 *)((char *)arg0 + 0x1E) = 0;
+    *(u16 *)((char *)arg0 + 0x18) = 0;
+    *(u16 *)((char *)arg0 + 0x20) = 0;
 }
 
 void fn_801E5984(s32 arg0) {
