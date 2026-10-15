@@ -1273,6 +1273,12 @@ void fn_800D7984(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
     M2C_FIELD(arg0, f32 *, 0x30) = farg2;
 }
 
+void fn_800D7994(void *arg0, f32 *arg1, f32 *arg2, f32 *arg3) {
+    *arg1 = M2C_FIELD(arg0, f32 *, 0x28);
+    *arg2 = M2C_FIELD(arg0, f32 *, 0x2C);
+    *arg3 = M2C_FIELD(arg0, f32 *, 0x30);
+}
+
 void fn_800D79CC(void *lt_obj, f32 *nx, f32 *ny, f32 *nz) {
     *nx = -*(f32 *)((u8 *)lt_obj + 0x34);
     *ny = -*(f32 *)((u8 *)lt_obj + 0x38);
