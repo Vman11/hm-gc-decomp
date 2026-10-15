@@ -402,7 +402,7 @@ void usr_put_initialize(void) {
 }
 
 u32 fn_800E1150(u32 addr) {
-    if (addr >= lbl_80325D58 && addr < lbl_80325D58 + 0x4000 && (gTRKCPUState.unk238 & 3)) {
+    if (gTRKCPUState.unk238 & 3) {
         return addr;
     }
     if (addr >= 0x7E000000 && addr <= 0x80000000) {
