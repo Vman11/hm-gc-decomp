@@ -21,13 +21,13 @@ f32 fn_801D11F4(u8* arg0) {
 }
 
 f32 fn_801D1258(u8* arg0) {
-    f32 lo;
-    f32 t;
     f32 d;
+    f32 t;
+    f32 lo;
 
     if (*(s32*)(arg0 + 0x168) != 0) {
-        t = *(f32*)(arg0 + 0x48) - *(f32*)(arg0 + 0x19C);
         d = (*(f32*)(arg0 + 0x1A4) - *(f32*)(arg0 + 0x19C)) - (*(f32*)(arg0 + 0x1B4) - *(f32*)(arg0 + 0x1AC));
+        t = *(f32*)(arg0 + 0x48) - *(f32*)(arg0 + 0x19C);
         if (lbl_80365160 != d) {
             lo = *(f32*)(arg0 + 0x170);
             return (*(f32*)(arg0 + 0x174) - lo) * (t / d) + lo;
