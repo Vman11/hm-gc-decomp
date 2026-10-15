@@ -407,6 +407,10 @@ void fn_800C7640(void** arg0) {
     *arg0 = lbl_80308780[lbl_8035A814] + 0x280;
 }
 
+void fn_800C7660(void** arg0) {
+    *arg0 = lbl_80308780[lbl_8035A814] + 0x500;
+}
+
 void fn_800C76D4(void** arg0) {
     *arg0 = lbl_80309E00[lbl_8035A814];
 }
