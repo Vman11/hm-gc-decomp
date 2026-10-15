@@ -21,3 +21,7 @@ void fn_801639F4(void) {
 
 }
 
+void fn_801639FC(void) {
+
+}
+
