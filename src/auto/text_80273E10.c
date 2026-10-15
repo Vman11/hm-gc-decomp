@@ -55,6 +55,10 @@ void fn_802769B8(s32 arg0) {
     fn_800EB764(lbl_80357FC0, arg0);
 }
 
+u8 *fn_802769E4(void) {
+    return lbl_80357FC0;
+}
+
 #pragma push
 #pragma opt_unroll_loops off
 void fn_80276A90(s8 *dst, s16 *src, u32 len) {
