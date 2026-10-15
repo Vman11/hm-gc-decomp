@@ -37,3 +37,10 @@ s32 fn_8011897C(s32 *arg0, s32 arg1) {
     return *arg0;
 }
 
+f32 fn_80118AB0(void *arg0) {
+    if ((s32) M2C_FIELD(arg0, s32 *, 4) == 0) {
+        return M2C_FIELD(arg0, f32 *, 0x30);
+    }
+    return M2C_FIELD(arg0, f32 *, 0x28);
+}
+
