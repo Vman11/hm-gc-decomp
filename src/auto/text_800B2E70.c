@@ -452,6 +452,10 @@ void fn_800CCC78(void) {
 
 }
 
+s32 fn_800D2460(void) {
+    return 0;
+}
+
 extern s32 lbl_8035A920;
 s32 fn_800D51D0(void) {
     return lbl_8035A920;
