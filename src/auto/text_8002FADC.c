@@ -15,3 +15,7 @@ void fn_8002FAFC(void) {
 
 }
 
+int fn_8002FB00(void) {
+return 1;
+}
+
