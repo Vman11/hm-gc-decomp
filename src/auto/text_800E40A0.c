@@ -13,3 +13,7 @@ void __kill_critical_regions(void) {
 
 }
 
+void DBClose(void) {
+
+}
+
