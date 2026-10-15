@@ -4,5 +4,5 @@
 extern s32 lbl_8035AAA8;
 
 void fn_8010B920(s32 arg0) {
-    *(s32 *)0x8035AAA8 = arg0;
+    lbl_8035AAA8 = arg0;
 }
