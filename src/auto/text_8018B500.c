@@ -19,3 +19,10 @@ typedef struct {
     Unk8018B500Entry *unk90;
 } Unk8018B500;
 
+void fn_8018B500(Unk8018B500 *arg0, s32 arg1) {
+    arg0->unk90[arg0->unk78].unk0 = lbl_8035AE40;
+    arg0->unk90[arg0->unk78].unkC = arg1;
+    if (arg0->unk84 < arg0->unk74) {
+        arg0->unk84++;
+    }
+}
