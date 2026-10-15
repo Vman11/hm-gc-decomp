@@ -17,3 +17,8 @@ void fn_800FB48C(void* arg0) {
     *(u8*)((u8*)arg0 + 0x120) = 0;
     *(s32*)((u8*)arg0 + 0x118) = 0;
 }
+
+f32 fn_800FB4DC(void) {
+    return lbl_803636F8;
+}
+
