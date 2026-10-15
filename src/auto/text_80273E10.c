@@ -488,16 +488,16 @@ void fn_80276E38(u8* arg0) {
 }
 
 #pragma pop
-extern s32 lbl_802F3864;
-extern s32 lbl_803580C0;
+extern s32 lbl_802F3864[];
+extern s32 lbl_803580C0[];
 extern s32 lbl_802F3868;
 extern u32 lbl_802F3870;
 extern u32 lbl_802F3874[];
 extern s32 lbl_802F385C;
 void fn_80283E90(s32, void *);
 void fn_80276FA0(s32 arg0, s32 arg1) {
-    lbl_802F3864 = arg0;
-    lbl_803580C0 = arg1;
+    lbl_802F3864[0] = arg0;
+    lbl_803580C0[0] = arg1;
 }
 
 #pragma optimize_for_size on
@@ -539,9 +539,8 @@ void fn_802771D4(u8* arg0, s32 arg1) {
 void fn_80278F28(void *arg0, s32 arg1) {
     s32 old = *(s32 *)((u8 *)arg0 + 0x27C);
     if (old != 0) {
-        s32 value = *(s32 *)((u8 *)arg0 + 0x2B4) + (arg1 - old);
         *(s32 *)((u8 *)arg0 + 0x27C) = 0;
-        *(s32 *)((u8 *)arg0 + 0x2B4) = value;
+        *(s32 *)((u8 *)arg0 + 0x2B4) += arg1 - old;
     }
 }
 
