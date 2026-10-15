@@ -13,3 +13,9 @@ void fn_8018E1F0(void) {
 
 }
 
+void fn_8018E1F4(s32 *arg0) {
+    arg0[1] = -1;
+    arg0[2] = 0;
+    arg0[0] = 0;
+}
+
