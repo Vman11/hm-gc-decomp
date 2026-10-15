@@ -7,3 +7,5 @@ void *fn_8015EAA4(void *arg0, s32 arg1) { return *(u8 **)((u8 *)arg0 + 0x48) + a
 
 void *fn_8015EAB4(void *arg0, s32 arg1) { return *(u8 **)((u8 *)arg0 + 0x40) + arg1 * 0x68; }
 
+void *fn_8015EAE4(void *arg0, s32 arg1) { return *(u8 **)((u8 *)arg0 + 0x44) + arg1 * 0x70; }
+
