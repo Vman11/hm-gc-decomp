@@ -1,6 +1,12 @@
 /* Functions from 0x801FB984 to 0x801FBA4C, found by decomp-toolkit. */
 #include "common.h"
 
+typedef struct {
+    u8 pad[0x2C];
+    u32 count;
+    u32 items[4];
+} UnkList_801FB984;
+
 void fn_801FB984(void *arg0) {
     M2C_FIELD(arg0, s32 *, 0x2C) = 0;
 }
