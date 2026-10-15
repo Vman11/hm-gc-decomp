@@ -9,3 +9,7 @@ void fn_801033F4(void) {
 
 }
 
+void fn_801033F8(void) {
+
+}
+
