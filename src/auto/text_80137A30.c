@@ -8,3 +8,8 @@ s32 fn_80137A44(void) {
 void fn_80137A90(void) {
 
 }
+
+s32 fn_80137A94(void) {
+    return 0;
+}
+
