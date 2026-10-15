@@ -29,8 +29,8 @@ void fn_800F7044(char *s) {
 }
 
 void fn_800F70A8(char *s) {
-    u32 i;
     int c;
+    u32 i;
     for (i = 0; i < 8 && *s > 0; i++, s++) {
         c = *s;
         if (lbl_802E05C8[(u8)c] & 0x40) {
