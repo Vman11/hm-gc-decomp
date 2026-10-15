@@ -76,6 +76,11 @@ s32 PPCMfhid2(void) { return __mfspr(920); }
 
 void PPCMthid2(u32 value) { __mtspr(920, value); }
 
+void OSCreateAlarm(s32 *arg0) {
+    arg0[0] = 0;
+    arg0[1] = 0;
+}
+
 extern int lbl_80359530;
 extern int lbl_8035A568;
 extern int lbl_8035A56C;
