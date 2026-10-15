@@ -9,3 +9,7 @@ void __begin_critical_region(void) {
 
 }
 
+void __kill_critical_regions(void) {
+
+}
+
