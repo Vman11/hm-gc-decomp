@@ -8,3 +8,5 @@ void fn_80131C18(s32 arg0) {
 
 void fn_80131C20(void* arg0) { ((s32*)arg0)[1] = 0; }
 
+void fn_80131C2C(void* arg0, s32 arg1) { ((s32*)arg0)[1] = arg1; }
+
