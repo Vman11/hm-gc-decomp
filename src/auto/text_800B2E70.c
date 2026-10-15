@@ -1,5 +1,14 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
+extern char* lbl_803595E8;
+void OSRegisterVersion(const char*);
+void fn_800C9744(void);
+void fn_800C8C68(void);
+void fn_800C74DC(void);
+void fn_800C8058(void);
+void fn_800C8464(s32);
+void fn_800C6EEC(s32);
+void fn_800C6FF8(void);
 
 extern s32 lbl_80308680[32];
 extern s32 lbl_80308700[32];
@@ -224,6 +233,34 @@ void fn_800B9624(void) {
 
 }
 
+u64 OSGetTime(void) {
+    u32 high1;
+    u32 low;
+    u32 high2;
+
+    do {
+        high1 = __mftbu();
+        low = __mftb();
+        high2 = __mftbu();
+    } while (high1 != high2);
+    return ((u64)high1 << 32) | low;
+}
+
+u32 OSGetTick(void) {
+    return __mftb();
+}
+
+u64 __OSGetSystemTime(void) {
+    u32 enabled;
+    u64 time;
+
+    enabled = OSDisableInterrupts();
+    time = OSGetTime();
+    time += *(volatile u64*)0x800030D8;
+    OSRestoreInterrupts(enabled);
+    return time;
+}
+
 long long fn_800BA5E8(long long arg0) {
     long long result;
     OSDisableInterrupts();
@@ -238,9 +275,7 @@ void InitMetroTRK_BBA(void) {
 
 typedef void (*voidfunctionptr)(void);
 extern voidfunctionptr _ctors[];
-void __init_user(void) {
-    __init_cpp();
-}
+void __init_user(void) { __init_cpp(); }
 
 void *fn_800BAC18(u32 *arg0, u32 arg1) {
     if (*arg0 > arg1) {
@@ -309,6 +344,18 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
         *(u16*)(arg1 + 0x1F8) = lbl_802D9DD8[idx + 1];
         arg0[4] = 0;
     }
+}
+
+BOOL fn_800BD9C0(DVDDir* dir, DVDDirEntry* dirent) {
+    u32 loc = dir->location;
+    if ((loc <= dir->entryNum) || (dir->next <= loc)) {
+        return FALSE;
+    }
+    dirent->entryNum = loc;
+    dirent->isDir = entryIsDir(loc);
+    dirent->name = FstStringStart_8035A660 + stringOff(loc);
+    dir->location = entryIsDir(loc) ? nextDir(loc) : (loc + 1);
+    return TRUE;
 }
 
 int fn_800BDA64(void) {
@@ -425,9 +472,7 @@ void fn_800BE718(u32 intType);
 void fn_800BE634(u32 intType);
 void fn_800BE4E8(void *command);
 extern u8 *IDShouldBe_8035A67C;
-void fn_800BE40C(void *command) {
-    fn_800BCE40(IDShouldBe_8035A67C[8], 10, fn_800BE718);
-}
+void fn_800BE40C(void *command) { fn_800BCE40(IDShouldBe_8035A67C[8], 10, fn_800BE718); }
 
 void fn_800BE474(u32 intType) {
     if (intType == 16) {
@@ -447,6 +492,12 @@ void fn_800BE474(u32 intType) {
 
 void fn_800BE4E8(void *command) {
     fn_800BC76C(BB2_803083C0, 0x20, 0x420, fn_800BE634);
+}
+
+void fn_800BE954(u32 arg0) {
+ if (arg0 == 0x10) { *(s32 *)((u8 *)executing_8035A678 + 0xC) = -1; __DVDStoreErrorCode(0x01234568); DVDReset(); cbForStateError(0); return; }
+ if (arg0 & 1) { lbl_8035A6AC = 0; fn_800BE32C(); return; }
+ fn_800BCBF4(fn_800BDE18);
 }
 
 typedef struct { u8 r, g, b, a; } GXColor;
@@ -581,14 +632,27 @@ void fn_800C8804(void);
 void* fn_800C7190(void);
 void fn_800C71AC(void*);
 void fn_800C7160(void*);
+extern char* lbl_803595E8;
+void OSRegisterVersion(const char*);
+void fn_800C9744(void);
+void fn_800C8C68(void);
+void fn_800C74DC(void);
+void fn_800C8058(void);
+void fn_800C8464(s32);
+void fn_800C6EEC(s32);
 void fn_800C6FF8(void) {
-    s32 i;
-
+    u32 i;
     lbl_8035A7E8 = 0;
     for (i = 0; i < 32; i++) {
-        lbl_80308680[i] = 0;
         lbl_80308700[i] = 0;
+        lbl_80308680[i] = 0;
     }
+}
+
+void fn_800C7160(void* arg0) {
+    *(s32*)arg0 = lbl_80308680[0];
+    lbl_80308680[0] = (s32)arg0;
+    *(s32*)((u8*)arg0 + 0xC) = 0;
 }
 
 void fn_800C75D0(void** arg0) {
@@ -721,11 +785,12 @@ void fn_800F2970(s32);
 void fn_800B3EF8(void *);
 s32 fn_800CDBD8(s32 chan, void *out);
 s32 fn_800F2730(s32 chan);
+s32 fn_800CDB98(void);
+s32 fn_800D16CC(s32, s32, void *);
+s32 fn_800D04AC(s32, void *, void *);
 s32 fn_800D13F8(s32 chan, void *buf, s32 len) {
     s32 result = fn_800D1258(chan, buf, len, fn_800CCC7C);
-    if (result < 0) {
-        return result;
-    }
+    if (result < 0) return result;
     return fn_800CDEF8(chan);
 }
 
@@ -765,6 +830,27 @@ s32 fn_800D14DC(s32 chan) {
     }
     OSRestoreInterrupts(enabled);
     return 0;
+}
+
+s32 fn_800D1D24(s32 chan) {
+    s32 result = fn_800D16CC(chan, fn_800CDB98(), fn_800CCC7C);
+    if (result < 0) return result;
+    return fn_800CDEF8(chan);
+}
+
+s32 fn_800CDEF8(s32);
+s32 fn_800D1D78(void *arg0, char *name) {
+    char a, b;
+    char *p = (char *)arg0 + 8;
+    s32 n = 32;
+    while (--n >= 0) {
+        a = *p++;
+        b = *name++;
+        if (a != b) return 0;
+        if (b == 0) return 1;
+    }
+    if (*name != 0) return 0;
+    return 1;
 }
 
 s32 fn_800D2460(void) {
