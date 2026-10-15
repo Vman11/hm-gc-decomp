@@ -276,6 +276,13 @@ void fn_800B9624(void) {
 
 }
 
+void OSClearStack(u32 arg0) {
+    u32 value = ((arg0 & 255) << 16) | (arg0 << 24) | ((arg0 << 8) & 0xFF00) | (arg0 & 255);
+    u32 end = fn_800B50D0();
+    u32 *p = (u32*)(*(u32*)(*(u32*)0x800000E4 + 0x308) + 4);
+    while ((u32)p < end) *p++ = value;
+}
+
 u64 OSGetTime(void) {
     u32 high1;
     u32 low;
@@ -412,6 +419,39 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
         *(u16*)(arg1 + 0x1F6) = lbl_802D9DD8[idx];
         *(u16*)(arg1 + 0x1F8) = lbl_802D9DD8[idx + 1];
         arg0[4] = 0;
+    }
+}
+
+s32 fn_800BCFAC(void) {
+    extern s32 Callback_8035A618;
+    extern s32 WaitingCoverClose_8035A62C;
+    s32 callback;
+    *(volatile s32*)0xCC006004 = 0;
+    callback = Callback_8035A618;
+    WaitingCoverClose_8035A62C = 0;
+    Callback_8035A618 = 0;
+    return callback;
+}
+
+void __DVDLowSetWAType(s32 arg0, s32 arg1) {
+    extern s32 WorkAroundType_8035A634;
+    extern s32 WorkAroundSeekLocation_8035A638;
+    int enabled = OSDisableInterrupts();
+    WorkAroundType_8035A634 = arg0;
+    WorkAroundSeekLocation_8035A638 = arg1;
+    OSRestoreInterrupts(enabled);
+}
+
+void __DVDFSInit(void) {
+    extern u8* BootInfo_8035A658;
+    extern u32 MaxEntryNum_8035A664;
+    FSTEntry* fst;
+    BootInfo_8035A658 = (u8*)0x80000000;
+    *(FSTEntry* volatile*)&FstStart_8035A65C = *(FSTEntry**)(BootInfo_8035A658 + 0x38);
+    fst = *(FSTEntry* volatile*)&FstStart_8035A65C;
+    if (fst != NULL) {
+        *(volatile u32*)&MaxEntryNum_8035A664 = fst->nextEntryOrLength;
+        FstStringStart_8035A660 = (char*)(fst + *(volatile u32*)&MaxEntryNum_8035A664);
     }
 }
 
@@ -576,7 +616,9 @@ void fn_800BE718(u32 intType);
 void fn_800BE634(u32 intType);
 void fn_800BE4E8(void *command);
 extern u8 *IDShouldBe_8035A67C;
-void fn_800BE40C(void *command) { fn_800BCE40(IDShouldBe_8035A67C[8], 10, fn_800BE718); }
+void fn_800BE40C(void *command) {
+    fn_800BCE40(IDShouldBe_8035A67C[8], 10, fn_800BE718);
+}
 
 void fn_800BE474(u32 intType) {
     if (intType == 16) {
