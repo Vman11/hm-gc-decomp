@@ -53,6 +53,11 @@ void fn_8016CBE8(void *arg0, void *arg1) {
     M2C_FIELD(arg0, void **, 0x1F24) = arg1;
 }
 
+void fn_8016CC28(void *arg0, void *arg1) {
+    M2C_FIELD(arg1, void **, 0x54) = (void *) M2C_FIELD(arg0, void **, 0x1F20);
+    M2C_FIELD(arg0, void **, 0x1F20) = arg1;
+}
+
 s32 fn_8016CC38(s32 arg0) {
     return arg0 + 0x410;
 }
