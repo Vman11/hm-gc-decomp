@@ -21,3 +21,8 @@ void fn_801F5CB0(void *arg0) {
     *(s32 *)(**(u8 ***)*(u8 ***)arg0 + 8) = *(s32 *)((u8 *)arg0 + 8);
 }
 
+void fn_801F5D10(struct S { u32 pad; s32 value; } ****arg0, s32 arg1, s32 *arg2) {
+    *arg2 = (***arg0)->value;
+    (***arg0)->value += arg1;
+}
+
