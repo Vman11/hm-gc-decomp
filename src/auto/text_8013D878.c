@@ -4,3 +4,7 @@
 extern s32 lbl_8035AC70;
 extern s32 lbl_80364308;
 extern s32 lbl_80364308;
+
+s32 *fn_8013D880(void) {
+    return &lbl_80364308;
+}
