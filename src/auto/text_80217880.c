@@ -10,3 +10,11 @@ typedef struct {
     u32 unkC;
 } Struct80217880;
 
+void fn_80217880(Struct80217880 *dst, const Struct80217880 *src) {
+    dst->unk0 = src->unk0 & 0xFE;
+    dst->unk1 = src->unk1;
+    dst->unk2 = src->unk2;
+    dst->unk4 = src->unk4;
+    dst->unk8 = src->unk8;
+    dst->unkC = src->unkC;
+}
