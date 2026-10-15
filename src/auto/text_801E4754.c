@@ -2,3 +2,6 @@
 #include "common.h"
 
 void fn_801E4754(void* arg0, s32 arg1) { ((s32*)arg0)[1] = arg1; }
+
+void fn_801E475C(void* arg0) { ((s32*)arg0)[1] = 0; }
+
