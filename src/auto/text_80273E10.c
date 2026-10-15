@@ -119,3 +119,8 @@ void fn_802771D4(u8* arg0, s32 arg1) {
     *(s32*)(p + 0x348) = arg1;
 }
 
+extern u8 lbl_802F3898[];
+u8 *fn_8027A710(void) {
+    return lbl_802F3898;
+}
+
