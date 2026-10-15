@@ -6,6 +6,17 @@ void fn_801FA118(s32 arg0) {
     lbl_8035B110 = arg0;
 }
 
+void fn_801FA120(void *arg0, f32 farg0) {
+    extern f32 lbl_80365558;
+    f32 var_f1;
+
+    var_f1 = farg0;
+    if (var_f1 < lbl_80365558) {
+        var_f1 = lbl_80365558;
+    }
+    M2C_FIELD(arg0, f32 *, 0x94) = var_f1;
+}
+
 void fn_801FA138(void) {
 
 }
