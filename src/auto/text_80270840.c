@@ -13,3 +13,8 @@ void fn_80270840(s32 *arg0) {
     arg0[0x41] = 0;
     arg0[0x42] = 0;
 }
+
+void fn_80270868(s32 arg0) {
+    lbl_8035B7F0 = arg0;
+}
+
