@@ -3,6 +3,10 @@
 
 extern s32 lbl_8035ABC0;
 
+void fn_8012C2EC(s32 arg0) {
+    lbl_8035ABC0 = arg0;
+}
+
 s32 fn_8012C2F4(void) {
     return 1;
 }
