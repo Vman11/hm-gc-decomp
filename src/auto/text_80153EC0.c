@@ -15,6 +15,10 @@ typedef struct {
     Unk80153EC8Entry entries[1];
 } Unk80153EC8;
 
+u32 fn_80153EC0(Unk80153EC8 *arg0) {
+    return arg0->count;
+}
+
 s32 fn_80153F3C(void) {
     return 0x10;
 }
