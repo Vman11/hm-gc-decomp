@@ -4,3 +4,8 @@
 u8 fn_80268004(void* arg0) {
     return *(s32*)((u8*)arg0 + 0x5BC) == 0;
 }
+
+void fn_80268014(void* arg0) {
+    *(s32*)((u8*)arg0 + 0x540) = 0;
+}
+
