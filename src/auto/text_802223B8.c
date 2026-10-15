@@ -3,3 +3,7 @@
 
 void fn_802223B8(void) {
 }
+
+void fn_802223BC(void) {
+}
+
