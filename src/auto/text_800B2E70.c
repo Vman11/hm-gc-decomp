@@ -47,7 +47,7 @@ s32 fn_800E2584(void);
 
 extern TRKState_unk gTRKState;
 extern TRKCPUState_unk gTRKCPUState;
-extern u32 lbl_80325D58;
+extern u32 lbl_80325D58[];
 
 extern s32 __OSArenaHi_8035A578;
 s32 PPCMfmsr(void) { return __MFMSR(); }
