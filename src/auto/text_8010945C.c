@@ -3,4 +3,6 @@
 
 extern s32 lbl_8035AA90;
 
+extern s32 lbl_8035AA90;
+
 extern s32 lbl_8035AA98;
