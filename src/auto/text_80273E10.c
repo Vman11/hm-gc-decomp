@@ -32,9 +32,13 @@ void fn_8027564C(void *, int);
 void fn_802756B8(void *, int, int, int);
 extern unsigned int lbl_802F3848[2];
 void fn_802767E0(void);
-void fn_802767C0(void) { fn_80275C64(); }
+void fn_802767C0(void)
+{
+    fn_80275C64();
+}
 
-void *fn_80276930(unsigned int *arg0) {
+void *fn_80276930(u32 *arg0)
+{
     if (arg0 == 0) {
         lbl_802F3848[0] = 0;
         lbl_802F3848[1] = 0;
@@ -45,6 +49,23 @@ void *fn_80276930(unsigned int *arg0) {
     return (void *)fn_802767E0;
 }
 
+extern u8 lbl_80357FC0[];
+void fn_800EB764(void *, s32);
+void fn_802769B8(s32 arg0) {
+    fn_800EB764(lbl_80357FC0, arg0);
+}
+
+#pragma push
+#pragma opt_unroll_loops off
+void fn_80276A90(s8 *dst, s16 *src, u32 len) {
+    u32 n;
+    for (n = len >> 1; n != 0; n--) {
+        *dst++ = *src++ >> 8;
+    }
+}
+#pragma pop
+s32 fn_802753F0(void);
+void fn_80276B84(void* arg0);
 extern s32 lbl_802F3864;
 extern s32 lbl_803580C0;
 extern s32 lbl_802F3868;
@@ -74,5 +95,23 @@ void fn_80276FD8(u32 count, u32 *src) {
 
 void fn_80277114(u8 *arg0) {
     fn_80283E90(lbl_802F385C, arg0 + 0xFC);
+}
+
+s32 fn_802753F0(void);
+void fn_80276B84(void* arg0);
+s32 fn_802771B8(s32* arg0, s32 arg1) {
+    s32 v = arg0[-1];
+    if (v == arg1) {
+        return 0;
+    }
+    return ~v;
+}
+
+void fn_802771D4(u8* arg0, s32 arg1) {
+    u8* p = arg0 - 0x34C;
+    if (*(s32*)(p + 0x2F8) != 0) {
+        fn_80276B84(p);
+    }
+    *(s32*)(p + 0x348) = arg1;
 }
 
