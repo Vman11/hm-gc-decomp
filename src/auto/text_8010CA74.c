@@ -9,18 +9,24 @@ void fn_8010CA7C(void *arg0) {
     void *parent = M2C_FIELD(arg0, void **, 8);
     void *cur;
     void *prev;
+    void *next;
+    BOOL done;
     if (parent != NULL) {
-        cur = M2C_FIELD(parent, void **, 0x10);
-        if (cur == arg0) {
-            M2C_FIELD(parent, void **, 0x10) = M2C_FIELD(cur, void **, 0xC);
+        next = M2C_FIELD(parent, void **, 0x10);
+        cur = next;
+        if (next == arg0) {
+            M2C_FIELD(parent, void **, 0x10) = M2C_FIELD(next, void **, 0xC);
             M2C_FIELD(arg0, void **, 0xC) = NULL;
-        } else if (cur != NULL) {
+        } else if (next != NULL) {
             do {
+                next = M2C_FIELD(cur, void **, 0xC);
                 prev = cur;
-                cur = M2C_FIELD(cur, void **, 0xC);
-            } while (cur != NULL && cur != arg0);
-            if (cur != NULL) {
-                M2C_FIELD(prev, void **, 0xC) = M2C_FIELD(cur, void **, 0xC);
+                done = next == NULL;
+                cur = next;
+                if (done) break;
+            } while (next != arg0);
+            if (next != NULL) {
+                M2C_FIELD(prev, void **, 0xC) = M2C_FIELD(next, void **, 0xC);
                 M2C_FIELD(arg0, void **, 0xC) = NULL;
             }
         }
