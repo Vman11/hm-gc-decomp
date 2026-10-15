@@ -9,6 +9,11 @@ void fn_80220998(void) {
 
 }
 
+void fn_8022099C(s32 *arg0) {
+    arg0[0] = 0;
+    arg0[1] = 0;
+}
+
 void fn_802209AC(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0) = arg1;
     *(s32 *)((u8 *)arg0 + 4) = arg2;
