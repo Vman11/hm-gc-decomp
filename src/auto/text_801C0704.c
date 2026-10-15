@@ -26,3 +26,11 @@ s32 fn_801C079C(u8 *arg0, f32 x, f32 y) {
     return 0;
 }
 
+s32 fn_801C07E8(u8 *arg0, f32 x, f32 y) {
+    if (x >= *(f32 *)(arg0 + 0x48) && x < lbl_80364FB8 + *(f32 *)(arg0 + 0x48) &&
+        y >= *(f32 *)(arg0 + 0x4C) && y < *(f32 *)(arg0 + 0x54)) {
+        return 1;
+    }
+    return 0;
+}
+
