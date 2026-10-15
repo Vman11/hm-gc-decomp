@@ -13,3 +13,7 @@ s32 fn_8014D8AC(void) {
     return 0;
 }
 
+s32 fn_8014D8B4(void) {
+    return 6;
+}
+
