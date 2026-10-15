@@ -1291,6 +1291,10 @@ s32 fn_800DF300(void) {
     return 0;
 }
 
+void TRKTargetSetInputPendingPtr(s32 arg0) {
+    M2C_FIELD(&gTRKState, s32 *, 0xA0) = arg0;
+}
+
 s32 TRKInitializeTarget(void) {
     gTRKState.unk98 = 1;
     gTRKState.unk8C = fn_800DF4D0(&gTRKState);
