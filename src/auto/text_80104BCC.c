@@ -11,3 +11,11 @@ typedef struct {
     u8 pad0[0x8];
     UnkNode_80104BCC* head;
 } UnkList_80104BCC;
+
+void fn_80104BCC(UnkList_80104BCC* list, u32 flags) {
+    UnkNode_80104BCC* node;
+
+    for (node = list->head; node != NULL; node = node->next) {
+        node->flags |= flags;
+    }
+}
