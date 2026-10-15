@@ -39,15 +39,15 @@ s32 fn_80273EBC(void) {
     return lbl_80359F08;
 }
 
-extern s32 lbl_8035B884;
-void fn_802749D4(s32 arg0) {
-    lbl_8035B884 = arg0;
-}
-
 extern u32* lbl_8035B87C;
 void* OSGetArenaLo(void);
 void OSSetArenaLo(void*);
 void fn_80274C8C(void);
+
+extern s32 lbl_8035B884;
+void fn_802749D4(s32 arg0) {
+    lbl_8035B884 = arg0;
+}
 
 void fn_80274C8C(void) {
     u32 i;
@@ -577,17 +577,17 @@ u8 *fn_8027A710(void) {
     return lbl_802F3898;
 }
 
-s32 fn_8027B0D4(u8 *arg0) {
-    if (*(s32 *)(arg0 + 0x1C) != 0) {
+s32 fn_8027B0D4(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 0x1C) != 0) {
         return 0;
     }
     switch (DVDGetDriveStatus()) {
-    case 0:
-        fn_8027AFC0(arg0);
-        break;
     case 1:
     case 2:
     case 10:
+        break;
+    case 0:
+        fn_8027AFC0(arg0);
         break;
     case -1:
     case 3:
@@ -598,10 +598,19 @@ s32 fn_8027B0D4(u8 *arg0) {
     case 8:
     case 9:
     case 11:
-        *(s32 *)(arg0 + 0x1C) = 1;
+        *(s32 *)((u8 *)arg0 + 0x1C) = 1;
         break;
     }
-    return *(s32 *)(arg0 + 0x20);
+    return *(s32 *)((u8 *)arg0 + 0x20);
+}
+
+void fn_8027B168(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0xBC) = 1;
+    fn_800BFE7C((u8 *)arg0 + 0x4C);
+    while ((u32)(DVDGetDriveStatus() - 1) <= 1U) {
+    }
+    *(s32 *)((u8 *)arg0 + 0xBC) = 0;
+    *(s32 *)((u8 *)arg0 + 0x20) = 0;
 }
 
 u32 fn_8027B4CC(void *arg0, void *arg1) {
