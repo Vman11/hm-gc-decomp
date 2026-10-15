@@ -4,3 +4,8 @@
 void fn_800641A4(void) {
 
 }
+
+s32 fn_800641A8(s32 arg0) {
+    return arg0 + 0xC;
+}
+
