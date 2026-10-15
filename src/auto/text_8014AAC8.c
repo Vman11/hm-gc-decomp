@@ -11,6 +11,13 @@ void fn_8014AAC8(void *arg0) {
     ((s16*)arg0)[7] = 0;
 }
 
+void fn_8014AAE4(f32 *arg0) {
+    arg0[0] = lbl_80364458;
+    arg0[1] = lbl_80364458;
+    arg0[2] = lbl_80364458;
+    arg0[3] = lbl_8036445C;
+}
+
 void fn_8014AB08(f32 *arg0) {
     arg0[0] = lbl_8036445C;
     arg0[1] = lbl_8036445C;
