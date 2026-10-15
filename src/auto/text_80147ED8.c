@@ -111,6 +111,21 @@ s32 fn_80148018(UnkStruct80148118* m) {
     return n;
 }
 
+s32 fn_80148058(UnkStruct80148118* m) {
+    u32 v = m->unkC;
+    s32 n;
+    if (v == 0) {
+        return 0;
+    }
+    while (!(v & 1)) {
+        v >>= 1;
+    }
+    for (n = 0; v & 1; n++) {
+        v >>= 1;
+    }
+    return n;
+}
+
 s32 fn_80148098(MaskInfo* m) {
     u32 v = m->unk8;
     s32 n;
