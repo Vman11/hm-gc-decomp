@@ -13,6 +13,10 @@ s32 fn_801636C8(void) {
     return 0;
 }
 
+s32 fn_801636D0(void) {
+    return 0;
+}
+
 void fn_801636D8(void) {
 
 }
