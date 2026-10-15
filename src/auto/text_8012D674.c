@@ -4,3 +4,8 @@
 void fn_8012D674(void) {
 
 }
+
+s32 fn_8012D678(void) {
+    return 0;
+}
+
