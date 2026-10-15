@@ -7,13 +7,9 @@ s32 fn_800A8758(void* arg0, s32 arg1) {
         return *(s32*)((char*)*(void**)((char*)temp + 0xC) + arg1 * 4);
     }
     switch (arg1) {
-    case 0:
-        return 0;
-    case 1:
-        return 1;
-    case 2:
-        return 0;
-    default:
-        return 1;
+    case 0: return 0;
+    case 1: return 1;
+    case 2: return 0;
+    default: return 1;
     }
 }
