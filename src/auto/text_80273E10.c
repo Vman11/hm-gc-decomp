@@ -217,7 +217,7 @@ void *arg0;
 
 s32 fn_80275DD8(void *, u32, void *);
 void fn_80275F18(void *);
-void fn_80275F08(void);
+void fn_80275F08(void *);
 void fn_80275FC0(void *arg0) {
     u8 *p = arg0;
     void *callback;
