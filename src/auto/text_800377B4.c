@@ -38,6 +38,20 @@ s32 fn_800377E0(void *arg0, s32 arg1) {
     }
 }
 
+void fn_80037810(void *arg0, void *arg1) {
+    s32 temp_r0;
+
+    temp_r0 = M2C_FIELD(arg1, s32 *, 0xC);
+    switch (temp_r0) {                              /* irregular */
+    case 0x7D:
+        M2C_FIELD(arg0, s32 *, 8) = 0;
+        return;
+    case 0x7E:
+        M2C_FIELD(arg0, s32 *, 0xC) = 0;
+        return;
+    }
+}
+
 void fn_80037870(void *arg0) {
     M2C_FIELD(arg0, s32 *, 4) = 0;
     M2C_FIELD(arg0, s32 *, 8) = 0;
