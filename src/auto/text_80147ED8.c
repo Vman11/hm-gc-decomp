@@ -57,6 +57,21 @@ s32 fn_80147F98(MaskInfo* m) {
     return n;
 }
 
+s32 fn_80147FD8(MaskInfo* m) {
+    u32 v = m->unk4;
+    s32 n;
+    if (v == 0) {
+        return 0;
+    }
+    while (!(v & 1)) {
+        v >>= 1;
+    }
+    for (n = 0; v & 1; n++) {
+        v >>= 1;
+    }
+    return n;
+}
+
 void fn_80148118(UnkStruct80148118* arg0) {
     arg0->unk0 = 0;
     arg0->unk2 = 0;
