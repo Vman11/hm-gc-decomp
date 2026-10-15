@@ -10,12 +10,12 @@ typedef struct {
 } UnkStruct_8023DC00;
 
 extern UnkStruct_8023DC00* lbl_8035B460;
-extern s32 lbl_8035B464;
+extern volatile s32 lbl_8035B464;
 
 void fn_8023DC00(UnkStruct_8023DC00* arg0) {
     lbl_8035B460 = arg0;
     lbl_8035B464 = 0;
-    arg0->unk8 = 0;
+    arg0->unk8 = lbl_8035B464;
     arg0->unk0 = 0;
     arg0->unk4 = 0;
     arg0->unkC = 0;
