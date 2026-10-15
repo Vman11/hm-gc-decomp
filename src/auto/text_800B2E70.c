@@ -127,6 +127,10 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
     }
 }
 
+int fn_800BDA64(void) {
+return 1;
+}
+
 void fn_800BDA6C(void) {
 
 }
@@ -221,7 +225,28 @@ unsigned int fn_800C0BD0(unsigned int arg0) {
     return old;
 }
 
-char *fn_800C0C14(u32 arg0) { switch(arg0) { case 0:return lbl_802DA610+0x44; case 1:return lbl_802DA610+0x6a; case 2:return lbl_802DA610+0x90; case 3:return lbl_802DA610+0xb6; case 4:return lbl_802DA610+0x44; case 5:return lbl_802DA610+0x6a; case 6:return lbl_802DA610+0xdc; case 7:return lbl_802DA610+0x102; case 8:return lbl_802DA610+0x128; case 9:return lbl_802DA610+0x14e; case 10:return lbl_802DA610+0x90; case 11:return lbl_802DA610+0xb6; case 12:return lbl_802DA610+0x174; case 13:return lbl_802DA610+0x19a; default:return 0; }}
+char *fn_800C0C14(unsigned int arg0) {
+    switch (arg0) {
+    case 0: return lbl_802DA610 + 0x44;
+    case 1: return lbl_802DA610 + 0x6A;
+    case 2: return lbl_802DA610 + 0x90;
+    case 3: return lbl_802DA610 + 0xB6;
+    case 4: return lbl_802DA610 + 0x44;
+    case 5: return lbl_802DA610 + 0x6A;
+    case 6: return lbl_802DA610 + 0xDC;
+    case 7: return lbl_802DA610 + 0x102;
+    case 8: return lbl_802DA610 + 0x128;
+    case 9: return lbl_802DA610 + 0x14E;
+    case 10: return lbl_802DA610 + 0x90;
+    case 11: return lbl_802DA610 + 0xB6;
+    case 12: return lbl_802DA610 + 0x174;
+    case 13: return lbl_802DA610 + 0x19A;
+    case 14: case 15: case 16: case 17: case 18: case 19: case 20:
+    case 21: case 22: case 23: case 24: case 25: case 26:
+        return 0;
+    default: return 0;
+    }
+}
 
 extern s32 lbl_8035A6DC;
 s32 fn_800C2600(void) {
