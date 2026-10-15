@@ -3,22 +3,20 @@
 
 static inline u8 isTypeInRange(u8 *p) {
     u8 ok = 0;
-    u16 t = *(u16 *)(p + 4);
-    if (t >= 1 && t <= 13) {
+    if (*(u16 *)(p + 4) >= 1 && *(u16 *)(p + 4) <= 13) {
         ok = 1;
     }
     return ok;
 }
 
 void fn_8022DAC0(u8 *arg0) {
-    u8 *p;
     s32 flag;
+    u8 *p;
     *(s32 *)(arg0 + 0x94) = 0;
-    p = *(u8 **)(arg0 + 0x9C);
-    if (p == NULL || !isTypeInRange(p)) {
+    if (*(u8 **)(arg0 + 0x9C) == NULL || !isTypeInRange(*(u8 **)(arg0 + 0x9C))) {
         flag = 0;
     } else {
-        flag = (*(u32 *)p >> 11) & 1;
+        flag = (**(u32 **)(arg0 + 0x9C) >> 11) & 1;
     }
     if (flag) {
         *(s32 *)(arg0 + 0xB4) |= 2;
