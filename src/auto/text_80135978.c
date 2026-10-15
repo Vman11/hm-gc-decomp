@@ -2,6 +2,10 @@
 #include "common.h"
 
 typedef struct {
+    f32 x, y, z, w;
+} Unk80135994;
+
+typedef struct {
     f32 unk0;
     f32 unk4;
     f32 unk8;
