@@ -1188,6 +1188,11 @@ s32 fn_800D51D8(void) {
     return lbl_8035A924;
 }
 
+u16 fn_800D665C(void) {
+    extern void *__peReg;
+    return M2C_FIELD(__peReg, u16 *, 0xE);
+}
+
 void fn_800D79CC(void *lt_obj, f32 *nx, f32 *ny, f32 *nz) {
     *nx = -*(f32 *)((u8 *)lt_obj + 0x34);
     *ny = -*(f32 *)((u8 *)lt_obj + 0x38);
