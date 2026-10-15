@@ -113,6 +113,11 @@ void fn_800C807C(void) {
 
 }
 
+extern s32 lbl_8035A858;
+void fn_800C885C(s32 arg0) {
+    lbl_8035A858 = arg0;
+}
+
 void fn_800C8C94(void) {
 
 }
@@ -137,6 +142,16 @@ void fn_800D8F00(void) {
 
 void usr_put_initialize(void) {
 
+}
+
+u32 fn_800E1150(u32 addr) {
+    if (addr >= lbl_80325D58 && addr < lbl_80325D58 + 0x4000 && (gTRKCPUState.unk238 & 3)) {
+        return addr;
+    }
+    if (addr >= 0x7E000000 && addr <= 0x80000000) {
+        return addr;
+    }
+    return (addr & 0x3FFFFFFF) | 0x80000000;
 }
 
 void fn_800E18F0(void);
