@@ -8,3 +8,10 @@ extern f32 lbl_80363F84;
 void fn_8012FDD4(void *arg0) {
     M2C_FIELD(arg0, u32 *, 0x2C) &= 0xFFFFFFBF;
 }
+
+void fn_8012FDE4(void *arg0, s8 arg1, s8 arg2) {
+    M2C_FIELD(arg0, u32 *, 0x2C) |= lbl_80363F80;
+    M2C_FIELD(arg0, s8 *, 0x36) = arg1;
+    M2C_FIELD(arg0, s8 *, 0x37) = arg2;
+}
+
