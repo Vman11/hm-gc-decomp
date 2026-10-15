@@ -66,3 +66,11 @@ void fn_80148118(UnkStruct80148118* arg0) {
     arg0->unk10 = 0;
 }
 
+void fn_80148138(UnkStruct80148118* arg0, u16 arg1, u32 arg2, u32 arg3, u32 arg4) {
+    arg0->unk0 = 0x1000;
+    arg0->unk2 = arg1;
+    arg0->unk4 = arg2;
+    arg0->unk8 = arg3;
+    arg0->unkC = arg4;
+}
+
