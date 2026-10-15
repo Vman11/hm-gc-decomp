@@ -81,6 +81,10 @@ void fn_80153A0C(f32* dst, f32* src) {
     dst[15] = b;
 }
 
+s32 fn_80153A90(void) {
+    return 0;
+}
+
 s32 fn_80153AC0(void) {
     return 0xFFFF;
 }
