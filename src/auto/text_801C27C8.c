@@ -1,6 +1,10 @@
 /* Functions from 0x801C27C8 to 0x801C2800, found by decomp-toolkit. */
 #include "common.h"
 
+s32 fn_801C27C8(u8 *arg0) {
+    return *(s32 *)(arg0 + 0x108);
+}
+
 s32 fn_801C27D8(u8 *arg0) {
     return *(s32 *)(arg0 + 0xCC);
 }
