@@ -76,6 +76,12 @@ void fn_802749D4(s32 arg0) {
     lbl_8035B884 = arg0;
 }
 
+void fn_80274A18(void) {
+    lbl_8035B880 = OSGetArenaLo();
+    OSSetArenaLo(lbl_8035B880 + 0x1000);
+    fn_80274BB4();
+}
+
 void fn_80274A48(void) {
     lbl_8035B87C = OSGetArenaLo();
     OSSetArenaLo((u8*)lbl_8035B87C + 0x4000);
