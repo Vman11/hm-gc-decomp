@@ -1,6 +1,8 @@
 /* Functions from 0x802056DC to 0x80205704, found by decomp-toolkit. */
 #include "common.h"
 
+extern s32 lbl_8035B190;
+
 void fn_802056F8(void) {
 
 }
