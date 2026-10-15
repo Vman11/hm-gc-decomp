@@ -115,6 +115,10 @@ int fn_800F05D0(const char* s1, const char* s2) {
     }
 }
 
+s32 Hu_IsStub(void) {
+    return 0;
+}
+
 void DBClose(void) {
 
 }
