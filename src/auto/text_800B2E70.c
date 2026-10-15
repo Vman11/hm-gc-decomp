@@ -1009,6 +1009,13 @@ void fn_800C807C(void) {
 
 }
 
+void fn_800C8080(u32 arg0) {
+    extern u32 lbl_8035A838;
+    if ((u32) lbl_8035A838 != arg0) {
+        lbl_8035A838 = arg0;
+    }
+}
+
 extern s32 lbl_8035A85C;
 void fn_800C8308(void) {
     lbl_8035A85C = 1;
