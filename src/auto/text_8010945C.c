@@ -6,3 +6,7 @@ extern s32 lbl_8035AA90;
 extern s32 lbl_8035AA90;
 
 extern s32 lbl_8035AA98;
+
+void fn_80109464(s32 arg0) {
+    lbl_8035AA98 = arg0;
+}
