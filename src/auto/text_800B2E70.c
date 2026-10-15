@@ -126,6 +126,11 @@ void fn_800C9944(void) {
 
 }
 
+extern s32 lbl_8035A8C8;
+s32 fn_800CA098(void) {
+    return lbl_8035A8C8;
+}
+
 void fn_800CCC78(void) {
 
 }
