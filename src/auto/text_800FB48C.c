@@ -23,6 +23,10 @@ void fn_800FB4CC(s32 arg0) {
     lbl_8035AA10 = arg0;
 }
 
+s32 fn_800FB4D4(void) {
+    return 0;
+}
+
 f32 fn_800FB4DC(void) {
     return lbl_803636F8;
 }
