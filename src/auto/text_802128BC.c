@@ -26,6 +26,23 @@ s32 fn_802128E0(void *arg0, u32 arg1) {
     return M2C_FIELD(arg0, s32 *, 4) + (arg1 * 0xC);
 }
 
+s32 fn_80212910(void *arg0, u32 arg1, u32 arg2) {
+    u32 offset;
+    u8* entry;
+    u8* base;
+    u32 i;
+    u32 count = M2C_FIELD(arg0, u16 *, 0xE);
+    for (i = 0, offset = 0; i < count; i++) {
+        base = M2C_FIELD(arg0, u8 **, 4);
+        entry = base + offset;
+        if (arg1 == *(u16*)(entry + 8) && arg2 == *(u8*)(entry + 0xA)) {
+            return (s32)(base + i * 0xC);
+        }
+        offset += 0xC;
+    }
+    return 0;
+}
+
 s32 fn_80212968(void *arg0, u32 arg1) {
     if ((arg1 >= (u16) M2C_FIELD(arg0, u16 *, 0xC)) || !(M2C_FIELD(arg0, u16 *, 0x12) & 2)) {
         return 0;
