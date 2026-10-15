@@ -29,3 +29,16 @@ s32 fn_80147F38(MaskInfo* m) {
     }
     return n;
 }
+
+s32 fn_80147F68(MaskInfo* m) {
+    u32 v = m->unk4;
+    s32 n;
+    if (v == 0) {
+        return 32;
+    }
+    for (n = 0; !(v & 1); n++) {
+        v >>= 1;
+    }
+    return n;
+}
+
