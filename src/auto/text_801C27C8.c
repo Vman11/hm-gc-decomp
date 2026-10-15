@@ -4,3 +4,8 @@
 s32 fn_801C27D8(u8 *arg0) {
     return *(s32 *)(arg0 + 0xCC);
 }
+
+s32 fn_801C27E0(u8 *arg0) {
+    return *(s32 *)(arg0 + 0xB8);
+}
+
