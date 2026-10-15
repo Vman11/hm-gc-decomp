@@ -9,3 +9,7 @@ void fn_802737EC(void) {
 
 }
 
+void fn_80273804(void) {
+
+}
+
