@@ -18,6 +18,18 @@ typedef struct {
     u32 unk8;
 } MaskInfo;
 
+s32 fn_80147ED8(UnkStruct80148118* m) {
+    u32 v = m->unk10;
+    s32 n;
+    if (v == 0) {
+        return 32;
+    }
+    for (n = 0; !(v & 1); n++) {
+        v >>= 1;
+    }
+    return n;
+}
+
 s32 fn_80147F38(MaskInfo* m) {
     u32 v = m->unk8;
     s32 n;
