@@ -21,3 +21,7 @@ s32 fn_80112AD4(u8 *arg0, u32 arg1) {
     return -1;
 }
 
+s32 fn_80112B18(u8 *arg0, s32 arg1) {
+    return (*(s32 **)(arg0 + 0x24))[arg1];
+}
+
