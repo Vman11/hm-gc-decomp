@@ -4,3 +4,8 @@
 void fn_801EF640(void) {
 
 }
+
+void fn_801EF644(void) {
+
+}
+
