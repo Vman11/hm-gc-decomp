@@ -2,7 +2,7 @@
 #include "common.h"
 extern volatile s32 lbl_8035B054;
 extern volatile s32 lbl_8035B058;
-extern u8* lbl_8035B05C;
+extern u8* volatile lbl_8035B05C;
 
 void fn_801DDE58(u8* arg0) {
     *(u8**)(arg0 + 0xC) = lbl_8035B05C;
