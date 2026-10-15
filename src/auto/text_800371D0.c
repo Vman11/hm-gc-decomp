@@ -1,6 +1,12 @@
 /* Functions from 0x800371D0 to 0x800372CC, found by decomp-toolkit. */
 #include "common.h"
 
+void fn_800371D0(f32 *v, f32 s) {
+    v[0] *= s;
+    v[1] *= s;
+    v[2] *= s;
+}
+
 void fn_800371F8(f32 *dst, f32 *src) {
     dst[0] = src[0];
     dst[1] = src[1];
