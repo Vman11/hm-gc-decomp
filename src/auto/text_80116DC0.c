@@ -9,6 +9,10 @@ s32 fn_80116DC8(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 4);
 }
 
+s32 fn_80116DD0(s32 *arg0) {
+    return *arg0;
+}
+
 s32 fn_80116DD8(void) {
     return 0;
 }
