@@ -206,3 +206,7 @@ int fn_8002FC70(void) {
 return 1;
 }
 
+int fn_8002FC78(void) {
+return 1;
+}
+
