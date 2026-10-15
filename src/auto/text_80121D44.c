@@ -5,49 +5,54 @@ typedef struct {
     u8 r, g, b, a;
 } Color4;
 
-void fn_80121D44(void *arg0, void *arg1) {
-    u8 *d = arg0;
-    u8 *s = arg1;
-    d[0] = s[0];
-    d[1] = s[1];
-    d[2] = s[2];
-    d[3] = s[3];
-    d[4] = s[4];
-    d[5] = s[5];
-    d[6] = s[6];
-    d[7] = s[7];
-    d[8] = s[8];
-    d[9] = s[9];
-    d[10] = s[10];
-    d[11] = s[11];
-    d[12] = s[12];
-    d[13] = s[13];
-    d[14] = s[14];
-    d[15] = s[15];
+void fn_80121D44(u8 *arg0, u8 *arg1) {
+    u8 t0, t1;
+    t0 = arg1[0];
+    t1 = arg1[1];
+    arg0[0] = t0;
+    t0 = arg1[2];
+    arg0[1] = t1;
+    t1 = arg1[3];
+    arg0[2] = t0;
+    t0 = arg1[4];
+    arg0[3] = t1;
+    t1 = arg1[5];
+    arg0[4] = t0;
+    t0 = arg1[6];
+    arg0[5] = t1;
+    t1 = arg1[7];
+    arg0[6] = t0;
+    t0 = arg1[8];
+    arg0[7] = t1;
+    t1 = arg1[9];
+    arg0[8] = t0;
+    t0 = arg1[10];
+    arg0[9] = t1;
+    t1 = arg1[11];
+    arg0[10] = t0;
+    t0 = arg1[12];
+    arg0[11] = t1;
+    t1 = arg1[13];
+    arg0[12] = t0;
+    t0 = arg1[14];
+    arg0[13] = t1;
+    t1 = arg1[15];
+    arg0[14] = t0;
+    arg0[15] = t1;
 }
 
-void fn_80121DC8(void *arg0, void *arg1) {
-    u8 *d = arg0;
-    u8 *s = arg1;
-    u8 a = s[0];
-    u8 b = s[1];
-    u8 c = s[2];
-    u8 e = s[3];
-    d[0] = a;
-    d[1] = b;
-    d[2] = c;
-    d[3] = e;
-    d[4] = a;
-    d[5] = b;
-    d[6] = c;
-    d[7] = e;
-    d[8] = a;
-    d[9] = b;
-    d[10] = c;
-    d[11] = e;
-    d[12] = a;
-    d[13] = b;
-    d[14] = c;
-    d[15] = e;
+void fn_80121DC8(u8 *arg0, u8 *arg1) {
+    u8 a, b, g, r;
+    r = arg1[0];
+    g = arg1[1];
+    arg0[0] = r;
+    b = arg1[2];
+    arg0[1] = g;
+    a = arg1[3];
+    arg0[2] = b;
+    arg0[3] = a;
+    arg0[4] = r; arg0[5] = g; arg0[6] = b; arg0[7] = a;
+    arg0[8] = r; arg0[9] = g; arg0[10] = b; arg0[11] = a;
+    arg0[12] = r; arg0[13] = g; arg0[14] = b; arg0[15] = a;
 }
 
