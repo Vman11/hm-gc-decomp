@@ -12,6 +12,10 @@ s32 fn_8022A78C(void) {
     return lbl_8035B65C;
 }
 
+s32 fn_8022A794(u32 *arg0) {
+    return ((u32) *arg0 >> 9U) & 1;
+}
+
 s32 fn_8022A7A0(void *arg0) {
     return M2C_FIELD(arg0, s32 *, 0x58);
 }
