@@ -813,6 +813,10 @@ u8 fn_800C496C(void) {
     return (u8) *(s32 *)0xCC006C04;
 }
 
+u8 fn_800C4998(void) {
+    return (u8) ((u32) *(u32 *)0xCC006C04 >> 8U);
+}
+
 void fn_800C6C2C(void) {
 
 }
