@@ -16,3 +16,10 @@ void fn_80273CEC(u8 *arg0) {
     *(s32 *)(arg0 + 0xC) = 7;
 }
 
+void fn_80273D08(u8 *arg0) {
+    if (*(s32 *)(arg0 + 0x4) != 0) {
+        fn_80273CEC(arg0);
+    }
+    *(s32 *)(arg0 + 0x4) = 1;
+}
+
