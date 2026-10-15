@@ -1,6 +1,9 @@
 /* Functions from 0x80137444 to 0x801374B8, found by decomp-toolkit. */
 #include "common.h"
 
+extern f32 lbl_80364150;
+extern f32 lbl_80364154;
+
 void fn_80137444(u8* p) {
     extern f32 lbl_80364150;
     extern f32 lbl_80364154;
