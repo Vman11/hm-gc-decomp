@@ -6,6 +6,9 @@ void fn_80275F98(void);
 void fn_80276058(void *);
 void fn_8027564C(void *, int);
 void fn_802756B8(void *, int, int, int);
+void fn_800C9A0C(s32, int);
+s64 OSGetTime(void);
+extern s64 lbl_802F3840;
 
 extern s32 lbl_8035B854;
 s32 fn_80273EAC(void) {
@@ -243,6 +246,14 @@ void fn_802827BC(s32 arg0, s32 n) {
         *(u32 *)lbl_80300860[0] = lbl_80300860[2][0] | (*lbl_80300860[4]++ << 8) | (lbl_80300860[2][1] << 16) | (*lbl_80300860[5]++ << 24);
         lbl_80300860[2] += 2;
         lbl_80300860[0] += 4;
+    }
+}
+
+void fn_80283FE4(u8 *arg0) {
+    if (arg0 != 0) {
+        fn_80283D04(arg0);
+        fn_800B3EF8(arg0 + 8);
+        fn_8027B790(arg0);
     }
 }
 
