@@ -1266,6 +1266,11 @@ void fn_800D8F00(void) {
 
 }
 
+void fn_800DAA70(void) {
+    extern void *__cpReg;
+    M2C_FIELD(__cpReg, s16 *, 4) = 4;
+}
+
 s32 fn_800DBCDC(void) {
     return 0;
 }
