@@ -59,6 +59,8 @@ s32 PPCMffpscr(void) {
     return data.u[1];
 }
 
+s32 PPCMfhid2(void) { return __mfspr(920); }
+
 s32 OSGetArenaHi(void) {
     return __OSArenaHi_8035A578;
 }
@@ -75,6 +77,12 @@ void OSSetArenaHi(s32 arg0) {
 extern s32 __OSArenaLo_80359538;
 void OSSetArenaLo(s32 arg0) {
     __OSArenaLo_80359538 = arg0;
+}
+
+extern s32 lbl_8035A5B0;
+void fn_800BA3B4(void* arg0);
+void fn_800B7E04(void) {
+    lbl_8035A5B0 = 1;
 }
 
 void fn_800B9624(void) {
