@@ -50,6 +50,12 @@ double fn_800F03E4(double x) {
         return fn_800EF80C(y[0], y[1], 1 - ((n & 1) << 1));
     }
 }
+
+void fn_800ECE54(void);
+void fn_800F045C(void) {
+    fn_800ECE54();
+}
+
 f32 fn_800F051C(f32 x) {
     return fn_800F04FC(x);
 }
