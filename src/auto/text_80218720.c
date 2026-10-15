@@ -5,3 +5,6 @@ extern s32 lbl_8035B228;
 void fn_80218750(s32 arg0) {
     lbl_8035B228 = arg0;
 }
+
+void fn_802194B8(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
+
