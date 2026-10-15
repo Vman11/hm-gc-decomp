@@ -1552,7 +1552,7 @@ void TRKPostInterruptEvent(void) {
 
 s32 fn_800DFF6C(u8 *cpuType) {
     extern s32 gTRKBigEndian[];
-    s32 fn_800E1538(void);
+    u8 fn_800E1538(void);
 
     cpuType[0] = 0;
     cpuType[1] = fn_800E1538();
