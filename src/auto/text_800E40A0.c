@@ -61,6 +61,15 @@ void DBOpen(void) {
 
 }
 
+int DBRead(void* buf, u32 size) {
+    int enabled = OSDisableInterrupts();
+    fn_800F0CC4(((lbl_8035A998 & 0x10000) ? 0x1000 : 0) + 0x1E000, buf, (size + 3) & ~3);
+    lbl_8035A99C = 0;
+    lbl_8035A9A4 = 0;
+    OSRestoreInterrupts(enabled);
+    return 0;
+}
+
 void EXI2_Reserve(void) {
 
 }
