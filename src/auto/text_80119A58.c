@@ -8,3 +8,8 @@ void fn_80119A78(void) {
 void fn_80119A7C(void) {
 
 }
+
+void fn_80119A80(void) {
+
+}
+
