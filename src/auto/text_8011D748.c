@@ -4,3 +4,8 @@
 void fn_8011D750(void) {
 
 }
+
+void fn_8011D754(void) {
+
+}
+
