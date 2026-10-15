@@ -6,6 +6,24 @@ f32 fn_80072388(void *arg0) {
     return M2C_FIELD(M2C_FIELD(M2C_FIELD(M2C_FIELD(arg0, void **, 0x20C), void **, 0xC0), void **, 0x14), f32 *, 0xE0);
 }
 
+s32 fn_8007239C(void *arg0) {
+    s32 count;
+    s32 i;
+    u32 flags;
+
+    count = 0;
+    flags = *M2C_FIELD(arg0, u32 **, 0x50C);
+    if (flags == 0x40) {
+        return 7;
+    }
+    for (i = 0; i < 6; i++) {
+        if (flags & (1 << i)) {
+            count++;
+        }
+    }
+    return count;
+}
+
 void fn_80072438(void *arg0, u32 arg1) {
     extern s32 lbl_8035F3E8;
     s32 *temp_r3;
