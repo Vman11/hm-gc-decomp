@@ -17,3 +17,7 @@ void fn_802523D8(void) {
 
 }
 
+void fn_802523DC(void) {
+
+}
+
