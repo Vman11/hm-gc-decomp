@@ -2,6 +2,8 @@
 #include "common.h"
 
 extern s32 lbl_8035B65C;
+s32 fn_8022A784(void *arg0) { return *(s32 *)((u8 *)arg0 + 0xC); }
+
 s32 fn_8022A78C(void) {
     return lbl_8035B65C;
 }
