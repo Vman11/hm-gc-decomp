@@ -60,6 +60,16 @@ u32 fn_802748F8(u32 arg0) {
     return (((u32*)fn_80274D04(arg0))[1] >> 7) & 1;
 }
 
+void fn_80274920(u32 arg0, s32 arg1) {
+    u32 fn_80274D04(u32 arg0);
+    u32 *p = (u32 *)fn_80274D04(arg0);
+    if (arg1 != 0) {
+        p[1] |= 0x100;
+    } else {
+        p[1] &= ~0x100;
+    }
+}
+
 void fn_80274970(u32 arg0) {
     __tlbsync();
     __tlbie(arg0 & 0x3F000);
