@@ -25,6 +25,17 @@ void fn_801FA13C(void) {
 
 }
 
+void fn_801FA140(void *arg0, f32 farg0) {
+    extern f32 lbl_8036555C;
+    f32 var_f1;
+
+    var_f1 = farg0;
+    if (var_f1 > lbl_8036555C) {
+        var_f1 = lbl_8036555C;
+    }
+    M2C_FIELD(arg0, f32 *, 0x90) = var_f1;
+}
+
 void fn_801FA198(void *arg0, f32 farg0, f32 farg1) {
     M2C_FIELD(arg0, f32 *, 0x80) = farg0;
     M2C_FIELD(arg0, f32 *, 0x84) = farg1;
