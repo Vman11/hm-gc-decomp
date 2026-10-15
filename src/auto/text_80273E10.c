@@ -99,8 +99,20 @@ u32 fn_802752DC(u32 a, u32 b, u32 d) {
 }
 
 u32 fn_80275394(u32 a, u32 b, u32 s) {
-    u64 n = (u64)a * b;
-    return ((u32)n >> s) | ((u32)(n >> 32) << (32 - s));
+    u32 hi = ((u64)a * b) >> 32;
+    u32 lo = a * b;
+    return (lo >> s) | (hi << (32 - s));
+}
+
+void fn_802753B4(u32 *dst, u16 val, u32 count) {
+    s32 n = count >> 1;
+    u32 v = (val << 16) | val;
+    while (n-- != 0) {
+        *dst++ = v;
+    }
+    if (count & 1) {
+        *(u16 *)dst = val;
+    }
 }
 
 #pragma push
@@ -323,19 +335,39 @@ u8 *fn_8027A710(void) {
     return lbl_802F3898;
 }
 
+extern void (*lbl_803590CC)(void *);
+extern u32 lbl_803018F8[];
+extern u8 *lbl_803018FC[];
+u8 *fn_8027B6D4(u32);
+extern u8 *lbl_80301900[];
+void fn_800B443C(void *, void *);
+extern void *lbl_80359530[];
+void fn_8027B790(void *arg0) {
+    u8 *p = arg0;
+    if (p != 0) {
+        if (p[-2] == 3) {
+            (*(void (**)(void *))(p - 8))(p - p[-1]);
+        } else {
+            fn_800B443C(lbl_80359530, p - p[-1]);
+        }
+    }
+}
+
 extern u8 lbl_80301920[];
 void fn_8027BFB8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, void *);
 extern u32 lbl_80300460[];
+#pragma push
+#pragma opt_unroll_loops off
 void fn_8027E658(s32 arg0, s32 n) {
     u32 v;
-    while (n--) {
+    while (n-- != 0) {
         v = lbl_80300460[*lbl_80300860[2]++] | (*lbl_80300860[6]++ << 24);
         ((u32 *)lbl_80300860[0])[0] = v;
         ((u32 *)lbl_80300860[0])[1] = v;
         lbl_80300860[0] += 8;
     }
 }
-
+#pragma pop
 s32 fn_8027E6D0(s32 n, s32 arg1) {
     u32 v;
     s32 i = n;
@@ -375,8 +407,8 @@ void fn_8027F794(s32 arg0, s32 n) {
 }
 s32 fn_8027F7FC(s32 n, s32 arg1) {
     u16 v;
-    s32 i;
-    for (i = n; i != 0; i--) {
+    s32 i = n;
+    do {
         v = *(u16 *)(lbl_802FFC60 + *lbl_80300860[2]++ * 4 + 2);
         *(u16 *)lbl_80300860[0] = v;
         *(u16 *)(lbl_80300860[0] + (s32)lbl_80300860[17]) = v;
@@ -385,7 +417,7 @@ s32 fn_8027F7FC(s32 n, s32 arg1) {
         *(u16 *)(lbl_80300860[1] + (s32)lbl_80300860[17]) = v;
         lbl_80300860[0] += 2;
         lbl_80300860[1] += 2;
-    }
+    } while (--i != 0);
     return arg1 + n;
 }
 
