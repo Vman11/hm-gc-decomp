@@ -19,6 +19,16 @@ u32 fn_80153EC0(Unk80153EC8 *arg0) {
     return arg0->count;
 }
 
+BOOL fn_80153EC8(Unk80153EC8 *arg0, u32 arg1, u32 arg2, u32 arg3) {
+    u32 i;
+    for (i = 0; i < arg0->count; i++) {
+        if (arg1 == arg0->entries[i].unk0 && arg2 == arg0->entries[i].unk4 && arg3 == arg0->entries[i].unkA) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 s32 fn_80153F3C(void) {
     return 0x10;
 }
