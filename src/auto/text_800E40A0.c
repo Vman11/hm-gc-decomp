@@ -17,3 +17,7 @@ void DBClose(void) {
 
 }
 
+void EXI2_Reserve(void) {
+
+}
+
