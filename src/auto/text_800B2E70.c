@@ -27,6 +27,10 @@ s32 OSGetArenaLo(void) {
     return __OSArenaLo_80359538;
 }
 
+void OSSetArenaHi(s32 arg0) {
+    __OSArenaHi_8035A578 = arg0;
+}
+
 void fn_800B9624(void) {
 
 }
