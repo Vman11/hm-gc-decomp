@@ -166,3 +166,7 @@ int fn_8002FC20(void) {
 return 1;
 }
 
+int fn_8002FC28(void) {
+return 1;
+}
+
