@@ -2,6 +2,10 @@
 #include "common.h"
 
 extern s32 lbl_8035ADD0;
+s32 fn_8017DE90(s32 *arg0) {
+    return *arg0;
+}
+
 s32 fn_8017DE98(void) {
     return lbl_8035ADD0;
 }
