@@ -35,6 +35,10 @@ s32 fn_8014E41C(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x1C);
 }
 
+s32 fn_8014E424(void) {
+    return 4;
+}
+
 s32 fn_8014E42C(void) {
     return 0;
 }
