@@ -143,6 +143,18 @@ void fn_80148194(UnkStruct80148118* arg0, s32 arg1) {
     }
 }
 
+void fn_80148288(void *arg0, s16 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    M2C_FIELD(arg0, u16 *, 0) = 1U;
+    M2C_FIELD(arg0, s16 *, 2) = arg1;
+    M2C_FIELD(arg0, s32 *, 4) = arg2;
+    M2C_FIELD(arg0, s32 *, 8) = arg3;
+    M2C_FIELD(arg0, s32 *, 0xC) = arg4;
+    M2C_FIELD(arg0, s32 *, 0x10) = arg5;
+    if (arg6 != 0) {
+        M2C_FIELD(arg0, u16 *, 0) = (u16) (M2C_FIELD(arg0, u16 *, 0) | lbl_803643A0);
+    }
+}
+
 void fn_801482C0(void *arg0, s16 arg1, s16 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     M2C_FIELD(arg0, s16 *, 0) = arg1;
     M2C_FIELD(arg0, s16 *, 2) = arg2;
