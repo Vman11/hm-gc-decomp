@@ -17,3 +17,7 @@ s32 fn_80180EAC(void *arg0, s32 arg1) {
     return M2C_FIELD(arg0, s32 *, 0x28) + (arg1 * 0x1C);
 }
 
+s32 fn_80180EBC(void *arg0, s32 arg1) {
+    return M2C_FIELD(arg0, s32 *, 0x24) + (arg1 * 0x1C);
+}
+
