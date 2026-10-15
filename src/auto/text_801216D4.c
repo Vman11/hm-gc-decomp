@@ -2,7 +2,7 @@
 #include "common.h"
 
 u8 fn_801216D4(u8 *arg0, u8 *arg1, s32 arg2) {
-    u8 ret = 0;
+    s32 ret = 0;
     if ((arg1[0] >> arg2) == (arg0[0] >> arg2) && (arg1[1] >> arg2) == (arg0[1] >> arg2) &&
         (arg1[2] >> arg2) == (arg0[2] >> arg2)) {
         ret = 1;
