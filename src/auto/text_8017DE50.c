@@ -1,2 +1,7 @@
 /* Functions from 0x8017DE50 to 0x8017DEA8, found by decomp-toolkit. */
 #include "common.h"
+
+extern s32 lbl_8035ADD0;
+s32 fn_8017DE98(void) {
+    return lbl_8035ADD0;
+}
