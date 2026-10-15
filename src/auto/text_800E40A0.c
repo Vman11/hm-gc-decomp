@@ -132,6 +132,12 @@ f32 fn_800F051C(f32 x) {
     return fn_800F04FC(x);
 }
 
+#pragma push
+#pragma dont_inline on
+f32 fn_800F0540(f32 x) {
+    return fn_800F03E4(x);
+}
+#pragma pop
 double fn_800F030C(double);
 f32 fn_800F0564(f32 x) {
     return fn_800F030C(x);
