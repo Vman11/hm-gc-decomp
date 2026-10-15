@@ -9,3 +9,7 @@ s32 fn_802117D4(void) {
     return 0;
 }
 
+s32 fn_802117DC(void) {
+    return 9;
+}
+
