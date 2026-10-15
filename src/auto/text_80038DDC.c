@@ -8,3 +8,8 @@ void fn_80038DDC(void) {
 void fn_80038DE0(void) {
 
 }
+
+void fn_80038E40(void) {
+
+}
+
