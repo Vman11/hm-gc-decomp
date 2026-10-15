@@ -123,6 +123,11 @@ void fn_800F04DC(void) {
     fn_800ED954();
 }
 
+double fn_800EDBD0(double);
+double fn_800F04FC(double x) {
+    return fn_800EDBD0(x);
+}
+
 f32 fn_800F051C(f32 x) {
     return fn_800F04FC(x);
 }
