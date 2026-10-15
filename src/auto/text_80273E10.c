@@ -175,6 +175,21 @@ void fn_8027564C(void *arg0, int arg1) {
     }
 }
 
+void *memset();
+#pragma push
+#pragma use_lmw_stmw on
+void fn_802757D0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    u8 *p = arg0;
+    u8 *sub = p + 0x14A;
+    memset(sub, 0, 0x24);
+    *(s16 *)(p + 0x14A) = arg2;
+    *(s16 *)(sub + 4) = arg3;
+    *(s16 *)(p + 0x19C) = arg1;
+    *(s16 *)(p + 0x19E) = 0;
+    *(s16 *)(p + 0x144) = 3;
+    *(u32 *)(p + 0x1C) |= 0x212;
+}
+
 s32 fn_8027569C(void *);
 #pragma push
 #pragma auto_inline off
@@ -215,7 +230,7 @@ void fn_80275FC0(void *arg0) {
         } else {
             callback = fn_80275F08;
         }
-        *(u32 *)(p + 0x100) -= ((s32 (*)(void *, u32, void *))fn_80275DD8)(p, size, callback);
+        *(u32 *)(p + 0x100) -= fn_80275DD8(p, size, callback);
         *(u32 *)(p + 0x108) = *(u32 *)(p + 0xE0);
     }
 }
@@ -335,7 +350,7 @@ extern void fn_80275C64(void);
 extern s32 fn_8027569C(void *);
 extern s32 fn_802753F0(void);
 extern s32 fn_80275DD8(void *, u32, void *);
-extern void fn_80275F08(void);
+
 extern void fn_80275F18(void *);
 #pragma push
 #pragma optimize_for_size on
