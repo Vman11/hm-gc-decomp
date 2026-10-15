@@ -4,3 +4,8 @@
 s32 fn_8024457C(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x10);
 }
+
+s32 fn_80244584(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x10) == 0;
+}
+
