@@ -3,3 +3,8 @@
 
 void fn_801DEF48(void) {
 }
+
+void fn_801DEF4C(void *arg0) {
+    *(float *)((char *)arg0 + 0x34) = *(float *)((char *)arg0 + 0x30);
+}
+
