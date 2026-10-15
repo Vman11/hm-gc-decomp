@@ -1499,6 +1499,50 @@ s32 fn_800DFAF0(void) {
     return M2C_FIELD(&gTRKCPUState, s32 *, 0x80);
 }
 
+void TRKPostInterruptEvent(void) {
+    void fn_800DAB9C(void *, s8);
+    void fn_800DABB4(void *);
+    s32 fn_800E0C00(void *, u32);
+    s8 eventType;
+    u32 inst;
+    u8 event[0xC];
+
+    if (M2C_FIELD(&gTRKState, s32 *, 0x9C) != 0) {
+        M2C_FIELD(&gTRKState, s32 *, 0x9C) = 0;
+    } else {
+        switch (M2C_FIELD(&gTRKCPUState, u32 *, 0x2F8) & 0xFFFF) {
+        case 0xD00:
+        case 0x700:
+            fn_800E0C00(&inst, M2C_FIELD(&gTRKCPUState, u32 *, 0x80));
+            if (inst == 0x0FE00000) {
+                eventType = 5;
+            } else {
+                eventType = 3;
+            }
+            break;
+        default:
+            eventType = 4;
+            break;
+        }
+        fn_800DAB9C(event, eventType);
+        fn_800DABB4(event);
+    }
+}
+
+s32 fn_800DFF6C(u8 *cpuType) {
+    extern s32 gTRKBigEndian[];
+    s32 fn_800E1538(void);
+
+    cpuType[0] = 0;
+    cpuType[1] = fn_800E1538();
+    cpuType[2] = gTRKBigEndian[0];
+    cpuType[3] = 4;
+    cpuType[4] = 8;
+    cpuType[5] = 4;
+    cpuType[6] = 8;
+    return 0;
+}
+
 s32 fn_800DFFCC(u8 *mask) {
     mask[0] = 0x7A;
     mask[1] = 0;
