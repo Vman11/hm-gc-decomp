@@ -37,6 +37,28 @@ void fn_802749D4(s32 arg0) {
     lbl_8035B884 = arg0;
 }
 
+void fn_80274D1C(void) {
+    u32 addr = 0;
+    int i;
+    __tlbsync();
+    for (i = 0; i < 64; ++i) {
+        __tlbie(addr);
+        addr += 0x1000;
+    }
+}
+
+extern void fn_80274DE0(void);
+extern u32 lbl_8035B878, lbl_8035B88C, lbl_8035B890;
+void fn_80274D74(void) {
+    u32 msr, table;
+    lbl_8035B88C = __mfsr(7);
+    __mtsr(7, 0);
+    msr = __mfmsr();
+    table = __mfspr(25);
+    lbl_8035B890 = table;
+    fn_80274DC8(msr & ~0x30, (table & 0xFFFF) + (lbl_8035B878 & 0x7FFF0000), 0);
+}
+
 void fn_80274E0C(void) {
 
 }
@@ -519,6 +541,15 @@ void fn_802771D4(u8* arg0, s32 arg1) {
     *(s32*)(p + 0x348) = arg1;
 }
 
+void fn_80278F28(void *arg0, s32 arg1) {
+    s32 old = *(s32 *)((u8 *)arg0 + 0x27C);
+    if (old != 0) {
+        s32 value = *(s32 *)((u8 *)arg0 + 0x2B4) + (arg1 - old);
+        *(s32 *)((u8 *)arg0 + 0x27C) = 0;
+        *(s32 *)((u8 *)arg0 + 0x2B4) = value;
+    }
+}
+
 void fn_80283D04(void *);
 void fn_800B3EF8(void *);
 void fn_8027B790(void *);
@@ -934,6 +965,9 @@ void fn_8028A7A8(void) {
 
 void fn_8028A7AC(void) {
 
+}
+
+void fn_8028A7B0(void) {
 }
 
 #pragma pop
