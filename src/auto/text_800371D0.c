@@ -46,3 +46,14 @@ void fn_8003727C(f32 *dst, f32 *src) {
     dst[2] = dst[2] + z;
 }
 
+void fn_800372B0(f32 *dst, f32 *src) {
+    volatile f32 *vsrc = src;
+    f32 x = vsrc[0];
+    f32 y = vsrc[1];
+    f32 z;
+    dst[0] = x;
+    z = vsrc[2];
+    dst[1] = y;
+    dst[2] = z;
+}
+
