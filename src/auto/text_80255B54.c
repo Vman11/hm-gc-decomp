@@ -3,6 +3,7 @@
 
 extern s32 lbl_8035B690;
 extern s32 lbl_8035B694;
+extern s32 lbl_8035B694;
 
 void fn_80255B54(s32 arg0) {
     lbl_8035B690 = arg0;
