@@ -270,6 +270,10 @@ void OSSetArenaLo(s32 arg0) {
     __OSArenaLo_80359538 = arg0;
 }
 
+s32 fn_800B4F6C(void) {
+    return *(s32 *)0x800000D4;
+}
+
 extern s32 lbl_8035A5B0;
 void fn_800BA3B4(void* arg0);
 void fn_800B7E04(void) {
