@@ -4,3 +4,8 @@
 s32 fn_8018F990(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x10);
 }
+
+s32 fn_8018F998(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 4);
+}
+
