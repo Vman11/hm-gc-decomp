@@ -22,6 +22,11 @@ typedef struct UnkHeap800F7520 {
     s32 unk24;
 } UnkHeap800F7520;
 
+typedef struct UnkManager800F7670 {
+    u32 unk0[3];
+    UnkHeap800F7520 entries[16];
+    u32 unk28C;
+} UnkManager800F7670;
 
 void fn_800F7614(UnkHeap800F7520* arg0) {
     arg0->unk0 = NULL;
