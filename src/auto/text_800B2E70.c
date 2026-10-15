@@ -1278,6 +1278,10 @@ s32 fn_800D8318(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x14);
 }
 
+u8 fn_800D8320(void *arg0) {
+    return (u8) (((M2C_FIELD(arg0, u8 *, 0x1F) & 1) - 1) == 0);
+}
+
 void fn_800D8F00(void) {
 
 }
