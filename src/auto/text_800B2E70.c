@@ -75,6 +75,21 @@ void InitMetroTRK_BBA(void) {
 
 }
 
+void fn_800BBBD4(UnkStep* arg0) {
+    if (arg0->unk10 != arg0->unkC) {
+        arg0->unk10 += arg0->unk8;
+        if (arg0->unk8 > 0) {
+            if (arg0->unk10 > arg0->unkC) {
+                arg0->unk10 = arg0->unkC;
+            }
+        } else if (arg0->unk8 < 0) {
+            if (arg0->unk10 < arg0->unkC) {
+                arg0->unk10 = arg0->unkC;
+            }
+        }
+    }
+}
+
 extern f32 lbl_8035A608;
 extern f32 lbl_80363088;
 extern u16 lbl_802D9DD8[];
