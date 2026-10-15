@@ -10,3 +10,7 @@ void *fn_801E4CB0(void *arg0, s32 arg1) {
     return *(u8 **)((u8 *)arg0 + 0x14) + arg1 * 0x28;
 }
 
+void *fn_801E4CC0(void *arg0, s32 arg1) {
+    return *(u8 **)((u8 *)arg0 + 0xC) + arg1 * 0xD4;
+}
+
