@@ -2,3 +2,8 @@
 #include "common.h"
 
 extern u8 lbl_802EF948[];
+
+void fn_80208ADC(void** arg0) {
+    arg0[1] = lbl_802EF948;
+    arg0[0] = 0;
+}
