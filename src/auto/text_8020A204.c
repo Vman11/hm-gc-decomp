@@ -4,3 +4,8 @@
 s32 fn_8020A204(void) {
     return 0;
 }
+
+s32 fn_8020A20C(void) {
+    return 9;
+}
+
