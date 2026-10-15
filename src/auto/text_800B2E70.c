@@ -157,6 +157,14 @@ void fn_800B9624(void) {
 
 }
 
+long long fn_800BA5E8(long long arg0) {
+    long long result;
+    OSDisableInterrupts();
+    result = *(long long *)0x800030D8 + arg0;
+    OSRestoreInterrupts();
+    return result;
+}
+
 void InitMetroTRK_BBA(void) {
 
 }
@@ -346,6 +354,8 @@ void fn_800BE0AC(u32 intType) {
 
 extern int autoInvalidation_80359574;
 int fn_800BFBA0(int arg0) { int old = autoInvalidation_80359574; autoInvalidation_80359574 = arg0; return old; }
+
+typedef struct { u8 r, g, b, a; } GXColor;
 
 extern unsigned int lbl_8035A6F0;
 extern unsigned int lbl_8035A6C0;
