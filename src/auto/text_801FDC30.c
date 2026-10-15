@@ -22,6 +22,27 @@ void fn_801FDC30(void *arg0, void *arg1) {
     }
 }
 
+void fn_801FDC88(void *arg0, void *arg1) {
+    void *prev = *(void **)((char *)arg0 + 0x104);
+    void *node;
+    if (prev != NULL) {
+        if (prev == arg1) {
+            *(void **)((char *)arg0 + 0x104) = *(void **)((char *)arg1 + 0x9C);
+        } else {
+            node = *(void **)((char *)prev + 0x9C);
+            while (node != NULL) {
+                if (node == arg1) {
+                    *(void **)((char *)prev + 0x9C) = *(void **)((char *)arg1 + 0x9C);
+                    break;
+                }
+                prev = node;
+                node = *(void **)((char *)node + 0x9C);
+            }
+        }
+        *(void **)((char *)arg1 + 0x9C) = NULL;
+    }
+}
+
 void fn_801FDD0C(void *arg0, void *arg1) {
     M2C_FIELD(arg1, void **, 0x9C) = (void *) M2C_FIELD(arg0, void **, 0x104);
     M2C_FIELD(arg0, void **, 0x104) = arg1;
