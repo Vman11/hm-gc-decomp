@@ -284,6 +284,10 @@ void fn_800B9624(void) {
 
 }
 
+s32 fn_800B9790(void) {
+    return *(s32 *)0x800000E4;
+}
+
 void OSClearStack(u32 arg0) {
     u32 value = ((arg0 & 255) << 16) | (arg0 << 24) | ((arg0 << 8) & 0xFF00) | (arg0 & 255);
     u32 end = fn_800B50D0();
