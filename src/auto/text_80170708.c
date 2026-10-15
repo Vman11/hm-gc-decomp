@@ -10,3 +10,7 @@ s32 fn_80170710(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x1DC);
 }
 
+s32 fn_80170718(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0xE8);
+}
+
