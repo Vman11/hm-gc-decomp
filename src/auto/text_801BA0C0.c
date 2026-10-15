@@ -2,3 +2,7 @@
 #include "common.h"
 
 extern u8 lbl_80330708[];
+
+void* fn_801BA0C0(void) {
+    return lbl_80330708;
+}
