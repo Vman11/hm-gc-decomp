@@ -5,6 +5,10 @@ s32 fn_80153F3C(void) {
     return 0x10;
 }
 
+s32 fn_80153F44(void) {
+    return 0x8000;
+}
+
 s32 fn_80153F50(void) {
     return 0x400;
 }
