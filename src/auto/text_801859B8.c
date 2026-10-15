@@ -9,6 +9,11 @@ int fn_801859BC(void) {
 return 1;
 }
 
+extern f32 lbl_80364978;
+f32 fn_801859C4(void) {
+    return lbl_80364978;
+}
+
 int fn_801859D4(void) {
 return 1;
 }
