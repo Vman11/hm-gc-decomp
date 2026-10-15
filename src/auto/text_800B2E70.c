@@ -805,6 +805,10 @@ s32 fn_800C4768(void) {
     return *(s32 *)0xCC006C00 & 1;
 }
 
+s32 fn_800C4940(void) {
+    return ((u32) *(u32 *)0xCC006C00 >> 1U) & 1;
+}
+
 void fn_800C6C2C(void) {
 
 }
