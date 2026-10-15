@@ -3,3 +3,7 @@
 
 void fn_80272EC8(void) {
 }
+
+void fn_80272ECC(void) {
+}
+
