@@ -1,6 +1,10 @@
 /* Functions from 0x80273E10 to 0x80293ED8, found by decomp-toolkit. */
 #include "common.h"
 
+s32 DVDGetDriveStatus(void);
+void fn_800BFE7C(void *);
+void fn_8027AFC0(void *);
+
 void fn_8028ED28(f32 *, f32 *);
 void fn_8028F484(f32 *, f32 *);
 
@@ -920,20 +924,25 @@ void fn_802820C4(s32 arg0, s32 count) {
 s32 fn_80282124(s32 count, s32 base) {
     s32 n = count;
     do {
-        u32 v;
-        u8 *s = lbl_80300860[2];
-        v = s[0] | ((s[1] << 16) | 0x80008000);
-        lbl_80300860[2] = s + 2;
+        u32 a, b, v;
+        u8 *p = lbl_80300860[2];
+        n -= 2;
+        b = p[1] << 16;
+        a = p[0];
+        lbl_80300860[2] = p + 2;
+        v = a | (b | 0x80000000 | 0x8000);
         *(u32 *)lbl_80300860[0] = v;
         *(u32 *)(lbl_80300860[0] + (u32)lbl_80300860[17]) = v;
-        s = lbl_80300860[3];
-        v = s[0] | ((s[1] << 16) | 0x80008000);
-        lbl_80300860[3] = s + 2;
+        p = lbl_80300860[3];
+        b = p[1] << 16;
+        a = p[0];
+        lbl_80300860[3] = p + 2;
+        v = a | (b | 0x80000000 | 0x8000);
         *(u32 *)lbl_80300860[1] = v;
         *(u32 *)(lbl_80300860[1] + (u32)lbl_80300860[17]) = v;
         lbl_80300860[0] += 4;
         lbl_80300860[1] += 4;
-    } while ((n -= 2) > 0);
+    } while (n > 0);
     return base + count;
 }
 
