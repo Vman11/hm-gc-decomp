@@ -18,3 +18,7 @@ void fn_8009F150(Unk8009F130 *arg0, s32 arg1) {
     arg0->unk7C = arg1;
 }
 
+s32 fn_8009F158(void) {
+    return 0xE7;
+}
+
