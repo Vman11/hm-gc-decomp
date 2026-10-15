@@ -190,3 +190,7 @@ int fn_8002FC50(void) {
 return 1;
 }
 
+int fn_8002FC58(void) {
+return 1;
+}
+
