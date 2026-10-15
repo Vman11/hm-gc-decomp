@@ -9,3 +9,7 @@ void* fn_8015FE84(void* arg0, s32 arg1) {
     return *(u8**)((u8*)arg0 + 0x30) + arg1 * 0x1C;
 }
 
+void* fn_8015FE94(void* arg0, s32 arg1) {
+    return *(u8**)((u8*)arg0 + 0x2C) + arg1 * 0x68;
+}
+
