@@ -9,3 +9,7 @@ s32 fn_801AAF84(u8 *arg0, s32 arg1) {
     return (*(s32 **)(arg0 + 0x20))[arg1];
 }
 
+s32 fn_801AAF94(u8 *arg0, s32 arg1, s32 arg2) {
+    return (*(s32 ***)(arg0 + 0x1C))[arg2][arg1];
+}
+
