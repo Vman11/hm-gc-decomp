@@ -116,6 +116,7 @@ extern void OSRestoreInterrupts(void);
 extern void fn_800C05F0(void);
 extern char lbl_802DA610[];
 unsigned int fn_800C0BD0(unsigned int arg0) {
+    volatile u32 pad[2];
     unsigned int old = lbl_8035A6F0;
     OSDisableInterrupts();
     lbl_8035A6F0 = arg0;
@@ -214,6 +215,10 @@ void fn_800D79CC(void *lt_obj, f32 *nx, f32 *ny, f32 *nz) {
 
 void fn_800D79F4(void *lt_obj, u32 *color) {
     *(u32 *)((u8 *)lt_obj + 0xC) = *color;
+}
+
+void fn_800D7A00(void *lt_obj, u32 *color) {
+    *color = *(u32 *)((u8 *)lt_obj + 0xC);
 }
 
 void fn_800D8F00(void) {
