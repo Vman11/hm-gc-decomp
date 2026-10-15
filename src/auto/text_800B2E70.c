@@ -38,6 +38,13 @@ typedef struct UnkStep {
     s32 unk10;
 } UnkStep;
 
+typedef struct UnkU16 {
+    u16 v;
+} UnkU16;
+
+extern f32 lbl_80363088;
+s32 fn_800E2584(void);
+
 extern TRKState_unk gTRKState;
 extern TRKCPUState_unk gTRKCPUState;
 extern u32 lbl_80325D58;
@@ -93,6 +100,28 @@ void fn_800B44C8(int arg0, int arg1, int arg2) {
     lbl_8035A574 = arg1 & ~31;
     lbl_80359530 = -1;
     lbl_8035A570 = (lbl_8035A568 + arg2 * 12 + 31) & ~31;
+}
+
+int fn_800B4538(int arg0, int arg1) {
+    int *entry = (int *)lbl_8035A568;
+    int aligned = (arg0 + 31) & ~31;
+    int end = arg1 & ~31;
+    int count = lbl_8035A56C;
+    int i = 0;
+    while (count-- > 0) {
+        if (entry[0] < 0) {
+            entry[0] = end - aligned;
+            ((int *)aligned)[0] = 0;
+            ((int *)aligned)[1] = 0;
+            ((int *)aligned)[2] = entry[0];
+            entry[1] = aligned;
+            entry[2] = 0;
+            return i;
+        }
+        entry += 3;
+        i++;
+    }
+    return -1;
 }
 
 s32 OSGetArenaHi(void) {
@@ -255,6 +284,31 @@ s32 fn_800BDD64(u32 error) {
         return 2;
     }
     return 3;
+}
+
+extern u8 BB2_803083C0[];
+extern u8 *bootInfo_8035A680;
+extern void (*lbl_8035A6BC)(void);
+extern char lbl_802D9FFC[];
+extern char lbl_8035957C[];
+void __DVDFSInit(void);
+void fn_800B5520(char *file, int line, char *msg, ...);
+void fn_800BC76C(void *addr, u32 len, u32 offset, void (*cb)(u32));
+void fn_800BE1AC(void);
+void fn_800BE114(u32 intType);
+void fn_800BE0AC(u32 intType) {
+    if (intType == 16) {
+        *(s32 *)((u8 *)executing_8035A678 + 0xC) = -1;
+        __DVDStoreErrorCode(0x01234568);
+        DVDReset();
+        cbForStateError(0);
+        return;
+    }
+    if (intType & 1) {
+        fn_800BE1AC();
+        return;
+    }
+    fn_800BCBF4(fn_800BE114);
 }
 
 extern unsigned int lbl_8035A6F0;
