@@ -41,11 +41,13 @@ s32 PPCMfmsr(void) { return __MFMSR(); }
 
 void PPCMtl2cr(u32 value) { __mtspr(1017, value); }
 
-s32 PPCMtdec(void) { return 0; }
+void PPCMtdec(u32 value) { __mtspr(22, value); }
 
 void fn_800B2EA8(void) {}
 
 void PPCHalt(void) { __sync(); for (;;) {} }
+
+void PPCMtmmcr0(u32 value) { __mtspr(952, value); }
 
 void PPCMtmmcr1(u32 value) { __mtspr(956, value); }
 
@@ -210,7 +212,14 @@ extern void OSDisableInterrupts(void);
 extern void OSRestoreInterrupts(void);
 extern void fn_800C05F0(void);
 extern char lbl_802DA610[];
-unsigned int fn_800C0BD0(unsigned int arg0) { volatile u32 pad[2]; unsigned int old=lbl_8035A6F0; OSDisableInterrupts(); lbl_8035A6F0=arg0; OSRestoreInterrupts(); return old; }
+unsigned int fn_800C0BD0(unsigned int arg0) {
+    volatile u32 pad[4];
+    unsigned int old = lbl_8035A6F0;
+    OSDisableInterrupts();
+    lbl_8035A6F0 = arg0;
+    OSRestoreInterrupts();
+    return old;
+}
 
 char *fn_800C0C14(u32 arg0) { switch(arg0) { case 0:return lbl_802DA610+0x44; case 1:return lbl_802DA610+0x6a; case 2:return lbl_802DA610+0x90; case 3:return lbl_802DA610+0xb6; case 4:return lbl_802DA610+0x44; case 5:return lbl_802DA610+0x6a; case 6:return lbl_802DA610+0xdc; case 7:return lbl_802DA610+0x102; case 8:return lbl_802DA610+0x128; case 9:return lbl_802DA610+0x14e; case 10:return lbl_802DA610+0x90; case 11:return lbl_802DA610+0xb6; case 12:return lbl_802DA610+0x174; case 13:return lbl_802DA610+0x19a; default:return 0; }}
 
