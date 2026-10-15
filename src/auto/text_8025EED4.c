@@ -11,3 +11,8 @@ void fn_8025EEE8(s32 arg0, s32 arg1) {
     lbl_80357B3C[arg0] = arg1;
 }
 
+extern s32 lbl_80357B28[];
+void fn_8025EEFC(s32 arg0, s32 arg1) {
+    lbl_80357B28[arg0] = arg1;
+}
+
