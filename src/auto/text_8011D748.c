@@ -14,6 +14,10 @@ void fn_8011D754(void) {
 
 }
 
+void fn_8011D758(u8* arg0) {
+    *(s32*)(arg0 + 0xC0) = 0;
+}
+
 void fn_8011D764(void* arg0) {
     *(s32*)((u8*)arg0 + 0xC0) = 1;
 }
