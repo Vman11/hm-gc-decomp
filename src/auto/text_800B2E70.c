@@ -93,6 +93,12 @@ extern char* FstStringStart_8035A660;
 extern f32 lbl_80363088;
 s32 fn_800E2584(void);
 
+typedef struct TRKExceptionStatus {
+    u32 exceptionAddress;
+    u32 unk4;
+    u16 exceptionID;
+} TRKExceptionStatus;
+
 extern TRKState_unk gTRKState;
 extern TRKCPUState_unk gTRKCPUState;
 extern u32 lbl_80325D58[];
@@ -424,9 +430,11 @@ void fn_800BB2B8(void) {
 }
 
 void fn_800BB2F8(void *arg0, s32 arg1, u32 arg2) {
+    f32 f;
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
     *(s32 *)((u8 *)arg0 + 0x8) = arg1;
-    *(f32 *)((u8 *)arg0 + 0xC) = (f32)arg2;
+    f = arg2;
+    *(f32 *)((u8 *)arg0 + 0xC) = f;
 }
 
 void fn_800BB678(void *arg0, s32 arg1, s32 arg2, f32 farg0) {
