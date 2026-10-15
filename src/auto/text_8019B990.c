@@ -17,3 +17,16 @@ void fn_8019BADC(void *arg0, void *arg1) {
     M2C_FIELD(arg1, void **, 0x14) = (void *) M2C_FIELD(arg0, void **, 8);
     M2C_FIELD(arg0, void **, 8) = arg1;
 }
+
+void *fn_8019BAF4(void *arg0) {
+    void *temp_r4;
+
+    temp_r4 = M2C_FIELD(arg0, void **, 8);
+    if (temp_r4 == NULL) {
+        return NULL;
+    }
+    M2C_FIELD(temp_r4, void **, 0) = arg0;
+    M2C_FIELD(arg0, void **, 8) = (void *) M2C_FIELD(temp_r4, void **, 0x14);
+    return temp_r4;
+}
+
