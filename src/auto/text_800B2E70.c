@@ -38,6 +38,15 @@ void fn_800C6C2C(void) {
 
 }
 
+extern u8 lbl_80308780[][0x780];
+extern u8 lbl_80309E00[][0x780];
+extern s32 lbl_8035A814;
+extern s32 lbl_8035A810;
+extern u32 lbl_8035A7F0;
+void fn_800C7624(void** arg0) {
+    *arg0 = lbl_80308780[lbl_8035A814];
+}
+
 void fn_800C807C(void) {
 
 }
