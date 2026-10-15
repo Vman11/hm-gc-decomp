@@ -20,6 +20,13 @@ s64 OSGetTime(void);
 extern s64 lbl_802F3840;
 extern u8 lbl_802FFC60[];
 extern u8 *lbl_80300860[6];
+void* OSGetArenaLo(void);
+void OSSetArenaLo(void*);
+void fn_800B48F4(void *, u32);
+void fn_80274970(s32);
+void fn_80274990(s32 arg0, u32 arg1);
+void fn_802749AC(s32 arg0, s32 arg1);
+u32 fn_80274D04(u32 arg0);
 
 typedef struct OSContext {
     u8 data[0x2C8];
