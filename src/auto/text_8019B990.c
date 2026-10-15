@@ -42,6 +42,26 @@ void fn_8019B9E4(void *arg0, void *arg1) {
     M2C_FIELD(prev, void **, 8) = arg1;
 }
 
+void fn_8019BA24(void *arg0, void *arg1) {
+    void *head = M2C_FIELD(arg0, void **, 0x44);
+    void *node = head;
+    void *prev = head;
+
+    while (node != NULL) {
+        if (node == arg1) {
+            if (node == head) {
+                M2C_FIELD(arg0, void **, 0x44) = M2C_FIELD(arg1, void **, 8);
+            } else {
+                M2C_FIELD(prev, void **, 8) = M2C_FIELD(arg1, void **, 8);
+            }
+            M2C_FIELD(arg1, void **, 8) = NULL;
+            return;
+        }
+        prev = node;
+        node = M2C_FIELD(node, void **, 8);
+    }
+}
+
 void *fn_8019BAB8(void *arg0) {
     void *temp_r4;
 
