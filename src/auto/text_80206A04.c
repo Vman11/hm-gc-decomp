@@ -6,6 +6,11 @@ extern u8 lbl_803657A8;
 void fn_80206A04(void) {
 }
 
+void *fn_80206A08(void) {
+    extern u8 lbl_803657A8;
+    return &lbl_803657A8;
+}
+
 void fn_80206A10(void) {
 
 }
