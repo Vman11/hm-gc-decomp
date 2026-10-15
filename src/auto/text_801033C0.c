@@ -2,6 +2,15 @@
 #include "common.h"
 
 extern s32 lbl_8035AA30;
+void fn_801033C0(s32* arg0) {
+    arg0[0] = 0;
+    arg0[1] = 0;
+    arg0[2] = 0;
+    arg0[3] = 0;
+    arg0[4] = 0;
+    arg0[5] = 0;
+}
+
 void fn_801033E0(s32 arg0) {
     lbl_8035AA30 = arg0;
 }
