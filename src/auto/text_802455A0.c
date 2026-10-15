@@ -1,5 +1,6 @@
 /* Functions from 0x802455A0 to 0x802455E0, found by decomp-toolkit. */
 #include "common.h"
+extern f32 lbl_80366250;
 
 f32 fn_802455A0(void* arg0) {
     u32 count = *(u32*)((u8*)arg0 + 0xc);
