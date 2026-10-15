@@ -37,6 +37,10 @@ void fn_800D8F00(void) {
 
 }
 
+void usr_put_initialize(void) {
+
+}
+
 void TRKUARTInterruptHandler(void) {
 
 }
