@@ -83,6 +83,10 @@ s32 PPCMfhid2(void) { return __mfspr(920); }
 
 void PPCMthid2(u32 value) { __mtspr(920, value); }
 
+u32 __DBIsExceptionMarked(u8 exception) {
+    return __DBInterface->exceptionMask & (1 << exception);
+}
+
 void OSReport(const char* msg, ...);
 void OSDumpContext(void* context);
 void DBPrintf(char* str, ...) {
