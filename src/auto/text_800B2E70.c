@@ -43,10 +43,18 @@ void PPCMtl2cr(u32 value) { __mtspr(1017, value); }
 
 s32 PPCMtdec(void) { return 0; }
 
+void fn_800B2EA8(void) {}
+
+void PPCHalt(void) { __sync(); for (;;) {} }
+
+void PPCMtmmcr1(u32 value) { __mtspr(956, value); }
+
 s32 PPCMffpscr(void) {
-    union { f64 f; u32 u[2]; } fpscr;
-    fpscr.f = __mffs();
-    return fpscr.u[1];
+    union { f64 f; u32 u[2]; } data;
+    register f64 fpscr;
+    fpscr = __mffs();
+    data.f = fpscr;
+    return data.u[1];
 }
 
 s32 OSGetArenaHi(void) {
@@ -152,6 +160,31 @@ void fn_800BDD3C(void) {
     fn_800BCBF4(fn_800BDE18);
 }
 
+s32 fn_800BDD64(u32 error) {
+    if (error == 0x20400) {
+        lbl_8035A6A8 = error;
+        return 1;
+    }
+    error &= 0xFFFFFF;
+    if (error == 0x62800 || error == 0x23A00 || error == 0xB5A01) {
+        return 0;
+    }
+    lbl_8035A6AC++;
+    if (lbl_8035A6AC == 2) {
+        if (error == lbl_8035A6A8) {
+            lbl_8035A6A8 = error;
+            return 1;
+        }
+        lbl_8035A6A8 = error;
+        return 2;
+    }
+    lbl_8035A6A8 = error;
+    if (error == 0x31100 || *(u32 *)((u8 *)executing_8035A678 + 8) == 5) {
+        return 2;
+    }
+    return 3;
+}
+
 extern unsigned int lbl_8035A6F0;
 extern unsigned int lbl_8035A6C0;
 extern void OSDisableInterrupts(void);
@@ -160,25 +193,7 @@ extern void fn_800C05F0(void);
 extern char lbl_802DA610[];
 unsigned int fn_800C0BD0(unsigned int arg0) { volatile u32 pad[2]; unsigned int old=lbl_8035A6F0; OSDisableInterrupts(); lbl_8035A6F0=arg0; OSRestoreInterrupts(); return old; }
 
-char *fn_800C0C14(u32 arg0) {
-    switch (arg0) {
-    case 0: return lbl_802DA610 + 0x44;
-    case 1: return lbl_802DA610 + 0x6a;
-    case 2: return lbl_802DA610 + 0x90;
-    case 3: return lbl_802DA610 + 0xb6;
-    case 4: return lbl_802DA610 + 0x44;
-    case 5: return lbl_802DA610 + 0x6a;
-    case 6: return lbl_802DA610 + 0xdc;
-    case 7: return lbl_802DA610 + 0x102;
-    case 8: return lbl_802DA610 + 0x128;
-    case 9: return lbl_802DA610 + 0x14e;
-    case 10: return lbl_802DA610 + 0x90;
-    case 11: return lbl_802DA610 + 0xb6;
-    case 12: return lbl_802DA610 + 0x174;
-    case 13: return lbl_802DA610 + 0x19a;
-    default: return 0;
-    }
-}
+char *fn_800C0C14(u32 arg0) { switch(arg0) { case 0:return lbl_802DA610+0x44; case 1:return lbl_802DA610+0x6a; case 2:return lbl_802DA610+0x90; case 3:return lbl_802DA610+0xb6; case 4:return lbl_802DA610+0x44; case 5:return lbl_802DA610+0x6a; case 6:return lbl_802DA610+0xdc; case 7:return lbl_802DA610+0x102; case 8:return lbl_802DA610+0x128; case 9:return lbl_802DA610+0x14e; case 10:return lbl_802DA610+0x90; case 11:return lbl_802DA610+0xb6; case 12:return lbl_802DA610+0x174; case 13:return lbl_802DA610+0x19a; default:return 0; }}
 
 extern s32 lbl_8035A6DC;
 s32 fn_800C2600(void) {
