@@ -5,6 +5,10 @@ s32 fn_801FE878(s32 arg0) {
     return arg0 + 4;
 }
 
+s32 fn_801FE880(s32 arg0) {
+    return arg0 + 4;
+}
+
 int fn_801FE888(void) {
 return 1;
 }
