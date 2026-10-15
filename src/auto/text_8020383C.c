@@ -9,3 +9,7 @@ void* fn_80203840(void* arg0, s32 arg1) {
     return *(u8**)((u8*)arg0 + 0x28) + arg1 * 0x60;
 }
 
+void* fn_80203850(void* arg0, s32 arg1) {
+    return *(u8**)((u8*)arg0 + 0x24) + arg1 * 0xE0;
+}
+
