@@ -1321,6 +1321,11 @@ void TRKTargetSetInputPendingPtr(s32 arg0) {
     M2C_FIELD(&gTRKState, s32 *, 0xA0) = arg0;
 }
 
+s32 fn_800DF874(void) {
+    M2C_FIELD(&gTRKState, s32 *, 0x98) = 1;
+    return 0;
+}
+
 void TRKTargetSetStopped(s32 arg0) {
     M2C_FIELD(&gTRKState, s32 *, 0x98) = arg0;
 }
