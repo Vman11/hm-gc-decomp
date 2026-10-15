@@ -13,3 +13,7 @@ void fn_80216BE4(void) {
 
 }
 
+void fn_80216BE8(void) {
+
+}
+
