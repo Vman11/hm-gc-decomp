@@ -153,14 +153,9 @@ s32 fn_802753F0(void) {
 }
 
 void fn_8027550C(u32 *dst) {
-    u32 high1, low, high2;
-    do {
-        high1 = __mftbu();
-        low = __mftb();
-        high2 = __mftbu();
-    } while (high1 != high2);
-    dst[0] = high1;
-    dst[1] = low;
+ s32 high1, low, high2;
+ do { high1 = __mfspr(269); low = __mfspr(268); high2 = __mfspr(269); } while (high1 != high2);
+ dst[0] = high1; dst[1] = low;
 }
 
 u32 fn_80275578(u32 hi, u32 lo, u32 d) {
@@ -968,6 +963,9 @@ void fn_8028A7AC(void) {
 }
 
 void fn_8028A7B0(void) {
+}
+
+void fn_8028A7B4(void) {
 }
 
 #pragma pop
