@@ -3,19 +3,25 @@
 
 extern float lbl_80364BF0;
 void fn_801958A4(float *arg0, float *arg1, float *arg2, float *arg3, float farg0, float farg1) {
-    float x = arg1[0];
-    float y = arg1[1];
-    float z;
+    float f, e, d, c, b, a, z, y, x;
+    x = arg1[0];
+    y = arg1[1];
     arg0[7] = x;
     z = arg1[2];
     arg0[8] = y;
+    a = arg2[0];
     arg0[9] = z;
-    arg0[10] = arg2[0];
-    arg0[11] = arg2[1];
-    arg0[12] = arg2[2];
-    arg0[13] = arg3[0];
-    arg0[14] = arg3[1];
-    arg0[15] = arg3[2];
+    b = arg2[1];
+    arg0[10] = a;
+    c = arg2[2];
+    arg0[11] = b;
+    d = arg3[0];
+    arg0[12] = c;
+    e = arg3[1];
+    arg0[13] = d;
+    f = arg3[2];
+    arg0[14] = e;
+    arg0[15] = f;
     arg0[2] = farg1;
     *(int *)arg0 = 0;
     arg0[3] = farg0;
