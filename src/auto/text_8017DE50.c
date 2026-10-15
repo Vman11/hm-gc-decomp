@@ -9,3 +9,8 @@ s32 fn_8017DE90(s32 *arg0) {
 s32 fn_8017DE98(void) {
     return lbl_8035ADD0;
 }
+
+void fn_8017DEA0(s32* arg0, s32 arg1) {
+    arg0[2] = arg1;
+}
+
