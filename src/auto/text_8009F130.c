@@ -13,3 +13,8 @@ typedef struct {
 void fn_8009F130(void) {
 
 }
+
+void fn_8009F150(Unk8009F130 *arg0, s32 arg1) {
+    arg0->unk7C = arg1;
+}
+
