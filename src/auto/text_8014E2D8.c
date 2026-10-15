@@ -15,7 +15,7 @@ void fn_8014E2D8(void* arg0) {
     fn_8014D7A0((u8*)arg0 + *(s32*)((u8*)arg0 + 0xD4) - 0x224);
 }
 
-s32 fn_8014E3F0(s32 arg0, s32 arg1) {
-    return arg0 + (arg1 * 0x2FC + 0x60);
+void* fn_8014E3F0(Unk8014E3F0* arg0, s32 arg1) {
+    return &arg0->elems[arg1];
 }
 
