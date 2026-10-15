@@ -69,6 +69,10 @@ void fn_801638AC(void) {
 
 }
 
+void fn_801638B0(void *arg0, s32 arg1) {
+    M2C_FIELD(M2C_FIELD(arg0, void **, 0x1934), s32 *, 0x279E0) = lbl_802A0C04[arg1];
+}
+
 void fn_801638D0(void) {
 
 }
