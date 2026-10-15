@@ -11,3 +11,11 @@ void fn_80257A4C(u8* arg0, f32* arg1) {
         *(s32*)(arg0 + 0x108) = 0;
     }
 }
+
+void fn_80257A84(u8* arg0, f32 arg1) {
+    f32* temp_r3 = *(f32**)(arg0 + 0x120);
+    if (temp_r3 != NULL) {
+        *temp_r3 = arg1;
+    }
+}
+
