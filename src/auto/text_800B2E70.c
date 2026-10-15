@@ -1230,6 +1230,12 @@ u16 fn_800D665C(void) {
     return M2C_FIELD(__peReg, u16 *, 0xE);
 }
 
+void fn_800D77C8(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
+    M2C_FIELD(arg0, f32 *, 0x1C) = farg0;
+    M2C_FIELD(arg0, f32 *, 0x20) = farg1;
+    M2C_FIELD(arg0, f32 *, 0x24) = farg2;
+}
+
 void fn_800D79CC(void *lt_obj, f32 *nx, f32 *ny, f32 *nz) {
     *nx = -*(f32 *)((u8 *)lt_obj + 0x34);
     *ny = -*(f32 *)((u8 *)lt_obj + 0x38);
