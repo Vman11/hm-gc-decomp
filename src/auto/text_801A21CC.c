@@ -8,3 +8,8 @@ void fn_801A21CC(void) {
 void fn_801A21D0(void) {
 
 }
+
+void fn_801A21D8(void) {
+
+}
+
