@@ -16,6 +16,10 @@ void fn_801F5960(void *arg0, s32 arg1) {
     M2C_FIELD(*M2C_FIELD(arg0, void ***, 0), s32 *, 4) = (s32) (M2C_FIELD(arg0, s32 *, 4) + arg1);
 }
 
+s32 fn_801F5978(void *arg0) {
+    return M2C_FIELD(*M2C_FIELD(arg0, void ***, 0), s32 *, 4) - M2C_FIELD(arg0, s32 *, 4);
+}
+
 void fn_801F59B8(void) {
 
 }
