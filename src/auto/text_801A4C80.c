@@ -1,2 +1,6 @@
 /* Functions from 0x801A4C80 to 0x801A4C88, found by decomp-toolkit. */
 #include "common.h"
+
+s32 fn_801A4C80(void) {
+    return 4;
+}
