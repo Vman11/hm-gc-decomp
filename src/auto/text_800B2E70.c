@@ -327,6 +327,32 @@ void *fn_800BAC18(u32 *arg0, u32 arg1) {
     return NULL;
 }
 
+void fn_800BB284(void) {
+    extern void *lbl_8035A600;
+    extern f32 lbl_80363048;
+    extern f32 lbl_8036304C;
+    void fn_800BBD48(f32);
+    void fn_800BBD40(f32);
+    lbl_8035A600 = 0;
+    fn_800BBD48(lbl_80363048);
+    fn_800BBD40(lbl_8036304C);
+}
+
+int fn_800B50D0();
+extern void *lbl_8035A600;
+extern f32 lbl_80363048, lbl_8036304C;
+void fn_800BBD48(f32);
+void fn_800BBD40(f32);
+void fn_800BB7E0(void*);
+void fn_800BB2B8(void) {
+    void *p = lbl_8035A600;
+    while (p != NULL) {
+        fn_800BB7E0(p);
+        p = *(void**)p;
+    }
+}
+#pragma dont_inline reset
+
 void fn_800BBBD4(UnkStep* arg0) {
     if (arg0->unk10 != arg0->unkC) {
         arg0->unk10 += arg0->unk8;
