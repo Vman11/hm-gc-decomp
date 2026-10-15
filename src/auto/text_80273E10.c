@@ -9,6 +9,7 @@ void fn_8028ED28(f32 *, f32 *);
 void fn_8028F484(f32 *, f32 *);
 
 void fn_80275C64(void);
+u32 fn_80274D04(u32 arg0);
 void fn_80275F98();
 void fn_80276058(void *);
 void fn_8027564C(void *, int);
@@ -70,9 +71,9 @@ void fn_80274920(u32 arg0, s32 arg1) {
     }
 }
 
-void fn_80274970(u32 arg0) {
-    __tlbsync();
-    __tlbie(arg0 & 0x3F000);
+void fn_80274970(s32 arg0) {
+    M2C_ERROR(/* unknown instruction: tlbsync */);
+    M2C_ERROR(/* unknown instruction: tlbie $r0 */);
 }
 
 u32 fn_80274980(s32 arg0) {
