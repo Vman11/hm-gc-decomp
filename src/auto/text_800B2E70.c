@@ -5,6 +5,10 @@ void fn_800B9624(void) {
 
 }
 
+void InitMetroTRK_BBA(void) {
+
+}
+
 void fn_800BDA6C(void) {
 
 }
