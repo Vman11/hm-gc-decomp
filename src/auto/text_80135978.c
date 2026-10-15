@@ -25,3 +25,8 @@ void fn_80135A3C(void) {
 
 }
 
+extern s32 lbl_80364108;
+void fn_80135A40(s32 *arg0) {
+    arg0[0x124 / 4] = 0;
+}
+
