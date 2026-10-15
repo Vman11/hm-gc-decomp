@@ -9,3 +9,7 @@ void fn_80034AF0(void) {
 
 }
 
+void fn_80034AF4(void) {
+
+}
+
