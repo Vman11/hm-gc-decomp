@@ -334,7 +334,7 @@ void fn_802767E0(void);
 extern void fn_80275C64(void);
 extern s32 fn_8027569C(void *);
 extern s32 fn_802753F0(void);
-extern s32 fn_80275DD8(void *, void *);
+extern s32 fn_80275DD8(void *, u32, void *);
 extern void fn_80275F08(void);
 extern void fn_80275F18(void *);
 #pragma push
