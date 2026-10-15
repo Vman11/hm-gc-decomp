@@ -1173,6 +1173,11 @@ s32 fn_800D2460(void) {
     return 0;
 }
 
+void fn_800D4CB8(void *arg0, s32 arg1, s32 arg2) {
+    M2C_FIELD(arg0, s32 *, 0xC) = arg1;
+    M2C_FIELD(arg0, s32 *, 0x10) = arg2;
+}
+
 extern s32 lbl_8035A920;
 s32 fn_800D51D0(void) {
     return lbl_8035A920;
