@@ -141,6 +141,10 @@ void fn_800D79CC(void *lt_obj, f32 *nx, f32 *ny, f32 *nz) {
     *nz = -*(f32 *)((u8 *)lt_obj + 0x3C);
 }
 
+void fn_800D79F4(void *lt_obj, u32 *color) {
+    *(u32 *)((u8 *)lt_obj + 0xC) = *color;
+}
+
 void fn_800D8F00(void) {
 
 }
