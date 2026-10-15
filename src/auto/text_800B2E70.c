@@ -1499,6 +1499,27 @@ s32 fn_800DFAF0(void) {
     return M2C_FIELD(&gTRKCPUState, s32 *, 0x80);
 }
 
+s32 fn_800DFBE8(void *b) {
+    extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
+    s32 fn_800DB7D0(void *, u32);
+    s32 fn_800DB8A8(void *, u16);
+    s32 fn_800E0C00(void *, u32);
+    s32 error;
+    u32 inst;
+
+    error = fn_800DB7D0(b, gTRKExceptionStatus_802E01A4.exceptionAddress);
+    if (error == 0) {
+        error = fn_800E0C00(&inst, gTRKExceptionStatus_802E01A4.exceptionAddress);
+    }
+    if (error == 0) {
+        error = fn_800DB7D0(b, inst);
+    }
+    if (error == 0) {
+        error = fn_800DB8A8(b, gTRKExceptionStatus_802E01A4.exceptionID);
+    }
+    return error;
+}
+
 void TRKPostInterruptEvent(void) {
     void fn_800DAB9C(void *, s8);
     void fn_800DABB4(void *);
