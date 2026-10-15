@@ -13,6 +13,32 @@ void fn_80038E40(void) {
 
 }
 
+void fn_80038E44(void *arg0, void *arg1) {
+    s32 temp_r0;
+
+    temp_r0 = M2C_FIELD(arg1, s32 *, 0xC);
+    switch (temp_r0) {                              /* irregular */
+    case 0x3A:
+        M2C_FIELD(arg0, f32 *, 8) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
+        return;
+    case 0x3B:
+        M2C_FIELD(arg0, f32 *, 0xC) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
+        return;
+    case 0x39:
+        M2C_FIELD(arg0, f32 *, 0x10) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
+        return;
+    case 0x3C:
+        M2C_FIELD(arg0, f32 *, 0x14) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
+        return;
+    case 0x3D:
+        M2C_FIELD(arg0, f32 *, 0x18) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
+        return;
+    case 0x3E:
+        M2C_FIELD(arg0, f32 *, 0x1C) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
+        return;
+    }
+}
+
 void fn_80038FA4(void *arg0) {
     extern f32 lbl_8035C020;
     M2C_FIELD(arg0, s32 *, 4) = 0;
