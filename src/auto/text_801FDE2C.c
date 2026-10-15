@@ -10,3 +10,7 @@ s32 fn_801FDE34(void *arg0, s32 arg1) {
     return M2C_FIELD(arg0, s32 *, 0x34) + (arg1 * 0x38);
 }
 
+s32 fn_801FDE44(void *arg0, s32 arg1) {
+    return M2C_FIELD(arg0, s32 *, 0x30) + (arg1 * 0x2C);
+}
+
