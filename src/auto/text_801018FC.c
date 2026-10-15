@@ -28,3 +28,29 @@ void fn_80101950(UnkStruct_801018FC *arg0) {
     arg0->unkB = 0;
 }
 
+void fn_80101970(UnkStruct_801018FC *arg0, UnkStruct_801018FC *arg1) {
+    arg0->unk0 = arg1->unk0;
+    arg0->unk4 = arg1->unk4;
+    arg0->unk8 = arg1->unk8;
+    arg0->unk9 = arg1->unk9;
+    arg0->unkA = arg1->unkA;
+    arg0->unkB = arg1->unkB;
+}
+
+void fn_801019A4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2, u8 arg3, u8 arg4, u8 arg5, u8 arg6) {
+    if (arg2 < 1) {
+        arg1 &= ~0x200;
+    } else {
+        if (arg2 > 4) {
+            arg2 = 4;
+        }
+        arg1 |= lbl_80363848;
+    }
+    arg0->unk0 = arg1;
+    arg0->unk4 = arg2;
+    arg0->unk8 = arg3;
+    arg0->unk9 = arg4;
+    arg0->unkA = arg5;
+    arg0->unkB = arg6;
+}
+
