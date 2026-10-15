@@ -1,6 +1,12 @@
 /* Functions from 0x80273E10 to 0x80293ED8, found by decomp-toolkit. */
 #include "common.h"
 
+void fn_80275C64(void);
+void fn_80275F98(void);
+void fn_80276058(void *);
+void fn_8027564C(void *, int);
+void fn_802756B8(void *, int, int, int);
+
 extern s32 lbl_8035B854;
 s32 fn_80273EAC(void) {
     return lbl_8035B854;
@@ -56,6 +62,28 @@ u32 fn_80275578(u32 hi, u32 lo, u32 d) {
         q += t;
     }
     return q + (u32)n / d;
+}
+
+s32 fn_80287804();
+void fn_80287810(s32);
+f32 fn_800F051C(f32, f32);
+void fn_80275844(void *);
+void *memcpy();
+void fn_80275FC0(void *);
+s32 fn_802762FC(u8 *arg0, u32 arg1) {
+    u32 pos = *(u32 *)(arg0 + 0xF0);
+    u32 end = pos + arg1;
+    if (end >= *(u32 *)(arg0 + 0xDC)) {
+        memcpy(*(u8 **)(arg0 + 0xE4) + pos, *(u8 **)(arg0 + 0xEC), *(u32 *)(arg0 + 0xDC) - pos);
+        memcpy(*(u8 **)(arg0 + 0xE4), *(u8 **)(arg0 + 0xEC) + *(u32 *)(arg0 + 0xDC) - *(u32 *)(arg0 + 0xF0), end - *(u32 *)(arg0 + 0xDC));
+        *(u32 *)(arg0 + 0xF0) = end - *(u32 *)(arg0 + 0xDC);
+    } else {
+        memcpy(*(u8 **)(arg0 + 0xE4) + pos, *(u8 **)(arg0 + 0xEC), arg1);
+        *(u32 *)(arg0 + 0xF0) = end;
+    }
+    *(s32 *)(arg0 + 0x100) += arg1;
+    fn_80275FC0(arg0);
+    return 1;
 }
 
 void fn_80275C64(void);
@@ -142,8 +170,8 @@ void fn_80277114(u8 *arg0) {
     fn_80283E90(lbl_802F385C, arg0 + 0xFC);
 }
 
-s32 fn_802771B8(s32* arg0, s32 arg1) {
-    s32 v = arg0[-1];
+u32 fn_802771B8(u32* arg0, u32 arg1) {
+    u32 v = arg0[-1];
     if (v == arg1) {
         return 0;
     }
@@ -200,63 +228,78 @@ void fn_8028F7A4(f32 *a) {
 }
 
 void fn_8028F7D8(s32 n, f32 *a, s32 nc, f32 *c) {
-    s32 j, k, kk, ks, m;
+    s32 j, ks, m;
     f32 wkr, wki, xr, xi, yr, yi;
+    f32 *p, *q, *c1, *c2;
 
     m = n >> 1;
     ks = 2 * nc / m;
-    kk = 0;
+    p = a + 2;
+    q = a + n - 2;
+    c1 = c;
+    c2 = c + nc;
     for (j = 2; j < m; j += 2) {
-        k = n - j;
-        kk += ks;
-        wkr = lbl_802AB290 - c[nc - kk];
-        wki = c[kk];
-        xr = a[j] - a[k];
-        xi = a[j + 1] + a[k + 1];
+        c1 += ks;
+        c2 -= ks;
+        wkr = lbl_802AB290 - *c2;
+        wki = *c1;
+        xr = p[0] - q[0];
+        xi = p[1] + q[1];
         yr = wkr * xr - wki * xi;
         yi = wkr * xi + wki * xr;
-        a[j] -= yr;
-        a[j + 1] -= yi;
-        a[k] += yr;
-        a[k + 1] -= yi;
+        p[0] -= yr;
+        p[1] -= yi;
+        q[0] += yr;
+        q[1] -= yi;
+        p += 2;
+        q -= 2;
     }
 }
 
 void fn_8028F890(s32 n, f32 *a, s32 nc, f32 *c) {
-    s32 j, k, kk, ks, m;
+    s32 j, ks, m;
     f32 wkr, wki, xr, xi, yr, yi;
+    f32 *p, *q, *c1, *c2;
 
     m = n >> 1;
     ks = 2 * nc / m;
-    kk = 0;
+    p = a + 2;
+    q = a + n - 2;
+    c1 = c;
+    c2 = c + nc;
     for (j = 2; j < m; j += 2) {
-        k = n - j;
-        kk += ks;
-        wkr = lbl_802AB294 - c[nc - kk];
-        wki = c[kk];
-        xr = a[j] - a[k];
-        xi = a[j + 1] + a[k + 1];
+        c1 += ks;
+        c2 -= ks;
+        wkr = lbl_802AB294 - *c2;
+        wki = *c1;
+        xr = p[0] - q[0];
+        xi = p[1] + q[1];
         yr = wkr * xr + wki * xi;
         yi = wkr * xi - wki * xr;
-        a[j] -= yr;
-        a[j + 1] -= yi;
-        a[k] += yr;
-        a[k + 1] -= yi;
+        p[0] -= yr;
+        p[1] -= yi;
+        q[0] += yr;
+        q[1] -= yi;
+        p += 2;
+        q -= 2;
     }
 }
 
 void fn_8028F948(s32 n, f32 *a, s32 nc, f32 *c) {
-    s32 j, k, kk, ks, m;
-    f32 wkr, wki, xr;
+    s32 j, k, ks, m;
+    f32 wkr, wki, xr, ar, ak;
+    f32 *c1, *c2;
 
     m = n >> 1;
     ks = nc / n;
-    kk = 0;
+    c1 = c;
+    c2 = c + nc;
     for (j = 1; j < m; j++) {
         k = n - j;
-        kk += ks;
-        wkr = c[kk] - c[nc - kk];
-        wki = c[kk] + c[nc - kk];
+        c1 += ks;
+        c2 -= ks;
+        wkr = *c1 - *c2;
+        wki = *c1 + *c2;
         xr = wki * a[j] - wkr * a[k];
         a[j] = wkr * a[j] + wki * a[k];
         a[k] = xr;
@@ -265,6 +308,7 @@ void fn_8028F948(s32 n, f32 *a, s32 nc, f32 *c) {
 }
 
 void fn_80290190(s32 n, f32 *a, s32 nc, s32 idx) {
-    fn_8028F9D8(n, a, nc, lbl_802AD300[idx]);
+    f32 *c = lbl_802AD300[idx];
+    fn_8028F9D8(n, a, nc, c);
 }
 
