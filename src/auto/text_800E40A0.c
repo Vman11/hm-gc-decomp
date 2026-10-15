@@ -144,3 +144,7 @@ void EXI2_Unreserve(void) {
 
 }
 
+s32 AMC_IsStub(void) {
+    return 0;
+}
+
