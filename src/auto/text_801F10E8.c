@@ -5,3 +5,4 @@ extern s32 lbl_8035B0D0;
 
 extern s32 lbl_8035B0D0;
 extern s32 lbl_8035B0C8;
+extern s32 lbl_8035B0C8;
