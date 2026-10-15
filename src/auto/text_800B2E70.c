@@ -352,8 +352,35 @@ void fn_800BE0AC(u32 intType) {
     fn_800BCBF4(fn_800BE114);
 }
 
-extern int autoInvalidation_80359574;
-int fn_800BFBA0(int arg0) { int old = autoInvalidation_80359574; autoInvalidation_80359574 = arg0; return old; }
+void DVDLowStopMotor(void (*cb)(u32));
+void fn_800BCE40(u8 enable, u32 size, void (*cb)(u32));
+void fn_800BE718(u32 intType);
+void fn_800BE634(u32 intType);
+void fn_800BE4E8(void *command);
+extern u8 *IDShouldBe_8035A67C;
+void fn_800BE40C(void *command) {
+    fn_800BCE40(IDShouldBe_8035A67C[8], 10, fn_800BE718);
+}
+
+void fn_800BE474(u32 intType) {
+    if (intType == 16) {
+        *(s32 *)((u8 *)executing_8035A678 + 0xC) = -1;
+        __DVDStoreErrorCode(0x01234568);
+        DVDReset();
+        cbForStateError(0);
+        return;
+    }
+    if (intType & 1) {
+        lbl_8035A6AC = 0;
+        fn_800BE4E8(executing_8035A678);
+        return;
+    }
+    fn_800BCBF4(fn_800BDE18);
+}
+
+void fn_800BE4E8(void *command) {
+    fn_800BC76C(BB2_803083C0, 0x20, 0x420, fn_800BE634);
+}
 
 typedef struct { u8 r, g, b, a; } GXColor;
 
@@ -363,6 +390,19 @@ extern int OSDisableInterrupts(void);
 extern int OSRestoreInterrupts(int level);
 extern void fn_800C05F0(void);
 extern char lbl_802DA610[];
+extern GXColor lbl_803630B8;
+extern GXColor lbl_803630BC;
+extern u32 lbl_80359588;
+extern u32 lbl_8035958C;
+extern u32 lbl_8029BDC0[];
+u32 VIGetTvFormat(void);
+u16 fn_800B6B0C(void);
+u8 fn_800B92DC(void);
+void fn_800B6024(GXColor a, GXColor b, u32 c);
+
+extern int autoInvalidation_80359574;
+int fn_800BFBA0(int arg0) { int old = autoInvalidation_80359574; autoInvalidation_80359574 = arg0; return old; }
+
 unsigned int fn_800C0BD0(unsigned int arg0) {
     unsigned int old = lbl_8035A6F0;
     int enabled = OSDisableInterrupts();
