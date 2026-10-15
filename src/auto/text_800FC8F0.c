@@ -28,6 +28,44 @@ typedef struct UnkStruct800FC8F0 {
     void* unk8C;
 } UnkStruct800FC8F0;
 
+void fn_800FC8F0(UnkStruct800FC8F0* p) {
+    p->unk8C = lbl_802E2270;
+    p->unk4[0] = lbl_80363708;
+    p->unk4[1] = lbl_80363708;
+    p->unk4[2] = lbl_80363708;
+    p->unk10[0] = lbl_80363708;
+    p->unk10[1] = lbl_80363708;
+    p->unk10[2] = lbl_80363708;
+    p->unk1C = p->unk4;
+    p->unk20 = p->unk10;
+    p->unk3C[0] = lbl_80363708;
+    p->unk3C[1] = lbl_80363708;
+    p->unk3C[2] = lbl_80363708;
+    p->unk48[0] = lbl_80363708;
+    p->unk48[1] = lbl_80363708;
+    p->unk48[2] = lbl_80363708;
+    p->unk24[0] = lbl_80363708;
+    p->unk24[1] = lbl_80363708;
+    p->unk24[2] = lbl_80363708;
+    p->unk24[3] = lbl_80363708;
+    p->unk24[4] = lbl_80363708;
+    p->unk24[5] = lbl_80363708;
+    p->unk54 = p->unk3C;
+    p->unk58 = p->unk48;
+    p->unk5C[0] = lbl_80363708;
+    p->unk5C[1] = lbl_80363708;
+    p->unk5C[2] = lbl_80363708;
+    p->unk5C[3] = lbl_80363708;
+    p->unk0 = 0;
+    p->unk6C = 0;
+    p->unk70 = 0;
+    p->unk74 = 0;
+    p->unk7C = 0;
+    p->unk80 = 0;
+    p->unk84 = 0;
+    p->unk88 = 0;
+}
+
 void fn_800FC9F4(s32 arg0) {
     lbl_8035AA20 = arg0;
 }
