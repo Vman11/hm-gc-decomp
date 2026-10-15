@@ -22,3 +22,15 @@ f32 fn_800FB4DC(void) {
     return lbl_803636F8;
 }
 
+void fn_800FB4E4(void* arg0) {
+    u16* p;
+    u16* start;
+
+    *(s32*)((u8*)arg0 + 0x4) = 0;
+    p = start = *(u16**)((u8*)arg0 + 0x10);
+    while (*p != 0) {
+        p++;
+    }
+    *(s32*)((u8*)arg0 + 0x8) = p - start;
+}
+
