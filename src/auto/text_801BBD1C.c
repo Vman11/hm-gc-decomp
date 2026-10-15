@@ -12,3 +12,8 @@ s32 fn_801BBD1C(s32 arg0, s32 arg1) {
         return 0;
     }
 }
+
+u8 *fn_801BBD44(void) {
+    return lbl_80330768;
+}
+
