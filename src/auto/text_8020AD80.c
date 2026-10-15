@@ -6,6 +6,10 @@ void fn_8020AD80(s32 arg0) {
     lbl_8035B1A8 = arg0;
 }
 
+s32 fn_8020AE00(void) {
+    return 4;
+}
+
 s32 fn_8020AE08(void) {
     return 0x8000;
 }
