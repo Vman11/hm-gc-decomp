@@ -3,6 +3,10 @@
 
 extern s32 lbl_8035B218;
 
+void fn_80216BD4(s32 arg0) {
+    lbl_8035B218 = arg0;
+}
+
 void fn_80216BDC(void) {
 
 }
