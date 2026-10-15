@@ -5,3 +5,8 @@ extern s32 lbl_8035AB20;
 void fn_8011893C(s32 arg0) {
     lbl_8035AB20 = arg0;
 }
+
+void fn_8011895C(void *arg0, f32 arg1) {
+    *(f32 *)((u8 *)arg0 + 0x14) = arg1;
+}
+
