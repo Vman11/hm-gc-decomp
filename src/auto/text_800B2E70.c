@@ -39,6 +39,8 @@ extern u32 lbl_80325D58;
 extern s32 __OSArenaHi_8035A578;
 s32 PPCMfmsr(void) { return __MFMSR(); }
 
+void PPCMtl2cr(u32 value) { __mtspr(1017, value); }
+
 s32 OSGetArenaHi(void) {
     return __OSArenaHi_8035A578;
 }
@@ -63,6 +65,14 @@ void fn_800B9624(void) {
 
 void InitMetroTRK_BBA(void) {
 
+}
+
+extern f32 lbl_8035A608;
+extern f32 lbl_80363088;
+extern u16 lbl_802D9DD8[];
+s32 fn_800E2584(void);
+void fn_800BBD40(f32 arg0) {
+    lbl_8035A608 = arg0;
 }
 
 void fn_800BDA6C(void) {
