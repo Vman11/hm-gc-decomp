@@ -1370,6 +1370,14 @@ s32 fn_800DFAF0(void) {
     return M2C_FIELD(&gTRKCPUState, s32 *, 0x80);
 }
 
+s32 fn_800E0070(void *arg0) {
+    M2C_FIELD(arg0, s8 *, 0) = 2;
+    M2C_FIELD(arg0, s8 *, 1) = 0;
+    M2C_FIELD(arg0, s8 *, 2) = 1;
+    M2C_FIELD(arg0, s8 *, 3) = 0xA;
+    return 0;
+}
+
 s32 TRKInitializeTarget(void) {
     gTRKState.unk98 = 1;
     gTRKState.unk8C = fn_800DF4D0(&gTRKState);
