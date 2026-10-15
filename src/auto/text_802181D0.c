@@ -5,3 +5,10 @@ extern s32 lbl_8035B220;
 void fn_802181F0(s32 arg0) {
     lbl_8035B220 = arg0;
 }
+
+u16 fn_802181F8(void* arg0) {
+    u16 value = *(u16*)((u8*)arg0 + 0x1B0);
+    *(u16*)((u8*)arg0 + 0x1B0) = value + 1;
+    return value;
+}
+
