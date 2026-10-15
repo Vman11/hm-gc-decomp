@@ -53,6 +53,10 @@ s32 fn_80153F58(s32 arg0, u32 arg1) {
     return 4;
 }
 
+s32 fn_80153F6C(void) {
+    return 0x400;
+}
+
 s32 fn_80153F74(s32 arg0, u32 arg1) {
     if (arg1 <= 8) {
         return 8;
