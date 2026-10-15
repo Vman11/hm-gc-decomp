@@ -57,6 +57,11 @@ unsigned int fn_800C0BD0(unsigned int arg0) {
     return old;
 }
 
+extern s32 lbl_8035A6DC;
+s32 fn_800C2600(void) {
+    return lbl_8035A6DC;
+}
+
 void fn_800C6C2C(void) {
 
 }
