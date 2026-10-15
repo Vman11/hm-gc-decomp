@@ -58,6 +58,17 @@ void fn_80038E44(void *arg0, void *arg1) {
     }
 }
 
+void fn_80038EC4(void *arg0, void *arg1) {
+    switch (M2C_FIELD(arg1, s32 *, 0xC)) {
+    case 0x3F: M2C_FIELD(arg0, s32 *, 0x20) = 0; break;
+    case 0x42: M2C_FIELD(arg0, s32 *, 0x24) = 0; break;
+    case 0x43: M2C_FIELD(arg0, s32 *, 0x28) = 0; break;
+    case 0x44: M2C_FIELD(arg0, s32 *, 0x2C) = 0; break;
+    case 0x45: M2C_FIELD(arg0, s32 *, 0x30) = 0; break;
+    case 0x46: M2C_FIELD(arg0, s32 *, 0x34) = 0; break;
+    }
+}
+
 void fn_80038FA4(void *arg0) {
     extern f32 lbl_8035C020;
     M2C_FIELD(arg0, s32 *, 4) = 0;
