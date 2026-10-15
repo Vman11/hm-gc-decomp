@@ -1031,6 +1031,27 @@ u8 *fn_800C8864(void) {
     return lbl_80310520;
 }
 
+void fn_800C8C68(void) {
+    extern s32 lbl_8035A878;
+    extern s32 lbl_8035A87C;
+    extern s32 lbl_8035A880;
+    extern s32 lbl_8035A884;
+    extern s32 lbl_8035A888;
+    extern s32 lbl_8035A88C;
+    extern s32 lbl_8035A890;
+    extern s32 lbl_8035A894;
+    extern s32 lbl_8035A898;
+    lbl_8035A898 = 0;
+    lbl_8035A894 = 0;
+    lbl_8035A890 = 0;
+    lbl_8035A88C = 0;
+    lbl_8035A888 = 0;
+    lbl_8035A884 = 0;
+    lbl_8035A880 = 0;
+    lbl_8035A87C = 0;
+    lbl_8035A878 = 0;
+}
+
 void fn_800C8C94(void) {
 
 }
