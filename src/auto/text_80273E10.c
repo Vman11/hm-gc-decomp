@@ -55,6 +55,11 @@ void fn_802740E4(void) {
     fn_8027438C();
 }
 
+void fn_80274990(s32 arg0, u32 arg1) {
+    extern u32* lbl_8035B87C;
+    lbl_8035B87C[arg0] = arg1;
+}
+
 u8 fn_802749A0(s32 arg0) {
     extern u8* lbl_8035B880;
     return lbl_8035B880[arg0];
