@@ -2,8 +2,8 @@
 #include "common.h"
 
 extern s32 lbl_8035A028;
-
-extern s32 lbl_8035A028;
+extern void *lbl_8035A02C;
+extern f32 lbl_8035C090;
 
 void fn_8003A4BC(s32 arg0) {
     lbl_8035A028 = arg0;
