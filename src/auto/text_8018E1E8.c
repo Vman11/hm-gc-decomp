@@ -9,3 +9,7 @@ void fn_8018E1EC(void) {
 
 }
 
+void fn_8018E1F0(void) {
+
+}
+
