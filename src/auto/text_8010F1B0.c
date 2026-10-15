@@ -1,6 +1,8 @@
 /* Functions from 0x8010F1B0 to 0x8010F3DC, found by decomp-toolkit. */
 #include "common.h"
 
+s32 fn_8010F1B0(void *arg0) { return *(s32 *)((u8 *)arg0 + 0xC); }
+
 s32 fn_8010F1D8(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x14);
 }
