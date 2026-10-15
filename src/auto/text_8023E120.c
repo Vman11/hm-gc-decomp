@@ -9,3 +9,7 @@ u16 fn_8023E128(void *arg0) {
     return *(u16 *)((u8 *)arg0 + 0x3C);
 }
 
+u16 fn_8023E130(void *arg0) {
+    return *(u16 *)((u8 *)arg0 + 0x40);
+}
+
