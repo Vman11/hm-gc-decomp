@@ -9,3 +9,7 @@ void fn_802195E4(void) {
 
 }
 
+void fn_802195E8(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+}
+
