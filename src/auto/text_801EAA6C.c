@@ -3,3 +3,7 @@
 
 void fn_801EAA6C(void) {
 }
+
+void fn_801EAA70(void) {
+}
+
