@@ -1,6 +1,12 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
 
+extern u8 lbl_80308780[][0x780];
+extern u8 lbl_80309E00[][0x780];
+extern s32 lbl_8035A814;
+extern s32 lbl_8035A810;
+extern u32 lbl_8035A7F0;
+
 typedef struct TRKState_unk {
     u8 pad0[0x8C];
     s32 unk8C;
@@ -61,6 +67,8 @@ s32 PPCMffpscr(void) {
 
 s32 PPCMfhid2(void) { return __mfspr(920); }
 
+void PPCMthid2(u32 value) { __mtspr(920, value); }
+
 extern int lbl_80359530;
 extern int lbl_8035A568;
 extern int lbl_8035A56C;
@@ -68,6 +76,24 @@ extern int lbl_8035A570;
 extern int lbl_8035A574;
 int fn_800B4294(int);
 int fn_800B44B8(int arg0) { int old = lbl_80359530; lbl_80359530 = arg0; return old; }
+
+void fn_800B44C8(int arg0, int arg1, int arg2) {
+    int i = 0;
+    int offset = 0;
+    lbl_8035A568 = arg0;
+    lbl_8035A56C = arg2;
+    do {
+        int *entry = (int *)(lbl_8035A568 + offset);
+        entry[0] = -1;
+        entry[2] = 0;
+        entry[1] = 0;
+        offset += 12;
+        i++;
+    } while (i < lbl_8035A56C);
+    lbl_8035A574 = arg1 & ~31;
+    lbl_80359530 = -1;
+    lbl_8035A570 = (lbl_8035A568 + arg2 * 12 + 31) & ~31;
+}
 
 s32 OSGetArenaHi(void) {
     return __OSArenaHi_8035A578;
