@@ -15,6 +15,13 @@ void fn_80150E18(void *arg0, f32 farg0, f32 farg1) {
     M2C_FIELD(arg0, f32 *, 0x1C) = (f32) (M2C_FIELD(arg0, f32 *, 0x1C) + ((M2C_FIELD(arg0, f32 *, 0x30) * farg0) + (M2C_FIELD(arg0, f32 *, 0x38) * farg1)));
 }
 
+void fn_80150E8C(void *arg0, f32 farg0, f32 farg1) {
+    M2C_FIELD(arg0, f32 *, 0x20) = (f32) (M2C_FIELD(arg0, f32 *, 0x20) + ((M2C_FIELD(arg0, f32 *, 0) * farg0) + (M2C_FIELD(arg0, f32 *, 4) * farg1)));
+    M2C_FIELD(arg0, f32 *, 0x24) = (f32) (M2C_FIELD(arg0, f32 *, 0x24) + ((M2C_FIELD(arg0, f32 *, 0x10) * farg0) + (M2C_FIELD(arg0, f32 *, 0x14) * farg1)));
+    M2C_FIELD(arg0, f32 *, 0x28) = (f32) (M2C_FIELD(arg0, f32 *, 0x28) + ((M2C_FIELD(arg0, f32 *, 0x20) * farg0) + (M2C_FIELD(arg0, f32 *, 0x24) * farg1)));
+    M2C_FIELD(arg0, f32 *, 0x2C) = (f32) (M2C_FIELD(arg0, f32 *, 0x2C) + ((M2C_FIELD(arg0, f32 *, 0x30) * farg0) + (M2C_FIELD(arg0, f32 *, 0x34) * farg1)));
+}
+
 void fn_80150F00(void *arg0, f32 farg0) {
     M2C_FIELD(arg0, f32 *, 0x20) = (f32) (M2C_FIELD(arg0, f32 *, 8) * farg0);
     M2C_FIELD(arg0, f32 *, 0x24) = (f32) (M2C_FIELD(arg0, f32 *, 0x18) * farg0);
