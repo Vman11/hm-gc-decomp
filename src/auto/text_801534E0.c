@@ -85,6 +85,10 @@ s32 fn_80153AC0(void) {
     return 0xFFFF;
 }
 
+s32 fn_80153ACC(void) {
+    return 0xFFFF;
+}
+
 u32 fn_80153AD8(u8* arg0, u32 arg1, u32 arg2) {
     u32 i;
     u32 max = 0;
