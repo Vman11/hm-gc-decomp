@@ -2,3 +2,5 @@
 #include "common.h"
 
 extern u8 lbl_802F0130[];
+
+extern u8 lbl_802F0130[];
