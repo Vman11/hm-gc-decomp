@@ -1,7 +1,7 @@
 /* Functions from 0x801965E0 to 0x80196600, found by decomp-toolkit. */
 #include "common.h"
 
-extern void* lbl_802E96E0;
+extern void* lbl_802E96E0[];
 
 extern s32 lbl_8035AE70;
 
