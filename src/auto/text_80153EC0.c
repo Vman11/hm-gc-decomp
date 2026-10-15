@@ -29,6 +29,11 @@ BOOL fn_80153EC8(Unk80153EC8 *arg0, u32 arg1, u32 arg2, u32 arg3) {
     return FALSE;
 }
 
+extern f32 lbl_80364568;
+f32 fn_80153F14(void) {
+    return lbl_80364568;
+}
+
 s32 fn_80153F3C(void) {
     return 0x10;
 }
