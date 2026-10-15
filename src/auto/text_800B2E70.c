@@ -55,6 +55,31 @@ typedef struct UnkU16 {
     u16 v;
 } UnkU16;
 
+typedef struct FSTEntry {
+    u32 isDirAndStringOff;
+    u32 parentOrPosition;
+    u32 nextEntryOrLength;
+} FSTEntry;
+
+typedef struct DVDDir {
+    u32 entryNum;
+    u32 location;
+    u32 next;
+} DVDDir;
+
+typedef struct DVDDirEntry {
+    u32 entryNum;
+    BOOL isDir;
+    char* name;
+} DVDDirEntry;
+
+extern FSTEntry* FstStart_8035A65C;
+extern char* FstStringStart_8035A660;
+
+#define entryIsDir(i) (((FstStart_8035A65C[i].isDirAndStringOff & 0xff000000) == 0) ? FALSE : TRUE)
+#define stringOff(i) (FstStart_8035A65C[i].isDirAndStringOff & ~0xff000000)
+#define nextDir(i) (FstStart_8035A65C[i].nextEntryOrLength)
+
 extern f32 lbl_80363088;
 s32 fn_800E2584(void);
 
@@ -515,6 +540,35 @@ void fn_800C6C2C(void) {
 
 }
 
+void fn_800C6F38(void) {
+    fn_800C70AC();
+    fn_800C9944();
+    fn_800C8C94();
+    fn_800C75C0();
+    fn_800C807C();
+    fn_800C8804();
+}
+
+s32 fn_800C6F6C(s32 arg0) {
+    s32* p = lbl_80308680 + arg0;
+    return *p;
+}
+
+void fn_800C6F84(void) {
+    u8* p;
+
+    for (p = fn_800C7190(); p != NULL; p = fn_800C7190()) {
+        if (*(u32*)(p + 0xC) != 0) {
+            void (*cb)(void*) = *(void (**)(void*))(p + 0x10);
+            if (cb != NULL) {
+                cb(p);
+            }
+            fn_800C71AC(p);
+            fn_800C7160(p);
+        }
+    }
+}
+
 extern s32 lbl_80308680[32];
 extern s32 lbl_80308700[32];
 extern s32 lbl_8035A7E8;
@@ -532,8 +586,8 @@ void fn_800C6FF8(void) {
 
     lbl_8035A7E8 = 0;
     for (i = 0; i < 32; i++) {
-        lbl_80308700[i] = 0;
         lbl_80308680[i] = 0;
+        lbl_80308700[i] = 0;
     }
 }
 
