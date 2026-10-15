@@ -31,6 +31,18 @@ s32 fn_8010C470(void *arg0, s32 arg1, s32 arg2) {
     return 0;
 }
 
+s32 fn_8010C480(void *arg0, f32 *arg1, f32 *arg2) {
+    s32 temp_r0;
+
+    temp_r0 = M2C_FIELD(arg0, s32 *, 8);
+    if ((temp_r0 != 9) && ((temp_r0 >= 9) || (temp_r0 != 3))) {
+        return -1;
+    }
+    *arg1 = M2C_FIELD(arg0, f32 *, 0x14);
+    *arg2 = M2C_FIELD(arg0, f32 *, 0x18);
+    return 0;
+}
+
 s32 fn_8010C4B8(void *arg0, s32 *arg1, s32 *arg2) {
     *arg1 = M2C_FIELD(arg0, s32 *, 0x14);
     *arg2 = M2C_FIELD(arg0, s32 *, 0x18);
