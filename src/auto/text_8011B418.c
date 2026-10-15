@@ -9,3 +9,7 @@ void fn_8011B41C(void) {
 
 }
 
+void fn_8011B420(void) {
+
+}
+
