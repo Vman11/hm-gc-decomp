@@ -25,6 +25,36 @@ void fn_80245D9C(void *arg0, u32 arg1, f32 *arg2, f32 *arg3, f32 *arg4, f32 *arg
     }
 }
 
+void fn_80245E58(void *arg0, u32 arg1, f32 *arg2) {
+    u32 count = M2C_FIELD(arg0, u32 *, 0xC);
+    f32 *p;
+
+    if (count == 0 && arg1 == 0) {
+        arg2[0] = lbl_80366250;
+        arg2[1] = lbl_80366250;
+        arg2[2] = lbl_80366250;
+        return;
+    }
+    if (arg1 == 0) {
+        p = M2C_FIELD(arg0, f32 **, 0x18);
+        arg2[0] = p[0];
+        arg2[1] = p[1];
+        arg2[2] = p[2];
+        return;
+    }
+    if (arg1 > count) {
+        p = (f32 *)(M2C_FIELD(arg0, u8 **, 0x18) + count * 0xC);
+        arg2[0] = p[0];
+        arg2[1] = p[1];
+        arg2[2] = p[2];
+        return;
+    }
+    p = (f32 *)(M2C_FIELD(arg0, u8 **, 0x18) + arg1 * 0xC);
+    arg2[0] = p[0];
+    arg2[1] = p[1];
+    arg2[2] = p[2];
+}
+
 s32 fn_80245F8C(void *arg0, s32 arg1) {
     return M2C_FIELD(arg0, s32 *, 0x18) + (arg1 * 0xC);
 }
