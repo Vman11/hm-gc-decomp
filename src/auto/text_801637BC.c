@@ -36,8 +36,8 @@ static inline BOOL fn_801637C8_subHasFlag(Unk801637C8Sub *sub) {
 }
 
 static inline BOOL fn_801637C8_hasFlag(Unk801637C8Obj *obj) {
-    u32 n = M2C_FIELD(obj, u32 *, 0x128);
     u32 i;
+    u32 n = M2C_FIELD(obj, u32 *, 0x128);
     if (n == 0) {
         return FALSE;
     }
@@ -51,6 +51,15 @@ static inline BOOL fn_801637C8_hasFlag(Unk801637C8Obj *obj) {
 
 void fn_801637BC(void *arg0) {
     M2C_FIELD(arg0, s32 *, 0x1ACC) = 0;
+}
+
+void fn_801637C8(void *arg0, Unk801637C8Obj *arg1) {
+    M2C_FIELD(arg0, Unk801637C8Obj **, 0x1AB8) = arg1;
+    if (fn_801637C8_hasFlag(arg1)) {
+        M2C_FIELD(M2C_FIELD(arg0, void **, 0x1934), u32 *, 0x2C) |= lbl_80364670;
+    } else {
+        M2C_FIELD(M2C_FIELD(arg0, void **, 0x1934), u32 *, 0x2C) &= ~0x4000;
+    }
 }
 
 void fn_80163888(void) {
