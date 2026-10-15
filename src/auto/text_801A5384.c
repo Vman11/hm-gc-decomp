@@ -2,3 +2,5 @@
 #include "common.h"
 
 extern s32 lbl_8035AEDC;
+
+extern s32 lbl_8035AEDC;
