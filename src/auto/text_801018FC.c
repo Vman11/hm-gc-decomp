@@ -66,3 +66,8 @@ void fn_80101A5C(UnkStruct_801018FC *arg0) {
     arg0->unkB = 0;
 }
 
+extern u32 lbl_802E22B8[];
+u32 fn_80101A7C(s32 arg0) {
+    return lbl_802E22B8[arg0];
+}
+
