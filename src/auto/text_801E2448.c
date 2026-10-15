@@ -21,3 +21,12 @@ s32 fn_801E2448(Unk801E2448 *arg0, u32 arg1) {
     }
     return 0;
 }
+
+s32 fn_801E2478(Unk801E2448 *arg0, u32 arg1) {
+    UnkNode_801E2448 *node;
+    for (node = arg0->unk20; node != NULL; node = node->next) {
+        if (arg1 == node->unk8) return 1;
+    }
+    return 0;
+}
+
