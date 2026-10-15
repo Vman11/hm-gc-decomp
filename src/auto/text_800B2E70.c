@@ -271,6 +271,10 @@ void EnableMetroTRKInterrupts(void) {
     fn_800E18F0();
 }
 
+s32 fn_800E1538(void) {
+    return 0x54;
+}
+
 void TRKUARTInterruptHandler(void) {
 
 }
