@@ -14,3 +14,7 @@ void fn_801FC808(void *arg0, f32 farg0) {
     M2C_FIELD(arg0, f32 *, 0x28) = farg0;
 }
 
+void fn_801FC810(void *arg0, f32 farg0) {
+    M2C_FIELD(arg0, f32 *, 0x30) = farg0;
+}
+
