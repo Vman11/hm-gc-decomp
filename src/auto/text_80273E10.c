@@ -406,7 +406,6 @@ s32 fn_802762FC(u8 *arg0, u32 arg1) {
 
 void fn_80275D6C(s16 *, u8 *, u8 *, u32);
 #pragma push
-#pragma optimize_for_size on
 #pragma use_lmw_stmw on
 s32 fn_802763BC(u8 *arg0, u32 arg1) {
     u32 n = arg1 >> 1;
@@ -610,6 +609,8 @@ s32 fn_8027B0D4(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x20);
 }
 
+#pragma push
+#pragma scheduling off
 void fn_8027B168(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0xBC) = 1;
     fn_800BFE7C((u8 *)arg0 + 0x4C);
@@ -618,7 +619,7 @@ void fn_8027B168(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0xBC) = 0;
     *(s32 *)((u8 *)arg0 + 0x20) = 0;
 }
-
+#pragma pop
 u32 fn_8027B4CC(void *arg0, void *arg1) {
     return ((u32)arg1 + 0xFFF) & ~0xFFF;
 }
@@ -1180,6 +1181,28 @@ void fn_80282C94(s16 *dst, f32 *src, s32 count, f32 scale) {
  }
 }
 
+s32 fn_802838BC(s32 arg0, s32 arg1) {
+    s32 p;
+    s32 n;
+    if (arg0 == 0) {
+        return 0;
+    }
+    p = *(s32 *)(arg0 + 0x30);
+    if (p == arg1) {
+        *(s32 *)(arg0 + 0x30) = *(s32 *)p;
+        return 1;
+    }
+    while (*(s32 *)p != 0) {
+        n = *(s32 *)p;
+        if (n == arg1) {
+            *(s32 *)p = *(s32 *)n;
+            return 1;
+        }
+        p = n;
+    }
+    return 0;
+}
+
 #pragma push
 #pragma optimize_for_size on
 void fn_80283D04(void *arg0) {
@@ -1221,6 +1244,10 @@ void fn_80283FE4(u8 *arg0) {
         fn_800B3EF8(arg0 + 8);
         fn_8027B790(arg0);
     }
+}
+
+void fn_8028405C(void) {
+
 }
 
 s32 fn_80284060(void) {
