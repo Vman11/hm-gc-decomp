@@ -1,6 +1,26 @@
 /* Functions from 0x8019B990 to 0x8019BB1C, found by decomp-toolkit. */
 #include "common.h"
 
+void fn_8019B990(void *arg0, void *arg1) {
+    void *head = M2C_FIELD(arg0, void **, 0x48);
+    void *node = head;
+    void *prev = head;
+
+    while (node != NULL) {
+        if (node == arg1) {
+            if (node == head) {
+                M2C_FIELD(arg0, void **, 0x48) = M2C_FIELD(arg1, void **, 8);
+            } else {
+                M2C_FIELD(prev, void **, 8) = M2C_FIELD(arg1, void **, 8);
+            }
+            M2C_FIELD(arg1, void **, 8) = NULL;
+            return;
+        }
+        prev = node;
+        node = M2C_FIELD(node, void **, 8);
+    }
+}
+
 void *fn_8019BAB8(void *arg0) {
     void *temp_r4;
 
