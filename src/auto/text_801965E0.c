@@ -10,3 +10,8 @@ void fn_801965F0(void) {
 void fn_801965F4(void) {
 
 }
+
+void fn_801965F8(s32 arg0) {
+    lbl_8035AE70 = arg0;
+}
+
