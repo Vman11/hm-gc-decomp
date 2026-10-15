@@ -113,3 +113,12 @@ void fn_80148194(UnkStruct80148118* arg0, s32 arg1) {
     }
 }
 
+void fn_80148310(UnkStruct80148118* arg0) {
+    arg0->unk0 = 0;
+    arg0->unk2 = 0;
+    arg0->unk4 = 0;
+    arg0->unk8 = 0;
+    arg0->unkC = 0;
+    arg0->unk10 = 0;
+}
+
