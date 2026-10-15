@@ -5,7 +5,7 @@ void fn_800F85DC(s32 (**arg0)[3], s32 arg1, s32 arg2) {
     (*arg0)[arg1][2] = arg2;
 }
 
-s32 fn_800F85F0(u8** arg0, s32 arg1) {
-    return *(s32*)(*arg0 + arg1 * 12 + 8);
+s32 fn_800F85F0(s32 (**arg0)[3], s32 arg1) {
+    return (*arg0)[arg1][2];
 }
 
