@@ -56,6 +56,10 @@ int fn_8002FB40(void) {
 return 1;
 }
 
+int fn_8002FB48(void) {
+return 1;
+}
+
 int fn_8002FB70(void) {
 return 1;
 }
