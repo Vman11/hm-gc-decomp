@@ -6,3 +6,7 @@ typedef struct {
 } Color_8012DCE8;
 
 extern s32 lbl_80363EE8;
+
+void fn_8012DCD8(u8* arg0) {
+    *(s32*)(arg0 + 8) &= 0xFFFFFFFB;
+}
