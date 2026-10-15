@@ -23,7 +23,7 @@ extern u32 lbl_80364670;
 extern s32 lbl_802A0C04[];
 
 static inline BOOL fn_801637C8_subHasFlag(Unk801637C8Sub *sub) {
-    s32 i;
+    u32 i;
     if (sub->count == 0) {
         return FALSE;
     }
