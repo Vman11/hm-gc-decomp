@@ -6,6 +6,10 @@ s32 fn_8022A76C(void *arg0) {
     return M2C_FIELD(arg0, s32 *, 0x54);
 }
 
+void fn_8022A774(s32 *arg0) {
+    *arg0 &= 0xFFFFFDFF;
+}
+
 s32 fn_8022A784(void *arg0) { return *(s32 *)((u8 *)arg0 + 0xC); }
 
 s32 fn_8022A78C(void) {
