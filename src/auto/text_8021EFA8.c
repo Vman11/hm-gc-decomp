@@ -10,3 +10,8 @@ void fn_8021EFD8(void) {
 void fn_8021EFE4(s32 arg0) {
     lbl_8035B258 = arg0;
 }
+
+s32 fn_8021EFEC(void) {
+    return 0;
+}
+
