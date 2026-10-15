@@ -484,6 +484,10 @@ void fn_800D8F00(void) {
 
 }
 
+s32 fn_800DBCDC(void) {
+    return 0;
+}
+
 void usr_put_initialize(void) {
 
 }
