@@ -6,6 +6,17 @@ void fn_8020E640(s32 arg0) {
     lbl_8035B1B0 = arg0;
 }
 
+s32 fn_8020E648(u32 *arg0) {
+    s32 result = 0;
+    if (arg0[3] & 0x20) {
+        result = 1;
+    }
+    if (arg0[0x2A54] & 0x20) {
+        result += 1;
+    }
+    return result;
+}
+
 s32 fn_8020E6A8(void) {
     return 2;
 }
