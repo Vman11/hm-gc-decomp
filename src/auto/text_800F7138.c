@@ -23,3 +23,14 @@ typedef struct UnkHeap800F7520 {
     s32 unk20;
     s32 unk24;
 } UnkHeap800F7520;
+
+void fn_800F74F4(UnkHeap800F7520* arg0) {
+    arg0->unk0 = NULL;
+    arg0->unk8 = 0;
+    arg0->unkC = 0;
+    arg0->unk18 = 2;
+    arg0->unk1C = 2;
+    arg0->unk20 = 0;
+    arg0->unk4 = NULL;
+    arg0->unk24 = 0;
+}
