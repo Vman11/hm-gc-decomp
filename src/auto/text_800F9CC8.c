@@ -7,6 +7,21 @@ typedef struct TreeNode_800F9F44 {
     struct TreeNode_800F9F44 *left;
 } TreeNode_800F9F44;
 
+TreeNode_800F9F44 *fn_800F9F44(TreeNode_800F9F44 *node) {
+    TreeNode_800F9F44 *parent;
+    if (node->left != NULL) {
+        node = node->left;
+        while (node->right != NULL) {
+            node = node->right;
+        }
+        return node;
+    }
+    while ((parent = node->parent) != NULL && node == parent->left) {
+        node = parent;
+    }
+    return parent;
+}
+
 s32 fn_800F9F94(void *arg0) {
     u32 temp_r5;
 
