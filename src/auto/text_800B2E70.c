@@ -1499,6 +1499,42 @@ s32 fn_800DFAF0(void) {
     return M2C_FIELD(&gTRKCPUState, s32 *, 0x80);
 }
 
+s32 fn_800DFFCC(u8 *mask) {
+    mask[0] = 0x7A;
+    mask[1] = 0;
+    mask[2] = 0x4F;
+    mask[3] = 7;
+    mask[4] = 0;
+    mask[5] = 0;
+    mask[6] = 0;
+    mask[7] = 0;
+    mask[8] = 0;
+    mask[9] = 0;
+    mask[10] = 0;
+    mask[11] = 0;
+    mask[12] = 0;
+    mask[13] = 0;
+    mask[14] = 0;
+    mask[15] = 0;
+    mask[16] = 1;
+    mask[17] = 0;
+    mask[18] = 3;
+    mask[19] = 0;
+    mask[20] = 0;
+    mask[21] = 0;
+    mask[22] = 0;
+    mask[23] = 0;
+    mask[24] = 0;
+    mask[25] = 0;
+    mask[26] = 3;
+    mask[27] = 0;
+    mask[28] = 0;
+    mask[29] = 0;
+    mask[30] = 0;
+    mask[31] = 0x80;
+    return 0;
+}
+
 s32 fn_800E0070(void *arg0) {
     M2C_FIELD(arg0, s8 *, 0) = 2;
     M2C_FIELD(arg0, s8 *, 1) = 0;
