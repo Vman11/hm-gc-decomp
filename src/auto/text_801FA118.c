@@ -4,3 +4,8 @@
 void fn_801FA138(void) {
 
 }
+
+void fn_801FA13C(void) {
+
+}
+
