@@ -212,6 +212,11 @@ void fn_800CCC78(void) {
 
 }
 
+extern s32 lbl_8035A920;
+s32 fn_800D51D0(void) {
+    return lbl_8035A920;
+}
+
 void fn_800D79CC(void *lt_obj, f32 *nx, f32 *ny, f32 *nz) {
     *nx = -*(f32 *)((u8 *)lt_obj + 0x34);
     *ny = -*(f32 *)((u8 *)lt_obj + 0x38);
