@@ -34,3 +34,11 @@ void fn_801EFAEC(void *arg0) {
     }
 }
 
+void fn_801EFB0C(void *arg0) {
+    void *temp_r4;
+    if (*(u32 *)((char *)arg0 + 0x24) & 2) {
+        temp_r4 = *(void **)((char *)arg0 + 0x28);
+        *(u32 *)((char *)temp_r4 + 0x24) |= lbl_80365438;
+    }
+}
+
