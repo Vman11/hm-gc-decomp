@@ -7,3 +7,8 @@ void* fn_80116DE0(void* arg0, u32 arg1) {
     }
     return NULL;
 }
+
+void fn_80116E10(void* arg0) {
+    *(s32*)((u8*)arg0 + 0xC0) = 1;
+}
+
