@@ -11,6 +11,23 @@ void fn_801FB984(void *arg0) {
     M2C_FIELD(arg0, s32 *, 0x2C) = 0;
 }
 
+void fn_801FB990(UnkList_801FB984 *list, u32 item) {
+    u32 n = list->count;
+    u32 i;
+
+    for (i = 0; i < n; i++) {
+        if (list->items[i] == item) {
+            break;
+        }
+    }
+    if (i < n) {
+        list->count--;
+        for (; i < list->count; i++) {
+            list->items[i] = list->items[i + 1];
+        }
+    }
+}
+
 void fn_801FBA00(UnkList_801FB984 *list, u32 item) {
     u32 n = list->count;
 
