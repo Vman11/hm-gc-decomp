@@ -21,6 +21,10 @@ void fn_80135988(void) {
 
 }
 
+s32 fn_8013598C(void) {
+    return 0;
+}
+
 void fn_80135A3C(void) {
 
 }
