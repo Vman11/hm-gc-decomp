@@ -11,20 +11,22 @@ void fn_80126A2C(s32 *arg0) {
 }
 
 void fn_80126A3C(u8 *arg0, u8 *arg1) {
-    u8 a = arg1[0];
-    u8 b = arg1[1];
-    u8 c = arg1[2];
-    u8 d = arg1[3];
+    u8 a, b;
+    a = arg1[0]; b = arg1[1];
     arg0[0x58] = a;
+    a = arg1[2];
     arg0[0x59] = b;
-    arg0[0x5A] = c;
-    arg0[0x5B] = d;
+    b = arg1[3];
+    arg0[0x5A] = a;
+    arg0[0x5B] = b;
     ((s32 *)arg0)[2] |= lbl_80363E20;
 }
 
 s32 fn_80126A70(u16 *arg0, u16 *arg1) {
-    u16 a = arg0[2];
-    u16 b = arg1[2];
+    u16 b;
+    u16 a;
+    a = arg0[2];
+    b = arg1[2];
     if (a > b) return 1;
     return (s32)((a - b) | (b - a)) >> 31;
 }
