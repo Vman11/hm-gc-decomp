@@ -5,6 +5,6 @@ s32 fn_801FE500(void *arg0) {
     return *(s32 *)((char *)arg0 + 8);
 }
 
-void fn_801FE508(void *arg0, u32 arg1) {
-    ((u32 *)arg0)[2] = arg1;
+void fn_801FE508(void *arg0, s32 arg1) {
+    *(s32 *)((u8 *)arg0 + 8) = arg1;
 }
