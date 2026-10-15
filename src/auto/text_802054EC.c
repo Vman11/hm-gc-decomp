@@ -3,3 +3,9 @@
 
 void fn_802054EC(void) {
 }
+
+void fn_802054F0(void* arg0) {
+    char* p = *(char**)((char*)arg0 + 4);
+    *(unsigned short*)(p + 0x128) &= ~8;
+}
+
