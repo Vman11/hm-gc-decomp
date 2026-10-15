@@ -1060,6 +1060,13 @@ s32 fn_800DF300(void) {
     return 0;
 }
 
+s32 TRKInitializeTarget(void) {
+    gTRKState.unk98 = 1;
+    gTRKState.unk8C = fn_800DF4D0(&gTRKState);
+    lbl_80325D58[0] = 0xE0000000;
+    return 0;
+}
+
 u32 fn_800E1150(u32 addr) {
     if (addr >= lbl_80325D58[0] && addr < lbl_80325D58[0] + 0x4000 && (gTRKCPUState.unk238 & 3)) {
         return addr;
