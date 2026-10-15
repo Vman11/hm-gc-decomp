@@ -4,3 +4,4 @@
 void fn_802056F8(void) {
 
 }
+extern s32 lbl_8035B190;
