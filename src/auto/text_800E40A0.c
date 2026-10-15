@@ -17,6 +17,10 @@ void DBClose(void) {
 
 }
 
+void DBOpen(void) {
+
+}
+
 void EXI2_Reserve(void) {
 
 }
