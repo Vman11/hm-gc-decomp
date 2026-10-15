@@ -66,7 +66,7 @@ void fn_802740E4(void) {
 u32 fn_802744F8(u32 addr) {
     extern u32* lbl_8035B86C;
     void fn_80274558(u32);
-    u32 phys = lbl_8035B86C[addr >> 12] & 0x7FFFFFFF;
+    u32 phys = lbl_8035B86C[(addr >> 12) & 0x1FFF] & 0x7FFFFFFF;
     if (phys != 0) {
         return phys;
     }
@@ -122,8 +122,8 @@ void fn_80274664(void) {
 
 void fn_802747D0(u32 arg0, u32 arg1, s32 arg2) {
     u32 *p = (u32 *)fn_80274D04(arg0);
-    p[0] = 0x80000000 | ((arg0 >> 22) & 0x3F);
     p[1] = arg1 & 0x0FFFF000;
+    p[0] = ((arg0 >> 22) & 0x3F) | 0x80000000;
     fn_800B48F4(p, 8);
     fn_80274990(arg2, arg0);
 }
