@@ -1083,15 +1083,15 @@ s32 TRKInitializeNub(void);
 void TRKNubWelcome(void);
 void TRKNubMainLoop(void);
 s32 TRKTerminateNub(void);
-extern s32 TRK_mainError_80325D60;
+extern s32 TRK_mainError_80325D60[];
 void TRK_main(void) {
     s32 result = TRKInitializeNub();
-    TRK_mainError_80325D60 = result;
+    *(s32*)&TRK_mainError_80325D60 = result;
     if (result == 0) {
         TRKNubWelcome();
         TRKNubMainLoop();
     }
-    TRK_mainError_80325D60 = TRKTerminateNub();
+    *(s32*)&TRK_mainError_80325D60 = TRKTerminateNub();
 }
 
 void TRKUARTInterruptHandler(void) {
