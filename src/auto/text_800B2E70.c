@@ -336,16 +336,15 @@ int fn_800BFBA0(int arg0) { int old = autoInvalidation_80359574; autoInvalidatio
 
 extern unsigned int lbl_8035A6F0;
 extern unsigned int lbl_8035A6C0;
-extern void OSDisableInterrupts(void);
-extern void OSRestoreInterrupts(void);
+extern int OSDisableInterrupts(void);
+extern int OSRestoreInterrupts(int level);
 extern void fn_800C05F0(void);
 extern char lbl_802DA610[];
 unsigned int fn_800C0BD0(unsigned int arg0) {
-    volatile u32 pad[4];
     unsigned int old = lbl_8035A6F0;
-    OSDisableInterrupts();
+    int enabled = OSDisableInterrupts();
     lbl_8035A6F0 = arg0;
-    OSRestoreInterrupts();
+    OSRestoreInterrupts(enabled);
     return old;
 }
 
