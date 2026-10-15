@@ -4,3 +4,8 @@
 void fn_801859B8(void) {
 
 }
+
+int fn_801859BC(void) {
+return 1;
+}
+
