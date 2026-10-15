@@ -37,3 +37,7 @@ void fn_800D8F00(void) {
 
 }
 
+void TRKUARTInterruptHandler(void) {
+
+}
+
