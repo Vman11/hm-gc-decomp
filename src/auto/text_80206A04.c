@@ -8,3 +8,7 @@ void fn_80206A10(void) {
 
 }
 
+s32 fn_80206A14(void) {
+    return 0;
+}
+
