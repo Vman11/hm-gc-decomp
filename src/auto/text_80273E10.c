@@ -63,6 +63,26 @@ void fn_802740E4(void) {
     fn_8027438C();
 }
 
+void fn_802745BC(void) {
+    extern u32* lbl_8035B86C;
+    u32 i;
+    lbl_8035B86C = OSGetArenaLo();
+    OSSetArenaLo((u8*)lbl_8035B86C + 0x8000);
+    for (i = 0; i < 0x8000; i += 4) {
+        *(u32*)((u8*)lbl_8035B86C + i) = 0;
+    }
+}
+
+void fn_8027483C(s32 arg0, s32 arg1) {
+    u32 *p = (u32 *)fn_80274D04(arg0);
+    p[0] = 0;
+    p[1] = 0;
+    fn_800B48F4(p, 8);
+    fn_80274990(arg1, 0);
+    fn_802749AC(arg1, 0);
+    fn_80274970(arg0);
+}
+
 u32 fn_802748A8(u32 arg0) {
     return *(u32*)fn_80274D04(arg0) >> 31;
 }
