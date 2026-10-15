@@ -13,3 +13,7 @@ s32 fn_80180E9C(void *arg0, s32 arg1) {
     return M2C_FIELD(arg0, s32 *, 4) + (arg1 * 0xF0);
 }
 
+s32 fn_80180EAC(void *arg0, s32 arg1) {
+    return M2C_FIELD(arg0, s32 *, 0x28) + (arg1 * 0x1C);
+}
+
