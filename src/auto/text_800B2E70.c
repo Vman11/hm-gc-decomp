@@ -61,6 +61,14 @@ s32 PPCMffpscr(void) {
 
 s32 PPCMfhid2(void) { return __mfspr(920); }
 
+extern int lbl_80359530;
+extern int lbl_8035A568;
+extern int lbl_8035A56C;
+extern int lbl_8035A570;
+extern int lbl_8035A574;
+int fn_800B4294(int);
+int fn_800B44B8(int arg0) { int old = lbl_80359530; lbl_80359530 = arg0; return old; }
+
 s32 OSGetArenaHi(void) {
     return __OSArenaHi_8035A578;
 }
