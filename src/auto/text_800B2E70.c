@@ -37,6 +37,8 @@ extern TRKCPUState_unk gTRKCPUState;
 extern u32 lbl_80325D58;
 
 extern s32 __OSArenaHi_8035A578;
+s32 PPCMfmsr(void) { return __MFMSR(); }
+
 s32 OSGetArenaHi(void) {
     return __OSArenaHi_8035A578;
 }
@@ -65,6 +67,46 @@ void InitMetroTRK_BBA(void) {
 
 void fn_800BDA6C(void) {
 
+}
+
+extern u8 DummyCommandBlock_80308400[];
+extern s32 FatalErrorFlag_8035A690;
+extern void *executing_8035A678;
+extern u32 lbl_8035A698;
+extern void (*lbl_8035A69C)(s32, void *);
+extern u32 lbl_8035A6A8;
+extern s32 lbl_8035A6AC;
+void fn_800BDD08(void);
+void fn_800C06EC(void);
+void stateReady(void);
+void DVDReset(void);
+void __DVDStoreErrorCode(u32 code);
+void fn_800BCBF4(void (*cb)(u32));
+void fn_800BDE18(u32 intType);
+void cbForStateError(u32 intType) {
+    void *finished;
+    void (*callback)(s32, void *);
+
+    if (intType == 16) {
+        *(s32 *)((u8 *)executing_8035A678 + 0xC) = -1;
+        fn_800BDD08();
+        return;
+    }
+    fn_800C06EC();
+    finished = executing_8035A678;
+    executing_8035A678 = DummyCommandBlock_80308400;
+    FatalErrorFlag_8035A690 = 1;
+    callback = *(void (**)(s32, void *))((u8 *)finished + 0x28);
+    if (callback) {
+        callback(-1, finished);
+    }
+    if (lbl_8035A698) {
+        lbl_8035A698 = 0;
+        if (lbl_8035A69C) {
+            lbl_8035A69C(0, finished);
+        }
+    }
+    stateReady();
 }
 
 extern unsigned int lbl_8035A6F0;
@@ -139,6 +181,11 @@ void fn_800C885C(s32 arg0) {
 
 void fn_800C8C94(void) {
 
+}
+
+extern s32 lbl_8035A8A8;
+s32 fn_800C8D2C(void) {
+    return lbl_8035A8A8;
 }
 
 void fn_800C9944(void) {
