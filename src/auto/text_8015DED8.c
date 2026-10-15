@@ -18,3 +18,7 @@ s32 fn_8015DF04(void *arg0, s32 arg1) {
     return *(s32 *)((u8 *)arg0 + 4) + (arg1 << 6);
 }
 
+s32 fn_8015DF14(void *arg0) {
+    return *(s32 *)((char *)arg0 + 8);
+}
+
