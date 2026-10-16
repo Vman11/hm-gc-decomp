@@ -18,6 +18,8 @@ typedef struct ImgDec {
     u8 *dst;
     u8 pad188[4];
     u8 *px;
+    u8 pad190[0x6D0 - 0x190];
+    s32 wt[3];
 } ImgDec;
 
 typedef struct ImgPix {
@@ -33,6 +35,20 @@ typedef struct ImgPix {
     u8 *px;
     u8 *mask;
 } ImgPix;
+
+void fn_80140E38(ImgPix *p) {
+    u8 *s = p->px;
+    u8 *m = p->mask;
+    u8 *e = s + p->count;
+    do {
+        if (*m != 0) {
+            *p->out = *s;
+        }
+        s++;
+        m++;
+        p->out++;
+    } while (s < e);
+}
 
 void fn_80141268(ImgDec *p) {
     u8 *s = p->px;
@@ -201,5 +217,34 @@ void fn_80141AA0(ImgDec *p) {
         d++;
         p->src++;
     } while (d < e);
+}
+
+void fn_80142628(ImgDec *p) {
+    u32 *s = (u32 *)p->px;
+    u32 *d = (u32 *)p->out;
+    u32 *e = s + 8;
+    do {
+        d[0] = s[0];
+        d[1] = s[1];
+        d[2] = s[2];
+        d[3] = s[3];
+        s += 4;
+        d += 4;
+    } while (s < e);
+    p->out += 0x20;
+}
+
+void fn_80142674(ImgDec *p) {
+    u8 *s = p->px;
+    u8 *e = s + 0x20;
+    do {
+        p->out[0] = s[0] | (p->out[0] & 0xF0);
+        p->out[1] = s[2] | (s[1] << 4);
+        p->out[2] = s[4] | (s[3] << 4);
+        p->out[3] = s[6] | (s[5] << 4);
+        p->out[4] = (s[7] << 4) | (p->out[4] & 0xF);
+        s += 8;
+        p->out += 4;
+    } while (s < e);
 }
 
