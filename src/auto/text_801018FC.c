@@ -14,17 +14,16 @@ extern u32 lbl_80363848;
 
 void fn_801018FC(f32 *out, f32 *a, f32 *b, f32 t) {
     f32 x = a[0];
-    f32 y = a[1];
-    f32 z = a[2];
-    f32 w = a[3];
+    f32 ry, rz, rw;
+    f32 y = a[1], z = a[2], w = a[3];
     x = t * (b[0] - x) + x;
-    y = t * (b[1] - y) + y;
-    z = t * (b[2] - z) + z;
-    w = t * (b[3] - w) + w;
+    ry = t * (b[1] - y) + y;
+    rz = t * (b[2] - z) + z;
+    rw = t * (b[3] - w) + w;
     out[0] = x;
-    out[1] = y;
-    out[2] = z;
-    out[3] = w;
+    out[1] = ry;
+    out[2] = rz;
+    out[3] = rw;
 }
 
 void fn_80101950(UnkStruct_801018FC *arg0) {
