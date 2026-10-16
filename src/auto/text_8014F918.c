@@ -46,8 +46,9 @@ void fn_8014FA08(f32 (*m)[4], f32 *a, f32 *b, f32 *c) {
     for (i = 0; i < 3; i++) c[i] = m[i][2];
 }
 
-void fn_8014FA54(f32 (*m)[4], f32 *v) {
-    int i;
-    for (i = 0; i < 3; i++) v[i] = m[i][3];
+void fn_8014FA54(f32 (*__restrict m)[4], f32 *__restrict v) {
+    v[0] = m[0][3];
+    v[1] = m[1][3];
+    v[2] = m[2][3];
 }
 
