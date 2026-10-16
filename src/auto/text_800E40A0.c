@@ -210,6 +210,7 @@ void __close_all(void) {
     }
     __end_critical_region(2);
 }
+#pragma pop
 
 s32 fn_800E7F00(s32 arg0) {
     s32 temp_r4;
