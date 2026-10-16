@@ -20,13 +20,12 @@ typedef struct Img {
 } Img;
 
 void fn_80142E60(Img *p) {
-    u8 *d, *s;
-    s32 n, m, e;
-    n = p->n;
-    s = p->buf;
-    m = p->m;
-    d = p->dst;
-    e = n * 2 - m;
+    s32 n = p->n;
+    s32 m = p->m;
+    u8 *s = p->buf;
+    u8 *d = p->dst;
+    s32 e = n * 2 - m;
+    u8 *dend = d + m;
     do {
         *d = *s;
         if (e <= 0) {
@@ -37,7 +36,7 @@ void fn_80142E60(Img *p) {
             s++;
             d++;
         }
-    } while (d < p->dst + m);
+    } while (d < dend);
 }
 
 void fn_80142FB0(Img *p) {
@@ -82,3 +81,33 @@ void fn_80143218(Img *p) {
         }
     }
 }
+
+void fn_8014490C(Img *p) {
+    u32 *d = (u32 *)p->buf;
+    u32 *e = d + 8;
+    u32 *s = (u32 *)p->src;
+    do {
+        d[0] = s[0];
+        d[1] = s[1];
+        d[2] = s[2];
+        d[3] = s[3];
+        s += 4;
+        d += 4;
+    } while (d < e);
+    p->src += 0x20;
+}
+
+void fn_80144958(Img *p) {
+    u8 *d = p->buf;
+    u8 *e = d + 0x20;
+    do {
+        d[0] = *p->src & 0xF;
+        p->src++;
+        d[1] = *p->src >> 4;
+        d[2] = *p->src & 0xF;
+        p->src++;
+        d[3] = *p->src >> 4;
+        d += 4;
+    } while (d < e);
+}
+
