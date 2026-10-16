@@ -943,7 +943,12 @@ int fn_800EC8D0(char *str) {
     value = fn_800EC990(10, 0x7FFFFFFF, fn_800EB1D4, &state, &count, &negative, &error);
     if (error != 0 || (negative == 0 && value > 0x7FFFFFFFU) || (negative != 0 && value > 0x80000000U)) {
         lbl_8035A978 = 0x22;
-        return 0x7FFFFFFFU + (negative != 0);
+        value = 0x7FFFFFFF;
+        {
+            u32 result = (negative != 0);
+            result += value;
+            return result;
+        }
     }
     if (negative != 0) value = -value;
     return value;
@@ -1075,6 +1080,27 @@ double fn_800EFFC0(double x, int *eptr) {
     hx = (hx & 0x800fffff) | 0x3fe00000;
     *(int *)&x = hx;
     return x;
+}
+
+double fn_800F030C(double x) {
+    extern double lbl_803636B8;
+    double y[2];
+    int n, ix;
+    ix = *(int*)&x;
+    ix &= 0x7fffffff;
+    if (ix <= 0x3fe921fb) {
+        return fn_800EF76C(x, lbl_803636B8, 0);
+    } else if (ix >= 0x7ff00000) {
+        return x - x;
+    } else {
+        n = fn_800EE484(x, y);
+        switch (n & 3) {
+        case 0: return fn_800EF76C(y[0], y[1], 1);
+        case 1: return fn_800EE824(y[0], y[1]);
+        case 2: return -fn_800EF76C(y[0], y[1], 1);
+        default: return -fn_800EE824(y[0], y[1]);
+        }
+    }
 }
 
 double fn_800F03E4(double x) {
