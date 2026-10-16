@@ -754,6 +754,19 @@ void fn_800B981C(void *arg0) {
     M2C_FIELD(arg0, void **, 0x2DC) = NULL;
 }
 
+s32 fn_800B9884(void *arg0) {
+    s32 priority = M2C_FIELD(arg0, s32 *, 0x2D4);
+    void *mutex;
+    for (mutex = M2C_FIELD(arg0, void **, 0x2F4); mutex != NULL; mutex = M2C_FIELD(mutex, void **, 0x10)) {
+        void *thread = M2C_FIELD(mutex, void **, 0);
+        if (thread != NULL) {
+            s32 p = M2C_FIELD(thread, s32 *, 0x2D0);
+            if (p < priority) priority = p;
+        }
+    }
+    return priority;
+}
+
 void fn_800B9CD8(void) {
     s32 enabled;
 
@@ -3555,6 +3568,21 @@ s32 fn_800DFB00(u32 rangeStart, u32 rangeEnd, s32 stepOver) {
     lbl_802E01B4.type = 1;
     lbl_802E01B4.rangeStart = rangeStart;
     lbl_802E01B4.rangeEnd = rangeEnd;
+    lbl_802E01B4.active = 1;
+    M2C_FIELD(&gTRKCPUState, u32 *, 0x1F8) |= 0x400;
+    if (lbl_802E01B4.type == 0 || lbl_802E01B4.type == 0x10) {
+        lbl_802E01B4.count--;
+    }
+    gTRKState.unk98 = 0;
+    return 0;
+}
+
+s32 fn_800DFB7C(u32 count, s32 stepOver) {
+    if (stepOver != 0) {
+        return 0x703;
+    }
+    lbl_802E01B4.type = 0;
+    lbl_802E01B4.count = count;
     lbl_802E01B4.active = 1;
     M2C_FIELD(&gTRKCPUState, u32 *, 0x1F8) |= 0x400;
     if (lbl_802E01B4.type == 0 || lbl_802E01B4.type == 0x10) {
