@@ -148,6 +148,45 @@ void* memchr(const void* src, int val, unsigned long n) {
     return 0;
 }
 
+void fn_800E8C8C(void* dst, const void* src, unsigned long n) {
+    unsigned char* cps = ((unsigned char*)src) + n;
+    unsigned char* cpd = ((unsigned char*)dst) + n;
+    unsigned long v1, v2;
+    int src_offset, left_shift, right_shift;
+    unsigned long i;
+
+    i = ((unsigned long)cpd) & 3;
+    if (i) {
+        n -= i;
+        do {
+            *--cpd = *--cps;
+        } while (--i);
+    }
+    src_offset = ((unsigned int)cps) & 3;
+    left_shift = src_offset << 3;
+    right_shift = 32 - left_shift;
+    cps += 4 - src_offset;
+    i = n >> 3;
+    v1 = *--((unsigned long*)cps);
+    do {
+        v2 = *--((unsigned long*)cps);
+        *--((unsigned long*)cpd) = (v2 << left_shift) | (v1 >> right_shift);
+        v1 = *--((unsigned long*)cps);
+        *--((unsigned long*)cpd) = (v1 << left_shift) | (v2 >> right_shift);
+    } while (--i);
+    if (n & 4) {
+        v2 = *--((unsigned long*)cps);
+        *--((unsigned long*)cpd) = (v2 << left_shift) | (v1 >> right_shift);
+    }
+    n &= 3;
+    if (n) {
+        cps += src_offset;
+        do {
+            *--cpd = *--cps;
+        } while (--n);
+    }
+}
+
 #pragma pop
 void fn_800E8DF8(u8 *d, const u8 *s, u32 n) {
     u32 a, b;
@@ -359,6 +398,15 @@ s32 fn_800EB1B4(void) {
     temp_r0 = (lbl_803596A0 * 0x41C64E6D) + 0x3039;
     lbl_803596A0 = temp_r0;
     return (temp_r0 >> 0x10U) & 0x7FFF;
+}
+
+char* fn_800EB6F4(char* dst, const char* src) {
+    const unsigned char* p = (const unsigned char*)src - 1;
+    unsigned char* q = (unsigned char*)dst - 1;
+    while (*++q);
+    q--;
+    while (*++q = *++p);
+    return dst;
 }
 
 char* fn_800EB764(char* dst, const char* src) {
