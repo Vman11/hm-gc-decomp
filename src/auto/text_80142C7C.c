@@ -276,7 +276,22 @@ void fn_80144044(Img *p) {
         d[1] = p->src[1];
         d[0] = p->src[2];
         d[3] = 0xFF;
-        d += 4;
+        p->src += 3;
+        d[6] = p->src[0];
+        d[5] = p->src[1];
+        d[4] = p->src[2];
+        d[7] = 0xFF;
+        p->src += 3;
+        d[10] = p->src[0];
+        d[9] = p->src[1];
+        d[8] = p->src[2];
+        d[11] = 0xFF;
+        p->src += 3;
+        d[14] = p->src[0];
+        d[13] = p->src[1];
+        d[12] = p->src[2];
+        d[15] = 0xFF;
+        d += 16;
         p->src += 3;
     } while (d < e);
 }
