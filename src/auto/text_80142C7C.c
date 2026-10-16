@@ -214,6 +214,20 @@ void fn_80143258(Img *p) {
     }
 }
 
+void fn_80143334(Img *p) {
+    u8 *q = p->buf;
+    u8 *d = p->px;
+    u8 *end = q + p->n;
+    for (; q < end; q++) {
+        u8 *c = (u8 *)p + 0x194 + *q * 4;
+        d[0] = c[0];
+        d[1] = c[1];
+        d[2] = c[2];
+        d[3] = c[3];
+        d += 4;
+    }
+}
+
 void fn_80143474(Img *p) {
     u8 *q = p->buf;
     u8 *end = q + p->n;
