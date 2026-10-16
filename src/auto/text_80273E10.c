@@ -62,6 +62,34 @@ typedef struct OSContext {
     u8 data[0x2C8];
 } OSContext;
 
+typedef struct StreamARQReq {
+    void *next;
+    void *owner;
+    u8 pad[0x18];
+} StreamARQReq;
+
+typedef struct StreamBuf {
+    u8 pad0[0x84];
+    StreamARQReq req;
+    StreamARQReq req2;
+    u8 pad1[0xCC - 0xC4];
+    s32 unkCC;
+    u32 unkD0;
+    u32 unkD4;
+    u32 unkD8;
+    u32 unkDC;
+    u32 unkE0;
+    u32 unkE4;
+    u32 unkE8;
+    u32 unkEC;
+    u32 unkF0;
+    u32 unkF4;
+} StreamBuf;
+
+void DCFlushRangeNoSync(void *, u32);
+void fn_800B2EA8(void);
+void fn_800C6D6C(void *req, u32 owner, u32 type, u32 prio, u32 src, u32 dst, u32 len, void *cb);
+
 extern s32 lbl_8035B854;
 void fn_80273E10(u32 arg0, s32 arg1, s32 arg2) {
     int level;
@@ -1551,18 +1579,12 @@ void fn_8027DA74(s32 x, s32 count) {
 void fn_8027DD10(s32 x, s32 count) {
     extern s32 lbl_803008C0[];
     extern u32 *lbl_802F7AE0[];
-    u8 *u;
-    u32 *dst;
-    u8 *v;
-    u32 *tbl;
-    u32 c;
-    s32 r, g, b;
+    s32 n;
     s32 *t2;
     s32 *t1;
     s32 *t3;
     u32 **ytab;
     s32 *t0;
-    s32 n;
     n = count - 1;
     if (count != 0) {
         t2 = lbl_803008C0 + 512;
@@ -1571,17 +1593,26 @@ void fn_8027DD10(s32 x, s32 count) {
         ytab = lbl_802F7AE0;
         t0 = lbl_803008C0;
         do {
+            u8 *u;
+            u32 *dst;
+            u8 *v;
+            u8 *y;
+            u32 *tbl;
+            u32 c;
+            s32 r, g, b;
             u = lbl_80300860[4];
             x++;
             dst = (u32 *)lbl_80300860[0];
             v = lbl_80300860[5];
+            y = lbl_80300860[2];
             r = t0[*u];
             lbl_80300860[9] = (u8 *)r;
             g = t2[*u] + t1[*v];
             lbl_80300860[8] = (u8 *)g;
             b = t3[*v];
             lbl_80300860[10] = (u8 *)b;
-            tbl = ytab[*lbl_80300860[2]++];
+            tbl = ytab[*y];
+            lbl_80300860[2] = y + 1;
             c = tbl[r] | (tbl[g] << 8) | (tbl[b] << 16);
             *dst = c;
             *(u32 *)(lbl_80300860[0] + (s32)lbl_80300860[17]) = c;
