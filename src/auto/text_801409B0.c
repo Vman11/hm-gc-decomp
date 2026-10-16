@@ -35,6 +35,25 @@ typedef struct ImgPix {
     u8 *mask;
 } ImgPix;
 
+void fn_801409B0(ImgPix *p) {
+    u8 *s = p->src;
+    u8 *e = s + p->count * 4;
+    u8 *m = p->mask;
+    u32 *o = (u32 *)p->out;
+    do {
+        if (*m != 0) {
+            *o = ((u32)s[0] >> p->shr[0]) << p->shl[0];
+            *o |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
+            *o |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
+            *o |= ((u32)s[3] >> p->shr[3]) << p->shl[3];
+        }
+        s += 4;
+        o++;
+        m++;
+    } while (s < e);
+    p->out += p->count * 4;
+}
+
 void fn_80140A78(ImgPix *p) {
     u8 *s = p->src;
     u8 *e = s + p->count * 4;
@@ -283,6 +302,52 @@ void fn_801416A4(ImgDec *p) {
         d += 4;
         p->src += 3;
     } while (d < e);
+}
+
+void fn_801416FC(ImgDec *p) {
+    u8 *e;
+    u16 *s;
+    u8 *d;
+    u32 v;
+    d = p->dst;
+    s = (u16 *)p->src;
+    e = d + p->count * 4;
+    do {
+        v = (u32)*s >> p->shr[0];
+        d[0] = (v << p->shl[0]) | (v & p->mask[0]);
+        v = (u32)*s >> p->shr[1];
+        d[1] = (v << p->shl[1]) | (v & p->mask[1]);
+        v = (u32)*s >> p->shr[2];
+        d[2] = (v << p->shl[2]) | (v & p->mask[2]);
+        v = (u32)*s >> p->shr[3];
+        s++;
+        d[3] = -(v & 1);
+        d += 4;
+    } while (d < e);
+    p->src += p->count * 2;
+}
+
+void fn_801417C0(ImgDec *p) {
+    u8 *e;
+    u16 *s;
+    u8 *d;
+    u32 v;
+    d = p->dst;
+    s = (u16 *)p->src;
+    e = d + p->count * 4;
+    do {
+        v = (u32)*s >> p->shr[0];
+        d[0] = (v << p->shl[0]) | (v & p->mask[0]);
+        v = (u32)*s >> p->shr[1];
+        d[1] = (v << p->shl[1]) | (v & p->mask[1]);
+        v = (u32)*s >> p->shr[2];
+        d[2] = (v << p->shl[2]) | (v & p->mask[2]);
+        v = (u32)*s >> p->shr[3];
+        s++;
+        d[3] = (v << p->shl[3]) | (v & p->mask[3]);
+        d += 4;
+    } while (d < e);
+    p->src += p->count * 2;
 }
 
 void fn_8014188C(ImgDec *p) {
