@@ -188,6 +188,8 @@ void fn_800E904C(char *s, const char *fmt, void *args) {
     }
 }
 
+#pragma push
+#pragma dont_inline on
 int fn_800E91D0(const char *format, ...) {
     int result;
     va_list args;
@@ -197,11 +199,11 @@ int fn_800E91D0(const char *format, ...) {
     }
     __begin_critical_region(2);
     va_start(args, format);
-    result = ((int (*)(void *, void *, const char *, va_list))__pformatter)(__FileWrite, __files + 0x50, format, args);
+    result = __pformatter(__FileWrite, __files + 0x50, format, args);
     __end_critical_region(2);
     return result;
 }
-
+#pragma pop
 extern s32 lbl_803596A0;
 void fn_800EB1AC(s32 arg0) {
     lbl_803596A0 = arg0;
