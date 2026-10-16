@@ -3713,24 +3713,28 @@ void fn_800D4F64(void *);
 void fn_800D6908(void *);
 void fn_800D69D4(void *);
 void fn_800D62CC(void);
+#pragma push
 BOOL fn_800D3850(BOOL final) {
-    extern volatile u16 *__memReg;
     extern void *__cpReg;
     extern void *__GXData;
     extern u32 lbl_8035A908;
     extern s64 lbl_8035A910;
     extern u32 lbl_8035A918;
     u32 ctrH0, ctrH1, ctrL;
+    volatile u16 *hi;
+    volatile u16 *lo;
     u32 peCountNew;
     s64 timeNew;
 
     if (!final) {
         if (!lbl_8035A918) {
-            ctrH0 = __memReg[0x27];
+            hi = &__memReg[0x27];
+            lo = &__memReg[0x28];
+            ctrH0 = *hi;
             do {
                 ctrH1 = ctrH0;
-                ctrH0 = __memReg[0x27];
-                ctrL = __memReg[0x28];
+                ctrH0 = *hi;
+                ctrL = *lo;
             } while (ctrH0 != ctrH1);
             lbl_8035A908 = (ctrH0 << 16) | ctrL;
             lbl_8035A910 = OSGetTime();
@@ -3738,11 +3742,13 @@ BOOL fn_800D3850(BOOL final) {
             return FALSE;
         }
         timeNew = OSGetTime();
-        ctrH0 = __memReg[0x27];
+        hi = &__memReg[0x27];
+        lo = &__memReg[0x28];
+        ctrH0 = *hi;
         do {
             ctrH1 = ctrH0;
-            ctrH0 = __memReg[0x27];
-            ctrL = __memReg[0x28];
+            ctrH0 = *hi;
+            ctrL = *lo;
         } while (ctrH0 != ctrH1);
         peCountNew = (ctrH0 << 16) | ctrL;
         if (timeNew - lbl_8035A910 < 10) {
@@ -3773,7 +3779,7 @@ BOOL fn_800D3850(BOOL final) {
     }
     return TRUE;
 }
-
+#pragma pop
 void fn_800D4C48(void *fifo, s32 rd, s32 wr) {
     BOOL enabled = OSDisableInterrupts();
     M2C_FIELD(fifo, s32 *, 0x14) = rd;
@@ -4488,11 +4494,11 @@ void fn_800D75E8(void *dest, u8 clear) {
     changePeCtrl = 0;
     tempPeCtrl = M2C_FIELD(__GXData, u32 *, 0x1DC);
     if (M2C_FIELD(__GXData, u8 *, 0x200) && (tempPeCtrl & 7) != 3) {
-        tempPeCtrl = __rlwimi(tempPeCtrl, 3, 0, 29, 31);
+        SETF(tempPeCtrl, 3, 0, 3);
         changePeCtrl = 1;
     }
     if ((clear || (tempPeCtrl & 7) == 3) && ((tempPeCtrl >> 6) & 1) == 1) {
-        tempPeCtrl = __rlwimi(tempPeCtrl, 0, 6, 25, 25);
+        SETF(tempPeCtrl, 1, 6, 0);
         changePeCtrl = 1;
     }
     if (changePeCtrl) {
@@ -6545,15 +6551,18 @@ void fn_800DEA14(s32 arg0) {
     lbl_803257D0[0] = arg0;
 }
 
+#pragma push
+#pragma dont_inline off
+#pragma auto_inline off
 s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
     s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
+    TrkBuf *b;
     s32 err;
     s32 replyBufferId;
     s32 bufferId;
     TrkBuf *buffer;
     s32 error;
     TrkBuf *replyBuffer;
-    TrkBuf *b;
 
     error = fn_800DBBA0(&bufferId, &buffer);
     if (error == 0) {
@@ -6604,7 +6613,7 @@ s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
     fn_800DBB10(bufferId);
     return error;
 }
-
+#pragma pop
 s32 fn_800DEBC0(u32 replyError, u8 *ioResult) {
     s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
     s32 err;
