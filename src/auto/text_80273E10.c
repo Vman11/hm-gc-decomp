@@ -572,6 +572,23 @@ u32 fn_80275578(u32 hi, u32 lo, u32 d) {
 s64 OSGetTime(void);
 extern s64 lbl_802F3840;
 void fn_800C9A0C(s32, int);
+static inline void setupRangeCmd(s16 *cmd, u32 base, u32 size, u32 shift, void *dev, int flag) {
+    u32 start = base >> shift;
+    u32 end = ((base + size) >> shift) - 1;
+    u32 pos;
+    if (flag == 0) {
+        pos = *(u32 *)((u8 *)dev + 0x1B2);
+    } else {
+        pos = start;
+    }
+    cmd[2] = start >> 16;
+    cmd[3] = start;
+    cmd[4] = end >> 16;
+    cmd[5] = end;
+    cmd[6] = pos >> 16;
+    cmd[7] = pos;
+}
+
 void fn_8027564C(void *arg0, int arg1) {
     if (*(s32 *)((u8 *)arg0 + 0x50) != 0) {
         fn_800C9A0C(*(s32 *)((u8 *)arg0 + 0x50), arg1);
@@ -592,13 +609,13 @@ void fn_802756B8(void *arg0, int arg1, int arg2, int arg3) {
     u32 start;
     u32 end;
     u32 pos;
-    void *dev;
+    s32 dev;
 
     cmd[0] = 1;
     cmd[1] = (arg1 == 0x10) ? 10 : 25;
     start = *(u32 *)(p + 0x58) >> *(u32 *)(p + 0x60);
     end = ((*(u32 *)(p + 0x58) + *(u32 *)(p + 0x64)) >> *(u32 *)(p + 0x60)) - 1;
-    if (arg2 != 0) {
+    if (arg2 == 0) {
         pos = *(u32 *)(*(u8 **)(p + 0x50) + 0x1B2);
     } else {
         pos = start;
@@ -610,13 +627,14 @@ void fn_802756B8(void *arg0, int arg1, int arg2, int arg3) {
     cmd[6] = pos >> 16;
     cmd[7] = pos;
     fn_800C9B74(*(void **)(p + 0x50), cmd);
-    dev = *(void **)(p + 0x54);
-    if (dev != NULL) {
+    dev = *(s32 *)(p + 0x54);
+    if (dev != 0) {
         start = *(u32 *)(p + 0x5C) >> *(u32 *)(p + 0x60);
         end = ((*(u32 *)(p + 0x5C) + *(u32 *)(p + 0x64)) >> *(u32 *)(p + 0x60)) - 1;
-        pos = start;
-        if (arg2 != 0) {
+        if (arg2 == 0) {
             pos = *(u32 *)((u8 *)dev + 0x1B2);
+        } else {
+            pos = start;
         }
         cmd[2] = start >> 16;
         cmd[3] = start;
@@ -624,7 +642,7 @@ void fn_802756B8(void *arg0, int arg1, int arg2, int arg3) {
         cmd[5] = end;
         cmd[6] = pos >> 16;
         cmd[7] = pos;
-        fn_800C9B74(dev, cmd);
+        fn_800C9B74((void *)dev, cmd);
     }
 }
 
@@ -1491,6 +1509,44 @@ s32 fn_8027E300(s32 count, s32 base) {
     } while (--n != 0);
     return base + count;
 }
+
+void fn_8027E378(s32 x, s32 count) {
+    extern s32 lbl_803008C0[];
+    extern u32 *lbl_802F7AE0[];
+    s32 *t0 = lbl_803008C0;
+    u32 **ytab = lbl_802F7AE0;
+    s32 *t3 = lbl_803008C0 + 768;
+    s32 *t1 = lbl_803008C0 + 256;
+    s32 *t2 = lbl_803008C0 + 512;
+    s32 n = count - 1;
+    if (count != 0) do {
+        u8 *u = lbl_80300860[4];
+        u32 *dst;
+        u8 *v;
+        u8 *y;
+        u32 *tbl;
+        s32 r, g, b;
+        x++;
+        dst = (u32 *)lbl_80300860[0];
+        v = lbl_80300860[5];
+        y = lbl_80300860[2];
+        r = t0[*u];
+        lbl_80300860[9] = (u8 *)r;
+        g = t2[*u] + t1[*v];
+        lbl_80300860[8] = (u8 *)g;
+        b = t3[*v];
+        lbl_80300860[10] = (u8 *)b;
+        tbl = ytab[*y];
+        lbl_80300860[2] = y + 1;
+        *dst = tbl[r] | (tbl[g] << 8) | (tbl[b] << 16);
+        lbl_80300860[0] += 4;
+        if ((x ^ 1) & 1) {
+            lbl_80300860[4]++;
+            lbl_80300860[5]++;
+        }
+    } while (n-- != 0);
+}
+
 #pragma pop
 
 #pragma push
@@ -2432,7 +2488,31 @@ void fn_80285D24(u32 *arg0, u32 arg1) {
     arg0[8] = fn_80285CE0(0x200, arg1, 4, 0x30);
 }
 
+__declspec(section ".data") extern s32 lbl_80301D30;
+__declspec(section ".data") extern u32 lbl_80301D20;
+__declspec(section ".data") extern s32 lbl_80301D24;
+__declspec(section ".data") extern u8 **lbl_80301D28;
+__declspec(section ".data") extern u32 *lbl_80301D2C;
 void fn_802876F8(u8 *arg0, u32 size) {
+    void *memcpy();
+    if (lbl_80301D30 == lbl_80301D24) {
+        u8 **newPtrs = (u8 **)fn_8027B6D4(lbl_80301D30 * 16);
+        u32 *newSizes = (u32 *)(newPtrs + lbl_80301D30 * 2);
+        memcpy(newPtrs, lbl_80301D28, lbl_80301D30 * 4);
+        memcpy(newSizes, lbl_80301D2C, lbl_80301D30 * 4);
+        lbl_80301D30 += lbl_80301D30;
+        if (lbl_80301D30 != 64) {
+            fn_8027B790(lbl_80301D28);
+        }
+        lbl_80301D28 = newPtrs;
+        lbl_80301D2C = newSizes;
+    }
+    size = (size + 31) & ~31;
+    size += ((((lbl_80301D20 >> 5) & 31) - ((size >> 5) & 31) + 33) & 31) << 5;
+    lbl_80301D20 += size;
+    lbl_80301D2C[lbl_80301D24] = size;
+    lbl_80301D28[lbl_80301D24] = arg0;
+    lbl_80301D24++;
 }
 
 void fn_8028A7A0(void) {
