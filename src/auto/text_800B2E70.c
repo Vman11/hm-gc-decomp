@@ -5154,20 +5154,16 @@ s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
     return TRKReadBuffer_inline(buf, data, 1);
 }
 
+#pragma opt_propagation on
+#pragma peephole on
 s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
-    s32 i;
-    s32 err;
+    s32 err, i;
 
     for (i = 0, err = 0; err == 0 && i < count; i++) {
-        err = TRKAppendBuffer1_ui32(buf, *data++);
+        err = TRKAppendBuffer1_ui32(buf, data[i]);
     }
     return err;
 }
-
-#pragma pop
-
-#pragma push
-#pragma inline_depth(4)
 s32 fn_800DB66C(TrkBuf *buf, u8 *data, s32 count) {
     s32 err, i;
     for (i = 0, err = 0; err == 0 && i < count; i++) {
