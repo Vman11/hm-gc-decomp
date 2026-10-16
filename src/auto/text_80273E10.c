@@ -34,7 +34,7 @@ extern s32 lbl_8035B854;
 extern s32 lbl_8035B850;
 extern s32 lbl_80359F08;
 void fn_80273EF4(void);
-void fn_80274704(void (*)(void), u32);
+void fn_80274704();
 void fn_802745BC(void);
 void fn_80274664(void);
 void fn_80273EC4(void);
@@ -46,6 +46,24 @@ typedef struct OSContext {
 } OSContext;
 
 extern s32 lbl_8035B854;
+void fn_80273E10(u32 arg0, s32 arg1, s32 arg2) {
+    int level;
+
+    if (lbl_8035B85C == 0) {
+        level = OSDisableInterrupts();
+        lbl_8035B85C = 1;
+        lbl_80359F08 = arg1;
+        lbl_8035B850 = arg2;
+        lbl_8035B848 = arg0;
+        lbl_8035B854 = arg0 >> 12;
+        fn_80274704(fn_80273EF4, lbl_8035B854);
+        fn_802745BC();
+        fn_80274664();
+        fn_80273EC4();
+        OSRestoreInterrupts(level);
+    }
+}
+
 s32 fn_80273EAC(void) {
     return lbl_8035B854;
 }
