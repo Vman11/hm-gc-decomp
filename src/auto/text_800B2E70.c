@@ -488,6 +488,17 @@ void OSRegisterVersion(const char* id) {
     OSReport(lbl_8035952C, id);
 }
 
+typedef struct OSAlarm OSAlarm;
+struct OSAlarm {
+    void *handler;
+    u32 tag;
+    s64 fire;
+    OSAlarm *prev;
+    OSAlarm *next;
+    s64 period;
+    s64 start;
+};
+
 void OSInitAlarm(void) {
     extern void DecrementerExceptionHandler(void);
     extern void* __OSGetExceptionHandler(u8);
@@ -1792,6 +1803,24 @@ s32 fn_800C0300(void **node) {
  return 1;
 }
 
+extern u32 lbl_802DA128[18];
+extern u32 lbl_802DA128[];
+u8 ErrorCode2Num(u32 errorCode) {
+    u32 i;
+
+    for (i = 0; i < 18; i++) {
+        if (errorCode == lbl_802DA128[i]) {
+            return (u8)i;
+        }
+    }
+
+    if ((errorCode >= 0x00100000) && (errorCode <= 0x00100008)) {
+        return 17;
+    }
+
+    return 29;
+}
+
 void __DVDStoreErrorCode(u32 code) {
  extern u8 ErrorCode2Num(u32);
  extern void *__OSLockSramEx(void);
@@ -2040,6 +2069,45 @@ void fn_800C2D2C(s32 arg0, s32 arg1) {
             OSRestoreInterrupts(temp_r31);
         }
     }
+}
+
+s32 fn_800C3424(u32 mask) {
+    void fn_800F4ADC(u32);
+    void fn_800F5334(s32, void *);
+    void *memset(void *, int, unsigned long);
+    void fn_800C2EC4();
+    extern u8 lbl_80308640[][0xC];
+    extern s32 lbl_803595B4;
+    extern u32 lbl_8035A73C;
+    extern u32 lbl_8035A740;
+    extern u32 lbl_8035A744;
+    extern u32 lbl_8035A748;
+    extern u32 lbl_8035A74C;
+    extern u32 lbl_8035A750;
+    s32 enabled;
+    u32 disableBits;
+
+    enabled = OSDisableInterrupts();
+    mask |= lbl_8035A750;
+    lbl_8035A750 = 0;
+    mask &= ~(lbl_8035A748 | lbl_8035A74C);
+    lbl_8035A740 |= mask;
+    disableBits = lbl_8035A740 & lbl_8035A73C;
+    lbl_8035A73C &= ~mask;
+    if (!(*(u8 *)0x800030E3 & 0x40)) {
+        lbl_8035A744 |= mask;
+    }
+    fn_800F4ADC(disableBits);
+    if (lbl_803595B4 == 32) {
+        lbl_803595B4 = __cntlzw(lbl_8035A740);
+        if (lbl_803595B4 != 32) {
+            lbl_8035A740 &= ~(0x80000000U >> lbl_803595B4);
+            memset(lbl_80308640[lbl_803595B4], 0, 0xC);
+            fn_800F5334(lbl_803595B4, fn_800C2EC4);
+        }
+    }
+    OSRestoreInterrupts(enabled);
+    return 1;
 }
 
 void fn_800C3AEC(s32 chan, u32 command) {
@@ -2682,6 +2750,51 @@ void fn_800C9B18(void *p, u16 a, u16 b) {
     OSRestoreInterrupts(old);
 }
 
+int OSRestoreInterrupts(int level);
+void fn_800C9B74(unsigned char *voice, unsigned int *src)
+{
+    unsigned int *dst;
+    int old;
+
+    dst = (unsigned int *)(voice + 0x1a6);
+    old = OSDisableInterrupts();
+    dst[0] = src[0];
+    dst[1] = src[1];
+    dst[2] = src[2];
+    dst[3] = src[3];
+    switch (((unsigned short *)src)[1]) {
+    case 0:
+        break;
+    case 10:
+        dst[4] = 0;
+        dst[5] = 0;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 0;
+        dst[11] = 0;
+        dst[12] = 0x08000000;
+        dst[13] = 0;
+        break;
+    case 25:
+        dst[4] = 0;
+        dst[5] = 0;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 0;
+        dst[11] = 0;
+        dst[12] = 0x01000000;
+        dst[13] = 0;
+        break;
+    }
+    *(unsigned int *)(voice + 0x1c) &= ~0x1e000;
+    *(unsigned int *)(voice + 0x1c) |= 0x20000 | 0x1000;
+    OSRestoreInterrupts(old);
+}
+
 void fn_800C9C84(void *p, u32 *src) {
     u32 *dst = (u32 *)((u8 *)p + 0x1B6);
     BOOL old = OSDisableInterrupts();
@@ -3225,6 +3338,40 @@ s32 fn_800D1DE0(void *arg0, u8 *arg1) {
     return -10;
 }
 
+s32 fn_800D21EC(s32 chan, s32 fileNo, s32 *fileInfo) {
+    extern s32 fn_800CDC90(s32, s32);
+    extern s32 fn_800D1E74(s32, u8 *);
+    s32 card;
+    u8 *ent;
+    s32 result;
+
+    if (fileNo < 0 || fileNo >= 127) {
+        return -128;
+    }
+    fileInfo[0] = -1;
+    result = fn_800CDBD8(chan, &card);
+    if (result < 0) {
+        return result;
+    }
+    ent = (u8 *)fn_800CF8C4((void *)card) + fileNo * 0x40;
+    result = fn_800D1E74(card, ent);
+    if (result == -10 && (ent[0x34] & 4)) {
+        result = 0;
+    }
+    if (result >= 0) {
+        u16 block = *(u16 *)(ent + 0x36);
+        if (block < 5 || block >= *(u16 *)(card + 0x10)) {
+            result = -6;
+        } else {
+            fileInfo[0] = chan;
+            fileInfo[1] = fileNo;
+            fileInfo[2] = 0;
+            *(u16 *)(fileInfo + 4) = *(u16 *)(ent + 0x36);
+        }
+    }
+    return fn_800CDC90(card, result);
+}
+
 s32 fn_800D240C(s32 *arg0) {
     extern s32 fn_800CDC90(s32, s32);
     s32 control;
@@ -3373,6 +3520,42 @@ s32 fn_800D51D0(void) {
 extern s32 lbl_8035A924;
 s32 fn_800D51D8(void) {
     return lbl_8035A924;
+}
+
+extern u8 lbl_8035A92C;
+s32 fn_800B2F4C(void);
+void PPCMtwpar(u32 val);
+void fn_800D6270(void);
+void fn_800B2EA8(void);
+void *fn_800D51E0(void *ptr) {
+    extern void *__GXData;
+    extern void *__cpReg;
+    extern void *__piReg;
+    BOOL enabled;
+    void *gx;
+    u32 reg = 0;
+    enabled = OSDisableInterrupts();
+    fn_800D6270();
+    while (fn_800B2F4C() & 1) {
+    }
+    PPCMtwpar(0x0C008000);
+    if (lbl_8035A92C) {
+        gx = __GXData;
+        M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), 0, 4, 27, 27);
+        M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(gx, u32 *, 8);
+        M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), 0, 2, 29, 29);
+        M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), 0, 3, 28, 28);
+        M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(gx, u32 *, 8);
+    }
+    reg = __rlwimi(reg, (u32)ptr, 0, 6, 26);
+    M2C_FIELD(lbl_8035A920, u32 *, 0x18) = (M2C_FIELD(__piReg, u32 *, 0x14) & 0xFBFFFFFF) + 0x80000000;
+    M2C_FIELD(__piReg, u32 *, 0xC) = 0;
+    M2C_FIELD(__piReg, u32 *, 0x10) = 0x04000000;
+    reg = __rlwimi(reg, 0, 26, 5, 5);
+    M2C_FIELD(__piReg, u32 *, 0x14) = reg;
+    fn_800B2EA8();
+    OSRestoreInterrupts(enabled);
+    return (void *)0xCC008000;
 }
 
 static inline void __GXXfVtxSpecs(void) {
