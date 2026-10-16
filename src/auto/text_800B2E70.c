@@ -102,6 +102,11 @@ extern void fn_800DBAD0(TrkBuf*, s32);
 extern s32 fn_800DAF24(TrkBuf*);
 s32 fn_800DEA20(void);
 s32 fn_800DF4D0(void*);
+typedef struct DBCommTable {
+    s32 (*initialize)(void *, void *);
+    void (*initInterrupts)(void);
+} DBCommTable;
+extern DBCommTable gDBCommTable;
 extern u8 lbl_80323560[];
 extern u16 lbl_8035A8F0;
 s32 fn_800CDBD8(s32 chan, void *out);
@@ -814,6 +819,21 @@ void fn_800BB714(void *arg0) {
 void fn_800BB730(s32 *p) {
     p[1] = 5;
     p[2] = 0;
+}
+
+void fn_800BB744(s32 *p) {
+    f32 f;
+    p[1] = 7;
+    p[10] = 0;
+    p[2] = (s32)lbl_802D8F60;
+    p[3] = 0x40;
+    f = lbl_80363068;
+    *(f32 *)&p[4] = f;
+    p[5] = 0;
+    *(f32 *)&p[9] = f;
+    *(f32 *)&p[8] = f;
+    *(f32 *)&p[7] = f;
+    *(f32 *)&p[6] = f;
 }
 
 void fn_800BB788(AnimInit *p) {
@@ -2155,10 +2175,11 @@ void fn_800D8F00(void) {
 
 void fn_800DA17C(u32 arg0) {
     extern GXDataHead *const __GXData;
+    GXDataHead *gx = __GXData;
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x1005;
     GXWGFifo.u32 = arg0;
-    __GXData->bpSentNot = 1;
+    gx->bpSentNot = 1;
 }
 
 void fn_800DAA70(void) {
