@@ -2302,6 +2302,28 @@ s32 fn_800D51D8(void) {
     return lbl_8035A924;
 }
 
+static inline void __GXXfVtxSpecs(void) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    u32 nCols, nNrm, nTex, reg;
+    if (M2C_FIELD(gx, u8 *, 0x4D5)) {
+        nNrm = 2;
+    } else if (M2C_FIELD(gx, u8 *, 0x4D4)) {
+        nNrm = 1;
+    } else {
+        nNrm = 0;
+    }
+    nCols = 33 - __cntlzw((M2C_FIELD(gx, u32 *, 0x14) >> 13) & 0xF);
+    nCols /= 2;
+    nTex = 33 - __cntlzw(M2C_FIELD(gx, u32 *, 0x18) & 0xFFFF);
+    nTex /= 2;
+    reg = nCols | (nNrm << 2) | (nTex << 4);
+    GXWGFifo.u8 = 0x10;
+    GXWGFifo.u32 = 0x1008;
+    GXWGFifo.u32 = reg;
+    gx->bpSentNot = 1;
+}
+
 void fn_800D56F4(void) {
     extern GXDataHead *__GXData;
     u32 nCols, nNrm, nTex, reg;
@@ -2311,7 +2333,13 @@ void fn_800D56F4(void) {
     GXWGFifo.u8 = 0x08;
     GXWGFifo.u8 = 0x60;
     GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x18);
-    nNrm = M2C_FIELD(__GXData, u8 *, 0x4D5) ? 2 : M2C_FIELD(__GXData, u8 *, 0x4D4) ? 1 : 0;
+    if (M2C_FIELD(__GXData, u8 *, 0x4D5)) {
+        nNrm = 2;
+    } else if (M2C_FIELD(__GXData, u8 *, 0x4D4)) {
+        nNrm = 1;
+    } else {
+        nNrm = 0;
+    }
     nCols = 33 - __cntlzw((M2C_FIELD(__GXData, u32 *, 0x14) >> 13) & 0xF);
     nCols /= 2;
     nTex = 33 - __cntlzw(M2C_FIELD(__GXData, u32 *, 0x18) & 0xFFFF);
@@ -2334,29 +2362,22 @@ void fn_800D58D4(void) {
 }
 
 void fn_800D5DE8(void) {
-    extern struct {
-        u8 pad0[0x1C];
-        u32 vatA[8];
-        u32 vatB[8];
-        u32 vatC[8];
-        u8 pad7C[0x5AB - 0x7C];
-        u8 dirtyVAT;
-    } *__GXData;
+    extern GXDataHead *const __GXData;
     u8 i;
     for (i = 0; i < 8; i++) {
-        if (__GXData->dirtyVAT & (1 << i)) {
+        if (M2C_FIELD(__GXData, u8 *, 0x5AB) & (1 << i)) {
             GXWGFifo.u8 = 0x08;
             GXWGFifo.u8 = i | 0x70;
-            GXWGFifo.u32 = __GXData->vatA[i];
+            GXWGFifo.u32 = (&M2C_FIELD(__GXData, u32 *, 0x1C))[i];
             GXWGFifo.u8 = 0x08;
             GXWGFifo.u8 = i | 0x80;
-            GXWGFifo.u32 = __GXData->vatB[i];
+            GXWGFifo.u32 = (&M2C_FIELD(__GXData, u32 *, 0x3C))[i];
             GXWGFifo.u8 = 0x08;
             GXWGFifo.u8 = i | 0x90;
-            GXWGFifo.u32 = __GXData->vatC[i];
+            GXWGFifo.u32 = (&M2C_FIELD(__GXData, u32 *, 0x5C))[i];
         }
     }
-    __GXData->dirtyVAT = 0;
+    M2C_FIELD(__GXData, u8 *, 0x5AB) = 0;
 }
 
 void fn_800D5F10(void) {
@@ -2941,6 +2962,14 @@ void fn_800D9BE0(u8 field_mode, u8 half_aspect_ratio) {
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = 0x68000000 | field_mode;
     __GXFlushTextureState();
+}
+
+void fn_800D9E98(u32 id) {
+    extern GXDataHead *__GXData;
+    extern void fn_800DA1A4(s32, ...);
+    GXDataHead *gx = __GXData;
+    M2C_FIELD(gx, u32 *, 0x80) = __rlwimi(M2C_FIELD(gx, u32 *, 0x80), id, 0, 26, 31);
+    fn_800DA1A4(0);
 }
 
 void fn_800DA17C(u32 arg0) {
