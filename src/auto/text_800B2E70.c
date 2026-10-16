@@ -5380,6 +5380,7 @@ s32 TRKInitializeNub(void) {
     if (result == 0) result = TRKInitializeTarget();
     return result;
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw on
