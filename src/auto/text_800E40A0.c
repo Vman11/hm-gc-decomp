@@ -137,7 +137,13 @@ typedef struct MslFileMode {
 typedef struct MslFile {
     u32 handle;
     MslFileMode mode;
-    u8 state[4];
+    struct {
+        unsigned char io_state : 3;
+        unsigned char free_buffer : 1;
+        unsigned char eof;
+        unsigned char error;
+        unsigned char pad;
+    } state;
     u8 is_dynamically_allocated;
     u8 pad[0x18 - 0xD];
     u32 position;
