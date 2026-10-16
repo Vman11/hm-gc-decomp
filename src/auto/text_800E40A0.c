@@ -54,6 +54,21 @@ void __unregister_fragment(int fragmentID) {
     }
 }
 
+int __register_fragment(void *info, void *TOC) {
+    FragmentInfo *f;
+    int i;
+
+    for (i = 0, f = fragmentinfo_80327F98; i < 1; ++i, ++f) {
+        if (f->active == 0) {
+            f->eti_info = info;
+            f->toc = TOC;
+            f->active = 1;
+            return i;
+        }
+    }
+    return -1;
+}
+
 u8 *fn_800E4108(void) {
     return lbl_8029BFB0;
 }
