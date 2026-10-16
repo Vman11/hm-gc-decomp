@@ -18,6 +18,32 @@ typedef struct Obj8018B9C8 {
     Elem8018B9C8* elems;
 } Obj8018B9C8;
 
+void fn_8018B9C8(Obj8018B9C8* obj, f32* scale) {
+    Elem8018B9C8* e = obj->elems;
+    Elem8018B9C8* end = e + obj->count;
+    f32 z;
+    f32 y;
+    f32 x;
+    x = scale[0];
+    y = scale[1];
+    z = scale[2];
+    for (; e < end; e++) {
+        e->v3C[0] *= x;
+        e->v3C[1] *= y;
+        e->v3C[2] *= z;
+        e->v48[0] *= x;
+        e->v48[1] *= y;
+        e->v48[2] *= z;
+        e->v24[0] *= x;
+        e->v24[1] *= y;
+        e->v24[2] *= z;
+        e->v30[0] *= x;
+        e->v30[1] *= y;
+        e->v30[2] *= z;
+        e->flags |= 9;
+    }
+}
+
 void fn_8018BAA8(void *arg0) {
     extern s32 lbl_80364A6C;
     char *p = M2C_FIELD(arg0, char **, 0x34);
