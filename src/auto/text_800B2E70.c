@@ -6,6 +6,13 @@ typedef struct HeapCell {
     int size;
 } HeapCell;
 s32 fn_800DF4D0(void*);
+extern u8 lbl_80323560[];
+extern u16 lbl_8035A8F0;
+extern const char *lbl_80359600;
+extern u8 lbl_802DF308[];
+void OSRegisterResetFunction(void *);
+void fn_800CC160(void);
+void fn_800CDBA0(u32 arg);
 extern char* lbl_803595E8;
 void OSRegisterVersion(const char*);
 void fn_800C9744(void);
@@ -237,6 +244,51 @@ void OSCreateAlarm(s32 *arg0) {
     arg0[1] = 0;
 }
 
+long long fn_800BA5E8(long long arg0);
+void InsertAlarm(void *alarm, long long fire, void *handler);
+void fn_800B3E7C(int *alarm, long long start, long long period, void *handler) {
+    int enabled = OSDisableInterrupts();
+    *(long long *)(alarm + 6) = period;
+    *(long long *)(alarm + 8) = fn_800BA5E8(start);
+    InsertAlarm(alarm, 0, handler);
+    OSRestoreInterrupts(enabled);
+}
+
+HeapCell *fn_800B4294(HeapCell *list, HeapCell *cell) {
+    HeapCell *prev = 0;
+    HeapCell *next = list;
+    for (; next; prev = next, next = next->next) {
+        if (cell <= next) {
+            break;
+        }
+    }
+    cell->next = next;
+    cell->prev = prev;
+    if (next) {
+        next->prev = cell;
+        if ((char *)cell + cell->size == (char *)next) {
+            cell->size += next->size;
+            next = next->next;
+            cell->next = next;
+            if (next) {
+                next->prev = cell;
+            }
+        }
+    }
+    if (prev) {
+        prev->next = cell;
+        if ((char *)prev + prev->size == (char *)cell) {
+            prev->size += cell->size;
+            prev->next = next;
+            if (next) {
+                next->prev = prev;
+            }
+        }
+        return list;
+    }
+    return cell;
+}
+
 extern int lbl_80359530;
 extern int lbl_8035A568;
 extern int lbl_8035A56C;
@@ -244,22 +296,22 @@ extern int lbl_8035A570;
 extern int lbl_8035A574;
 int fn_800B44B8(int arg0) { int old = lbl_80359530; lbl_80359530 = arg0; return old; }
 
-void fn_800B44C8(int arg0, int arg1, int arg2) {
-    int i = 0;
-    int offset = 0;
+int fn_800B44C8(int arg0, int arg1, int arg2) {
+    unsigned int arraySize = arg2 * 12;
+    int i;
     lbl_8035A568 = arg0;
     lbl_8035A56C = arg2;
-    do {
-        int *entry = (int *)(lbl_8035A568 + offset);
+    for (i = 0; i < lbl_8035A56C; i++) {
+        int *entry = (int *)(lbl_8035A568 + i * 12);
         entry[0] = -1;
-        entry[2] = 0;
-        entry[1] = 0;
-        offset += 12;
-        i++;
-    } while (i < lbl_8035A56C);
-    lbl_8035A574 = arg1 & ~31;
+        entry[1] = entry[2] = 0;
+    }
     lbl_80359530 = -1;
-    lbl_8035A570 = (lbl_8035A568 + arg2 * 12 + 31) & ~31;
+    arg0 = lbl_8035A568 + arraySize;
+    arg0 = (arg0 + 31) & ~31;
+    lbl_8035A570 = arg0;
+    lbl_8035A574 = arg1 & ~31;
+    return arg0;
 }
 
 int fn_800B4538(int arg0, int arg1) {
@@ -317,6 +369,15 @@ s32 fn_800B4F6C(void) {
     return *(s32 *)0x800000D4;
 }
 
+void OSClearContext(u8 *ctx) {
+    u32 *cur = (u32 *)0x800000D8;
+    *(u16 *)(ctx + 0x1A0) = 0;
+    *(u16 *)(ctx + 0x1A2) = 0;
+    if ((u32)ctx == *cur) {
+        *cur = 0;
+    }
+}
+
 extern s32 lbl_8035A5B0;
 void fn_800BA3B4(void* arg0);
 void fn_800B7E04(void) {
@@ -359,6 +420,14 @@ void fn_800B981C(void *arg0) {
         RunQueueBits_8035A5E8 &= ~(1 << (0x1F - M2C_FIELD(arg0, s32 *, 0x2D0)));
     }
     M2C_FIELD(arg0, void **, 0x2DC) = NULL;
+}
+
+void fn_800B9CD8(void) {
+    s32 enabled;
+
+    enabled = OSDisableInterrupts();
+    SelectThread(1);
+    OSRestoreInterrupts(enabled);
 }
 
 void OSClearStack(u32 arg0) {
@@ -461,6 +530,34 @@ void fn_800BB678(void *arg0, s32 arg1, s32 arg2, f32 farg0) {
     *(f32 *)((u8 *)arg0 + 0x10) = *(f32 *)((u8 *)arg0 + 0x14) = *(f32 *)((u8 *)arg0 + 0x18) = *(f32 *)((u8 *)arg0 + 0x1C) = lbl_80363068;
 }
 
+void fn_800BB6A4(void *arg0) {
+    extern f32 lbl_8036306C;
+    u32 zero = 0;
+    f32 temp_f0;
+
+    M2C_FIELD(arg0, s32 *, 4) = 1;
+    M2C_FIELD(arg0, s32 *, 0x18) = zero;
+    temp_f0 = (f32) zero;
+    M2C_FIELD(arg0, f32 *, 0x14) = temp_f0;
+    M2C_FIELD(arg0, f32 *, 0x10) = temp_f0;
+    M2C_FIELD(arg0, f32 *, 0xC) = temp_f0;
+    M2C_FIELD(arg0, f32 *, 8) = temp_f0;
+    M2C_FIELD(arg0, u8 *, 0x1C) = 0x40;
+    M2C_FIELD(arg0, u8 *, 0x1D) = 0x7F;
+    M2C_FIELD(arg0, u8 *, 0x1E) = 1;
+    M2C_FIELD(arg0, s16 *, 0x22) = zero;
+    M2C_FIELD(arg0, s16 *, 0x20) = zero;
+    M2C_FIELD(arg0, f32 *, 0x24) = lbl_8036306C;
+    M2C_FIELD(arg0, s32 *, 0x28) = 0xFC400000;
+}
+
+void fn_800BB714(void *arg0) {
+    u8 a = 0x40;
+    M2C_FIELD(arg0, s32 *, 4) = 2;
+    M2C_FIELD(arg0, u8 *, 8) = a;
+    M2C_FIELD(arg0, u8 *, 9) = 0x7F;
+}
+
 #pragma dont_inline reset
 
 void fn_800BBBD4(UnkStep* arg0) {
@@ -523,6 +620,17 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
         *(u16*)(arg1 + 0x1F8) = lbl_802D9DD8[idx + 1];
         arg0[4] = 0;
     }
+}
+
+s32 DVDLowWaitCoverClose(s32 callback) {
+    extern s32 Callback_8035A618;
+    extern s32 WaitingCoverClose_8035A62C;
+    extern s32 StopAtNextInt_8035A610;
+    Callback_8035A618 = callback;
+    WaitingCoverClose_8035A62C = 1;
+    StopAtNextInt_8035A610 = 0;
+    ((volatile u32*)0xCC006000)[1] = 2;
+    return 1;
 }
 
 s32 fn_800BCF98(void) {
@@ -1113,6 +1221,17 @@ s32 fn_800C7964(void) {
     return lbl_8035A830;
 }
 
+extern u8 lbl_8030B480[];
+extern u32 lbl_8035A828;
+extern u8 *lbl_8035A82C;
+u8 *fn_800C796C(void) {
+    u32 old = lbl_8035A828++;
+    u8 *ret = lbl_8030B480 + old * 0x300;
+    lbl_8035A828 &= 1;
+    lbl_8035A82C = lbl_8030B480 + lbl_8035A828 * 0x300;
+    return ret;
+}
+
 void fn_800C807C(void) {
 
 }
@@ -1124,9 +1243,45 @@ void fn_800C8080(u32 arg0) {
     }
 }
 
+extern void fn_800C8094(u32);
+extern void fn_800C45D8(void *, u32);
+extern void fn_800CC2DC(void *);
+extern u8 lbl_8030BA80[];
+extern u8 lbl_80310480[];
+extern u32 lbl_8035A844;
+extern u32 lbl_8035A848;
+extern u64 lbl_8035A850;
+extern u32 lbl_8035A870;
+void fn_800C824C(void) {
+    if (lbl_8035A848 == 0) {
+        lbl_8035A850 = OSGetTime();
+    }
+    if (lbl_8035A848 == 1) {
+        lbl_8035A848 = 0;
+        fn_800C8094(0);
+    } else {
+        lbl_8035A848 = 2;
+        fn_800CC2DC(lbl_80310480);
+    }
+    if (lbl_8035A870 == 1) {
+        fn_800C45D8(lbl_8030BA80 + lbl_8035A844 * 0x280, 0x280);
+        lbl_8035A844 = lbl_8035A844 + 1;
+        lbl_8035A844 = lbl_8035A844 % 3;
+    }
+}
+
 extern s32 lbl_8035A85C;
 void fn_800C8308(void) {
     lbl_8035A85C = 1;
+}
+
+void fn_800C8314(void) {
+    if (lbl_8035A848 == 2) {
+        lbl_8035A848 = 0;
+        fn_800C8094((u32)(OSGetTime() - lbl_8035A850) >> 2);
+    } else {
+        lbl_8035A848 = 1;
+    }
 }
 
 extern s32 lbl_8035A858;
