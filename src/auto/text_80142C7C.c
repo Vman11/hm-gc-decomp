@@ -10,7 +10,9 @@ typedef struct Img {
     s32 n;
     u8 padA0[4];
     s32 m;
-    u8 padA8[0x138 - 0xa8];
+    u8 padA8[8];
+    u8 *src;
+    u8 padB4[0x138 - 0xb4];
     u8 buf[0x44];
     u8 *dst;
     u8 pad180[4];
