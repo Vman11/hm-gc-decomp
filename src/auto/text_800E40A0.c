@@ -155,6 +155,36 @@ void fn_800E4114(int size) {
     fn_800B443C(lbl_80359530, size);
 }
 
+void exit(int status) {
+    void (**dtor)(void);
+
+    if (!__aborting) {
+        __begin_critical_region(0);
+        __end_critical_region(0);
+        __destroy_global_chain();
+        dtor = _dtors;
+        while (*dtor != 0) {
+            (*dtor)();
+            dtor++;
+        }
+        if (__stdio_exit) {
+            __stdio_exit();
+            __stdio_exit = 0;
+        }
+    }
+    __begin_critical_region(0);
+    while (__atexit_curr_func > 0) {
+        __atexit_funcs[--__atexit_curr_func]();
+    }
+    __end_critical_region(0);
+    __kill_critical_regions();
+    if (__console_exit) {
+        __console_exit();
+        __console_exit = 0;
+    }
+    _ExitProcess();
+}
+
 void fn_800E42BC(void) {
     fn_800EB264(1);
     __aborting = 1;
