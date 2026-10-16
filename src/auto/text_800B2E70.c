@@ -2402,29 +2402,78 @@ void fn_800D6DAC(s32 arg0) {
 void fn_800D6DF0(u8 arg0) {
     extern GXDataHead *const __GXData;
     SETF(M2C_FIELD(__GXData, u32 *, 0x204), 1, 19, arg0);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = 0xFE080000;
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x204);
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile u32 *)0xCC008000 = 0xFE080000;
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile u32 *)0xCC008000 = M2C_FIELD(__GXData, u32 *, 0x204);
 }
 
 void fn_800D6E24(void) {
     extern GXDataHead *const __GXData;
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x204);
+    (*(volatile PPCWGPipe *)0xCC008000).u8 = 0x61;
+    (*(volatile PPCWGPipe *)0xCC008000).u32 = M2C_FIELD(__GXData, u32 *, 0x204);
     __GXData->bpSentNot = 0;
 }
 
 void fn_800D6E48(u16 left, u16 top, u16 wd, u16 ht) {
     extern GXDataHead *const __GXData;
     M2C_FIELD(__GXData, u32 *, 0x1E0) = 0;
-    SETF(M2C_FIELD(__GXData, u32 *, 0x1E0), 10, 0, left);
-    SETF(M2C_FIELD(__GXData, u32 *, 0x1E0), 10, 10, top);
-    SETF(M2C_FIELD(__GXData, u32 *, 0x1E0), 8, 24, 0x49);
+    M2C_FIELD(__GXData, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E0), left, 0, 22, 31);
+    M2C_FIELD(__GXData, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E0), top, 10, 12, 21);
+    M2C_FIELD(__GXData, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E0), 0x49, 24, 0, 7);
     M2C_FIELD(__GXData, u32 *, 0x1E4) = 0;
-    SETF(M2C_FIELD(__GXData, u32 *, 0x1E4), 10, 0, wd - 1);
-    SETF(M2C_FIELD(__GXData, u32 *, 0x1E4), 10, 10, ht - 1);
-    SETF(M2C_FIELD(__GXData, u32 *, 0x1E4), 8, 24, 0x4A);
+    M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), wd - 1, 0, 22, 31);
+    M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), ht - 1, 10, 12, 21);
+    M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), 0x4A, 24, 0, 7);
+}
+
+void fn_800D6F40(u16 wd) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    M2C_FIELD(gx, u32 *, 0x1E8) = 0;
+    SETF(M2C_FIELD(gx, u32 *, 0x1E8), 10, 0, (s32)(wd << 1) >> 5);
+    SETF(M2C_FIELD(gx, u32 *, 0x1E8), 8, 24, 0x4D);
+}
+
+void fn_800D70A4(u32 frame2field) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    M2C_FIELD(gx, u32 *, 0x1EC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1EC), frame2field, 12, 18, 19);
+    M2C_FIELD(gx, u32 *, 0x1FC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1FC), 0, 12, 18, 19);
+}
+
+void fn_800D70C8(u32 clamp) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    u8 clmpT = (clamp & 1) == 1;
+    u8 clmpB = (clamp & 2) == 2;
+    SETF(M2C_FIELD(gx, u32 *, 0x1EC), 1, 0, clmpT);
+    SETF(M2C_FIELD(gx, u32 *, 0x1EC), 1, 1, clmpB);
+    SETF(M2C_FIELD(gx, u32 *, 0x1FC), 1, 0, clmpT);
+    SETF(M2C_FIELD(gx, u32 *, 0x1FC), 1, 1, clmpB);
+}
+
+void fn_800D71EC(GXColor clear_clr, u32 clear_z) {
+    extern GXDataHead *__GXData;
+    u32 reg;
+    reg = 0;
+    SETF(reg, 8, 0, clear_clr.r);
+    SETF(reg, 8, 8, clear_clr.a);
+    SETF(reg, 8, 24, 0x4F);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    reg = 0;
+    SETF(reg, 8, 0, clear_clr.b);
+    SETF(reg, 8, 8, clear_clr.g);
+    SETF(reg, 8, 24, 0x50);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    reg = 0;
+    SETF(reg, 24, 0, clear_z);
+    SETF(reg, 8, 24, 0x51);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    __GXData->bpSentNot = 0;
 }
 
 void fn_800D746C(s32 arg0) {
