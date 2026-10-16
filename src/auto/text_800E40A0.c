@@ -675,9 +675,9 @@ int fn_800E84F8(void *arg0) {
         if (file->state.io_state == 2) {
             file->buffer_len = 0;
         }
+        flush_result = 0;
         if (file->state.io_state != 1) {
-            flush_result = 0;
-            file->state.io_state = flush_result;
+            file->state.io_state = 0;
         } else {
             if (file->mode.file_kind != 1) {
                 position = 0;
@@ -689,10 +689,9 @@ int fn_800E84F8(void *arg0) {
                 file->buffer_len = 0;
                 flush_result = -1;
             } else {
-                flush_result = 0;
-                file->state.io_state = flush_result;
+                file->state.io_state = 0;
                 file->position = position;
-                file->buffer_len = flush_result;
+                file->buffer_len = 0;
             }
         }
     }
@@ -1921,6 +1920,55 @@ double fn_800EFFC0(double x, int *eptr) {
     return x;
 }
 
+extern double lbl_80363690;
+extern double lbl_80363698;
+extern double lbl_803636A0;
+extern double lbl_803636A8;
+extern double lbl_803636B0;
+double fn_800F004C(double x, int n) {
+    int k, hx, lx;
+    int cls;
+    double t = x;
+    switch (*(int *)&t & 0x7ff00000) {
+    case 0x7ff00000:
+        if ((*(int *)&t & 0x000fffff) || *(1 + (int *)&t)) cls = 1;
+        else cls = 2;
+        break;
+    case 0:
+        if ((*(int *)&t & 0x000fffff) || *(1 + (int *)&t)) cls = 5;
+        else cls = 3;
+        break;
+    default:
+        cls = 4;
+        break;
+    }
+    if (cls <= 2 || lbl_80363690 == x) return x;
+    hx = *(int *)&x;
+    lx = *(1 + (int *)&x);
+    k = (hx & 0x7ff00000) >> 20;
+    if (k == 0) {
+        if ((lx | (hx & 0x7fffffff)) == 0) return x;
+        x *= lbl_80363698;
+        hx = *(int *)&x;
+        k = ((hx & 0x7ff00000) >> 20) - 54;
+        if (n < -50000) return lbl_803636A0 * x;
+    }
+    if (k == 0x7ff) return x + x;
+    k = k + n;
+    if (k > 0x7fe) return lbl_803636A8 * fn_800EFD7C(lbl_803636A8, x);
+    if (k > 0) {
+        *(int *)&x = (hx & 0x800fffff) | (k << 20);
+        return x;
+    }
+    if (k <= -54) {
+        if (n > 50000) return lbl_803636A8 * fn_800EFD7C(lbl_803636A8, x);
+        else return lbl_803636A0 * fn_800EFD7C(lbl_803636A0, x);
+    }
+    k += 54;
+    *(int *)&x = (hx & 0x800fffff) | (k << 20);
+    return lbl_803636B0 * x;
+}
+
 double fn_800F0210(double x, double *iptr)
 {
     int i0, i1, j0;
@@ -2219,13 +2267,26 @@ s32 fn_800F0DA0(u32 *data) {
 }
 
 s32 fn_800F1328(void) {
-    EXI2Control *exi = lbl_803596F0;
     int enabled;
+    s32 i;
+    s32 len;
+    u8 *buf;
+    u32 data;
+    EXI2Control *exi = lbl_803596F0;
 
     while (exi->state & 4) {
         if (!(((volatile u32 *)0xCC006800)[13] & 1)) {
             enabled = OSDisableInterrupts();
-            EXI2_CompleteTransfer();
+            if (lbl_803596F0->state & 3) {
+                if ((lbl_803596F0->state & 2) && (len = lbl_803596F0->immLen) != 0) {
+                    buf = lbl_803596F0->immBuf;
+                    data = ((volatile u32 *)0xCC006800)[14];
+                    for (i = 0; i < len; i++) {
+                        *buf++ = data >> ((3 - i) * 8);
+                    }
+                }
+                lbl_803596F0->state &= ~3;
+            }
             OSRestoreInterrupts(enabled);
             break;
         }
