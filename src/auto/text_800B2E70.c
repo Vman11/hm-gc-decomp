@@ -880,6 +880,47 @@ void fn_800B5F28(u16 fbWidth, u16 height) {
     fn_800C2054(0, 0, 0x280, 0x1E0);
 }
 
+void fn_800B6998(u8 *src, u8 *dst) {
+    u32 *flags = (u32 *)(src + 0x10);
+    s32 dstPos = 0;
+    u32 bits = 0;
+    u32 code;
+    s32 size = *(s32 *)(src + 4);
+    s32 linkOfs = *(s32 *)(src + 8);
+    s32 chunkOfs = *(s32 *)(src + 0xC);
+    s32 link;
+    s32 back;
+    s32 count;
+    s32 i;
+    u8 *p;
+
+    do {
+        if (bits == 0) {
+            code = *flags++;
+            bits = 32;
+        }
+        if (code & 0x80000000) {
+            dst[dstPos++] = src[chunkOfs++];
+        } else {
+            p = src + linkOfs;
+            linkOfs += 2;
+            link = (p[0] << 8) | p[1];
+            back = dstPos - (link & 0xFFF);
+            count = link >> 12;
+            if (count == 0) {
+                count = src[chunkOfs++] + 0x12;
+            } else {
+                count += 2;
+            }
+            for (i = 0; i < count; i++) {
+                dst[dstPos++] = dst[back++ - 1];
+            }
+        }
+        code <<= 1;
+        bits--;
+    } while (dstPos < size);
+}
+
 u16 fn_800B6B0C(void) {
     if (lbl_80359550 > 1) {
         if (*(s32*)0x800000CC == 0) {
@@ -2209,6 +2250,36 @@ void fn_800C3B90(s32 spec) {
         break;
     }
     lbl_803595C0 = spec;
+}
+
+void fn_800C3BF0(s32 chan, u8* status, u32* data) {
+    *(u16*)status = 0;
+    *(u16*)status |= ((data[0] >> 16) & 0x0008) ? 0x0100 : 0;
+    *(u16*)status |= ((data[0] >> 16) & 0x0020) ? 0x0200 : 0;
+    *(u16*)status |= ((data[0] >> 16) & 0x0100) ? 0x0400 : 0;
+    *(u16*)status |= ((data[0] >> 16) & 0x0001) ? 0x0800 : 0;
+    *(u16*)status |= ((data[0] >> 16) & 0x0010) ? 0x1000 : 0;
+
+    *(s8*)(status + 2) = (s8)(data[1] >> 16);
+    *(s8*)(status + 3) = (s8)(data[1] >> 24);
+    *(s8*)(status + 4) = (s8)(data[1]);
+    *(s8*)(status + 5) = (s8)(data[1] >> 8);
+    status[6] = (u8)(data[0] >> 8 & 0xff);
+    status[7] = (u8)(data[0] & 0xff);
+    status[8] = 0;
+    status[9] = 0;
+
+    if (170 <= status[6]) {
+        *(u16*)status |= 0x0040;
+    }
+    if (170 <= status[7]) {
+        *(u16*)status |= 0x0020;
+    }
+
+    *(s8*)(status + 2) -= 128;
+    *(s8*)(status + 3) -= 128;
+    *(s8*)(status + 4) -= 128;
+    *(s8*)(status + 5) -= 128;
 }
 
 #pragma inline_depth(0)
@@ -5539,9 +5610,9 @@ s32 fn_800DB100(TrkBuf *buf, u32 *data, s32 count) {
 #pragma use_lmw_stmw on
 #pragma peephole off
 s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
- extern void *fn_80003488(void *,const void *,u32);
  s32 result;
- u32 n;
+ extern void *fn_80003488(void *,const void *,u32);
+ register unsigned int n;
  s32 i;
  s32 error;
  i=0; error=0;
@@ -5551,9 +5622,9 @@ s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
   result=0;
   if(n>left) {result=0x302; n=left;}
   fn_80003488(data+i,buf->data+buf->pos,n);
-  buf->pos+=n;
+  buf->pos+=(unsigned)n;
   error=result;
-  i++;
+  i += 1;
  }
  return error;
 }
@@ -6610,10 +6681,10 @@ s32 fn_800E0070(void *arg0) {
 
 s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
-    extern struct { u8 TBR; u8 DEC; } gTRKRestoreFlags;
+    extern struct { u8 TBR; u8 DEC; u8 linker_padding[7]; } gTRKRestoreFlags;
+    s32 error;
     u32 *data;
     u32 count;
-    s32 error;
     TRKExceptionStatus tempExceptionStatus;
 
     if (lastRegister > 0x60) {
@@ -6634,11 +6705,11 @@ s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
             error = fn_800DB570(b, data, count);
         } else {
             if (data <= (u32 *)((u8 *)&gTRKCPUState + 0x1EC) &&
-                data + count - 1 >= (u32 *)((u8 *)&gTRKCPUState + 0x1E8)) {
+                (u32 *)((u8 *)data + count * sizeof(u32) - sizeof(u32)) >= (u32 *)((u8 *)&gTRKCPUState + 0x1E8)) {
                 gTRKRestoreFlags.TBR = 1;
             }
             if (data <= (u32 *)((u8 *)&gTRKCPUState + 0x278) &&
-                data + count - 1 >= (u32 *)((u8 *)&gTRKCPUState + 0x278)) {
+                (data + count - 1) >= (u32 *)((u8 *)&gTRKCPUState + 0x278)) {
                 gTRKRestoreFlags.DEC = 1;
             }
             error = fn_800DB100(b, data, count);
