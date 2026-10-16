@@ -5323,6 +5323,26 @@ void TRKNubWelcome(void) {
     TRK_board_display("MetroTRK for GAMECUBE v2.0");
 }
 
+static s32 TRK_InitializeEndian(void) {
+    extern s32 gTRKBigEndian[];
+    u8 bendian[4];
+    s32 result = 0;
+
+    gTRKBigEndian[0] = 1;
+    bendian[0] = 0x12;
+    bendian[1] = 0x34;
+    bendian[2] = 0x56;
+    bendian[3] = 0x78;
+    if (*(u32*)bendian == 0x12345678) {
+        gTRKBigEndian[0] = 1;
+    } else if (*(u32*)bendian == 0x78563412) {
+        gTRKBigEndian[0] = 0;
+    } else {
+        result = 1;
+    }
+    return result;
+}
+
 s32 TRKTerminateNub(void) {
     s32 fn_800DBCDC(void);
     fn_800DBCDC();
