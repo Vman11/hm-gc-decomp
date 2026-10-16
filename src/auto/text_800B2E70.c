@@ -4895,6 +4895,33 @@ s32 fn_800DE654(TrkBuf* buf) {
     return 0;
 }
 
+s32 fn_800DE70C(TrkBuf* buf) {
+    void fn_800DABB4(void *);
+    s32 n;
+    s32 ok;
+    u8 event[0xC];
+    lbl_803257D0[0] = 0;
+    fn_800DBAD0(buf, 1);
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x80;
+        buf->count++;
+    }
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x00;
+        buf->count++;
+    }
+    n = 3;
+    do {
+        ok = fn_800DAF24(buf);
+        n--;
+    } while (ok != 0 && n > 0);
+    if (ok == 0) {
+        fn_800DAB9C(event, 1);
+        fn_800DABB4(event);
+    }
+    return ok;
+}
+
 void fn_800DE7F0(TrkBuf* buf) {
     s32 n;
     s32 ok;
