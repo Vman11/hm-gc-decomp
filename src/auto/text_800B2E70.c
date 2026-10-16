@@ -8,6 +8,7 @@ typedef struct HeapCell {
 s32 fn_800DF4D0(void*);
 extern u8 lbl_80323560[];
 extern u16 lbl_8035A8F0;
+s32 fn_800CDBD8(s32 chan, void *out);
 extern const char *lbl_80359600;
 extern u8 lbl_802DF308[];
 void OSRegisterResetFunction(void *);
@@ -1238,6 +1239,18 @@ u8 *fn_800C796C(void) {
     return ret;
 }
 
+void fn_800C8058(void) {
+    extern u8 lbl_8030B480[];
+    extern u32 lbl_8035A828;
+    extern u8 *lbl_8035A82C;
+    extern u32 lbl_8035A834;
+    extern u32 lbl_8035A838;
+    lbl_8035A838 = 0;
+    lbl_8035A828 = 0;
+    lbl_8035A82C = lbl_8030B480;
+    lbl_8035A834 = 1;
+}
+
 void fn_800C807C(void) {
 
 }
@@ -1295,6 +1308,21 @@ extern s32 lbl_8035A868;
 void fn_800C836C(void) {
     lbl_8035A860 = 1;
     fn_800BA3B4(&lbl_8035A868);
+}
+
+void fn_800C8804(void) {
+    extern u8 lbl_80310480[];
+    extern u32 lbl_8035A858;
+    extern s32 lbl_8035A868;
+    extern void fn_800C4678(void);
+    extern void fn_800CC29C(void *);
+    extern void fn_800BA2C8(void *);
+    int enabled = OSDisableInterrupts();
+    lbl_8035A858 = 0;
+    fn_800CC29C(lbl_80310480);
+    fn_800BA2C8(&lbl_8035A868);
+    fn_800C4678();
+    OSRestoreInterrupts(enabled);
 }
 
 extern s32 lbl_8035A858;
@@ -1361,6 +1389,21 @@ s32 fn_800C8D2C(void) {
 extern u8 lbl_80310560[];
 u8 *fn_800C96F8(void) {
     return lbl_80310560;
+}
+
+void fn_800C9704(char *p) {
+    *(u16 *)(p + 0x146) = 0;
+    *(u16 *)(p + 0x16e) = 0;
+    *(s32 *)(p + 0x1c) = 0xa4;
+    *(s32 *)(p + 0x28) = 0;
+    *(s32 *)(p + 0x24) = 0;
+    *(char **)(p + 0x30) = p + 0x34;
+    *(u16 *)(p + 0x184) = 0;
+    *(u16 *)(p + 0x182) = 0;
+    *(u16 *)(p + 0x180) = 0;
+    *(u16 *)(p + 0x17e) = 0;
+    *(u16 *)(p + 0x17c) = 0;
+    *(u16 *)(p + 0x1f2) = 0;
 }
 
 void fn_800C9944(void) {
