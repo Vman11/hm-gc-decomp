@@ -97,6 +97,12 @@ typedef struct TrkBuf {
     u32 pos;
     u8 data[0x880];
 } TrkBuf;
+typedef struct TRKFramingState {
+    s32 msgBufID;
+    TrkBuf *buffer;
+    u8 receiveState;
+    s32 isEscape;
+} TRKFramingState;
 extern s32 lbl_803257D0[];
 extern void fn_800DBAD0(TrkBuf*, s32);
 extern s32 fn_800DAF24(TrkBuf*);
