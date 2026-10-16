@@ -1852,6 +1852,7 @@ s32 fn_800DF874(void) {
     return 0;
 }
 
+extern u8 lbl_80327F90[];
 #pragma push
 #pragma dont_inline on
 void TRKTargetSetStopped(s32 arg0) {
