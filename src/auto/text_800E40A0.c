@@ -1280,6 +1280,32 @@ s32 fn_800F0BE8(u32 addr, u32 *data, s32 size) {
     return !err;
 }
 
+s32 fn_800F0CC4(u32 addr, void *buf, s32 size) {
+    u32 cmd;
+    u32 value;
+    BOOL err;
+    u32 *data = buf;
+    volatile u32 *exi = (volatile u32 *)0xCC006800;
+
+    exi[10] = (exi[10] & 0x405) | 0xC0;
+    cmd = ((addr << 8) & 0x01FFFC00) | 0x20000000;
+    err = !fn_800F0E4C(&cmd, 4, 1);
+    while (exi[13] & 1) {
+    }
+    while (size != 0) {
+        err |= !fn_800F0E4C(&value, 4, 0);
+        while (exi[13] & 1) {
+        }
+        *data++ = value;
+        size -= 4;
+        if (size < 0) {
+            size = 0;
+        }
+    }
+    exi[10] &= 0x405;
+    return !err;
+}
+
 s32 fn_800F0DA0(u32 *data) {
     u32 cmd;
     BOOL err;
@@ -1377,23 +1403,6 @@ u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext) {
 }
 
 extern char Ecb_80328410[];
-typedef void (*EXICallback)(s32 chan, void *context);
-typedef struct EXIControl {
-    EXICallback exiCallback;
-    EXICallback tcCallback;
-    EXICallback extCallback;
-    volatile s32 state;
-    int immLen;
-    u8 *immBuf;
-    u32 dev;
-    u32 id;
-    s32 idTime;
-    int items;
-    struct {
-        u32 dev;
-        EXICallback callback;
-    } queue[3];
-} EXIControl;
 extern s32 lbl_8035A9C0;
 extern s32 lbl_8035A9C4;
 extern s32 lbl_8035A9C8;
