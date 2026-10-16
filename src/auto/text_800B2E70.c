@@ -1,5 +1,18 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
+typedef union PPCWGPipe {
+    u8 u8;
+    u16 u16;
+    u32 u32;
+    u64 u64;
+    s8 s8;
+    s16 s16;
+    s32 s32;
+    s64 s64;
+    f32 f32;
+    f64 f64;
+} PPCWGPipe;
+#define GXWGFifo (*(volatile PPCWGPipe *)0xCC008000)
 #define SETF(reg, size, shift, v) \
     ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | (((u32)(v) << (shift)) & (((1 << (size)) - 1) << (shift))))
 typedef struct __va_list_struct {
@@ -459,6 +472,23 @@ void __OSContextInit(void) {
     DBPrintf(lbl_802D7BEC);
 }
 
+void OSReport(const char* msg, ...) {
+    struct __va_list_struct args;
+    __builtin_va_info(&args);
+    vprintf(msg, &args);
+}
+
+u16 fn_800B6B0C(void) {
+    if (lbl_80359550 > 1) {
+        if (*(s32*)0x800000CC == 0) {
+            lbl_80359550 = (*(u16*)0xCC00206E & 2) ? 1 : 0;
+        } else {
+            lbl_80359550 = 0;
+        }
+    }
+    return lbl_80359550;
+}
+
 extern s32 fn_800B9094(s32, s32, s32);
 void fn_800B6B64(s32 arg0, s32 arg1, s32 arg2) {
     s32 n;
@@ -870,6 +900,29 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
         *(u16*)(arg1 + 0x1F8) = lbl_802D9DD8[idx + 1];
         arg0[4] = 0;
     }
+}
+
+void fn_800BC02C(f32 m[4][4], f32 t, f32 b, f32 l, f32 r, f32 n, f32 f) {
+    f32 tmp;
+    tmp = 1.0f / (r - l);
+    m[0][0] = 2.0f * tmp;
+    m[0][1] = 0.0f;
+    m[0][2] = 0.0f;
+    m[0][3] = tmp * -(r + l);
+    tmp = 1.0f / (t - b);
+    m[1][0] = 0.0f;
+    m[1][1] = 2.0f * tmp;
+    m[1][2] = 0.0f;
+    m[1][3] = tmp * -(t + b);
+    tmp = 1.0f / (f - n);
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = -1.0f * tmp;
+    m[2][3] = -f * tmp;
+    m[3][0] = 0.0f;
+    m[3][1] = 0.0f;
+    m[3][2] = 0.0f;
+    m[3][3] = 1.0f;
 }
 
 s32 DVDLowWaitCoverClose(s32 callback) {
@@ -1299,6 +1352,16 @@ u8 fn_800C496C(void) {
 
 u8 fn_800C4998(void) {
     return (u8) ((u32) *(u32 *)0xCC006C04 >> 8U);
+}
+
+extern u32 lbl_8035A7A8;
+extern u32 lbl_8035A7AC;
+extern void (*lbl_8035A7A0)(void);
+void fn_800C69D8();
+void OSClearContext(u8 *ctx);
+void OSSetCurrentContext(u8 *ctx);
+void fn_800C51B4(void) {
+    *(u16 *)0xCC00500A = (*(u16 *)0xCC00500A & ~0x88) | 0x20;
 }
 
 s32 fn_800C51D4(void) {
@@ -2042,6 +2105,14 @@ u8 fn_800D8320(void *arg0) {
 
 void fn_800D8F00(void) {
 
+}
+
+void fn_800DA17C(u32 arg0) {
+    extern u8 *__GXData;
+    *(volatile u8 *)0xCC008000 = 0x10;
+    *(volatile u32 *)0xCC008000 = 0x1005;
+    *(volatile u32 *)0xCC008000 = arg0;
+    *(volatile u16 *)(__GXData + 2) = 1;
 }
 
 void fn_800DAA70(void) {
