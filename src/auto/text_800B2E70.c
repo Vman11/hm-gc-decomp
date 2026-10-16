@@ -41,6 +41,7 @@ typedef struct TrkBuf {
 extern s32 lbl_803257D0[];
 extern void fn_800DBAD0(TrkBuf*, s32);
 extern s32 fn_800DAF24(TrkBuf*);
+s32 fn_800DEA20(void);
 s32 fn_800DF4D0(void*);
 extern u8 lbl_80323560[];
 extern u16 lbl_8035A8F0;
@@ -595,25 +596,22 @@ void fn_800BB714(void *arg0) {
     M2C_FIELD(arg0, u8 *, 9) = 0x7F;
 }
 
-void fn_800BB788(s32 *p) {
-    p[1] = 8;
-    p[2] = 0;
+void fn_800BB788(AnimInit *p) {
+    p->unk4 = 8;
+    p->unk8 = 0;
 }
 
-void fn_800BB79C(s32 *p) {
-    extern u8 lbl_802D8F60[];
-    extern f32 lbl_80363068;
-    f32 *f = (f32 *)p;
-    p[1] = 0xE;
-    p[10] = 0;
-    p[2] = (s32)lbl_802D8F60;
-    p[3] = 0x40;
-    f[4] = lbl_80363068;
-    p[5] = 0;
-    f[9] = lbl_80363068;
-    f[8] = lbl_80363068;
-    f[7] = lbl_80363068;
-    f[6] = lbl_80363068;
+void fn_800BB79C(AnimInit *p) {
+    p->unk4 = 0xE;
+    p->unk28 = 0;
+    p->unk8 = lbl_802D8F60;
+    p->unkC = 0x40;
+    p->unk10 = lbl_80363068;
+    p->unk14 = 0;
+    p->unk24 = lbl_80363068;
+    p->unk20 = lbl_80363068;
+    p->unk1C = lbl_80363068;
+    p->unk18 = lbl_80363068;
 }
 
 void fn_800BBAC8(void **arg0, void **arg1) {
@@ -655,6 +653,7 @@ void fn_800BBC30(UnkStep* arg0) {
 
 extern s32 fn_800E2584();
 void fn_800BBC8C(Anim *a) {
+    f32 d;
     a->t = a->t + a->speed;
     if (a->t >= lbl_80363088) {
         a->t = a->t - a->t;
@@ -663,7 +662,9 @@ void fn_800BBC8C(Anim *a) {
         a->prev = a->cur;
         a->cur = a->data[a->idx];
     }
-    a->out = a->prev - a->t * (a->prev - a->cur);
+    d = a->prev - a->cur;
+    d = a->t * d;
+    a->out = a->prev - d;
 }
 
 extern f32 lbl_8035A608;
