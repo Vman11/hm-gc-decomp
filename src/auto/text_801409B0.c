@@ -290,9 +290,12 @@ void fn_801425D4(ImgDec *p) {
 }
 
 void fn_80142628(ImgDec *p) {
-    u32 *s = (u32 *)p->px;
-    u32 *d = (u32 *)p->out;
-    u32 *e = s + 8;
+    u32 *d;
+    u32 *s;
+    u32 *e;
+    s = (u32 *)p->px;
+    d = (u32 *)p->out;
+    e = s + 8;
     do {
         d[0] = s[0];
         d[1] = s[1];
@@ -356,5 +359,30 @@ void fn_80142830(ImgDec *p) {
         s += 8;
         p->out += 4;
     } while (s < e);
+}
+
+void fn_801428B4(ImgDec *p) {
+    u32 *s = (u32 *)p->px;
+    u32 *e = s + 4;
+    u32 *d = (u32 *)p->out;
+    do {
+        d[0] = s[0];
+        d[1] = s[1];
+        d[2] = s[2];
+        d[3] = s[3];
+        s += 4;
+        d += 4;
+    } while (s < e);
+    p->out += 0x10;
+}
+
+void fn_80142900(ImgDec *p) {
+    u8 *d = p->dst;
+    u8 *e = d + p->count * 4;
+    for (; d < e; d += 4) {
+        s32 v = (d[0] * 2 - 0xFF) * p->wt[0] + (d[1] * 2 - 0xFF) * p->wt[1] + (d[2] * 2 - 0xFF) * p->wt[2];
+        if (v < 0) v = 0;
+        d[0] = d[1] = d[2] = (u32)v >> 8;
+    }
 }
 
