@@ -6,9 +6,9 @@ typedef struct UnkBlock800F7520 {
     u32 unk0_6 : 1;
     u32 unk0_7 : 1;
     u32 unk0_8 : 24;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
+    struct UnkBlock800F7520* unk4;
+    struct UnkBlock800F7520* unk8;
+    struct UnkBlock800F7520* unkC;
 } UnkBlock800F7520;
 
 typedef struct UnkHeap800F7520 {
