@@ -58,9 +58,9 @@ void fn_801413C8(ImgDec *p) {
 }
 
 void fn_80141424(ImgDec *p) {
+    u32 *s = (u32 *)p->src;
     u8 *d = p->dst;
     u8 *e = d + p->count * 4;
-    u32 *s = (u32 *)p->src;
     do {
         u32 v;
         v = *s >> p->shr[0];
