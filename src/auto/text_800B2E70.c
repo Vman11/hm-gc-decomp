@@ -4467,6 +4467,49 @@ s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
 #pragma use_lmw_stmw on
 #pragma inline_depth(4)
 #pragma peephole on
+#pragma opt_propagation off
+s32 fn_800DB288(TrkBuf *buf, u64 *data) {
+    extern s32 gTRKBigEndian[];
+    extern void *fn_80003488(void *, const void *, u32);
+    s32 err;
+    u32 length;
+    u32 bytesLeft;
+    u8 *bigEndianData;
+    u8 *byteData;
+    u8 swapBuffer[sizeof(*data)];
+    if (gTRKBigEndian[0]) {
+        bigEndianData = (u8 *)data;
+    } else {
+        bigEndianData = swapBuffer;
+    }
+    length = sizeof(*data);
+    err = 0;
+    bytesLeft = buf->count - buf->pos;
+    if (length > bytesLeft) {
+        err = 0x302;
+        length = bytesLeft;
+    }
+    fn_80003488(bigEndianData, buf->data + buf->pos, length);
+    buf->pos += length;
+    if (!gTRKBigEndian[0] && err == 0) {
+        byteData = (u8 *)data;
+        byteData[0] = bigEndianData[7];
+        byteData[1] = bigEndianData[6];
+        byteData[2] = bigEndianData[5];
+        byteData[3] = bigEndianData[4];
+        byteData[4] = bigEndianData[3];
+        byteData[5] = bigEndianData[2];
+        byteData[6] = bigEndianData[1];
+        byteData[7] = bigEndianData[0];
+    }
+    return err;
+}
+#pragma pop
+
+#pragma push
+#pragma use_lmw_stmw on
+#pragma inline_depth(4)
+#pragma peephole on
 s32 fn_800DB970(TrkBuf *buf, void *data, u32 length);
 #pragma push
 #pragma use_lmw_stmw on
