@@ -7709,10 +7709,10 @@ s32 fn_800E0070(void *arg0) {
 s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     extern struct { u8 TBR; u8 DEC; u8 linker_padding[7]; } gTRKRestoreFlags;
-    s32 error;
     u32 *data;
     u32 count;
-    TRKExceptionStatus tempExceptionStatus;
+    s32 error;
+    register TRKExceptionStatus tempExceptionStatus;
 
     if (lastRegister > 0x60) {
         return 0x701;
@@ -7724,19 +7724,19 @@ s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     *registersLengthPtr = 0;
 
     if (firstRegister <= lastRegister) {
-        count = (lastRegister - firstRegister) + 1;
-        *registersLengthPtr += count * sizeof(u32);
+        register count = (lastRegister - firstRegister) + 1;
         data = (u32 *)((u8 *)&gTRKCPUState + 0x1A8) + firstRegister;
+        *registersLengthPtr += count * sizeof(u32);
 
         if (read) {
             error = fn_800DB570(b, data, count);
         } else {
             if (data <= (u32 *)((u8 *)&gTRKCPUState + 0x1EC) &&
-                (u32 *)((u8 *)data + count * sizeof(u32) - sizeof(u32)) >= (u32 *)((u8 *)&gTRKCPUState + 0x1E8)) {
+                data + count - 1 >= (u32 *)((u8 *)&gTRKCPUState + 0x1E8)) {
                 gTRKRestoreFlags.TBR = 1;
             }
             if (data <= (u32 *)((u8 *)&gTRKCPUState + 0x278) &&
-                (data + count - 1) >= (u32 *)((u8 *)&gTRKCPUState + 0x278)) {
+                data + count - 1 >= (u32 *)((u8 *)&gTRKCPUState + 0x278)) {
                 gTRKRestoreFlags.DEC = 1;
             }
             error = fn_800DB100(b, data, count);
