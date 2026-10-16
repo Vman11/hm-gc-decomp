@@ -220,13 +220,13 @@ s32 AMC_IsStub(void) {
     return 0;
 }
 
-void fn_800F49B0(s32 chan, u32 val) {
-    ((volatile u32 *)0xCC006400)[chan * 3] = val;
-}
-
 typedef volatile u32 vu32_t;
-extern struct { u32 unk0; u32 poll; } Si_802E0CEC;
+extern struct { u32 unk0; volatile u32 poll; u32 unk8[2]; } Si_802E0CEC;
 #define SIREGS ((vu32_t *)0xCC006400)
+
+void fn_800F49B0(s32 chan, u32 val) {
+    SIREGS[chan * 3] = val;
+}
 
 void fn_800F49C4(void) {
     SIREGS[14] = 0x80000000;
