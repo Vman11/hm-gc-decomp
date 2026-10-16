@@ -1,6 +1,10 @@
 /* Functions from 0x80151E84 to 0x80151F08, found by decomp-toolkit. */
 #include "common.h"
 
+typedef struct {
+    f32 x, y, z;
+} Vec3f;
+
 extern f32 lbl_8036453C;
 extern f32 lbl_80364544;
 void fn_80151E84(f32 *m, f32 *v) {
