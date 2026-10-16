@@ -41,12 +41,12 @@ void fn_80135994(f32 *arg0, s32 arg1, f32 *arg2) {
     dest[0x1134 / 4] = arg2[3];
 }
 
-void fn_801359C0(Unk801359C0 *arg0, s32 arg1, Unk801359C0 *arg2) {
-    Unk801359C0 *dest = arg0 + arg1;
-    *(f32 *)((u8 *)dest + 0x128) = arg2->unk0;
-    *(f32 *)((u8 *)dest + 0x12C) = arg2->unk4;
-    *(f32 *)((u8 *)dest + 0x130) = arg2->unk8;
-    *(f32 *)((u8 *)dest + 0x134) = arg2->unkC;
+void fn_801359C0(f32 *__restrict arg0, s32 arg1, f32 *__restrict arg2) {
+    f32 *dest = arg0 + arg1 * 4;
+    dest[0x128 / 4] = arg2[0];
+    dest[0x12C / 4] = arg2[1];
+    dest[0x130 / 4] = arg2[2];
+    dest[0x134 / 4] = arg2[3];
 }
 
 s32 fn_801359EC(void) {
