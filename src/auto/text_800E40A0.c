@@ -149,20 +149,19 @@ void* memchr(const void* src, int val, unsigned long n) {
 }
 
 void fn_800E8C8C(void* dst, const void* src, unsigned long n) {
-    const char* cps = ((char*)src) + n;
-    char* cpd = ((char*)dst) + n;
+    unsigned long i;
     int src_offset, left_shift, right_shift;
     unsigned long v1, v2;
-    unsigned long i;
+    const char* cps = ((char*)src) + n;
+    char* cpd = ((char*)dst) + n;
 
-    i = ((unsigned long)cpd) & 3;
-    if (i) {
+    if ((i = ((unsigned long)cpd) & 3)) {
         n -= i;
         do {
             *--cpd = *--cps;
         } while (--i);
     }
-    src_offset = ((unsigned int)cps) & 3;
+    src_offset = ((unsigned long)cps) & 3;
     left_shift = src_offset << 3;
     right_shift = 32 - left_shift;
     cps += 4 - src_offset;
@@ -178,8 +177,7 @@ void fn_800E8C8C(void* dst, const void* src, unsigned long n) {
         v2 = *--((unsigned long*)cps);
         *--((unsigned long*)cpd) = (v2 << left_shift) | (v1 >> right_shift);
     }
-    n &= 3;
-    if (n) {
+    if ((n &= 3)) {
         cps += src_offset;
         do {
             *--cpd = *--cps;
@@ -400,6 +398,19 @@ s32 fn_800EB1B4(void) {
     return (temp_r0 >> 0x10U) & 0x7FFF;
 }
 
+char* strchr(const char* str, int chr) {
+    const unsigned char* p = (unsigned char*)str - 1;
+    unsigned long c = (chr & 0xff);
+    unsigned long ch;
+
+    while (ch = *++p) {
+        if (ch == c) {
+            return (char*)p;
+        }
+    }
+    return c ? 0 : (char*)p;
+}
+
 char* fn_800EB6A8(char* dst, const char* src, u32 n) {
     const unsigned char* p = (const unsigned char*)src - 1;
     unsigned char* q = (unsigned char*)dst - 1;
@@ -439,50 +450,35 @@ char* fn_800EB720(char* dst, const char* src, u32 n) {
 }
 
 char* fn_800EB764(char* dst, const char* src) {
-    unsigned char* d = (unsigned char*)dst;
-    const unsigned char* s = (const unsigned char*)src;
-    unsigned int a = (unsigned int)s & 3;
-    if (((unsigned int)d & 3) == a) {
-        if (a != 0) {
-            unsigned char c = *s;
-            *d = c;
-            if (c == 0) return dst;
-            {
-                unsigned int k = 3 - a;
-                while (k != 0) {
-                    c = *++s;
-                    *++d = c;
-                    if (c == 0) return dst;
-                    k--;
-                }
-            }
-            d++;
-            s++;
+    register unsigned char *destb, *fromb;
+    register unsigned long w, align;
+
+    fromb = (unsigned char*)src;
+    destb = (unsigned char*)dst;
+    if ((align = ((int)fromb & 3)) != ((int)destb & 3)) goto bytecopy;
+    if (align) {
+        if ((*destb = *fromb) == 0) return dst;
+        for (align = 3 - align; align; align--) {
+            if ((*(++destb) = *(++fromb)) == 0) return dst;
         }
-        {
-            unsigned int w = *(unsigned int*)s;
-            if (!(((w - 0x01010101) & 0x80808080))) {
-                d -= 4;
-                do {
-                    d += 4;
-                    *(unsigned int*)d = w;
-                    s += 4;
-                    w = *(unsigned int*)s;
-                } while (!(((w - 0x01010101) & 0x80808080)));
-                d += 4;
-            }
-        }
+        ++destb;
+        ++fromb;
     }
-    {
-        unsigned char c = *s;
-        *d = c;
-        if (c != 0) {
-            do {
-                c = *++s;
-                *++d = c;
-            } while (c != 0);
-        }
-    }
+    w = *((unsigned long*)fromb);
+    if ((w + 0xfefefeff) & 0x80808080) goto bytecopy;
+    destb -= 4;
+    do {
+        destb += 4;
+        *(unsigned long*)destb = w;
+        fromb += 4;
+        w = *(unsigned long*)fromb;
+    } while (!((w + 0xfefefeff) & 0x80808080));
+    destb += 4;
+bytecopy:
+    if ((*destb = *fromb) == 0) return dst;
+    do {
+        if ((*(++destb) = *(++fromb)) == 0) return dst;
+    } while (1);
     return dst;
 }
 
