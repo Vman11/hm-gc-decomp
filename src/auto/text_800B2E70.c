@@ -197,7 +197,7 @@ s32 TRKTargetStopped(void);
 s32 TRKTargetContinue(void);
 s32 TRKTargetInterrupt(void *event);
 s32 TRKTargetSupportRequest(void);
-extern u8 *gTRKInputPendingPtr;
+extern u8 *gTRKInputPendingPtr[];
 extern u8 lbl_80323560[];
 extern u16 lbl_8035A8F0;
 s32 fn_800CDBD8(s32 chan, void *out);
@@ -497,6 +497,64 @@ HeapCell *fn_800B4294(HeapCell *list, HeapCell *cell) {
         return list;
     }
     return cell;
+}
+
+void *fn_800B4340(int heap, u32 size) {
+    HeapDesc *hd;
+    HeapCell *cell;
+    HeapCell *newCell;
+    u32 leftoverSize;
+    HeapCell *list;
+
+    hd = &((HeapDesc *)lbl_8035A568)[heap];
+    size = (size + 0x20 + 0x20 - 1) & ~(0x20 - 1);
+
+    for (cell = hd->free; cell != NULL; cell = cell->next) {
+        if ((int)size <= cell->size) {
+            break;
+        }
+    }
+
+    if (cell == NULL) {
+        return NULL;
+    }
+
+    leftoverSize = cell->size - size;
+    if (leftoverSize < 0x40) {
+        list = hd->free;
+        if (cell->next) {
+            cell->next->prev = cell->prev;
+        }
+        if (cell->prev == NULL) {
+            list = cell->next;
+        } else {
+            cell->prev->next = cell->next;
+        }
+        hd->free = list;
+    } else {
+        cell->size = size;
+        newCell = (HeapCell *)((char *)cell + size);
+        newCell->size = leftoverSize;
+        newCell->prev = cell->prev;
+        newCell->next = cell->next;
+        if (newCell->next != NULL) {
+            newCell->next->prev = newCell;
+        }
+        if (newCell->prev != NULL) {
+            newCell->prev->next = newCell;
+        } else {
+            hd->free = newCell;
+        }
+    }
+
+    list = hd->allocated;
+    cell->next = list;
+    cell->prev = NULL;
+    if (list) {
+        list->prev = cell;
+    }
+    hd->allocated = cell;
+    return (char *)cell + 0x20;
 }
 
 extern int lbl_80359530;
