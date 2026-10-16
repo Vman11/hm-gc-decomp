@@ -59,7 +59,12 @@ void fn_80140CDC(ImgPix *p) {
     u16 *d = (u16 *)p->out;
     do {
         if (*m != 0) {
-            *d = (u16)(((u32)s[0] >> p->shr[0]) << p->shl[0]) | (((u32)s[1] >> p->shr[1]) << p->shl[1]) | (((u32)s[2] >> p->shr[2]) << p->shl[2]) | (((u32)s[3] >> p->shr[3]) << p->shl[3]);
+            u16 v;
+            v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
+            v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
+            v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
+            v |= ((u32)s[3] >> p->shr[3]) << p->shl[3];
+            *d = v;
         }
         s += 4;
         d++;
@@ -70,12 +75,16 @@ void fn_80140CDC(ImgPix *p) {
 
 void fn_80140D98(ImgPix *p) {
     u8 *s = p->src;
-    u8 *e = s + p->count * 4;
     u8 *m = p->mask;
     u16 *d = (u16 *)p->out;
+    u8 *e = s + p->count * 4;
     do {
         if (*m != 0) {
-            *d = (u16)(((u32)s[0] >> p->shr[0]) << p->shl[0]) | (((u32)s[1] >> p->shr[1]) << p->shl[1]) | (((u32)s[2] >> p->shr[2]) << p->shl[2]);
+            u16 v;
+            v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
+            v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
+            v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
+            *d = v;
         }
         s += 4;
         d++;
@@ -152,6 +161,19 @@ void fn_80141424(ImgDec *p) {
         d += 4;
     } while (d < e);
     p->src += p->count * 4;
+}
+
+void fn_801414D4(ImgDec *p) {
+    u8 *d = p->dst;
+    u8 *e = d + p->count * 4;
+    do {
+        d[2] = p->src[0];
+        d[1] = p->src[1];
+        d[0] = p->src[2];
+        d[3] = 0xFF;
+        d += 4;
+        p->src += 4;
+    } while (d < e);
 }
 
 void fn_801416A4(ImgDec *p) {
@@ -368,14 +390,17 @@ void fn_801428B4(ImgDec *p) {
 }
 
 void fn_80142900(ImgDec *p) {
-    u8 *d = p->dst;
-    u8 *e = d + p->count * 4;
-    for (; d < e; d += 4) {
-        s32 v = (d[0] * 2 - 0xFF) * p->wt[0] + (d[1] * 2 - 0xFF) * p->wt[1] + (d[2] * 2 - 0xFF) * p->wt[2];
+    u8 *d;
+    u8 *e;
+    d = p->dst;
+    e = d + p->count * 4;
+    while (d < e) {
+        s32 v = (d[2] * 2 - 0xFF) * p->wt[2] + (d[1] * 2 - 0xFF) * p->wt[1] + (d[0] * 2 - 0xFF) * p->wt[0];
         if (v < 0) v = 0;
         d[0] = (u32)v >> 8;
         d[1] = (u32)v >> 8;
         d[2] = (u32)v >> 8;
+        d += 4;
     }
 }
 
