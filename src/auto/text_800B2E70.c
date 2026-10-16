@@ -880,6 +880,62 @@ void fn_800B5F28(u16 fbWidth, u16 height) {
     fn_800C2054(0, 0, 0x280, 0x1E0);
 }
 
+extern u16 fn_800B6B0C();
+extern u16 lbl_802D7F30[];
+extern u16 lbl_802D80B0[];
+u16 fn_800B67FC(u16 code) {
+    if (fn_800B6B0C() == 1) {
+        if (code >= 0x20 && code <= 0xDF) {
+            return lbl_802D7F30[code - 0x20];
+        }
+        if (code > 0x889E && code <= 0x9872) {
+            u8 lo = code;
+            int base = ((code >> 8) - 0x88) * 0xBC;
+            int r = 0;
+            int ok = 0;
+            int idx;
+            if (lo >= 0x40 && lo <= 0xFC) {
+                ok = 1;
+            }
+            if (ok && lo != 0x7F) {
+                r = 1;
+            }
+            if (!r) {
+                return 0;
+            }
+            idx = lo - 0x40;
+            if (idx >= 0x40) {
+                idx--;
+            }
+            return base + (idx + 0x2BE);
+        }
+        if (code >= 0x8140 && code < 0x879E) {
+            u8 lo = code;
+            int base = ((code >> 8) - 0x81) * 0xBC;
+            int r = 0;
+            int ok = 0;
+            int idx;
+            if (lo >= 0x40 && lo <= 0xFC) {
+                ok = 1;
+            }
+            if (ok && lo != 0x7F) {
+                r = 1;
+            }
+            if (!r) {
+                return 0;
+            }
+            idx = lo - 0x40;
+            if (idx >= 0x40) {
+                idx--;
+            }
+            return lbl_802D80B0[base + idx];
+        }
+    } else if (code > 0x20 && code <= 0xFF) {
+        return code - 0x20;
+    }
+    return 0;
+}
+
 void fn_800B6998(u8 *src, u8 *dst) {
     u32 *flags = (u32 *)(src + 0x10);
     s32 dstPos = 0;
@@ -3718,6 +3774,7 @@ void fn_800D6908(void *);
 void fn_800D69D4(void *);
 void fn_800D62CC(void);
 #pragma push
+#pragma inline_depth(4)
 BOOL fn_800D3850(BOOL final) {
     extern void *__cpReg;
     extern void *__GXData;
