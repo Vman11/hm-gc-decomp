@@ -411,6 +411,22 @@ char* strchr(const char* str, int chr) {
     return c ? 0 : (char*)p;
 }
 
+int fn_800EB540(const char* str1, const char* str2, unsigned long n) {
+    const unsigned char* p1 = (unsigned char*)str1 - 1;
+    const unsigned char* p2 = (unsigned char*)str2 - 1;
+    unsigned long c1, c2;
+
+    n++;
+    while (--n) {
+        if ((c1 = *++p1) != (c2 = *++p2)) {
+            return c1 - c2;
+        } else if (!c1) {
+            break;
+        }
+    }
+    return 0;
+}
+
 char* fn_800EB6A8(char* dst, const char* src, u32 n) {
     const unsigned char* p = (const unsigned char*)src - 1;
     unsigned char* q = (unsigned char*)dst - 1;
