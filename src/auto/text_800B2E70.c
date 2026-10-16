@@ -2690,6 +2690,72 @@ void fn_800D8F28(s32 arg0, s32 arg1) {
     gx->bpSentNot = 0;
 }
 
+void fn_800D92FC(s32 id, s32 red, s32 green, s32 blue, s32 alpha) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    u32 *Kreg;
+    Kreg = &((u32 *)((u8 *)gx + 0x1B0))[id * 2];
+    *Kreg = __rlwimi(*Kreg, red, 0, 30, 31);
+    *Kreg = __rlwimi(*Kreg, green, 2, 28, 29);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = *Kreg;
+    Kreg = &((u32 *)((u8 *)gx + 0x1B0))[id * 2 + 1];
+    *Kreg = __rlwimi(*Kreg, blue, 0, 30, 31);
+    *Kreg = __rlwimi(*Kreg, alpha, 2, 28, 29);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = *Kreg;
+    gx->bpSentNot = 0;
+}
+
+void fn_800D937C(s32 comp0, u8 ref0, s32 op, s32 comp1, u8 ref1) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    u32 reg = 0xF3000000;
+    reg = (reg & ~0xFF) | ((u32)ref0 & 0xFF);
+    reg = (reg & ~0xFF00) | (((u32)ref1 << 8) & 0xFF00);
+    reg = __rlwimi(reg, comp0, 16, 13, 15);
+    reg = __rlwimi(reg, comp1, 19, 10, 12);
+    reg = __rlwimi(reg, op, 22, 8, 9);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    gx->bpSentNot = 0;
+}
+
+void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx;
+    u32 zenv0;
+    u32 zenv1;
+    u32 type;
+    zenv0 = 0;
+    zenv0 = __rlwimi(zenv0, bias, 0, 8, 31);
+    zenv0 = __rlwimi(zenv0, 0xF4, 24, 0, 7);
+    zenv1 = 0;
+    switch (fmt) {
+    case 0x11:
+        type = 0;
+        break;
+    case 0x13:
+        type = 1;
+        break;
+    case 0x16:
+        type = 2;
+        break;
+    default:
+        type = 2;
+        break;
+    }
+    gx = __GXData;
+    zenv1 = __rlwimi(zenv1, type, 0, 30, 31);
+    zenv1 = __rlwimi(zenv1, op, 2, 28, 29);
+    zenv1 = __rlwimi(zenv1, 0xF5, 24, 0, 7);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = zenv0;
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = zenv1;
+    gx->bpSentNot = 0;
+}
+
 void fn_800D95E8(u8 nStages) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
@@ -3144,6 +3210,17 @@ void TRK_main(void) {
 
 void TRKUARTInterruptHandler(void) {
 
+}
+
+void ReserveEXI2Port(void) {
+    gDBCommTable.open();
+}
+
+s32 fn_800E17E8(u8 arg0) {
+    extern s32 lbl_80325D68;
+    extern u8 lbl_80326E84[];
+    lbl_80326E84[lbl_80325D68++] = arg0;
+    return 0;
 }
 
 void fn_800E18F0(void) {
