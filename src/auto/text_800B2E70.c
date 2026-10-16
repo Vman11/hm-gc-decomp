@@ -2276,6 +2276,13 @@ s32 fn_800DBCDC(void) {
     return 0;
 }
 
+s32 TRKInitializeSerialHandler(void) {
+    lbl_803257B4.msgBufID = -1;
+    lbl_803257B4.receiveState = 0;
+    lbl_803257B4.isEscape = 0;
+    return 0;
+}
+
 void usr_put_initialize(void) {
 
 }
