@@ -41,6 +41,14 @@ void _ExitProcess(void);
 void __begin_critical_region(int region);
 void __end_critical_region(int region);
 void __kill_critical_regions(void);
+
+static inline u32 __msize_inline(void *ptr) {
+    u32 hdr = ((u32 *)ptr)[-1];
+    if (!(hdr & 1)) {
+        return ((u32 *)hdr)[2];
+    }
+    return (((u32 *)ptr)[-2] & ~7) - 8;
+}
 void fn_800E43C8(void *pool, void *ptr);
 void fn_800E4420(void *pool, void *ptr, u32 size);
 void fn_800E4578(void *pool, void *ptr);
