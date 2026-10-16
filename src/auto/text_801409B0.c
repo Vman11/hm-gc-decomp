@@ -321,7 +321,7 @@ void fn_801416FC(ImgDec *p) {
         d[2] = (v << p->shl[2]) | (v & p->mask[2]);
         v = (u32)*s >> p->shr[3];
         s++;
-        d[3] = -(v & 1);
+        d[3] = ~(v & 1) + 1;
         d += 4;
     } while (d < e);
     p->src += p->count * 2;
