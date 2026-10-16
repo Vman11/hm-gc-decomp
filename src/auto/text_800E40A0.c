@@ -942,13 +942,10 @@ int fn_800EC8D0(char *str) {
     state.end = 0;
     value = fn_800EC990(10, 0x7FFFFFFF, fn_800EB1D4, &state, &count, &negative, &error);
     if (error != 0 || (negative == 0 && value > 0x7FFFFFFFU) || (negative != 0 && value > 0x80000000U)) {
-        lbl_8035A978 = 0x22;
         value = 0x7FFFFFFF;
-        {
-            u32 result = (negative != 0);
-            result += value;
-            return result;
-        }
+        lbl_8035A978 = 0x22;
+        value += (negative != 0);
+        return value;
     }
     if (negative != 0) value = -value;
     return value;
@@ -1259,6 +1256,30 @@ s32 fn_800F0B3C(u32 *data) {
     return !err;
 }
 
+s32 fn_800F0BE8(u32 addr, u32 *data, s32 size) {
+    u32 cmd;
+    BOOL err;
+    volatile u32 *exi = (volatile u32 *)0xCC006800;
+
+    exi[10] = (exi[10] & 0x405) | 0xC0;
+    cmd = ((addr << 8) & 0x01FFFC00) | 0xA0000000;
+    err = !fn_800F0E4C(&cmd, 4, 1);
+    while (exi[13] & 1) {
+    }
+    while (size != 0) {
+        cmd = *data++;
+        err |= !fn_800F0E4C(&cmd, 4, 1);
+        while (exi[13] & 1) {
+        }
+        size -= 4;
+        if (size < 0) {
+            size = 0;
+        }
+    }
+    exi[10] &= 0x405;
+    return !err;
+}
+
 s32 fn_800F0DA0(u32 *data) {
     u32 cmd;
     BOOL err;
@@ -1356,6 +1377,23 @@ u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext) {
 }
 
 extern char Ecb_80328410[];
+typedef void (*EXICallback)(s32 chan, void *context);
+typedef struct EXIControl {
+    EXICallback exiCallback;
+    EXICallback tcCallback;
+    EXICallback extCallback;
+    volatile s32 state;
+    int immLen;
+    u8 *immBuf;
+    u32 dev;
+    u32 id;
+    s32 idTime;
+    int items;
+    struct {
+        u32 dev;
+        EXICallback callback;
+    } queue[3];
+} EXIControl;
 extern s32 lbl_8035A9C0;
 extern s32 lbl_8035A9C4;
 extern s32 lbl_8035A9C8;
