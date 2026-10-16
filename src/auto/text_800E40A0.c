@@ -51,6 +51,17 @@ int fn_800B4538(int, int);
 int fn_800B44B8(int);
 void fn_800B443C(int, int);
 
+typedef struct decimal {
+    char sign;
+    char unk1;
+    short exp;
+    struct {
+        unsigned char length;
+        unsigned char text[32];
+        unsigned char unused;
+    } sig;
+} decimal;
+
 extern int __aborting;
 extern int __atexit_curr_func;
 extern void (*__atexit_funcs[])(void);
@@ -1523,6 +1534,43 @@ void EXI2_Init(u8 **inputPendingPtr, void (*monitorCallback)(s32)) {
     fn_800F10E4(&data, 4, 1, 0);
     fn_800F1328();
     fn_800F15EC();
+}
+
+extern s32 lbl_8035A9AC;
+extern char lbl_802E0B78[];
+u32 EXI2_Poll(void) {
+    s32 ret;
+    u32 cmd;
+    u32 unused;
+    u32 status;
+
+    if (!(*(volatile u32 *)0xCC003000 & 0x1000) && *lbl_803596F8 == 0) {
+        status = 0;
+    } else {
+        if (lbl_8035A9AC == 0) {
+            ret = 0;
+            while (ret == 0) {
+                ret = fn_800F156C(5);
+            }
+            if (ret == 0) {
+                fn_800E91D0(lbl_802E0B78);
+            } else {
+                lbl_8035A9AC = 1;
+                cmd = 0;
+                fn_800F10E4(&cmd, 2, 1, 0);
+                fn_800F1328();
+                fn_800F10E4(&unused, 2, 0, 0);
+                fn_800F1328();
+            }
+        }
+        fn_800F10E4(&status, 4, 0, 0);
+        fn_800F1328();
+        if (*lbl_803596F8 == 0) {
+            *lbl_803596F8 = 1;
+            *(volatile u32 *)0xCC003000 = *(volatile u32 *)0xCC003000 & 0x1000;
+        }
+    }
+    return status;
 }
 
 void EXI2_Reserve(void) {
