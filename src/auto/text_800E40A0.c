@@ -649,7 +649,7 @@ int fn_800E83C0(void *arg0) {
 }
 
 #pragma push
-#pragma dont_inline off
+#pragma dont_inline on
 int fn_800E84F8(void *arg0) {
     MslFile *file = (MslFile *)arg0;
     int flush_result;
@@ -676,8 +676,8 @@ int fn_800E84F8(void *arg0) {
             file->buffer_len = 0;
         }
         if (file->state.io_state != 1) {
-            file->state.io_state = 0;
             flush_result = 0;
+            file->state.io_state = flush_result;
         } else {
             if (file->mode.file_kind != 1) {
                 position = 0;
@@ -689,10 +689,10 @@ int fn_800E84F8(void *arg0) {
                 file->buffer_len = 0;
                 flush_result = -1;
             } else {
-                file->state.io_state = 0;
-                file->position = position;
-                file->buffer_len = 0;
                 flush_result = 0;
+                file->state.io_state = flush_result;
+                file->position = position;
+                file->buffer_len = flush_result;
             }
         }
     }
@@ -2133,25 +2133,6 @@ typedef struct EXI2Control {
 } EXI2Control;
 extern EXI2Control *lbl_803596F0;
 
-static inline void EXI2_CompleteTransfer(void) {
-    EXI2Control *exi = lbl_803596F0;
-    u8 *buf;
-    u32 data;
-    int i;
-    int len;
-
-    if (exi->state & 3) {
-        if ((exi->state & 2) && (len = exi->immLen) != 0) {
-            buf = exi->immBuf;
-            data = ((volatile u32 *)0xCC006800)[14];
-            for (i = 0; i < len; i++) {
-                *buf++ = data >> ((3 - i) * 8);
-            }
-        }
-        exi->state &= ~3;
-    }
-}
-
 s32 fn_800F0E4C(void *buf, s32 len, s32 mode);
 s32 fn_800F0B3C(u32 *data) {
     u32 cmd;
@@ -2238,26 +2219,13 @@ s32 fn_800F0DA0(u32 *data) {
 }
 
 s32 fn_800F1328(void) {
-    int enabled;
-    s32 i;
-    s32 len;
-    u8 *buf;
-    u32 data;
     EXI2Control *exi = lbl_803596F0;
+    int enabled;
 
     while (exi->state & 4) {
         if (!(((volatile u32 *)0xCC006800)[13] & 1)) {
             enabled = OSDisableInterrupts();
-            if (lbl_803596F0->state & 3) {
-                if ((lbl_803596F0->state & 2) && (len = lbl_803596F0->immLen) != 0) {
-                    buf = lbl_803596F0->immBuf;
-                    data = ((volatile u32 *)0xCC006800)[14];
-                    for (i = 0; i < len; i++) {
-                        *buf++ = data >> ((3 - i) * 8);
-                    }
-                }
-                lbl_803596F0->state &= ~3;
-            }
+            EXI2_CompleteTransfer();
             OSRestoreInterrupts(enabled);
             break;
         }
