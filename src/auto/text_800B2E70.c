@@ -3657,6 +3657,23 @@ s32 TRKTerminateNub(void) {
     return 0;
 }
 
+s32 fn_800DB970(TrkBuf *buf, void *data, u32 length) {
+    extern void *fn_80003488(void *, const void *, u32);
+    s32 error = 0;
+    u32 bytesLeft;
+    if (length == 0) {
+        return 0;
+    }
+    bytesLeft = buf->count - buf->pos;
+    if (length > bytesLeft) {
+        error = 0x302;
+        length = bytesLeft;
+    }
+    fn_80003488(data, buf->data + buf->pos, length);
+    buf->pos += length;
+    return error;
+}
+
 s32 fn_800DB9FC(TrkBuf *buf, const void *data, u32 length) {
     extern void *fn_80003488(void *, const void *, u32);
     s32 error = 0;
