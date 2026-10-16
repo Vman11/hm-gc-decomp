@@ -141,6 +141,24 @@ typedef struct __va_list_struct {
 #define va_end(ap) ((void)0)
 extern u8 __files[];
 int fwide(void *, int);
+
+typedef struct MslFileMode {
+    unsigned int open_mode : 2;
+    unsigned int io_mode : 3;
+    unsigned int buffer_mode : 2;
+    unsigned int file_kind : 3;
+    unsigned int file_orientation : 2;
+    unsigned int binary_io : 1;
+} MslFileMode;
+
+typedef struct MslFile {
+    u32 handle;
+    MslFileMode mode;
+    u8 state[4];
+    u8 is_dynamically_allocated;
+    u8 pad[0x4C - 0xD];
+    struct MslFile *next_file;
+} MslFile;
 void *__FileWrite(void *file, const void *buf, u32 len);
 
 void __kill_critical_regions(void) {
@@ -849,6 +867,51 @@ void DBInitComm(u8 **inputFlagPtr, s32 mtrCallback) {
     OSRestoreInterrupts(enabled);
 }
 
+s32 fn_800F0E4C(void *buf, s32 len, s32 mode);
+s32 fn_800F0B3C(u32 *data) {
+    u32 cmd;
+    BOOL err;
+    volatile u32 *exi = (volatile u32 *)0xCC006800;
+
+    exi[10] = (exi[10] & 0x405) | 0xC0;
+    cmd = 0x40000000;
+    err = !fn_800F0E4C(&cmd, 2, 1);
+    while (exi[13] & 1) {
+    }
+    err |= !fn_800F0E4C(data, 4, 0);
+    while (exi[13] & 1) {
+    }
+    exi[10] &= 0x405;
+    return !err;
+}
+
+s32 fn_800F0DA0(u32 *data) {
+    u32 cmd;
+    BOOL err;
+    volatile u32 *exi = (volatile u32 *)0xCC006800;
+
+    exi[10] = (exi[10] & 0x405) | 0xC0;
+    cmd = 0x60000000;
+    err = !fn_800F0E4C(&cmd, 2, 1);
+    while (exi[13] & 1) {
+    }
+    err |= !fn_800F0E4C(data, 4, 0);
+    while (exi[13] & 1) {
+    }
+    exi[10] &= 0x405;
+    return !err;
+}
+
+volatile u32 __EXIRegs[16] : 0xCC006800;
+void fn_800F14C0(s32 arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(volatile u32 *)0xCC003000 = (*(volatile u32 *)0xCC003000 & 0x1000) | 0x1000;
+    }
+    if (arg1 != 0) {
+        __EXIRegs[10] = (__EXIRegs[10] & 0x7F5) | 8;
+    }
+}
+
 extern u8 *lbl_803596F8;
 extern void (*lbl_8035A9B0)(s32);
 extern u8 lbl_803283F8[];
@@ -899,6 +962,25 @@ s32 AMC_IsStub(void) {
     return 0;
 }
 
+u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext) {
+    u32 cpr;
+    u32 prev;
+
+    prev = cpr = ((volatile u32 *)0xCC006800)[chan * 5];
+    cpr &= 0x7F5;
+    if (exi) {
+        cpr |= 2;
+    }
+    if (tc) {
+        cpr |= 8;
+    }
+    if (ext) {
+        cpr |= 0x800;
+    }
+    ((volatile u32 *)0xCC006800)[chan * 5] = cpr;
+    return prev;
+}
+
 extern char Ecb_80328410[];
 extern s32 lbl_8035A9C0;
 extern s32 lbl_8035A9C4;
@@ -944,8 +1026,7 @@ s32 fn_800F3D80(void) {
 BOOL fn_800F3DA0(s32 chan) {
     extern struct { s32 chan; u32 unk4[7]; } Packet_803284D0[];
     BOOL busy = TRUE;
-    s32 *packet = &Packet_803284D0[chan].chan;
-    if (*packet == -1 && Si_802E0CEC.unk0 != chan) {
+    if (Packet_803284D0[chan].chan == -1 && Si_802E0CEC.unk0 != chan) {
         busy = FALSE;
     }
     return busy;
