@@ -2210,6 +2210,35 @@ void fn_800C9944(void) {
 
 }
 
+void fn_800C9A0C(void *arg0, u16 arg1) {
+    int enabled = OSDisableInterrupts();
+    M2C_FIELD(arg0, u16 *, 0x146) = arg1;
+    M2C_FIELD(arg0, u32 *, 0x1C) |= 4;
+    if (arg1 == 0) {
+        M2C_FIELD(arg0, s32 *, 0x20) = 1;
+    }
+    OSRestoreInterrupts(enabled);
+}
+
+void fn_800C9A68(void *arg0, s16 arg1) {
+    int enabled = OSDisableInterrupts();
+    M2C_FIELD(arg0, s16 *, 0x148) = arg1;
+    M2C_FIELD(arg0, u32 *, 0x1C) |= 8;
+    OSRestoreInterrupts(enabled);
+}
+
+void fn_800C9AB4(void *arg0) {
+    int enabled = OSDisableInterrupts();
+    M2C_FIELD(arg0, u16 *, 0x16E) = 1;
+    M2C_FIELD(arg0, u16 *, 0x17A) = 0;
+    M2C_FIELD(arg0, u16 *, 0x178) = 0;
+    M2C_FIELD(arg0, u16 *, 0x176) = 0;
+    M2C_FIELD(arg0, u16 *, 0x174) = 0;
+    M2C_FIELD(arg0, u32 *, 0x1C) &= ~0x40;
+    M2C_FIELD(arg0, u32 *, 0x1C) |= 0x20;
+    OSRestoreInterrupts(enabled);
+}
+
 extern s32 lbl_8035A8C8;
 void fn_800CA090(s32 arg0) {
     lbl_8035A8C8 = arg0;
@@ -2342,6 +2371,28 @@ void fn_800CCC78(void) {
 
 }
 
+void fn_800CD228(void *arg0) {
+    extern void fn_800F2540(s32, s32);
+    s32 chan = 0;
+    u8 *p = lbl_80323560;
+    void (*callback)(s32, s32);
+    if (arg0 != p + 0xE0) {
+        p += 0x110;
+        chan = 1;
+        if (arg0 != p + 0xE0) {
+            chan = 2;
+        }
+    }
+    if (*(s32 *)p != 0) {
+        fn_800F2540(chan, 0);
+        callback = *(void (**)(s32, s32))(p + 0xCC);
+        if (callback != 0) {
+            *(void (**)(s32, s32))(p + 0xCC) = 0;
+            callback(chan, -5);
+        }
+    }
+}
+
 #pragma push
 #pragma dont_inline on
 void fn_800CDAEC(void) {
@@ -2401,18 +2452,25 @@ s32 fn_800CDE74(s32 chan, s32 *arg1) {
     return 0;
 }
 
+s32 fn_800CDF90(s32 arg0) {
+    extern s32 fn_800D14DC(s32);
+    if (arg0 == 0 && (fn_800D14DC(0) == -1 || fn_800D14DC(1) == -1)) {
+        return 0;
+    }
+    return 1;
+}
+
 void fn_800CEEAC(void *arg0) {
     u8 *p = lbl_80323560;
     s32 value;
     if (p + 0x30 != arg0) {
-        if (p + 0x140 == arg0) {}
         p += 0x110;
     }
     value = *(s32 *)(p + 0x80);
     fn_800CC14C(0xFF000000);
-    while (fn_800CC114() != 0) {}
+    while ((u32)fn_800CC114() != 0U) {}
     fn_800CC14C(value);
-    while (fn_800CC114() != 0) {}
+    while ((u32)fn_800CC114() != 0U) {}
 }
 
 s32 fn_800CF4C0(void *arg0) {
@@ -2915,20 +2973,22 @@ void fn_800D6CE4(u8 width, s32 texOffsets) {
 
 void fn_800D6D24(u8 pointSize, s32 texOffsets) {
     extern GXDataHead *const __GXData;
-    SETF(M2C_FIELD(__GXData, u32 *, 0x7C), 8, 8, pointSize);
-    SETF(M2C_FIELD(__GXData, u32 *, 0x7C), 3, 19, texOffsets);
-    (*(volatile PPCWGPipe *)0xCC008000).u8 = 0x61;
-    (*(volatile PPCWGPipe *)0xCC008000).u32 = M2C_FIELD(__GXData, u32 *, 0x7C);
+    M2C_FIELD(__GXData, u32 *, 0x7C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x7C), pointSize, 8, 16, 23);
+    M2C_FIELD(__GXData, u32 *, 0x7C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x7C), texOffsets, 19, 10, 12);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x7C);
     __GXData->bpSentNot = 0;
 }
 
 void fn_800D6D64(s32 coord, u8 line_enable, u8 point_enable) {
-    extern GXDataHead *const __GXData;
-    SETF(((u32 *)((u8 *)__GXData + 0xB8))[coord], 1, 18, line_enable);
-    SETF(((u32 *)((u8 *)__GXData + 0xB8))[coord], 1, 19, point_enable);
-    (*(volatile PPCWGPipe *)0xCC008000).u8 = 0x61;
-    (*(volatile PPCWGPipe *)0xCC008000).u32 = ((u32 *)((u8 *)__GXData + 0xB8))[coord];
-    __GXData->bpSentNot = 0;
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    u32 *reg = (u32 *)((u8 *)gx + coord * 4);
+    reg[0x2E] = __rlwimi(reg[0x2E], line_enable, 18, 13, 13);
+    reg[0x2E] = __rlwimi(reg[0x2E], point_enable, 19, 12, 12);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg[0x2E];
+    gx->bpSentNot = 0;
 }
 
 void fn_800D6DAC(s32 arg0) {
@@ -3514,28 +3574,34 @@ void fn_800DA058(f32 scale, f32 offset) {
     f32 zScale;
     f32 zmin;
     f32 zmax;
-    zOffset = offset * lbl_80363198;
-    zScale = scale * lbl_80363198;
+    f32 sz;
+    f32 oz;
+    zOffset = lbl_80363198 * offset;
+    zScale = lbl_80363198 * scale;
     M2C_FIELD(gx, f32 *, 0x50C) = zOffset;
     zScale = lbl_8036318C + zScale;
     M2C_FIELD(gx, f32 *, 0x510) = zScale;
     zmax = M2C_FIELD(gx, f32 *, 0x508) * zScale;
     zmin = M2C_FIELD(gx, f32 *, 0x504) * zScale;
+    oz = zOffset + zmax;
+    sz = zmax - zmin;
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x101C;
-    GXWGFifo.f32 = zmax - zmin;
+    GXWGFifo.f32 = sz;
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x101F;
-    GXWGFifo.f32 = zOffset + zmax;
+    GXWGFifo.f32 = oz;
     gx->bpSentNot = 1;
 }
 
 void fn_800DA0C4(u32 left, u32 top, u32 wd, u32 ht) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
-    u32 tp = top + 342;
-    u32 lf = left + 342;
+    u32 tp;
+    u32 lf;
+    tp = top + 342;
     M2C_FIELD(gx, u32 *, 0xF8) = __rlwimi(M2C_FIELD(gx, u32 *, 0xF8), tp, 0, 21, 31);
+    lf = left + 342;
     M2C_FIELD(gx, u32 *, 0xF8) = __rlwimi(M2C_FIELD(gx, u32 *, 0xF8), lf, 12, 9, 19);
     M2C_FIELD(gx, u32 *, 0xFC) = __rlwimi(M2C_FIELD(gx, u32 *, 0xFC), tp + ht - 1, 0, 21, 31);
     M2C_FIELD(gx, u32 *, 0xFC) = __rlwimi(M2C_FIELD(gx, u32 *, 0xFC), lf + wd - 1, 12, 9, 19);
@@ -3548,10 +3614,10 @@ void fn_800DA0C4(u32 left, u32 top, u32 wd, u32 ht) {
 
 void fn_800DA13C(s32 x_off, s32 y_off) {
     extern GXDataHead *const __GXData;
-    u32 reg;
+    u32 reg = 0;
     u32 hx = x_off + 342;
     u32 hy = y_off + 342;
-    reg = __rlwimi(0, hx, 31, 22, 31);
+    reg = __rlwimi(reg, hx, 31, 22, 31);
     reg = __rlwimi(reg, hy, 9, 12, 21);
     reg = __rlwimi(reg, 0x59, 24, 0, 7);
     GXWGFifo.u8 = 0x61;
@@ -3570,23 +3636,20 @@ void fn_800DA17C(u32 arg0) {
 
 void fn_800DA1A4(s32 attr) {
     extern GXDataHead *const __GXData;
-    u32 reg;
     if (attr < 5) {
         GXWGFifo.u8 = 0x08;
         GXWGFifo.u8 = 0x30;
-        reg = M2C_FIELD(__GXData, u32 *, 0x80);
-        GXWGFifo.u32 = reg;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x80);
         GXWGFifo.u8 = 0x10;
         GXWGFifo.u32 = 0x1018;
-        GXWGFifo.u32 = reg;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x80);
     } else {
         GXWGFifo.u8 = 0x08;
         GXWGFifo.u8 = 0x40;
-        reg = M2C_FIELD(__GXData, u32 *, 0x84);
-        GXWGFifo.u32 = reg;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x84);
         GXWGFifo.u8 = 0x10;
         GXWGFifo.u32 = 0x1019;
-        GXWGFifo.u32 = reg;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x84);
     }
     __GXData->bpSentNot = 1;
 }
@@ -3709,6 +3772,14 @@ s32 fn_800DBAA0(void *arg0, u32 arg1) {
         }
     }
     return var_r5;
+}
+
+void fn_800DBAD0(TrkBuf *buf, s32 keepData) {
+    buf->count = 0;
+    buf->pos = 0;
+    if (!(u8)keepData) {
+        fn_80003458(buf->data, 0, 0x880);
+    }
 }
 
 TrkBuf *TRKGetBuffer(s32 idx) {
