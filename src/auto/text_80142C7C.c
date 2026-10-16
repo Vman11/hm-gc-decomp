@@ -138,3 +138,32 @@ void fn_801449C8(Img *p) {
     } while (d < e);
 }
 
+void fn_80144AA8(Img *p) {
+    u8 *d = p->buf;
+    u8 *e = d + 0x20;
+    do {
+        d[0] = *p->src & 0xF;
+        d[1] = *p->src >> 4;
+        p->src++;
+        d[2] = *p->src & 0xF;
+        d[3] = *p->src >> 4;
+        d += 4;
+        p->src++;
+    } while (d < e);
+}
+
+void fn_80144B18(Img *p) {
+    u32 *d = (u32 *)p->buf;
+    u32 *s = (u32 *)p->src;
+    u32 *e = d + 4;
+    do {
+        d[0] = s[0];
+        d[1] = s[1];
+        d[2] = s[2];
+        d[3] = s[3];
+        s += 4;
+        d += 4;
+    } while (d < e);
+    p->src += 0x10;
+}
+
