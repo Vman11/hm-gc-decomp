@@ -237,11 +237,6 @@ extern int lbl_8035A568;
 extern int lbl_8035A56C;
 extern int lbl_8035A570;
 extern int lbl_8035A574;
-typedef struct HeapCell {
-    struct HeapCell *prev;
-    struct HeapCell *next;
-    int size;
-} HeapCell;
 int fn_800B44B8(int arg0) { int old = lbl_80359530; lbl_80359530 = arg0; return old; }
 
 void fn_800B44C8(int arg0, int arg1, int arg2) {
@@ -302,11 +297,14 @@ void OSSetArenaLo(s32 arg0) {
     __OSArenaLo_80359538 = arg0;
 }
 
-void* fn_800B45C4(u32 size, u32 align) {
-    void* ptr;
+s32 fn_800B45C4(s32 size, s32 align) {
+    s32 ptr;
+    s32 arenaLo;
 
-    ptr = (void*)((OSGetArenaLo() + align - 1) & ~(align - 1));
-    OSSetArenaLo(((u32)ptr + size + align - 1) & ~(align - 1));
+    arenaLo = ptr = (__OSArenaLo_80359538 + align - 1) & ~(align - 1);
+    arenaLo += size;
+    arenaLo = (arenaLo + align - 1) & ~(align - 1);
+    __OSArenaLo_80359538 = arenaLo;
     return ptr;
 }
 
