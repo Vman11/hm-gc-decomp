@@ -1284,6 +1284,13 @@ void fn_800C8314(void) {
     }
 }
 
+extern s32 lbl_8035A860;
+extern s32 lbl_8035A868;
+void fn_800C836C(void) {
+    lbl_8035A860 = 1;
+    fn_800BA3B4(&lbl_8035A868);
+}
+
 extern s32 lbl_8035A858;
 void fn_800C885C(s32 arg0) {
     lbl_8035A858 = arg0;
@@ -1317,6 +1324,27 @@ void fn_800C8C68(void) {
 
 void fn_800C8C94(void) {
 
+}
+
+void fn_800C8C98(s16 *arg0) {
+    extern s32 lbl_8035A878;
+    extern s32 lbl_8035A87C;
+    extern s32 lbl_8035A880;
+    extern s32 lbl_8035A884;
+    extern s32 lbl_8035A888;
+    extern s32 lbl_8035A88C;
+    extern s32 lbl_8035A890;
+    extern s32 lbl_8035A894;
+    extern s32 lbl_8035A898;
+    lbl_8035A878 += arg0[0x52 / 2];
+    lbl_8035A884 += arg0[0x54 / 2];
+    lbl_8035A890 += arg0[0x56 / 2];
+    lbl_8035A87C += arg0[0x58 / 2];
+    lbl_8035A888 += arg0[0x5A / 2];
+    lbl_8035A894 += arg0[0x5C / 2];
+    lbl_8035A880 += arg0[0x5E / 2];
+    lbl_8035A88C += arg0[0x60 / 2];
+    lbl_8035A898 += arg0[0x62 / 2];
 }
 
 extern s32 lbl_8035A8A8;
@@ -1363,6 +1391,27 @@ void fn_800CCC78(void) {
 
 }
 
+#pragma push
+#pragma dont_inline on
+void fn_800CDAEC(void) {
+    u8 *p = lbl_80323560;
+    int i;
+    if (*(u32 *)(p + 0x10c) == 0 || *(u32 *)(p + 0x21c) == 0) {
+        lbl_8035A8F0 = fn_800B6B0C();
+        OSRegisterVersion(lbl_80359600);
+        fn_800CC160();
+        OSInitAlarm();
+        for (i = 0; i < 2; i++) {
+            *(s32 *)(p + 4) = -3;
+            OSInitThreadQueue(p + 0x8c);
+            OSCreateAlarm((s32 *)(p + 0xe0));
+            p += 0x110;
+        }
+        fn_800CDBA0(0x80000000);
+        OSRegisterResetFunction(lbl_802DF308);
+    }
+}
+#pragma pop
 void fn_800CDBA0(u32 arg) {
     u8 *p = lbl_80323560;
     *(u32 *)(p + 0x10c) = arg ? arg : (u32)(p + 0x220);
