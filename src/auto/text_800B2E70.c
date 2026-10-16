@@ -1363,6 +1363,12 @@ void fn_800CCC78(void) {
 
 }
 
+void fn_800CDBA0(u32 arg) {
+    u8 *p = lbl_80323560;
+    *(u32 *)(p + 0x10c) = arg ? arg : (u32)(p + 0x220);
+    *(u32 *)(p + 0x21c) = arg ? arg : (u32)(p + 0x220);
+}
+
 s32 fn_800CF4C0(void *arg0) {
     return M2C_FIELD(arg0, s32 *, 0x88);
 }
