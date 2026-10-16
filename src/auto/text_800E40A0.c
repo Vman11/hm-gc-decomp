@@ -11,7 +11,7 @@ double fn_800EF80C(double, double, int);
 int fn_800EE484(double, double*);
 int OSDisableInterrupts(void);
 int OSRestoreInterrupts(int);
-void fn_800F0CC4(u32, void*, u32);
+s32 fn_800F0CC4(u32, void*, s32);
 
 typedef struct FragmentInfo {
     void *eti_info;
