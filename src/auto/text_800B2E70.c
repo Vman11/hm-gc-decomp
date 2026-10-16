@@ -1,5 +1,7 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
+#define SETF(reg, size, shift, v) \
+    ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | (((u32)(v) << (shift)) & (((1 << (size)) - 1) << (shift))))
 typedef struct Anim {
     f32 *data;
     u32 count;
@@ -439,6 +441,62 @@ void *fn_800B7290(s16 type) {
     return InterruptHandlerTable_8035A590[type];
 }
 
+#pragma peephole off
+void __OSInterruptInit(void) {
+    extern void ExternalInterruptHandler(void);
+    extern void *memset(void *, int, unsigned long);
+    extern u32 __OSMaskInterrupts(u32);
+    extern void *__OSSetExceptionHandler(u8, void *);
+    u8 *base = (u8 *)0x80000000;
+    InterruptHandlerTable_8035A590 = (void **)(base + 0x3040);
+    memset(InterruptHandlerTable_8035A590, 0, 0x80);
+    *(u32 *)(base + 0xC4) = 0;
+    *(u32 *)(base + 0xC8) = 0;
+    *(u32 *)0xCC003004 = 0xF0;
+    __OSMaskInterrupts(0xFFFFFFE0);
+    __OSSetExceptionHandler(4, ExternalInterruptHandler);
+}
+
+extern u32 fn_800B7318(u32);
+u32 __OSMaskInterrupts(u32 mask) {
+    u32 prev;
+    u32 oldMask;
+    u32 pending;
+    u32 hw;
+    prev = OSDisableInterrupts();
+    oldMask = *(u32 *)0x800000C4;
+    pending = *(u32 *)0x800000C8;
+    hw = mask & ~(oldMask | pending);
+    mask |= oldMask;
+    *(u32 *)0x800000C4 = mask;
+    mask |= pending;
+    while (hw != 0) {
+        hw = fn_800B7318(mask);
+    }
+    OSRestoreInterrupts(prev);
+    return oldMask;
+}
+
+u32 __OSUnmaskInterrupts(u32 mask) {
+    u32 prev;
+    u32 oldMask;
+    u32 pending;
+    u32 hw;
+    prev = OSDisableInterrupts();
+    oldMask = *(u32 *)0x800000C4;
+    pending = *(u32 *)0x800000C8;
+    hw = mask & (oldMask | pending);
+    mask = oldMask & ~mask;
+    *(u32 *)0x800000C4 = mask;
+    mask |= pending;
+    while (hw != 0) {
+        hw = fn_800B7318(mask);
+    }
+    OSRestoreInterrupts(prev);
+    return oldMask;
+}
+
+#pragma peephole on
 extern s32 lbl_8035A5B0;
 void fn_800BA3B4(void* arg0);
 void fn_800B7E04(void) {
@@ -1153,6 +1211,21 @@ s32 fn_800C2600(void) {
     return lbl_8035A6DC;
 }
 
+void fn_800C2608(s32 *arg0, u32 *arg1) {
+    volatile u16 *r = (volatile u16 *)0xCC002000;
+    u32 a;
+    u32 b;
+    u32 c;
+    b = r[0x16] & 0x7FF;
+    do {
+        a = b;
+        b = r[0x16] & 0x7FF;
+        c = r[0x17] & 0x7FF;
+    } while (a != b);
+    *arg0 = c;
+    *arg1 = b;
+}
+
 s32 fn_800C4768(void) {
     return *(s32 *)0xCC006C00 & 1;
 }
@@ -1794,6 +1867,39 @@ void fn_800D5F10(void) {
 u16 fn_800D665C(void) {
     extern void *__peReg;
     return M2C_FIELD(__peReg, u16 *, 0xE);
+}
+
+extern u16 *__peReg;
+void fn_800D6780(u32 a, u32 b) {
+    u16 v = 0;
+    v = (v & ~0xFF) | (b & 0xFF);
+    v = (v & 0xFF) | (a << 8);
+    __peReg[3] = v;
+}
+
+void fn_800D6794(u32 a) {
+    u16 v = 0;
+    v = (v & ~3) | (a & 3);
+    v = (v & ~4) | (1 << 2);
+    __peReg[4] = v;
+}
+
+void fn_800D67B4(u32 a) {
+    u16 v = __peReg[1];
+    v = (v & ~0x10) | ((a & 0xFF) << 4);
+    __peReg[1] = v;
+}
+
+void fn_800D67CC(s32 a, u32 b, u32 c, u32 d) {
+    u32 v = __peReg[1];
+    v = (v & ~1) | (a == 1 || a == 3);
+    v = (v & ~0x800) | ((a == 3) << 11);
+    v = (v & ~2) | ((a == 2) << 1);
+    v = (v & ~0xF000) | (d << 12);
+    v = (v & ~0x700) | (b << 8);
+    v = (v & ~0xE0) | (c << 5);
+    v = (v & 0xFFFFFF) | 0x41000000;
+    __peReg[1] = v;
 }
 
 void fn_800D746C(s32 arg0) {
