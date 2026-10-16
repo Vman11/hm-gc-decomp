@@ -105,6 +105,11 @@ s32 fn_800DF4D0(void*);
 typedef struct DBCommTable {
     s32 (*initialize)(void *, void *);
     void (*initInterrupts)(void);
+    s32 (*peek)(void);
+    s32 (*read)(void *, s32);
+    s32 (*write)(const void *, s32);
+    s32 (*open)(void);
+    s32 (*close)(void);
 } DBCommTable;
 extern DBCommTable gDBCommTable;
 extern u8 lbl_80323560[];
