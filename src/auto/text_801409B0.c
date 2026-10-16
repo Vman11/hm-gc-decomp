@@ -20,6 +20,30 @@ typedef struct ImgDec {
     u8 *px;
 } ImgDec;
 
+void fn_80141268(ImgDec *p) {
+    u8 *s = p->px;
+    u8 *e = s + (p->count >> 1);
+    do {
+        u8 v = *s;
+        s++;
+        *p->out = v;
+        p->out++;
+    } while (s < e);
+}
+
+void fn_8014136C(ImgDec *p) {
+    u8 *d = p->dst;
+    u8 *e = d + p->count * 4;
+    do {
+        d[2] = p->src[0];
+        d[1] = p->src[1];
+        d[0] = p->src[2];
+        d[3] = p->src[3];
+        d += 4;
+        p->src += 4;
+    } while (d < e);
+}
+
 void fn_8014188C(ImgDec *p) {
     u8 *d = p->dst;
     u8 *e = d + p->count * 4;
@@ -41,7 +65,7 @@ void fn_8014188C(ImgDec *p) {
 
 void fn_8014193C(ImgDec *p) {
     u8 *d = p->buf;
-    u8 *e = p->buf + p->count;
+    u8 *e = (u8 *)p + p->count + 0x138;
     do {
         *d = *p->src++;
         d++;
@@ -49,8 +73,8 @@ void fn_8014193C(ImgDec *p) {
 }
 
 void fn_80141970(ImgDec *p) {
-    u8 *d = p->buf;
     s32 n = p->count;
+    u8 *d = p->buf;
     do {
         d[0] = *p->src & 0xF;
         p->src++;
