@@ -913,8 +913,9 @@ size_t strlen(const char* s) {
 
 double fn_800EB838(char *str) {
     double fn_800EB8C4(int, int (*)(void *, int, int), void *, int *, int *);
-    double fabs(double);
-    extern double lbl_803596B8, lbl_803596C0, lbl_803631E8;
+    
+    extern double lbl_803596B8[], lbl_803596C0[];
+    extern double lbl_803631E8;
     extern s32 lbl_8035A978;
     struct { char *str; int end; } state;
     int error;
@@ -923,8 +924,8 @@ double fn_800EB838(char *str) {
     state.str = str;
     state.end = 0;
     value = fn_800EB8C4(0x7FFFFFFF, fn_800EB1D4, &state, &count, &error);
-    magnitude = fabs(value);
-    if (error != 0 || (lbl_803631E8 != value && (magnitude < lbl_803596B8 || magnitude > lbl_803596C0)))
+    magnitude = __fabs(value);
+    if (error != 0 || (lbl_803631E8 != value && (magnitude < lbl_803596B8[0] || magnitude > lbl_803596C0[0])))
         lbl_8035A978 = 0x22;
     return value;
 }
