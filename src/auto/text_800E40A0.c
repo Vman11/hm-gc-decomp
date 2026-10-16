@@ -320,6 +320,53 @@ void fn_800E43C8(void *pool, void *ptr) {
     }
 }
 
+void fn_800E4420(void *pool, void *ptr, u32 size) {
+    __mem_pool_obj *pool_obj = (__mem_pool_obj *)pool;
+    u32 i = 0;
+    FixSubBlock *p;
+    FixBlock *b;
+    FixStart *fs;
+
+    while (size > lbl_8029C048[i])
+        ++i;
+
+    p = (FixSubBlock *)((char *)ptr - 4);
+    b = p->block_;
+    fs = &pool_obj->fix_start[i];
+
+    if (b->start_ == 0 && fs->head_ != b) {
+        if (fs->tail_ == b) {
+            fs->head_ = fs->head_->prev_;
+            fs->tail_ = fs->tail_->prev_;
+        } else {
+            b->prev_->next_ = b->next_;
+            b->next_->prev_ = b->prev_;
+            b->next_ = fs->head_;
+            b->prev_ = b->next_->prev_;
+            b->prev_->next_ = b;
+            b->next_->prev_ = b;
+            fs->head_ = b;
+        }
+    }
+
+    p->next_ = b->start_;
+    b->start_ = p;
+
+    if (--b->n_allocated_ == 0) {
+        if (fs->head_ == b)
+            fs->head_ = b->next_;
+        if (fs->tail_ == b)
+            fs->tail_ = b->prev_;
+        b->prev_->next_ = b->next_;
+        b->next_->prev_ = b->prev_;
+        if (fs->head_ == b)
+            fs->head_ = 0;
+        if (fs->tail_ == b)
+            fs->tail_ = 0;
+        fn_800E4578(pool_obj, b);
+    }
+}
+
 int fn_800E480C(void) {
     int result = 0;
     MslFile *file = (MslFile *)__files;
