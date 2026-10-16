@@ -610,6 +610,19 @@ void fn_800BBC30(UnkStep* arg0) {
     }
 }
 
+extern s32 fn_800E2584();
+void fn_800BBC8C(Anim *a) {
+    a->t = a->t + a->speed;
+    if (a->t >= lbl_80363088) {
+        a->t = a->t - a->t;
+        a->idx = a->idx + fn_800E2584();
+        a->idx = a->idx % a->count;
+        a->prev = a->cur;
+        a->cur = a->data[a->idx];
+    }
+    a->out = a->prev - a->t * (a->prev - a->cur);
+}
+
 extern f32 lbl_8035A608;
 extern f32 lbl_80363088;
 extern u16 lbl_802D9DD8[];
@@ -1828,7 +1841,7 @@ void fn_800DE95C(TrkBuf* buf, s8 a, s8 b) {
 }
 
 void fn_800DEA14(s32 arg0) {
-    lbl_803257D0 = arg0;
+    *(s32*)&lbl_803257D0 = arg0;
 }
 
 s32 fn_800DF2F0(void) {
