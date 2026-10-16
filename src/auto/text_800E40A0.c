@@ -42,6 +42,26 @@ void __begin_critical_region(int region);
 void __end_critical_region(int region);
 void __kill_critical_regions(void);
 
+extern u8 __files[];
+
+typedef struct MslFileMode {
+    unsigned int open_mode : 2;
+    unsigned int io_mode : 3;
+    unsigned int buffer_mode : 2;
+    unsigned int file_kind : 3;
+    unsigned int file_orientation : 2;
+    unsigned int binary_io : 1;
+} MslFileMode;
+
+typedef struct MslFile {
+    u32 handle;
+    MslFileMode mode;
+    u8 state[4];
+    u8 is_dynamically_allocated;
+    u8 pad[0x4C - 0xD];
+    struct MslFile *next_file;
+} MslFile;
+
 extern u8 lbl_8029BFB0[];
 void __unregister_fragment(int fragmentID) {
     FragmentInfo *f;
