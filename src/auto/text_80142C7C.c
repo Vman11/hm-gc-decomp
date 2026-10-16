@@ -96,9 +96,9 @@ void fn_801448B8(Img *p) {
 }
 
 void fn_8014490C(Img *p) {
+    u32 *s = (u32 *)p->src;
     u32 *d = (u32 *)p->buf;
     u32 *e = d + 8;
-    u32 *s = (u32 *)p->src;
     do {
         d[0] = s[0];
         d[1] = s[1];
