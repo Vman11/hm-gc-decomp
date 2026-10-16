@@ -544,6 +544,30 @@ void fn_80141AA0(ImgDec *p) {
     } while (d < e);
 }
 
+void fn_8014212C(ImgPix *p) {
+    u8 *s = p->src;
+    u8 *e = s + 0x80;
+    do {
+        p->out[0] = s[2];
+        p->out[1] = s[1];
+        p->out[2] = s[0];
+        p->out += 3;
+        p->out[0] = s[6];
+        p->out[1] = s[5];
+        p->out[2] = s[4];
+        p->out += 3;
+        p->out[0] = s[10];
+        p->out[1] = s[9];
+        p->out[2] = s[8];
+        p->out += 3;
+        p->out[0] = s[14];
+        p->out[1] = s[13];
+        p->out[2] = s[12];
+        s += 16;
+        p->out += 3;
+    } while (s < e);
+}
+
 void fn_801425D4(ImgDec *p) {
     u8 *s = p->px;
     u8 *e = s + 0x20;
