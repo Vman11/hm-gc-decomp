@@ -4,6 +4,14 @@
 extern f32 lbl_80364D70;
 extern f32 lbl_80364D74;
 
+typedef struct Unk8019F188 {
+    u8 pad0[0x14];
+    f32 unk14;
+} Unk8019F188;
+typedef struct Plane8019F188 {
+    f32 x, y, z, w;
+} Plane8019F188;
+
 static inline void setPlane(f32 *v, f32 x, f32 y, f32 z, f32 w) {
     v[0] = x;
     v[1] = y;
