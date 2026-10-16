@@ -27,10 +27,10 @@ static inline u32 findKeyAC(void *arg0, s32 key) {
     return -1;
 }
 
-static inline u32 findKey(KeyEntry *keys, u32 count, s32 key) {
+static inline u32 findKey(KeyEntry **keys, u32 count, s32 key) {
     u32 i;
     for (i = 0; i < count; i++) {
-        if (key == keys[i].key) {
+        if (key == (*keys)[i].key) {
             return i;
         }
     }
@@ -50,16 +50,10 @@ s32 fn_8011DD04(void *arg0, s32 arg1) {
 }
 
 s32 fn_8011DD10(void *arg0, ListNode *node) {
-    u32 count = M2C_FIELD(arg0, u32 *, 0xAC);
-    u32 i;
-    s32 key = node->key;
+    u32 i = findKeyAC(arg0, node->key);
     ListHead *head;
-    for (i = 0; i < count; i++) {
-        if (key == M2C_FIELD(arg0, KeyEntry **, 0x50)[i].key) break;
-    }
-    if (i == count) i = -1;
-    if (i < count) {
-        if (i < count) head = &M2C_FIELD(arg0, ListHead **, 0x98)[i];
+    if (i < M2C_FIELD(arg0, u32 *, 0xAC)) {
+        if (i < M2C_FIELD(arg0, u32 *, 0xAC)) head = &M2C_FIELD(arg0, ListHead **, 0x98)[i];
         else head = NULL;
         if (node->prev != NULL) {
             if ((node->prev->next = node->next) != NULL) node->next->prev = node->prev;
@@ -101,22 +95,22 @@ s32 fn_8011DDE0(void *arg0, ListNode *node) {
 
 s32 fn_8011DE7C(void *arg0, ListNode *node) {
     u32 count = M2C_FIELD(arg0, u32 *, 0xA8);
-    u32 i = findKey(M2C_FIELD(arg0, KeyEntry **, 0x4C), count, node->key);
+    u32 i;
+    s32 key = node->key;
     ListHead *head;
+    for(i=0; i<count; i++) {
+        if(key == M2C_FIELD(arg0, KeyEntry **, 0x4C)[i].key) break;
+    }
+    if(i == count) i = -1;
     if (i < count) {
-        head = getHead(M2C_FIELD(arg0, ListHead **, 0x94), count, i);
+        if(i < count) head = &M2C_FIELD(arg0, ListHead **, 0x94)[i];
+        else head = NULL;
         if (node->prev != NULL) {
-            if ((node->prev->next = node->next) != NULL) {
-                node->next->prev = node->prev;
-            } else {
-                head->last = node->prev;
-            }
+            if ((node->prev->next = node->next) != NULL) node->next->prev = node->prev;
+            else head->last = node->prev;
         } else {
-            if ((head->first = node->next) != NULL) {
-                head->first->prev = NULL;
-            } else {
-                head->last = NULL;
-            }
+            if ((head->first = node->next) != NULL) head->first->prev = NULL;
+            else head->last = NULL;
         }
         return 1;
     }
