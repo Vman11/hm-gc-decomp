@@ -220,7 +220,22 @@ void fn_80143BB4(Img *p) {
         d[1] = p->src[1];
         d[0] = p->src[2];
         d[3] = 0xFF;
-        d += 4;
+        p->src += 4;
+        d[6] = p->src[0];
+        d[5] = p->src[1];
+        d[4] = p->src[2];
+        d[7] = 0xFF;
+        p->src += 4;
+        d[10] = p->src[0];
+        d[9] = p->src[1];
+        d[8] = p->src[2];
+        d[11] = 0xFF;
+        p->src += 4;
+        d[14] = p->src[0];
+        d[13] = p->src[1];
+        d[12] = p->src[2];
+        d[15] = 0xFF;
+        d += 0x10;
         p->src += 4;
     } while (d < e);
 }
@@ -250,6 +265,19 @@ void fn_80143CA0(Img *p) {
         d[15] = 0xFF;
         p->src += 4;
         d += 16;
+    } while (d < e);
+}
+
+void fn_80144044(Img *p) {
+    u8 *d = p->px;
+    u8 *e = d + 0x80;
+    do {
+        d[2] = p->src[0];
+        d[1] = p->src[1];
+        d[0] = p->src[2];
+        d[3] = 0xFF;
+        d += 4;
+        p->src += 3;
     } while (d < e);
 }
 
