@@ -2311,15 +2311,15 @@ void fn_800DEA14(s32 arg0) {
     lbl_803257D0[0] = arg0;
 }
 
-s32 fn_800DF2F0(void) {
+s32 fn_800DF2F0(void *mutex) {
     return 0;
 }
 
-s32 fn_800DF2F8(void) {
+s32 fn_800DF2F8(void *mutex) {
     return 0;
 }
 
-s32 fn_800DF300(void) {
+s32 fn_800DF300(void *mutex) {
     return 0;
 }
 
