@@ -16,3 +16,64 @@ typedef struct Img {
     u8 pad180[4];
     u8 *px;
 } Img;
+
+void fn_80142E60(Img *p) {
+    s32 n = p->n;
+    s32 m = p->m;
+    u8 *s = p->buf;
+    u8 *d = p->dst;
+    s32 e = n * 2 - m;
+    u8 *dend = d + m;
+    do {
+        *d = *s;
+        if (e <= 0) {
+            e += n * 2;
+            d++;
+        } else {
+            e += (n - m) * 2;
+            s++;
+            d++;
+        }
+    } while (d < dend);
+}
+
+void fn_80142FB0(Img *p) {
+    u8 *q;
+    u8 *end = p->px + p->n * 4;
+    for (q = p->px; q < end; q += 4) {
+        u8 f = 0;
+        if (p->c[0] == q[0] && p->c[1] == q[1] && p->c[2] == q[2]) {
+            f = 1;
+        }
+        if (f) {
+            q[3] = 0;
+        }
+    }
+}
+
+void fn_8014302C(Img *p) {
+    u8 *q;
+    u8 *end = p->px + p->n * 4;
+    for (q = p->px; q < end; q += 4) {
+        u8 f = 0;
+        if (p->c[0] == q[0] && p->c[1] == q[1] && p->c[2] == q[2]) {
+            f = 1;
+        }
+        if (f) {
+            q[0] = p->r[0];
+            q[1] = p->r[1];
+            q[2] = p->r[2];
+            q[3] = p->r[3];
+        }
+    }
+}
+
+void fn_80143218(Img *p) {
+    u8 *q = p->buf;
+    u8 *end = q + p->n;
+    for (; q < end; q++) {
+        if (*q == p->key) {
+            *q = p->val;
+        }
+    }
+}
