@@ -2295,6 +2295,8 @@ s32 TRKInitializeSerialHandler(void) {
     return 0;
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_800DBD08(s32 bufferIdx) {
     void fn_800DABB4(void *);
     u8 event[0xC];
@@ -2304,7 +2306,7 @@ void fn_800DBD08(s32 bufferIdx) {
     M2C_FIELD(event, s32 *, 8) = bufferIdx;
     fn_800DABB4(event);
 }
-
+#pragma pop
 void TRKGetInput(void) {
     s32 fn_800DBDF0(void);
     TrkBuf *TRKGetBuffer(s32);
