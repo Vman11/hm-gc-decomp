@@ -76,7 +76,8 @@ u32 fwrite(const void *ptr, u32 size, u32 count, void *file) {
     __end_critical_region(2);
     return result;
 }
-#pragma pop
+#pragma push
+#pragma dont_inline on
 int fseek(void *file, s32 offset, int mode) {
     int result;
     __begin_critical_region(2);
@@ -84,7 +85,7 @@ int fseek(void *file, s32 offset, int mode) {
     __end_critical_region(2);
     return result;
 }
-
+#pragma pop
 s32 fn_800E895C(void *file) {
     s32 position;
     u32 kind;
