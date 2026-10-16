@@ -111,6 +111,9 @@ s32 fn_800DF300(void *mutex);
 extern s32 lbl_803257D0[];
 extern u32 lbl_803257C8[];
 void fn_800DEA14(s32 arg0);
+static inline BOOL TRKPutsDone(void) {
+    return FALSE;
+}
 typedef s32 (*TrkDispatchFunc)(TrkBuf *);
 extern TrkDispatchFunc lbl_802E00D8[];
 extern void fn_800DBAD0(TrkBuf*, s32);
@@ -1434,8 +1437,18 @@ s32 fn_800C4940(void) {
     return ((u32) *(u32 *)0xCC006C00 >> 1U) & 1;
 }
 
+void fn_800C4950(u8 vol) {
+    volatile u32 *regs = (volatile u32 *)0xCC006C00;
+    regs[1] = (regs[1] & ~0xFF) | (vol & 0xFF);
+}
+
 u8 fn_800C496C(void) {
     return (u8) *(s32 *)0xCC006C04;
+}
+
+void fn_800C497C(u8 vol) {
+    volatile u32 *regs = (volatile u32 *)0xCC006C00;
+    regs[1] = (regs[1] & ~0xFF00) | ((vol << 8) & 0xFF00);
 }
 
 u8 fn_800C4998(void) {
@@ -2502,20 +2515,20 @@ void usr_put_initialize(void) {
 }
 
 void fn_800DC0AC(const char *s) {
-    s32 err;
+    BOOL done;
     char c;
-    s32 old;
+    BOOL old;
     char buf[2];
 
-    err = 0;
-    while (err == 0 && (c = *s++) != 0) {
+    done = fn_800DBCDC();
+    while (!done && (c = *s++) != '\0') {
         old = fn_800DEA20();
         buf[0] = c;
-        buf[1] = 0;
-        lbl_803257D0[0] = 0;
-        OSReport(buf);
-        lbl_803257D0[0] = old;
-        err = 0;
+        buf[1] = '\0';
+        fn_800DEA14(FALSE);
+        ((void (*)(const char *))OSReport)(buf);
+        fn_800DEA14(old);
+        done = fn_800DBCDC();
     }
 }
 
@@ -2528,7 +2541,7 @@ s32 TRKDispatchMessage(TrkBuf *buf) {
     fn_800DBAA0(buf, 0);
     fn_800DB4F0(buf, &cmd);
     if (cmd < lbl_803257C8[0]) {
-        err = lbl_802E00D8[cmd](buf);
+        err = lbl_802E00D8[(u32)cmd](buf);
     }
     return err;
 }
