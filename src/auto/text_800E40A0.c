@@ -66,7 +66,20 @@ typedef struct MslFile {
     MslFileMode mode;
     u8 state[4];
     u8 is_dynamically_allocated;
-    u8 pad[0x4C - 0xD];
+    u8 pad[0x18 - 0xD];
+    u32 position;
+    u8 *buffer;
+    u32 buffer_size;
+    u8 *buffer_ptr;
+    u32 buffer_len;
+    u32 buffer_alignment;
+    u32 saved_buffer_len;
+    u32 buffer_position;
+    void *position_proc;
+    void *read_proc;
+    int (*write_proc)(u32, u8 *, u32 *, void *);
+    void *close_proc;
+    void *ref_con;
     struct MslFile *next_file;
 } MslFile;
 
