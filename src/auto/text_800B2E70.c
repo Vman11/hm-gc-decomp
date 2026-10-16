@@ -1692,6 +1692,38 @@ void fn_800C2A64(s32 arg0, s32 arg1) {
     fn_800C2848(horizontal, vertical, arg0, arg1);
 }
 
+void fn_800C2C68(s32 arg0, u32 arg1) {
+    void fn_800C2AC4(s32);
+    void fn_800F49B0(s32, u32);
+    void fn_800F4A40(u32);
+    void fn_800F4C1C(s32, void *);
+    void fn_800F5334(s32, void *);
+    void *memset(void *, int, unsigned long);
+    void fn_800C2EC4();
+    extern u8 lbl_80308640[][0xC];
+    extern s32 lbl_803595B4;
+    extern u32 lbl_803595BC;
+    extern u32 lbl_8035A73C;
+    extern u32 lbl_8035A740;
+    u8 ctx[0x10];
+    s32 chan;
+
+    if (!(arg1 & 0xF)) {
+        fn_800C2AC4(lbl_803595B4);
+        chan = lbl_803595B4;
+        lbl_8035A73C |= 0x80000000U >> chan;
+        fn_800F4C1C(chan, ctx);
+        fn_800F49B0(chan, lbl_803595BC | 0x400000);
+        fn_800F4A40(lbl_8035A73C);
+    }
+    lbl_803595B4 = __cntlzw(lbl_8035A740);
+    if (lbl_803595B4 != 32) {
+        lbl_8035A740 &= ~(0x80000000U >> lbl_803595B4);
+        memset(lbl_80308640[lbl_803595B4], 0, 0xC);
+        fn_800F5334(lbl_803595B4, fn_800C2EC4);
+    }
+}
+
 void fn_800C2D2C(s32 arg0, s32 arg1) {
     M2C_UNK fn_800B93CC(s32, M2C_UNK, s32, s32, s32, s32);
     M2C_UNK fn_800C2AC4(s32);
@@ -1822,6 +1854,40 @@ void fn_800C497C(u8 vol) {
 
 u8 fn_800C4998(void) {
     return (u8) ((u32) *(u32 *)0xCC006C04 >> 8U);
+}
+
+u32 fn_800C4FE8(u32 arg0, u32 arg1) {
+    extern s32 lbl_8035A7BC;
+    extern u32 lbl_8035A7B0;
+    extern u32 lbl_8035A7B4;
+    extern u32 lbl_8035A7B8;
+    extern char* lbl_803595D8;
+    extern void (*lbl_8035A7A0)(void);
+    void fn_800C513C(u8 *ctx);
+    void fn_800C51E4(void);
+    void *__OSSetInterruptHandler(short type, void *handler);
+    u32 __OSUnmaskInterrupts(u32 mask);
+    int OSRestoreInterrupts(int);
+    int enabled;
+    u16 refresh;
+
+    if (lbl_8035A7BC == 1) {
+        return 0x4000;
+    }
+    OSRegisterVersion(lbl_803595D8);
+    enabled = OSDisableInterrupts();
+    lbl_8035A7A0 = 0;
+    __OSSetInterruptHandler(6, fn_800C513C);
+    __OSUnmaskInterrupts(0x2000000);
+    lbl_8035A7B4 = arg1;
+    lbl_8035A7B0 = 0x4000;
+    lbl_8035A7B8 = arg0;
+    refresh = *(u16 *)0xCC00501A & 0xFF;
+    *(u16 *)0xCC00501A = (*(u16 *)0xCC00501A & ~0xFF) | (refresh & 0xFF);
+    fn_800C51E4();
+    lbl_8035A7BC = 1;
+    OSRestoreInterrupts(enabled);
+    return lbl_8035A7B0;
 }
 
 void fn_800C50AC(s32 a) {
@@ -2236,6 +2302,38 @@ void fn_800C9704(char *p) {
 
 void fn_800C9944(void) {
 
+}
+
+int OSDisableInterrupts(void);
+int OSRestoreInterrupts(int);
+void fn_800C9948(u8 *arg0, s32 arg1) {
+    int enabled;
+    u8 *p;
+
+    enabled = OSDisableInterrupts();
+    p = arg0 + 0x138;
+    switch (arg1) {
+    case 0:
+        *(u16 *)(p + 8) = 2;
+        break;
+    case 1:
+        *(u16 *)(p + 8) = 1;
+        break;
+    case 2:
+        *(u16 *)(p + 8) = 0;
+        *(u16 *)(p + 0xA) = 0;
+        break;
+    case 3:
+        *(u16 *)(p + 8) = 0;
+        *(u16 *)(p + 0xA) = 1;
+        break;
+    case 4:
+        *(u16 *)(p + 8) = 0;
+        *(u16 *)(p + 0xA) = 2;
+        break;
+    }
+    *(u32 *)(arg0 + 0x1C) |= 1;
+    OSRestoreInterrupts(enabled);
 }
 
 void fn_800C9A0C(void *arg0, u16 arg1) {
@@ -3492,6 +3590,64 @@ void fn_800D7CA4(s32 chan, u8 enable, s32 amb_src, s32 mat_src, u32 light_mask, 
     __GXData->bpSentNot = 1;
 }
 
+void fn_800D7D5C(int fmt, u16 wd, u16 ht, u32* rowTiles, u32* colTiles, u32* cmpTiles) {
+    u32 texRowShift;
+    u32 texColShift;
+
+    switch (fmt) {
+    case 0x0:
+    case 0x8:
+    case 0xE:
+    case 0x20:
+    case 0x30:
+        texRowShift = 3;
+        texColShift = 3;
+        break;
+    case 0x1:
+    case 0x2:
+    case 0x9:
+    case 0x11:
+    case 0x22:
+    case 0x27:
+    case 0x28:
+    case 0x29:
+    case 0x2A:
+    case 0x39:
+    case 0x3A:
+        texRowShift = 3;
+        texColShift = 2;
+        break;
+    case 0x3:
+    case 0x4:
+    case 0x5:
+    case 0x6:
+    case 0xA:
+    case 0x13:
+    case 0x16:
+    case 0x23:
+    case 0x2B:
+    case 0x2C:
+    case 0x3C:
+        texRowShift = 2;
+        texColShift = 2;
+        break;
+    default:
+        texRowShift = texColShift = 0;
+        break;
+    }
+
+    if (wd == 0) {
+        wd = 1;
+    }
+    if (ht == 0) {
+        ht = 1;
+    }
+
+    *rowTiles = (wd + (1 << texRowShift) - 1) >> texRowShift;
+    *colTiles = (ht + (1 << texColShift) - 1) >> texColShift;
+    *cmpTiles = (fmt == 0x6 || fmt == 0x16) ? 2 : 1;
+}
+
 extern u8 lbl_80359668[8];
 void fn_800D821C(u32 *arg0, u32 arg1, u32 arg2) {
     *arg0 = (arg1 & 3) | (*arg0 & ~3);
@@ -4213,6 +4369,32 @@ s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
  return error;
 }
 
+#pragma push
+#pragma use_lmw_stmw on
+#pragma inline_depth(4)
+s32 fn_800DB370(TrkBuf *buf, u32 *data) {
+    extern s32 gTRKBigEndian[];
+    s32 err;
+    u8 *bigEndianData;
+    u8 *byteData;
+    u8 swapBuffer[sizeof(data)];
+    if (gTRKBigEndian[0]) {
+        bigEndianData = (u8 *)data;
+    } else {
+        bigEndianData = swapBuffer;
+    }
+    err = TRKReadBuffer_inline(buf, (void *)bigEndianData, sizeof(*data));
+    if (!gTRKBigEndian[0] && err == 0) {
+        byteData = (u8 *)data;
+        byteData[0] = bigEndianData[3];
+        byteData[1] = bigEndianData[2];
+        byteData[2] = bigEndianData[1];
+        byteData[3] = bigEndianData[0];
+    }
+    return err;
+}
+#pragma pop
+
 #pragma peephole on
 #pragma inline_depth(4)
 s32 fn_800DB438(TrkBuf *buf, u16 *data) {
@@ -4249,6 +4431,42 @@ s32 fn_800DB66C(TrkBuf *buf, u8 *data, s32 count) {
     }
     return err;
 }
+
+s32 fn_800DB8A8(TrkBuf *buf, u16 data) {
+    extern s32 gTRKBigEndian[];
+    extern void *fn_80003488(void *, const void *, u32);
+    u8 *bigEndianData;
+    u8 *byteData;
+    u8 swapBuffer[2];
+    s32 error;
+    u32 length;
+    u32 bytesLeft;
+
+    if (gTRKBigEndian[0]) {
+        bigEndianData = (u8 *)&data;
+    } else {
+        byteData = (u8 *)&data;
+        bigEndianData = swapBuffer;
+        bigEndianData[0] = byteData[1];
+        bigEndianData[1] = byteData[0];
+    }
+    length = 2;
+    error = 0;
+    bytesLeft = 0x880 - buf->pos;
+    if (bytesLeft < length) {
+        error = 0x301;
+        length = bytesLeft;
+    }
+    if (length == 1) {
+        buf->data[buf->pos] = *bigEndianData;
+    } else {
+        fn_80003488(buf->data + buf->pos, bigEndianData, length);
+    }
+    buf->pos += length;
+    buf->count = buf->pos;
+    return error;
+}
+
 #pragma pop
 s32 fn_800DB970(TrkBuf *buf, void *data, u32 length) {
     extern void *fn_80003488(void *, const void *, u32);
@@ -4328,6 +4546,33 @@ TrkBuf *TRKGetBuffer(s32 idx) {
         buf = &lbl_80323E00[idx];
     }
     return buf;
+}
+
+s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg) {
+    extern void fn_800DC0AC(const char *);
+    extern char lbl_8029BDF8[];
+    TrkBuf *buf;
+    s32 error = 0x300;
+    s32 i;
+
+    *outMsg = NULL;
+    for (i = 0; i < 3; i++) {
+        buf = TRKGetBuffer(i);
+        fn_800DF2F8(buf);
+        if (M2C_FIELD(buf, s32 *, 4) == 0) {
+            fn_800DBAD0(buf, 1);
+            error = 0;
+            M2C_FIELD(buf, s32 *, 4) = 1;
+            *outMsg = buf;
+            *msgID = i;
+            i = 3;
+        }
+        fn_800DF2F0(buf);
+    }
+    if (error == 0x300) {
+        fn_800DC0AC(lbl_8029BDF8);
+    }
+    return error;
 }
 
 s32 TRKInitializeMessageBuffers(void) {
@@ -4959,5 +5204,47 @@ s32 fn_800E1C24(s32 arg0, s32 arg1, s32 *arg2) {
     default:
         return 1;
     }
+}
+
+void* __va_arg(struct __va_list_struct* list, int type) {
+    char* addr;
+    char* curr = &(list->gpr);
+    int alignment = 1;
+    int g_reg = list->gpr;
+    int maxsize = 8;
+    int size = 4;
+    int increment = 1;
+    int even = 0;
+    int fpr_offset = 0;
+    int regsize = 4;
+
+    if (type == 3) {
+        maxsize = 8;
+        size = 8;
+        g_reg = list->fpr;
+        curr = &(list->fpr);
+        fpr_offset = 32;
+        regsize = 8;
+    }
+    if (type == 2) {
+        size = 8;
+        maxsize--;
+        if (g_reg & 1)
+            even = 1;
+        increment = 2;
+    }
+    if (g_reg < maxsize) {
+        g_reg += even;
+        addr = list->reg_save_area + fpr_offset + (g_reg * regsize);
+        *curr = g_reg + increment;
+    } else {
+        *curr = 8;
+        addr = list->input_arg_area;
+        addr = (char*)(((unsigned int)(addr) + ((size)-1)) & ~((size)-1));
+        list->input_arg_area = addr + size;
+    }
+    if (type == 0)
+        addr = *((char**)addr);
+    return addr;
 }
 
