@@ -121,7 +121,8 @@ s32 fn_8011DF4C(void *arg0, ListNode *node) {
     u32 i = findKey((KeyEntry **)((u8 *)arg0 + 0x4C), count, node->key);
     ListHead *head;
     if (i < count) {
-        head = getHead(M2C_FIELD(arg0, ListHead **, 0x94), count, i);
+        if (i < count) head = &M2C_FIELD(arg0, ListHead **, 0x94)[i];
+        else head = NULL;
         if ((node->next = head->first) != NULL) {
             head->first->prev = node;
         } else {
