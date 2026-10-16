@@ -355,6 +355,11 @@ s32 fn_800ECD08(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     return 0;
 }
 
+double fn_800EFD7C(double x, double y) {
+    *(int *)&x = (*(int *)&x & 0x7fffffff) | (*(int *)&y & 0x80000000);
+    return x;
+}
+
 double fn_800F03E4(double x) {
     double y[2];
     int n, ix;
