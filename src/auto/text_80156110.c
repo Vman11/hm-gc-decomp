@@ -2,6 +2,14 @@
 #include "common.h"
 
 typedef struct {
+    u32 a;
+    u32 b;
+    u32 c;
+    u32 d;
+    u32 e;
+} Unk80156110Out;
+
+typedef struct {
     s32 result;
     u32 a;
     u32 b;
