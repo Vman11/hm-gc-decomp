@@ -250,12 +250,15 @@ u32 fn_800E90C4(char *s, u32 n, const char *fmt, void *args) {
         u32 c;
     } ctx;
     u32 r;
+    u32 idx;
     ctx.s = s;
     ctx.n = n;
     ctx.c = 0;
     r = __pformatter(fn_800E92B8, &ctx, fmt, args);
     if (s != 0) {
-        s[(r < n) ? r : n - 1] = 0;
+        idx = n - 1;
+        if (r < n) idx = r;
+        s[idx] = 0;
     }
     return r;
 }
@@ -421,10 +424,10 @@ double fn_800EFFC0(double x, int *eptr) {
     *eptr = 0;
     if (ix >= 0x7ff00000 || ((ix | lx) == 0)) return x;
     if (ix < 0x00100000) {
+        *eptr = -54;
         x *= lbl_80363688;
         hx = *(int *)&x;
         ix = hx & 0x7fffffff;
-        *eptr = -54;
     }
     *eptr += (ix >> 20) - 1022;
     hx = (hx & 0x800fffff) | 0x3fe00000;
