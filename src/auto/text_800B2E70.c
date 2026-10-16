@@ -438,24 +438,23 @@ void __OSUnlockSramEx(void) {
     fn_800B8D00(0x14);
 }
 
+extern SramControlBlock Scb_803078A0;
 s32 __OSSyncSram(void) {
-    extern M2C_UNK Scb_803078A0;
-    return M2C_FIELD(&Scb_803078A0, s32 *, 0x4C);
+    return Scb_803078A0.sync;
 }
 
 s32 fn_800B91B8(void) {
-    extern M2C_UNK Scb_803078A0;
     s32 enabled;
     s32 ret;
 
     enabled = OSDisableInterrupts();
-    if (M2C_FIELD(&Scb_803078A0, s32 *, 0x48) != 0) {
+    if (Scb_803078A0.locked != 0) {
         OSRestoreInterrupts(enabled);
         ret = 0;
     } else {
-        M2C_FIELD(&Scb_803078A0, s32 *, 0x44) = enabled;
-        M2C_FIELD(&Scb_803078A0, s32 *, 0x48) = 1;
-        if (M2C_FIELD(&Scb_803078A0, u8 *, 0x13) & 4) {
+        Scb_803078A0.enabled = enabled;
+        Scb_803078A0.locked = 1;
+        if (Scb_803078A0.flags & 4) {
             ret = 1;
         } else {
             ret = 0;
