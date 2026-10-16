@@ -239,6 +239,8 @@ typedef s32 (*TrkDispatchFunc)(TrkBuf *);
 extern TrkDispatchFunc lbl_802E00D8[];
 extern void fn_800DBAD0(TrkBuf*, s32);
 extern s32 fn_800DAF24(TrkBuf*);
+s32 fn_800E17E8(s8 arg0);
+s32 fn_800E1810(void);
 s32 fn_800DEA20(void);
 s32 fn_800DF4D0();
 typedef struct DBCommTable {
