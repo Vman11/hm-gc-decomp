@@ -2723,13 +2723,12 @@ void fn_800D937C(s32 comp0, u8 ref0, s32 op, s32 comp1, u8 ref1) {
 
 void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
     extern GXDataHead *__GXData;
-    GXDataHead *gx;
     u32 zenv0;
     u32 zenv1;
     u32 type;
     zenv0 = 0;
-    zenv0 = __rlwimi(zenv0, bias, 0, 8, 31);
-    zenv0 = __rlwimi(zenv0, 0xF4, 24, 0, 7);
+    zenv0 = (zenv0 & ~0xFFFFFF) | (bias & 0xFFFFFF);
+    zenv0 = (zenv0 & ~0xFF000000) | (0xF4 << 24);
     zenv1 = 0;
     switch (fmt) {
     case 0x11:
@@ -2745,15 +2744,14 @@ void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
         type = 2;
         break;
     }
-    gx = __GXData;
-    zenv1 = __rlwimi(zenv1, type, 0, 30, 31);
-    zenv1 = __rlwimi(zenv1, op, 2, 28, 29);
-    zenv1 = __rlwimi(zenv1, 0xF5, 24, 0, 7);
+    zenv1 = (zenv1 & ~3) | (type & 3);
+    zenv1 = (zenv1 & ~0xC) | ((op << 2) & 0xC);
+    zenv1 = (zenv1 & ~0xFF000000) | (0xF5 << 24);
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = zenv0;
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = zenv1;
-    gx->bpSentNot = 0;
+    __GXData->bpSentNot = 0;
 }
 
 void fn_800D95E8(u8 nStages) {
@@ -3226,9 +3224,9 @@ void ReserveEXI2Port(void) {
 }
 
 s32 fn_800E17E8(u8 arg0) {
-    extern s32 lbl_80325D68;
+    extern s32 lbl_80325D68[];
     extern u8 lbl_80326E84[];
-    lbl_80326E84[lbl_80325D68++] = arg0;
+    lbl_80326E84[lbl_80325D68[0]++] = arg0;
     return 0;
 }
 
