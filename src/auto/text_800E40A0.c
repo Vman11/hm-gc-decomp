@@ -654,6 +654,7 @@ int fn_800E84F8(void *arg0) {
     MslFile *file = (MslFile *)arg0;
     int flush_result;
     int close_result;
+    u32 position;
 
     if (file == NULL) {
         return -1;
@@ -661,7 +662,40 @@ int fn_800E84F8(void *arg0) {
     if (file->mode.file_kind == 0) {
         return 0;
     }
-    flush_result = fn_800E83C0(file);
+    if (file == NULL) {
+        flush_result = fn_800E480C();
+    } else if (file->state.error || file->mode.file_kind == 0) {
+        flush_result = -1;
+    } else if (file->mode.io_mode == 1) {
+        flush_result = 0;
+    } else {
+        if (file->state.io_state >= 3) {
+            file->state.io_state = 2;
+        }
+        if (file->state.io_state == 2) {
+            file->buffer_len = 0;
+        }
+        if (file->state.io_state != 1) {
+            file->state.io_state = 0;
+            flush_result = 0;
+        } else {
+            if (file->mode.file_kind != 1) {
+                position = 0;
+            } else {
+                position = fn_800E895C(file);
+            }
+            if (__flush_buffer(file, 0)) {
+                file->state.error = 1;
+                file->buffer_len = 0;
+                flush_result = -1;
+            } else {
+                file->state.io_state = 0;
+                file->position = position;
+                file->buffer_len = 0;
+                flush_result = 0;
+            }
+        }
+    }
     close_result = ((int (*)(u32))file->close_proc)(file->handle);
     file->mode.file_kind = 0;
     file->handle = 0;
@@ -2098,6 +2132,25 @@ typedef struct EXI2Control {
     u8 *immBuf;
 } EXI2Control;
 extern EXI2Control *lbl_803596F0;
+
+static inline void EXI2_CompleteTransfer(void) {
+    EXI2Control *exi = lbl_803596F0;
+    u8 *buf;
+    u32 data;
+    int i;
+    int len;
+
+    if (exi->state & 3) {
+        if ((exi->state & 2) && (len = exi->immLen) != 0) {
+            buf = exi->immBuf;
+            data = ((volatile u32 *)0xCC006800)[14];
+            for (i = 0; i < len; i++) {
+                *buf++ = data >> ((3 - i) * 8);
+            }
+        }
+        exi->state &= ~3;
+    }
+}
 
 s32 fn_800F0E4C(void *buf, s32 len, s32 mode);
 s32 fn_800F0B3C(u32 *data) {
