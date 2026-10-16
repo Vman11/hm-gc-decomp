@@ -349,11 +349,10 @@ void fn_8014152C(ImgDec *p) {
 }
 
 void fn_80141584(ImgDec *p) {
-    u32 c;
     u8 *d = p->dst;
-    u8 *e = d + p->count * 4;
+    register u8 *e = d + p->count * 4;
     do {
-        u32 v;
+        u32 c, v;
         u32 b = p->src[1] << 8;
         u32 a = p->src[2] << 16;
         c = p->src[0];
@@ -565,6 +564,30 @@ void fn_8014212C(ImgPix *p) {
         p->out[2] = s[12];
         s += 16;
         p->out += 3;
+    } while (s < e);
+}
+
+void fn_80142204(ImgPix *p) {
+    u8 *s = p->src;
+    u8 *e = s + 0x80;
+    do {
+        p->out[0] = s[0];
+        p->out[1] = s[1];
+        p->out[2] = s[2];
+        p->out += 3;
+        p->out[0] = s[4];
+        p->out[1] = s[5];
+        p->out[2] = s[6];
+        p->out += 3;
+        p->out[0] = s[8];
+        p->out[1] = s[9];
+        p->out[2] = s[10];
+        p->out += 3;
+        p->out[0] = s[12];
+        p->out[1] = s[13];
+        p->out[2] = s[14];
+        p->out += 3;
+        s += 16;
     } while (s < e);
 }
 
