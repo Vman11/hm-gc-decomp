@@ -400,6 +400,22 @@ s32 fn_800EB1B4(void) {
     return (temp_r0 >> 0x10U) & 0x7FFF;
 }
 
+char* fn_800EB6A8(char* dst, const char* src, u32 n) {
+    const unsigned char* p = (const unsigned char*)src - 1;
+    unsigned char* q = (unsigned char*)dst - 1;
+    while (*++q);
+    q--;
+    n++;
+    while (--n) {
+        if (!(*++q = *++p)) {
+            q--;
+            break;
+        }
+    }
+    *++q = 0;
+    return dst;
+}
+
 char* fn_800EB6F4(char* dst, const char* src) {
     const unsigned char* p = (const unsigned char*)src - 1;
     unsigned char* q = (unsigned char*)dst - 1;
