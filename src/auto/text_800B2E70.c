@@ -1460,6 +1460,11 @@ void fn_800CDAEC(void) {
         OSRegisterResetFunction(lbl_802DF308);
     }
 }
+
+s32 fn_800CDB98(void) {
+    return lbl_8035A8F0;
+}
+
 #pragma pop
 void fn_800CDBA0(u32 arg) {
     u8 *p = lbl_80323560;
@@ -1472,6 +1477,26 @@ int fn_800CDCF4(int chan) {
         return -128;
     }
     return *(int *)(lbl_80323560 + chan * 0x110 + 4);
+}
+
+s32 fn_800CDE74(s32 chan, s32 *arg1) {
+    u8 *card;
+    s32 result = fn_800CDBD8(chan, &card);
+    int enabled;
+    s32 *p;
+    if (result < 0) {
+        return result;
+    }
+    *arg1 = *(s32 *)(card + 0xC);
+    p = (s32 *)card;
+    enabled = OSDisableInterrupts();
+    if (p[0] != 0) {
+        p[1] = 0;
+    } else if (p[1] == -1) {
+        p[1] = 0;
+    }
+    OSRestoreInterrupts(enabled);
+    return 0;
 }
 
 s32 fn_800CF4C0(void *arg0) {
