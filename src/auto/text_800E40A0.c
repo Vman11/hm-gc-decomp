@@ -398,6 +398,23 @@ s32 fn_800EB1B4(void) {
     return (temp_r0 >> 0x10U) & 0x7FFF;
 }
 
+char* fn_800EB4C8(const char* str, int chr) {
+    const unsigned char* p = (unsigned char*)str - 1;
+    const unsigned char* q = 0;
+    unsigned long c = (chr & 0xff);
+    unsigned long ch;
+
+    while (ch = *++p) {
+        if (ch == c) {
+            q = p;
+        }
+    }
+    if (q) {
+        return (char*)q;
+    }
+    return c ? 0 : (char*)p;
+}
+
 char* strchr(const char* str, int chr) {
     const unsigned char* p = (unsigned char*)str - 1;
     unsigned long c = (chr & 0xff);
