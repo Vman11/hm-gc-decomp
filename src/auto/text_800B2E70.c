@@ -12,7 +12,7 @@ typedef union PPCWGPipe {
     f32 f32;
     f64 f64;
 } PPCWGPipe;
-#define GXWGFifo (*(volatile PPCWGPipe *)0xCC008000)
+volatile PPCWGPipe GXWGFifo : 0xCC008000;
 typedef struct GXDataHead {
     u16 vNumNot;
     u16 bpSentNot;
@@ -809,6 +809,11 @@ void fn_800BB714(void *arg0) {
     M2C_FIELD(arg0, s32 *, 4) = 2;
     M2C_FIELD(arg0, u8 *, 8) = a;
     M2C_FIELD(arg0, u8 *, 9) = 0x7F;
+}
+
+void fn_800BB730(s32 *p) {
+    p[1] = 5;
+    p[2] = 0;
 }
 
 void fn_800BB788(AnimInit *p) {
@@ -2149,12 +2154,11 @@ void fn_800D8F00(void) {
 }
 
 void fn_800DA17C(u32 arg0) {
-    extern u8 *const __GXData;
-    u8 *gx = __GXData;
+    extern GXDataHead *const __GXData;
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x1005;
     GXWGFifo.u32 = arg0;
-    *(u16 *)(gx + 2) = 1;
+    __GXData->bpSentNot = 1;
 }
 
 void fn_800DAA70(void) {
