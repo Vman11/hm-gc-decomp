@@ -23,6 +23,14 @@ typedef struct AnimInit {
     f32 unk24;
     s32 unk28;
 } AnimInit;
+typedef struct SramControlBlock {
+    u8 pad0[0x13];
+    u8 flags;
+    u8 pad14[0x30];
+    s32 enabled;
+    s32 locked;
+    s32 sync;
+} SramControlBlock;
 extern s32 fn_800E2584();
 extern f32 lbl_80363088;
 extern f32 lbl_80363068;
@@ -420,6 +428,41 @@ extern s32 lbl_8035A5B0;
 void fn_800BA3B4(void* arg0);
 void fn_800B7E04(void) {
     lbl_8035A5B0 = 1;
+}
+
+void __OSUnlockSram(void) {
+    fn_800B8D00(0);
+}
+
+void __OSUnlockSramEx(void) {
+    fn_800B8D00(0x14);
+}
+
+s32 __OSSyncSram(void) {
+    extern M2C_UNK Scb_803078A0;
+    return M2C_FIELD(&Scb_803078A0, s32 *, 0x4C);
+}
+
+s32 fn_800B91B8(void) {
+    extern M2C_UNK Scb_803078A0;
+    s32 enabled;
+    s32 ret;
+
+    enabled = OSDisableInterrupts();
+    if (M2C_FIELD(&Scb_803078A0, s32 *, 0x48) != 0) {
+        OSRestoreInterrupts(enabled);
+        ret = 0;
+    } else {
+        M2C_FIELD(&Scb_803078A0, s32 *, 0x44) = enabled;
+        M2C_FIELD(&Scb_803078A0, s32 *, 0x48) = 1;
+        if (M2C_FIELD(&Scb_803078A0, u8 *, 0x13) & 4) {
+            ret = 1;
+        } else {
+            ret = 0;
+        }
+    }
+    fn_800B8D00(0, 0);
+    return ret;
 }
 
 void fn_800B9624(void) {
