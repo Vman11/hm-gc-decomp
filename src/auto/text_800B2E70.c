@@ -125,6 +125,7 @@ typedef struct HeapDesc {
     HeapCell *free;
     HeapCell *allocated;
 } HeapDesc;
+extern int lbl_8035A568;
 typedef struct TrkBuf {
     u32 mutex;
     s32 isInUse;
