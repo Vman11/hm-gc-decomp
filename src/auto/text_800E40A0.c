@@ -43,6 +43,17 @@ void __end_critical_region(int region);
 void __kill_critical_regions(void);
 
 extern u8 lbl_8029BFB0[];
+void __unregister_fragment(int fragmentID) {
+    FragmentInfo *f;
+
+    if (fragmentID >= 0 && fragmentID < 1) {
+        f = &fragmentinfo_80327F98[fragmentID];
+        f->eti_info = 0;
+        f->toc = 0;
+        f->active = 0;
+    }
+}
+
 u8 *fn_800E4108(void) {
     return lbl_8029BFB0;
 }
