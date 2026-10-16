@@ -5479,6 +5479,44 @@ s32 TRKInitializeDispatcher(void) {
     return 0;
 }
 
+s32 fn_800DF874(void);
+void fn_800DC374(TrkBuf* buf) {
+    s8 b;
+    s32 n;
+    s32 ok;
+    switch (fn_800DF874()) {
+    case 0:
+        b = 0;
+        break;
+    case 0x704:
+        b = 0x21;
+        break;
+    case 0x705:
+        b = 0x22;
+        break;
+    case 0x706:
+        b = 0x20;
+        break;
+    default:
+        b = 1;
+        break;
+    }
+    fn_800DBAD0(buf, 1);
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x80;
+        buf->count++;
+    }
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = b;
+        buf->count++;
+    }
+    n = 3;
+    do {
+        ok = fn_800DAF24(buf);
+        n--;
+    } while (ok != 0 && n > 0);
+}
+
 s32 fn_800DE654(TrkBuf* buf) {
     extern void fn_800053E0(void);
     s32 n;
