@@ -165,7 +165,7 @@ void fn_800E8EA0(u8 *d, const u8 *s, u32 n) {
 
 extern void __close_all(void);
 extern void (*__stdio_exit)(void);
-extern u32 __pformatter(void *, void *, const char *, void *, s32);
+extern u32 __pformatter();
 extern void fn_800E92B8(void);
 void __stdio_atexit(void) { __stdio_exit = __close_all; }
 
@@ -186,6 +186,20 @@ void fn_800E904C(char *s, const char *fmt, void *args) {
         if (r < 0xFFFFFFFF) idx = r;
         s[idx] = 0;
     }
+}
+
+int fn_800E91D0(const char *format, ...) {
+    int result;
+    va_list args;
+
+    if (fwide(__files + 0x50, -1) >= 0) {
+        return -1;
+    }
+    __begin_critical_region(2);
+    va_start(args, format);
+    result = ((int (*)(void *, void *, const char *, va_list))__pformatter)(__FileWrite, __files + 0x50, format, args);
+    __end_critical_region(2);
+    return result;
 }
 
 extern s32 lbl_803596A0;
