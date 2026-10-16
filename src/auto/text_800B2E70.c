@@ -2789,6 +2789,40 @@ s32 fn_800D0A3C(s32 chan) {
     return fn_800CDEF8(chan);
 }
 
+s32 fn_800D0A90(u32 id) {
+    extern s32 lbl_802DF480[];
+    extern u16 lbl_80359610;
+    u32 size;
+    s32 sectorSize;
+
+    if ((id & 0xFFFF0000) && (id != 0x80000004 || lbl_80359610 == 0xFFFF)) {
+        return 0;
+    }
+    if ((id & 3) != 0) {
+        return 0;
+    }
+    size = id & 0xFC;
+    switch (size) {
+    case 4:
+    case 8:
+    case 16:
+    case 32:
+    case 64:
+    case 128:
+        break;
+    default:
+        return 0;
+    }
+    sectorSize = lbl_802DF480[(id & 0x3800) >> 11];
+    if (sectorSize == 0) {
+        return 0;
+    }
+    if ((size * 1024 * 1024 / 8) / sectorSize < 8) {
+        return 0;
+    }
+    return 1;
+}
+
 extern u8 lbl_80323560[];
 s32 fn_800D1258(s32 chan, void *buf, s32 len, void *cb);
 s32 fn_800CDEF8(s32 chan);
@@ -4373,6 +4407,7 @@ s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
 #pragma push
 #pragma use_lmw_stmw on
 #pragma inline_depth(4)
+#pragma peephole on
 s32 fn_800DB370(TrkBuf *buf, u32 *data) {
     extern s32 gTRKBigEndian[];
     s32 err;
