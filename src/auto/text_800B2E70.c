@@ -1451,6 +1451,67 @@ typedef void (*voidfunctionptr)(void);
 extern voidfunctionptr _ctors[];
 void __init_user(void) { __init_cpp(); }
 
+void fn_800BAA78(UnkHeader_800BAA78 *hdr, u32 x, u32 y) {
+    u32 i;
+    UnkEntry_800BAA78 *e;
+    u8 *data;
+    u32 xh;
+    u32 y2;
+    u32 yh;
+    u32 x2;
+
+    y2 = y * 2 + 2;
+    x2 = x * 2;
+    xh = x >> 1;
+    yh = y >> 1;
+    e = hdr->entries;
+    data = (u8 *)&hdr->entries[hdr->count];
+    for (i = 0; i < hdr->count; i++, e++) {
+        switch (e->type) {
+        case 0:
+            e->unk8 = y2;
+            e->unkC = 0;
+            e->unk10 = x2 + e->unk10;
+            e->unk14 = x2 + e->unk14;
+            e->unk18 = data;
+            data += 0x2E;
+            break;
+        case 1:
+            e->unk8 = x2 + e->unk8;
+            e->unkC = x2 + e->unkC;
+            e->unk10 = x2 + e->unk10;
+            e->unk14 = x2 + e->unk14;
+            e->unk18 = data;
+            data += 0x2E;
+            break;
+        case 2:
+            e->unk8 = yh;
+            e->unkC = 0;
+            e->unk10 = xh + e->unk10;
+            e->unk14 = xh + e->unk14;
+            break;
+        case 3:
+            e->unk8 = xh + e->unk8;
+            e->unkC = xh + e->unkC;
+            e->unk10 = xh + e->unk10;
+            e->unk14 = xh + e->unk14;
+            break;
+        case 4:
+            e->unk8 = y;
+            e->unkC = 0;
+            e->unk10 = x + e->unk10;
+            e->unk14 = x + e->unk14;
+            break;
+        case 5:
+            e->unk8 = x + e->unk8;
+            e->unkC = x + e->unkC;
+            e->unk10 = x + e->unk10;
+            e->unk14 = x + e->unk14;
+            break;
+        }
+    }
+}
+
 void *fn_800BAC18(u32 *arg0, u32 arg1) {
     if (*arg0 > arg1) {
         return (u8 *)arg0 + arg1 * 0x1C + 4;
@@ -2120,6 +2181,53 @@ void fn_800C1364(void) {
  fn_800BA2C8(lbl_8035A6E4);
  } while(count == (u32)lbl_8035A6DC);
  OSRestoreInterrupts(enabled);
+}
+
+extern u16 lbl_803084E8[];
+extern u64 lbl_8035A708;
+void fn_800C168C(u16 dispPosY, u16 dispSizeY, u8 equ, u16 acv, u16 prbOdd, u16 prbEven, u16 psbOdd, u16 psbEven, BOOL black) {
+    u16 actualPrbOdd, actualPrbEven, actualPsbOdd, actualPsbEven, actualAcv, c, d;
+
+    if (lbl_803084E8[0x36] & 1) {
+        c = 1;
+        d = 2;
+    } else {
+        c = 2;
+        d = 1;
+    }
+
+    if (dispPosY % 2 == 0) {
+        actualPrbOdd = (u16)(prbOdd + d * dispPosY);
+        actualPsbOdd = (u16)(psbOdd + d * ((c * acv - dispSizeY) - dispPosY));
+        actualPrbEven = (u16)(prbEven + d * dispPosY);
+        actualPsbEven = (u16)(psbEven + d * ((c * acv - dispSizeY) - dispPosY));
+    } else {
+        actualPrbOdd = (u16)(prbEven + d * dispPosY);
+        actualPsbOdd = (u16)(psbEven + d * ((c * acv - dispSizeY) - dispPosY));
+        actualPrbEven = (u16)(prbOdd + d * dispPosY);
+        actualPsbEven = (u16)(psbOdd + d * ((c * acv - dispSizeY) - dispPosY));
+    }
+
+    actualAcv = (u16)(dispSizeY / c);
+
+    if (black) {
+        actualPrbOdd += 2 * actualAcv - 2;
+        actualPsbOdd += 2;
+        actualPrbEven += 2 * actualAcv - 2;
+        actualPsbEven += 2;
+        actualAcv = 0;
+    }
+
+    lbl_803084E8[0] = (u16)(equ | (actualAcv << 4));
+    lbl_8035A708 |= 0x8000000000000000ULL;
+    lbl_803084E8[7] = actualPrbOdd;
+    lbl_8035A708 |= 0x0100000000000000ULL;
+    lbl_803084E8[6] = actualPsbOdd;
+    lbl_8035A708 |= 0x0200000000000000ULL;
+    lbl_803084E8[9] = actualPrbEven;
+    lbl_8035A708 |= 0x0040000000000000ULL;
+    lbl_803084E8[8] = actualPsbEven;
+    lbl_8035A708 |= 0x0080000000000000ULL;
 }
 
 extern s32 lbl_8035A6DC;
@@ -5427,31 +5535,22 @@ void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
 }
 
 void fn_800D944C(s32 stage, s32 coord, u32 map, s32 color) {
-    typedef struct {
-        u8 pad0[0x100];
-        u32 tref[8];
-        u8 pad1[0x554 - 0x120];
-        u32 texmapId[16];
-        u32 tevTcEnab;
-        u8 pad2[0x5AC - 0x598];
-        u32 dirtyState;
-    } GXTevData;
     extern GXDataHead *__GXData;
     extern s32 lbl_802DFFA0[];
     u32 *ptref;
     u32 tmap;
     u32 tcoord;
 
-    ptref = &((GXTevData *)__GXData)->tref[stage / 2];
-    ((GXTevData *)__GXData)->texmapId[stage] = map;
+    ptref = (u32 *)((u8 *)__GXData + 0x100) + stage / 2;
+    ((u32 *)((u8 *)__GXData + 0x554))[stage] = map;
     tmap = map & ~0x100;
     tmap = (tmap >= 8) ? 0 : tmap;
     if (coord >= 8) {
         tcoord = 0;
-        ((GXTevData *)__GXData)->tevTcEnab &= ~(1 << stage);
+        M2C_FIELD(__GXData, u32 *, 0x598) &= ~(1 << stage);
     } else {
         tcoord = coord;
-        ((GXTevData *)__GXData)->tevTcEnab |= (1 << stage);
+        M2C_FIELD(__GXData, u32 *, 0x598) |= (1 << stage);
     }
     if (stage & 1) {
         SETF(*ptref, 3, 12, tmap);
@@ -5467,7 +5566,7 @@ void fn_800D944C(s32 stage, s32 coord, u32 map, s32 color) {
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = *ptref;
     __GXData->bpSentNot = 0;
-    ((GXTevData *)__GXData)->dirtyState |= 1;
+    M2C_FIELD(__GXData, u32 *, 0x5AC) |= 1;
 }
 
 void fn_800D95E8(u8 nStages) {
@@ -6481,6 +6580,60 @@ s32 TRKDispatchMessage(TrkBuf *buf) {
 s32 TRKInitializeDispatcher(void) {
     lbl_803257C8[0] = 0x20;
     return 0;
+}
+
+void fn_800E1AD8(u8 useSerial);
+void fn_800DC1D0(TrkBuf* buf) {
+    u8 opt;
+    u8 kind;
+    u8 value;
+    s32 err;
+    s32 n;
+    s32 ok;
+
+    opt = 0;
+    kind = 0;
+    value = 0;
+    fn_800DBAA0(buf, 0);
+    err = fn_800DB4F0(buf, &opt);
+    if (err == 0) {
+        err = fn_800DB4F0(buf, &kind);
+    }
+    if (err == 0) {
+        err = fn_800DB4F0(buf, &value);
+    }
+    if (err != 0) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x01;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+    } else if (kind == 1) {
+        fn_800E1AD8(value);
+    }
+    fn_800DBAD0(buf, 1);
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x80;
+        buf->count++;
+    }
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x00;
+        buf->count++;
+    }
+    n = 3;
+    do {
+        ok = fn_800DAF24(buf);
+        n--;
+    } while (ok != 0 && n > 0);
 }
 
 s32 fn_800DF874(void);
