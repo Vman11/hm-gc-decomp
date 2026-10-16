@@ -4,7 +4,7 @@ typedef struct { f32 x, y, z, w; } Quat_;
 extern f32 lbl_803637D8;
 
 void fn_801003A8(Quat_ *out, Quat_ *a, Quat_ *b) {
-    f32 bw, ax, aw, bx, ay, by, az, bz;
+    f32 bw, ax, aw, bx, bz, ay, by, az;
     ax = a->x;
     bw = b->w;
     ay = a->y;
