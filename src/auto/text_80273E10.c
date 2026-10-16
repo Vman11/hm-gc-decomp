@@ -58,6 +58,46 @@ typedef struct BitBuf {
 
 extern u32 lbl_802AB0C0[];
 
+static inline u32 BitBuf_Read(BitBuf *bs, u32 n) {
+    u32 bits = bs->bits;
+    u32 v;
+    if (bits >= n) {
+        u32 buf = bs->buf;
+        bs->bits = bits - n;
+        v = buf & (0xFFFFFFFF >> (32 - n));
+        bs->buf = buf >> n;
+    } else {
+        u32 *p = bs->ptr;
+        u32 buf = bs->buf;
+        u32 w = *p;
+        bs->bits = bits - (n - 32);
+        bs->ptr = p + 1;
+        bs->buf = w >> (n - bits);
+        v = (buf | (w << bits)) & (0xFFFFFFFF >> (32 - n));
+    }
+    return v;
+}
+
+static inline void BitBuf_Write(BitBuf *bs, u32 v, u32 n) {
+    u32 bits = bs->bits;
+    u32 buf;
+    v &= lbl_802AB0C0[n];
+    buf = bs->buf | (v << bits);
+    bits += n;
+    bs->buf = buf;
+    bs->bits = bits;
+    if (bits > 31) {
+        *bs->ptr = buf;
+        bs->ptr++;
+        bs->bits -= 32;
+        if (bs->bits != 0) {
+            bs->buf = v >> (n - bs->bits);
+        } else {
+            bs->buf = 0;
+        }
+    }
+}
+
 typedef struct {
     s32 unk0;
     f32 unk4;
@@ -4013,6 +4053,71 @@ void fn_8028B480(s32 n, u32 *dst, u32 *src) {
         *dst++ = (t2 << 16) + t2 + 0x800080;
         *dst++ = (t3 << 24) + (t3 << 8) + 0x800080;
     } while (i-- != 0);
+}
+
+void fn_8028B510(BitBuf *dst, BitBuf *src, u32 n) {
+    u32 v;
+    u32 w;
+
+    while (n > 7) {
+        if (src->bits > 7) {
+            v = src->buf & 0xFF;
+            src->bits -= 8;
+            src->buf >>= 8;
+        } else {
+            u32 bits = src->bits;
+            u32 *p = src->ptr;
+            u32 old = src->buf;
+            w = *p;
+            src->bits = bits + 24;
+            src->ptr = p + 1;
+            src->buf = w >> (8 - bits);
+            v = (old | (w << bits)) & 0xFF;
+        }
+        v &= lbl_802AB0C0[8];
+        dst->buf |= v << dst->bits;
+        dst->bits += 8;
+        if (dst->bits > 31) {
+            *dst->ptr = dst->buf;
+            dst->ptr++;
+            dst->bits -= 32;
+            if (dst->bits != 0) {
+                dst->buf = v >> (8 - dst->bits);
+            } else {
+                dst->buf = 0;
+            }
+        }
+        n -= 8;
+    }
+    if (n != 0) {
+        u32 bits = src->bits;
+        if (bits >= n) {
+            w = src->buf;
+            src->bits = bits - n;
+            v = w & (0xFFFFFFFF >> (32 - n));
+            src->buf = w >> n;
+        } else {
+            u32 *p = src->ptr;
+            w = *p;
+            v = (src->buf | (w << bits)) & (0xFFFFFFFF >> (32 - n));
+            src->ptr = p + 1;
+            src->buf = w >> (n - bits);
+            src->bits = bits - (n - 32);
+        }
+        v &= lbl_802AB0C0[n];
+        dst->buf |= v << dst->bits;
+        dst->bits += n;
+        if (dst->bits > 31) {
+            *dst->ptr = dst->buf;
+            dst->ptr++;
+            dst->bits -= 32;
+            if (dst->bits != 0) {
+                dst->buf = v >> (n - dst->bits);
+            } else {
+                dst->buf = 0;
+            }
+        }
+    }
 }
 
 void fn_8028BA78(s32 nw, s32 *ip, f32 *w);
