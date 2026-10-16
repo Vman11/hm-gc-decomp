@@ -354,12 +354,10 @@ void fn_80274A48(void) {
     fn_80274C8C();
 }
 
-void fn_80274BB4(void)
-{
-    s32 i;
-
+void fn_80274BB4(void) {
+    u32 i;
     for (i = 0; i < 0x1000; i++) {
-        lbl_8035B880[i] = 0;
+        *(u8*)((u32)lbl_8035B880 + i) = 0;
     }
 }
 
@@ -2068,6 +2066,47 @@ void fn_80284068(int a, int *p, int c, unsigned int d, int e, int f, int g) {
         p[3] = g;
     }
     p[11] = a;
+}
+
+void fn_802840C0(BitStream *bs, u8 *dst, u8 *a, u8 *b, s32 n) {
+    s32 nb = n;
+    s32 na = n;
+    u32 v;
+
+    do {
+        if (bs->count != 0) {
+            v = bs->bits;
+            bs->count--;
+            bs->bits = v >> 1;
+        } else {
+            v = *bs->ptr;
+            bs->ptr++;
+            bs->count = 31;
+            bs->bits = v >> 1;
+        }
+        if (v & 1) {
+            *dst = *b;
+            nb--;
+            b++;
+        } else {
+            *dst = *a;
+            na--;
+            a++;
+        }
+        dst++;
+    } while (na != 0 && nb != 0);
+
+    if (na != 0) {
+        do {
+            *dst++ = *a++;
+        } while (--na != 0);
+        return;
+    }
+    if (nb != 0) {
+        do {
+            *dst++ = *b++;
+        } while (--nb != 0);
+    }
 }
 
 void fn_802846B0(s32 arg0, s32 arg1) {
