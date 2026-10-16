@@ -122,8 +122,10 @@ void fn_80141970(ImgDec *p) {
 }
 
 void fn_801419BC(ImgDec *p) {
-    s32 n = p->count;
-    u8 *d = p->buf;
+    u8 *d;
+    s32 n;
+    n = p->count;
+    d = p->buf;
     do {
         d[0] = *p->src >> 4;
         if (--n == 0) return;
