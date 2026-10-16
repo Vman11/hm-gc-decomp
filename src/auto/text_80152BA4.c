@@ -15,32 +15,19 @@ u8 fn_80152E38(f32 *a, f32 *b) {
            a[12] == b[12] && a[13] == b[13] && a[14] == b[14] && a[15] == b[15];
 }
 
-void fn_80153358(f32 *dst, f32 *src) {
-    f32 a, b, c, d, e, f, g, h, i, j, k, l;
-    a = src[4];
-    b = src[8];
-    dst[1] = a;
-    c = src[12];
-    dst[2] = b;
-    d = src[1];
-    dst[3] = c;
-    e = src[9];
-    dst[4] = d;
-    f = src[13];
-    dst[6] = e;
-    g = src[2];
-    dst[7] = f;
-    h = src[6];
-    dst[8] = g;
-    i = src[14];
-    dst[9] = h;
-    j = src[3];
-    dst[11] = i;
-    k = src[7];
-    dst[12] = j;
-    l = src[11];
-    dst[13] = k;
-    dst[14] = l;
+void fn_80153358(f32 *__restrict dst, f32 *__restrict src) {
+    dst[1] = src[4];
+    dst[2] = src[8];
+    dst[3] = src[12];
+    dst[4] = src[1];
+    dst[6] = src[9];
+    dst[7] = src[13];
+    dst[8] = src[2];
+    dst[9] = src[6];
+    dst[11] = src[14];
+    dst[12] = src[3];
+    dst[13] = src[7];
+    dst[14] = src[11];
 }
 
 void fn_801533BC(void *arg0) {
