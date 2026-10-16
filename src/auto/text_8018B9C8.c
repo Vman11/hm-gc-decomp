@@ -1,6 +1,23 @@
 /* Functions from 0x8018B9C8 to 0x8018BB70, found by decomp-toolkit. */
 #include "common.h"
 
+typedef struct Elem8018B9C8 {
+    u32 flags;
+    u8 pad4[0x20];
+    f32 v24[3];
+    f32 v30[3];
+    f32 v3C[3];
+    f32 v48[3];
+    u8 pad54[0x44];
+} Elem8018B9C8;
+
+typedef struct Obj8018B9C8 {
+    u8 pad0[0x14];
+    s32 count;
+    u8 pad18[0x1C];
+    Elem8018B9C8* elems;
+} Obj8018B9C8;
+
 void fn_8018BAA8(void *arg0) {
     extern s32 lbl_80364A6C;
     char *p = M2C_FIELD(arg0, char **, 0x34);
