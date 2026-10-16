@@ -133,6 +133,22 @@ static inline s32 TRKAppendBuffer1_ui8(TrkBuf *buf, u8 data) {
     buf->count++;
     return 0;
 }
+static inline s32 TRKReadBuffer_inline(TrkBuf *buf, void *data, u32 length) {
+    extern void *fn_80003488(void *, const void *, u32);
+    s32 error = 0;
+    u32 bytesLeft;
+    if (length == 0) {
+        return 0;
+    }
+    bytesLeft = buf->count - buf->pos;
+    if (length > bytesLeft) {
+        error = 0x302;
+        length = bytesLeft;
+    }
+    fn_80003488(data, buf->data + buf->pos, length);
+    buf->pos += length;
+    return error;
+}
 s32 fn_800DF2F0(void *mutex);
 s32 fn_800DF2F8(void *mutex);
 s32 fn_800DF300(void *mutex);
@@ -2247,6 +2263,66 @@ void fn_800C9AB4(void *arg0) {
     OSRestoreInterrupts(enabled);
 }
 
+void fn_800C9DC0(u8 *arg0, f32 value) {
+ extern f32 lbl_803630C0;
+ s32 enabled;
+ u32 ratio;
+ enabled = OSDisableInterrupts();
+ value = lbl_803630C0 * value;
+ ratio = (u32)value;
+ if ((u32)value > 0x40000U) ratio = 0x40000;
+ *(u16 *)(arg0 + 0x1de) = ratio >> 16;
+ *(u16 *)(arg0 + 0x1e0) = ratio;
+ *(u32 *)(arg0 + 0x1c) |= 0x80000;
+ OSRestoreInterrupts(enabled);
+}
+
+void fn_800C9E58(u8 *arg0, u16 *arg1) {
+ u16 *dest = (u16 *)(arg0 + 0x1ec);
+ s32 enabled = OSDisableInterrupts();
+ dest[0] = arg1[0];
+ dest[1] = arg1[1];
+ dest[2] = arg1[2];
+ *(u32 *)(arg0 + 0x1c) |= 0x100000;
+ OSRestoreInterrupts(enabled);
+}
+
+s32 fn_800C9EC4(void) {
+ extern s32 lbl_8035A8B0;
+ extern u32 lbl_8035A8B4, lbl_8035A8B8, lbl_8035A8BC;
+ u32 index;
+ s32 result;
+ if (lbl_8035A8BC != 0) {
+  index = lbl_8035A8B8++;
+  result = lbl_8035A8B0 + index * 0x38;
+  lbl_8035A8B8 %= lbl_8035A8B4;
+  return result;
+ }
+ return 0;
+}
+
+void fn_800C9F0C(s32 *arg0) {
+ extern u8 lbl_802DE540[];
+ extern u32 lbl_8035A8C8;
+ s32 left = arg0[5];
+ s32 right = arg0[6];
+ s32 invLeft = 127 - left;
+ s32 invRight = 127 - right;
+ if (lbl_8035A8C8 == 3) {
+  arg0[8] = *(s16 *)(lbl_802DE540 + 0x98c + left * 2);
+  arg0[9] = *(s16 *)(lbl_802DE540 + 0x98c + invLeft * 2);
+  arg0[10] = *(s16 *)(lbl_802DE540 + 0x98c + invRight * 2);
+  arg0[11] = *(s16 *)(lbl_802DE540 + 0x98c + right * 2);
+  arg0[12] = *(s16 *)(lbl_802DE540 + 0xa8c + invLeft * 2);
+  arg0[13] = *(s16 *)(lbl_802DE540 + 0xa8c + left * 2);
+ } else {
+  arg0[8] = *(s32 *)(lbl_802DE540 + 0x78c + left * 4);
+  arg0[9] = *(s32 *)(lbl_802DE540 + 0x78c + invLeft * 4);
+  arg0[10] = *(s32 *)(lbl_802DE540 + 0x78c + invRight * 4);
+  arg0[11] = *(s32 *)(lbl_802DE540 + 0x78c + right * 4);
+ }
+}
+
 extern s32 lbl_8035A8C8;
 void fn_800CA090(s32 arg0) {
     lbl_8035A8C8 = arg0;
@@ -3485,7 +3561,7 @@ void fn_800D9188(s32 arg0, u8 *arg1) {
     GXWGFifo.u32 = b;
     __GXData->bpSentNot = 0;
 }
-
+#pragma optimize_for_size reset
 void fn_800D91FC(s32 arg0, s32 arg1) {
     extern GXDataHead *__GXData;
     u32 *reg = (u32 *)((u8 *)__GXData + (arg0 >> 1) * 4 + 0x1B0);
@@ -3514,7 +3590,7 @@ void fn_800D9258(s32 arg0, s32 arg1) {
 
 void fn_800D92B4(s32 arg0, s32 arg1, s32 arg2) {
     extern GXDataHead *const __GXData;
-    u32 *reg = (u32 *)((u8 *)__GXData + arg0 * 4 + 0x170);
+    u32 *reg = (u32 *)((u32)__GXData + (arg0 * 4 + 0x170));
     *reg = __rlwimi(*reg, arg1, 0, 30, 31);
     *reg = __rlwimi(*reg, arg2, 2, 28, 29);
     GXWGFifo.u8 = 0x61;
@@ -3741,29 +3817,30 @@ void fn_800DA010(f32 x, f32 y, f32 width, f32 height, f32 nearZ, f32 farZ) {
 }
 
 void fn_800DA058(f32 scale, f32 offset) {
-    extern GXDataHead *__GXData;
+    extern GXDataHead *const __GXData;
     extern f32 lbl_80363198;
     extern f32 lbl_8036318C;
-    GXDataHead *gx = __GXData;
     f32 zmin;
     f32 zmax;
+    f32 zScale;
     f32 zs;
-    offset = lbl_80363198 * offset;
+    f32 zOffset;
+    zOffset = lbl_80363198 * offset;
     zs = lbl_80363198 * scale;
-    M2C_FIELD(gx, f32 *, 0x50C) = offset;
-    scale = lbl_8036318C + zs;
-    M2C_FIELD(gx, f32 *, 0x510) = scale;
-    zmax = M2C_FIELD(gx, f32 *, 0x508) * scale;
-    zmin = M2C_FIELD(gx, f32 *, 0x504) * scale;
-    offset = offset + zmax;
+    M2C_FIELD(__GXData, f32 *, 0x50C) = zOffset;
+    zScale = lbl_8036318C + zs;
+    M2C_FIELD(__GXData, f32 *, 0x510) = zScale;
+    zmax = M2C_FIELD(__GXData, f32 *, 0x508) * zScale;
+    zmin = M2C_FIELD(__GXData, f32 *, 0x504) * zScale;
+    zOffset = zOffset + zmax;
     zmin = zmax - zmin;
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x101C;
     GXWGFifo.f32 = zmin;
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x101F;
-    GXWGFifo.f32 = offset;
-    gx->bpSentNot = 1;
+    GXWGFifo.f32 = zOffset;
+    __GXData->bpSentNot = 1;
 }
 
 void fn_800DA0C4(s32 left, s32 top, s32 wd, s32 ht) {
@@ -3901,28 +3978,27 @@ s32 TRKTerminateNub(void) {
     return 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw on
 s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
- extern void *fn_80003488(void *,const void *,u32);
- s32 i=0;
- s32 error=0;
+ extern s32 fn_800DB970(TrkBuf *, void *, u32);
+ s32 i;
+ s32 error;
+ i=0;
+ error=0;
  while (error==0 && i<length) {
-  u32 n=1;
-  s32 result=0;
-  u32 left=buf->count-buf->pos;
-  if(n>left) {result=0x302; n=left;}
-  fn_80003488(data+i,buf->data+buf->pos,n);
-  buf->pos+=n;
-  error=result;
+  error=fn_800DB970(buf,data+i,1);
   i++;
  }
  return error;
 }
-
+#pragma pop
 s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
     extern void *fn_80003488(void *, const void *, u32);
     s32 error = 0;
     u32 length = 1;
-    u32 bytesLeft = buf->count - buf->pos;
+    u32 bytesLeft;
+    bytesLeft = buf->count - buf->pos;
     if (length > bytesLeft) {
         error = 0x302;
         length = bytesLeft;
@@ -4481,6 +4557,16 @@ void TRK_main(void) {
 
 void TRKUARTInterruptHandler(void) {
 
+}
+
+void InitializeProgramEndTrap(void) {
+    extern void *fn_80003488(void *, const void *, u32);
+    extern void DCFlushRange(void *, u32);
+    extern u8 lbl_8029BEA0[];
+    u8 *endTrap = (u8 *)PPCHalt + 4;
+    fn_80003488(endTrap, lbl_8029BEA0, 4);
+    ICInvalidateRange(endTrap, 4);
+    DCFlushRange(endTrap, 4);
 }
 
 void TRK_board_display(char *str) {
