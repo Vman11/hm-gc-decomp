@@ -6473,7 +6473,7 @@ s32 fn_800E0C4C(void *data, u32 start, u32 *length, s32 accessOptions, s32 read)
     if (error != 0) {
         *length = 0;
     } else {
-        target_msr = fn_800DF4D0(0);
+        target_msr = fn_800DF4D0();
         user_msr = target_msr | (M2C_FIELD(&gTRKCPUState, u32 *, 0x1F8) & 0x10);
         if (read) {
             fn_800DF4E0(data, (void *)trans_ptr, *length, target_msr, user_msr);
