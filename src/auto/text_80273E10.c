@@ -49,6 +49,15 @@ typedef struct BitStream {
     s32 count;
 } BitStream;
 
+typedef struct BitBuf {
+    u32 *ptr;
+    u32 unk4;
+    u32 buf;
+    u32 bits;
+} BitBuf;
+
+extern u32 lbl_802AB0C0[];
+
 typedef struct {
     s32 unk0;
     f32 unk4;
