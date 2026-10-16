@@ -15,7 +15,7 @@ void fn_8014F934(f32 (*__restrict m)[4], f32 *__restrict v) {
     v[2] = m[2][1];
 }
 
-void fn_8014F950(f32 (*m)[4], f32 *v) {
+void fn_8014F950(f32 (*__restrict m)[4], f32 *__restrict v) {
     v[0] = m[0][0];
     v[1] = m[1][0];
     v[2] = m[2][0];
