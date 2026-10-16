@@ -1,17 +1,16 @@
 /* Functions from 0x802070F0 to 0x80207144, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_802070F0(f32 *arg0, f32 *arg1, f32 *arg2, f32 arg3) {
-    f32 x0 = arg1[0];
-    f32 x1 = arg1[1];
-    f32 x2 = arg1[2];
-    f32 x3 = arg1[3];
-    f32 y0 = arg2[0];
-    f32 y1 = arg2[1];
-    f32 y2 = arg2[2];
-    f32 y3 = arg2[3];
-    arg0[0] = x0 + arg3 * (y0 - x0);
-    arg0[1] = x1 + arg3 * (y1 - x1);
-    arg0[2] = x2 + arg3 * (y2 - x2);
-    arg0[3] = x3 + arg3 * (y3 - x3);
+void fn_802070F0(f32 *out, f32 *a, f32 *b, f32 t) {
+    f32 x = a[0];
+    f32 ry, rz, rw;
+    f32 y = a[1], z = a[2], w = a[3];
+    x = t * (b[0] - x) + x;
+    ry = t * (b[1] - y) + y;
+    rz = t * (b[2] - z) + z;
+    rw = t * (b[3] - w) + w;
+    out[0] = x;
+    out[1] = ry;
+    out[2] = rz;
+    out[3] = rw;
 }
