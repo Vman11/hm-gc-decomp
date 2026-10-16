@@ -1548,14 +1548,12 @@ void fn_8027DA74(s32 x, s32 count) {
         } while (n-- != 0);
     }
 }
-#pragma pop
 void fn_8027DD10(s32 x, s32 count) {
     extern s32 lbl_803008C0[];
     extern u32 *lbl_802F7AE0[];
     u8 *u;
     u32 *dst;
     u8 *v;
-    u8 *y;
     u32 *tbl;
     u32 c;
     s32 r, g, b;
@@ -1577,15 +1575,13 @@ void fn_8027DD10(s32 x, s32 count) {
             x++;
             dst = (u32 *)lbl_80300860[0];
             v = lbl_80300860[5];
-            y = lbl_80300860[2];
             r = t0[*u];
             lbl_80300860[9] = (u8 *)r;
             g = t2[*u] + t1[*v];
             lbl_80300860[8] = (u8 *)g;
             b = t3[*v];
             lbl_80300860[10] = (u8 *)b;
-            tbl = ytab[*y];
-            lbl_80300860[2] = y + 1;
+            tbl = ytab[*lbl_80300860[2]++];
             c = tbl[r] | (tbl[g] << 8) | (tbl[b] << 16);
             *dst = c;
             *(u32 *)(lbl_80300860[0] + (s32)lbl_80300860[17]) = c;
