@@ -1098,6 +1098,51 @@ double fn_800EFFC0(double x, int *eptr) {
     return x;
 }
 
+double fn_800F0210(double x, double *iptr)
+{
+    int i0, i1, j0;
+    unsigned i;
+    i0 = *(int *)&x;
+    i1 = *(1 + (int *)&x);
+    j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
+    if (j0 < 20) {
+        if (j0 < 0) {
+            *(int *)iptr = i0 & 0x80000000;
+            *(1 + (int *)iptr) = 0;
+            return x;
+        } else {
+            i = (0x000fffff) >> j0;
+            if (((i0 & i) | i1) == 0) {
+                *iptr = x;
+                *(int *)&x &= 0x80000000;
+                *(1 + (int *)&x) = 0;
+                return x;
+            } else {
+                *(int *)iptr = i0 & (~i);
+                *(1 + (int *)iptr) = 0;
+                return x - *iptr;
+            }
+        }
+    } else if (j0 > 51) {
+        *iptr = x;
+        *(int *)&x &= 0x80000000;
+        *(1 + (int *)&x) = 0;
+        return x;
+    } else {
+        i = ((unsigned)(0xffffffff)) >> (j0 - 20);
+        if ((i1 & i) == 0) {
+            *iptr = x;
+            *(int *)&x &= 0x80000000;
+            *(1 + (int *)&x) = 0;
+            return x;
+        } else {
+            *(int *)iptr = i0;
+            *(1 + (int *)iptr) = i1 & (~i);
+            return x - *iptr;
+        }
+    }
+}
+
 double fn_800F030C(double x) {
     extern double lbl_803636B8;
     double y[2];
@@ -1419,6 +1464,33 @@ u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext) {
     }
     ((volatile u32 *)0xCC006800)[chan * 5] = cpr;
     return prev;
+}
+
+extern void SetExiInterruptMask(s32 chan, EXIControl *exi);
+extern void *memmove(void *, const void *, unsigned long);
+BOOL EXIUnlock(s32 chan) {
+    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
+    BOOL enabled;
+    EXICallback unlockedCallback;
+
+    enabled = OSDisableInterrupts();
+    if (!(exi->state & 0x10)) {
+        OSRestoreInterrupts(enabled);
+        return FALSE;
+    }
+    exi->state &= ~0x10;
+    SetExiInterruptMask(chan, exi);
+
+    if (0 < exi->items) {
+        unlockedCallback = exi->queue[0].callback;
+        if (0 < --exi->items) {
+            memmove(&exi->queue[0], &exi->queue[1], sizeof(exi->queue[0]) * exi->items);
+        }
+        unlockedCallback(chan, 0);
+    }
+
+    OSRestoreInterrupts(enabled);
+    return TRUE;
 }
 
 extern char Ecb_80328410[];
