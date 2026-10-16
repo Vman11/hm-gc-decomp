@@ -1,5 +1,16 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
+typedef struct OSResetFunctionInfo {
+    s32 (*func)(s32);
+    u32 priority;
+    struct OSResetFunctionInfo *next;
+    struct OSResetFunctionInfo *prev;
+} OSResetFunctionInfo;
+typedef struct OSResetFunctionQueue {
+    OSResetFunctionInfo *head;
+    OSResetFunctionInfo *tail;
+} OSResetFunctionQueue;
+extern OSResetFunctionQueue ResetFunctionQueue_8035A5B8;
 typedef union PPCWGPipe {
     u8 u8;
     u16 u16;
