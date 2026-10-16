@@ -18,12 +18,13 @@ typedef struct Img {
 } Img;
 
 void fn_80142E60(Img *p) {
-    s32 n = p->n;
-    s32 m = p->m;
-    u8 *s = p->buf;
-    u8 *d = p->dst;
-    s32 e = n * 2 - m;
-    u8 *dend = d + m;
+    u8 *d, *s;
+    s32 n, m, e;
+    n = p->n;
+    s = p->buf;
+    m = p->m;
+    d = p->dst;
+    e = n * 2 - m;
     do {
         *d = *s;
         if (e <= 0) {
@@ -34,13 +35,13 @@ void fn_80142E60(Img *p) {
             s++;
             d++;
         }
-    } while (d < dend);
+    } while (d < p->dst + m);
 }
 
 void fn_80142FB0(Img *p) {
-    u8 *q;
-    u8 *end = p->px + p->n * 4;
-    for (q = p->px; q < end; q += 4) {
+    u8 *q = p->px;
+    u8 *end = q + p->n * 4;
+    for (; q < end; q += 4) {
         u8 f = 0;
         if (p->c[0] == q[0] && p->c[1] == q[1] && p->c[2] == q[2]) {
             f = 1;
@@ -52,10 +53,11 @@ void fn_80142FB0(Img *p) {
 }
 
 void fn_8014302C(Img *p) {
-    u8 *q;
-    u8 *end = p->px + p->n * 4;
-    for (q = p->px; q < end; q += 4) {
-        u8 f = 0;
+    u8 f;
+    u8 *q = p->px;
+    u8 *end = q + p->n * 4;
+    for (; q < end; q += 4) {
+        f = 0;
         if (p->c[0] == q[0] && p->c[1] == q[1] && p->c[2] == q[2]) {
             f = 1;
         }
