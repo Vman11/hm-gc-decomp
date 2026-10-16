@@ -11,6 +11,31 @@ void fn_800379B0(void) {
 
 }
 
+void fn_800379B4(void *arg0) {
+    s32 temp = M2C_FIELD(arg0, s32 *, 4);
+    M2C_FIELD(arg0, s32 *, 4) = 0;
+    M2C_FIELD(arg0, f32 *, 8) = lbl_8035BFC0;
+    M2C_FIELD(arg0, f32 *, 0xC) = lbl_8035BFC0;
+    M2C_FIELD(arg0, f32 *, 0x10) = lbl_8035BFC0;
+    M2C_FIELD(arg0, f32 *, 0x14) = lbl_8035BFC0;
+    M2C_FIELD(arg0, f32 *, 0x18) = lbl_8035BFC0;
+    M2C_FIELD(arg0, f32 *, 0x1C) = lbl_8035BFC0;
+    M2C_FIELD(arg0, f32 *, 0x20) = lbl_8035BFC0;
+    M2C_FIELD(arg0, f32 *, 0x24) = lbl_8035BFC0;
+    M2C_FIELD(arg0, s32 *, 0x28) = 0;
+    M2C_FIELD(arg0, s32 *, 0x2C) = 0;
+    M2C_FIELD(arg0, s32 *, 0x30) = 0;
+    M2C_FIELD(arg0, s32 *, 0x34) = 0;
+    M2C_FIELD(arg0, s32 *, 0x38) = 0;
+    M2C_FIELD(arg0, s32 *, 0x3C) = 0;
+    M2C_FIELD(arg0, s32 *, 0x40) = 0;
+    M2C_FIELD(arg0, s32 *, 0x44) = 0;
+    M2C_FIELD(arg0, s32 *, 0x48) = 0;
+    M2C_FIELD(arg0, s32 *, 0x4C) = 0;
+    M2C_FIELD(arg0, s32 *, 0x50) = 0;
+    M2C_FIELD(arg0, s32 *, 4) = temp;
+}
+
 void fn_80037A34(void) {
 
 }
