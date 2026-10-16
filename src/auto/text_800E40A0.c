@@ -41,6 +41,14 @@ void _ExitProcess(void);
 void __begin_critical_region(int region);
 void __end_critical_region(int region);
 void __kill_critical_regions(void);
+void fn_800E43C8(void *pool, void *ptr);
+void fn_800E4420(void *pool, void *ptr, u32 size);
+void fn_800E4578(void *pool, void *ptr);
+int fn_800E83C0(void *file);
+int fn_800E84F8(void *file);
+void *memset(void *, int, u32);
+extern u8 lbl_803280A8[];
+extern u8 lbl_8035A970;
 
 extern u8 __files[];
 
