@@ -36,7 +36,15 @@ void fn_8010041C(Quat_ *a, Quat_ *b) {
 }
 
 void fn_80100490(Quat_ *a, Quat_ *b) {
-    f32 aw = a->w, bx = b->x, by = b->y, ax = a->x, bw = b->w, ay = a->y, bz = b->z, az = a->z;
+    f32 bx, bw, by, bz, ax, ay, az, aw;
+    aw = a->w;
+    bx = b->x;
+    by = b->y;
+    ax = a->x;
+    bw = b->w;
+    ay = a->y;
+    bz = b->z;
+    az = a->z;
     a->x = -((bz * ay) - ((by * az) + ((ax * bw) + (bx * aw))));
     a->y = -((bx * az) - ((bz * ax) + ((ay * bw) + (by * aw))));
     a->z = -((by * ax) - ((bx * ay) + ((az * bw) + (bz * aw))));
