@@ -37,14 +37,11 @@ void fn_801BDB18(void *arg0, void *arg1) {
     M2C_FIELD(arg0, f32 *, 0x54) = temp_f0;
 }
 
-void fn_801BDB4C(u8 *arg0, f32 *arg1) {
-    f32 a = arg1[0];
-    f32 b = arg1[1];
-    f32 c = arg1[2];
-    f32 d = arg1[3];
-    *(f32 *)(arg0 + 0x58) = a;
-    *(f32 *)(arg0 + 0x5C) = b;
-    *(f32 *)(arg0 + 0x60) = c;
-    *(f32 *)(arg0 + 0x64) = d;
+void fn_801BDB4C(u8 *__restrict arg0, Rect_801BDAC8 *__restrict arg1) {
+    Rect_801BDAC8 *d = (Rect_801BDAC8 *)(arg0 + 0x58);
+    d->x0 = arg1->x0;
+    d->y0 = arg1->y0;
+    d->x1 = arg1->x1;
+    d->y1 = arg1->y1;
 }
 
