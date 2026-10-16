@@ -176,6 +176,19 @@ void fn_801414D4(ImgDec *p) {
     } while (d < e);
 }
 
+void fn_8014152C(ImgDec *p) {
+    u8 *d = p->dst;
+    u8 *e = d + p->count * 4;
+    do {
+        d[0] = p->src[0];
+        d[1] = p->src[1];
+        d[2] = p->src[2];
+        d[3] = 0xFF;
+        d += 4;
+        p->src += 4;
+    } while (d < e);
+}
+
 void fn_801416A4(ImgDec *p) {
     u8 *d = p->dst;
     u8 *e = d + p->count * 4;
