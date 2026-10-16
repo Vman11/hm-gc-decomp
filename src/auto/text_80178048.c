@@ -2,43 +2,40 @@
 #include "common.h"
 
 extern f32 lbl_8032F718[];
-void fn_80178048(void *arg0, s32 arg1, volatile f32 *arg2) {
-    f32 x = arg2[0];
-    s32 offset = arg1 * 16;
-    f32 y = arg2[1];
-    volatile f32 *dst;
-    f32 z = arg2[2];
-    f32 w;
-    *(f32 *)((u8 *)lbl_8032F718 + offset) = x;
-    dst = (f32 *)((u8 *)lbl_8032F718 + offset);
+void fn_80178048(void *arg0, s32 arg1, f32 *__restrict arg2) {
+    f32 x, y, z, w;
+    x = arg2[0];
+    y = arg2[1];
+    z = arg2[2];
+    lbl_8032F718[arg1 * 4 + 0] = x;
     w = arg2[3];
-    dst[1] = y;
+    lbl_8032F718[arg1 * 4 + 1] = y;
     x = arg2[4];
-    dst[2] = z;
+    lbl_8032F718[arg1 * 4 + 2] = z;
     y = arg2[5];
-    dst[3] = w;
+    lbl_8032F718[arg1 * 4 + 3] = w;
     z = arg2[6];
-    dst[4] = x;
+    lbl_8032F718[arg1 * 4 + 4] = x;
     w = arg2[7];
-    dst[5] = y;
+    lbl_8032F718[arg1 * 4 + 5] = y;
     x = arg2[8];
-    dst[6] = z;
+    lbl_8032F718[arg1 * 4 + 6] = z;
     y = arg2[9];
-    dst[7] = w;
+    lbl_8032F718[arg1 * 4 + 7] = w;
     z = arg2[10];
-    dst[8] = x;
+    lbl_8032F718[arg1 * 4 + 8] = x;
     w = arg2[11];
-    dst[9] = y;
+    lbl_8032F718[arg1 * 4 + 9] = y;
     x = arg2[12];
-    dst[10] = z;
+    lbl_8032F718[arg1 * 4 + 10] = z;
     y = arg2[13];
-    dst[11] = w;
+    lbl_8032F718[arg1 * 4 + 11] = w;
     z = arg2[14];
-    dst[12] = x;
-    w = arg2[15];
-    dst[13] = y;
-    dst[14] = z;
-    dst[15] = w;
+    lbl_8032F718[arg1 * 4 + 12] = x;
+    x = arg2[15];
+    lbl_8032F718[arg1 * 4 + 13] = y;
+    lbl_8032F718[arg1 * 4 + 14] = z;
+    lbl_8032F718[arg1 * 4 + 15] = x;
 }
 
 void fn_801780DC(void *arg0, s32 arg1, f32 *__restrict arg2) {
