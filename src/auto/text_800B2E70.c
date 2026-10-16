@@ -28,6 +28,15 @@ typedef struct __va_list_struct {
     char* input_arg_area;
     char* reg_save_area;
 } __va_list[1];
+typedef struct UnkVoice80321D60 {
+    s32 unk0;
+    u32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    u8 pad14[0x4C];
+} UnkVoice80321D60;
+extern UnkVoice80321D60 lbl_80321D60[];
 typedef __va_list va_list;
 extern int vprintf(const char* fmt, va_list args);
 extern u16 lbl_80359550;
@@ -662,6 +671,19 @@ s32 fn_800B91B8(void) {
     }
     fn_800B8D00(0, 0);
     return ret;
+}
+
+extern u8 __OSSystemCallVectorStart[];
+extern u8 __OSSystemCallVectorEnd[];
+extern void *memcpy(void *, const void *, unsigned long);
+extern void DCFlushRangeNoSync(void *, u32);
+extern void ICInvalidateRange(void *, u32);
+void __OSInitSystemCall(void) {
+    void *addr = (void *)0x80000C00;
+    memcpy(addr, __OSSystemCallVectorStart, __OSSystemCallVectorEnd - __OSSystemCallVectorStart);
+    DCFlushRangeNoSync(addr, 0x100);
+    __sync();
+    ICInvalidateRange(addr, 0x100);
 }
 
 void fn_800B9624(void) {
@@ -2242,6 +2264,45 @@ void fn_800D6884(u8 arg0, s32 arg1, s32 arg2) {
     *__peReg = (((((0 & ~1) | (arg0 & 1)) & ~0xE) | ((arg1 << 1) & 0xE)) & ~0x10) | ((arg2 << 4) & 0x10);
 }
 
+void fn_800D68A4(u32 x, u32 y, u32 *color) {
+    u32 addr = 0xC8000000;
+    addr = __rlwimi(addr, (u16)x, 2, 20, 29);
+    addr = __rlwimi(addr, y, 12, 10, 19);
+    addr = __rlwimi(addr, 0, 22, 8, 9);
+    *color = *(u32 *)addr;
+}
+
+void fn_800D68C8(u32 x, u32 y, u32 color) {
+    u32 addr = 0xC8000000;
+    addr = __rlwimi(addr, (u16)x, 2, 20, 29);
+    addr = __rlwimi(addr, y, 12, 10, 19);
+    addr = __rlwimi(addr, 0, 22, 8, 9);
+    *(u32 *)addr = color;
+}
+
+void fn_800D68E8(u32 x, u32 y, u32 z) {
+    u32 addr = 0xC8000000;
+    addr = __rlwimi(addr, (u16)x, 2, 20, 29);
+    addr = __rlwimi(addr, y, 12, 10, 19);
+    addr = __rlwimi(addr, 1, 22, 8, 9);
+    *(u32 *)addr = z;
+}
+
+extern void (*lbl_8035A940)(u16);
+void fn_800D694C(s16 interrupt, u8 *context) {
+    u8 exceptionContext[0x2C8];
+    u16 token = __peReg[7];
+
+    if (lbl_8035A940) {
+        OSClearContext(exceptionContext);
+        OSSetCurrentContext(exceptionContext);
+        lbl_8035A940(token);
+        OSClearContext(exceptionContext);
+        OSSetCurrentContext(context);
+    }
+    __peReg[5] = __rlwimi(__peReg[5], 1, 2, 29, 29);
+}
+
 void fn_800D746C(s32 arg0) {
     extern void *__GXData;
     M2C_FIELD(__GXData, s32 *, 0x1EC) = (s32) ((M2C_FIELD(__GXData, s32 *, 0x1EC) & ~0x180) | ((arg0 << 7) & 0x180));
@@ -2539,7 +2600,7 @@ s32 TRKDispatchMessage(TrkBuf *buf) {
     fn_800DBAA0(buf, 0);
     fn_800DB4F0(buf, &cmd);
     if (cmd < lbl_803257C8[0]) {
-        err = lbl_802E00D8[(u32)cmd](buf);
+        err = lbl_802E00D8[cmd](buf);
     }
     return err;
 }
