@@ -2416,23 +2416,26 @@ void fn_800D6E24(void) {
 }
 
 void fn_800D6E48(u16 left, u16 top, u16 wd, u16 ht) {
-    extern GXDataHead *const __GXData;
-    M2C_FIELD(__GXData, u32 *, 0x1E0) = 0;
-    M2C_FIELD(__GXData, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E0), left, 0, 22, 31);
-    M2C_FIELD(__GXData, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E0), top, 10, 12, 21);
-    M2C_FIELD(__GXData, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E0), 0x49, 24, 0, 7);
-    M2C_FIELD(__GXData, u32 *, 0x1E4) = 0;
-    M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), wd - 1, 0, 22, 31);
-    M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), ht - 1, 10, 12, 21);
-    M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), 0x4A, 24, 0, 7);
-}
-
-void fn_800D6F40(u16 wd) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
+    M2C_FIELD(gx, u32 *, 0x1E0) = 0;
+    M2C_FIELD(gx, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E0), left, 0, 22, 31);
+    M2C_FIELD(gx, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E0), top, 10, 12, 21);
+    M2C_FIELD(gx, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E0), 0x49, 24, 0, 7);
+    M2C_FIELD(gx, u32 *, 0x1E4) = 0;
+    M2C_FIELD(gx, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E4), wd - 1, 0, 22, 31);
+    M2C_FIELD(gx, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E4), ht - 1, 10, 12, 21);
+    M2C_FIELD(gx, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E4), 0x4A, 24, 0, 7);
+}
+
+void fn_800D6F40(u16 wd, u16 ht) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    u16 stride;
+    stride = (u16)(wd * 2);
     M2C_FIELD(gx, u32 *, 0x1E8) = 0;
-    SETF(M2C_FIELD(gx, u32 *, 0x1E8), 10, 0, (s32)(wd << 1) >> 5);
-    SETF(M2C_FIELD(gx, u32 *, 0x1E8), 8, 24, 0x4D);
+    SETF(M2C_FIELD(gx, u32 *, 0x1E8), 10, 0, stride >> 5);
+    M2C_FIELD(gx, u32 *, 0x1E8) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E8), 0x4D, 24, 0, 7);
 }
 
 void fn_800D70A4(u32 frame2field) {
@@ -2447,33 +2450,36 @@ void fn_800D70C8(u32 clamp) {
     GXDataHead *gx = __GXData;
     u8 clmpT = (clamp & 1) == 1;
     u8 clmpB = (clamp & 2) == 2;
-    SETF(M2C_FIELD(gx, u32 *, 0x1EC), 1, 0, clmpT);
-    SETF(M2C_FIELD(gx, u32 *, 0x1EC), 1, 1, clmpB);
-    SETF(M2C_FIELD(gx, u32 *, 0x1FC), 1, 0, clmpT);
-    SETF(M2C_FIELD(gx, u32 *, 0x1FC), 1, 1, clmpB);
+    M2C_FIELD(gx, u32 *, 0x1EC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1EC), clmpT, 0, 31, 31);
+    M2C_FIELD(gx, u32 *, 0x1EC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1EC), clmpB, 1, 30, 30);
+    M2C_FIELD(gx, u32 *, 0x1FC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1FC), clmpT, 0, 31, 31);
+    M2C_FIELD(gx, u32 *, 0x1FC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1FC), clmpB, 1, 30, 30);
 }
 
 void fn_800D71EC(GXColor clear_clr, u32 clear_z) {
     extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
     u32 reg;
+    u32 reg2;
+    u32 reg3;
     reg = 0;
-    SETF(reg, 8, 0, clear_clr.r);
-    SETF(reg, 8, 8, clear_clr.a);
-    SETF(reg, 8, 24, 0x4F);
+    reg = __rlwimi(reg, clear_clr.r, 0, 24, 31);
+    reg = __rlwimi(reg, clear_clr.a, 8, 16, 23);
+    reg = __rlwimi(reg, 0x4F, 24, 0, 7);
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = reg;
-    reg = 0;
-    SETF(reg, 8, 0, clear_clr.b);
-    SETF(reg, 8, 8, clear_clr.g);
-    SETF(reg, 8, 24, 0x50);
+    reg2 = 0;
+    reg2 = __rlwimi(reg2, clear_clr.b, 0, 24, 31);
+    reg2 = __rlwimi(reg2, clear_clr.g, 8, 16, 23);
+    reg2 = __rlwimi(reg2, 0x50, 24, 0, 7);
     GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = reg;
-    reg = 0;
-    SETF(reg, 24, 0, clear_z);
-    SETF(reg, 8, 24, 0x51);
+    GXWGFifo.u32 = reg2;
+    reg3 = 0;
+    reg3 = __rlwimi(reg3, clear_z, 0, 8, 31);
+    reg3 = __rlwimi(reg3, 0x51, 24, 0, 7);
     GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = reg;
-    __GXData->bpSentNot = 0;
+    GXWGFifo.u32 = reg3;
+    gx->bpSentNot = 0;
 }
 
 void fn_800D746C(s32 arg0) {
@@ -2627,8 +2633,61 @@ void fn_800D8774(u32 tmap, u32 tcoord) {
     gx->bpSentNot = 0;
 }
 
+void fn_800D8E94(u8 nIndStages) {
+    extern GXDataHead *const __GXData;
+    SETF(M2C_FIELD(__GXData, u32 *, 0x204), 3, 16, nIndStages);
+    M2C_FIELD(__GXData, u32 *, 0x5AC) |= 6;
+}
+
+void fn_800D8EB8(void) {
+    M2C_UNK fn_800D8CE4(M2C_UNK, M2C_UNK, M2C_UNK, M2C_UNK, M2C_UNK, M2C_UNK, M2C_UNK);
+    s32 spC;
+    s32 sp8;
+
+    sp8 = 0;
+    spC = 0;
+    fn_800D8CE4(0, 0, 0, 0, 0, 0, 0);
+}
+
 void fn_800D8F00(void) {
 
+}
+
+void __GXFlushTextureState(void) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = M2C_FIELD(gx, u32 *, 0x124);
+    gx->bpSentNot = 0;
+}
+
+void fn_800D8F28(s32 arg0, s32 arg1) {
+    extern GXDataHead *__GXData;
+    extern u32 lbl_802DFF50[4][5];
+    GXDataHead *gx;
+    u32 *a;
+    u32 *b;
+    u32 reg;
+
+    if (arg0 == 0) {
+        a = &lbl_802DFF50[0][arg1];
+        b = &lbl_802DFF50[2][arg1];
+    } else {
+        a = &lbl_802DFF50[1][arg1];
+        b = &lbl_802DFF50[3][arg1];
+    }
+    gx = __GXData;
+    reg = M2C_FIELD(gx, u32 *, 0x130 + arg0 * 4);
+    SETF(reg, 24, 0, *a);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    M2C_FIELD(gx, u32 *, 0x130 + arg0 * 4) = reg;
+    reg = M2C_FIELD(gx, u32 *, 0x170 + arg0 * 4);
+    SETF(reg, 20, 4, *b >> 4);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    M2C_FIELD(gx, u32 *, 0x170 + arg0 * 4) = reg;
+    gx->bpSentNot = 0;
 }
 
 void fn_800DA17C(u32 arg0) {
@@ -2654,6 +2713,11 @@ void fn_800DAB9C(void *arg0, s8 arg1) {
     M2C_FIELD(arg0, s8 *, 0) = arg1;
     M2C_FIELD(arg0, s32 *, 4) = 0;
     M2C_FIELD(arg0, s32 *, 8) = -1;
+}
+
+void TRKNubWelcome(void) {
+    void TRK_board_display(char *);
+    TRK_board_display("MetroTRK for GAMECUBE v2.0");
 }
 
 s32 fn_800DBAA0(void *arg0, u32 arg1) {
