@@ -38,8 +38,8 @@ typedef struct ImgPix {
 
 void fn_80140C78(ImgPix *p) {
     u8 *s = p->src;
-    u8 *m = p->mask;
     u8 *e = s + p->count * 4;
+    u8 *m = p->mask;
     do {
         if (*m != 0) {
             p->out[0] = s[0];
@@ -54,16 +54,16 @@ void fn_80140C78(ImgPix *p) {
 
 void fn_80140CDC(ImgPix *p) {
     u8 *s = p->src;
+    u8 *e = s + p->count * 4;
     u8 *m = p->mask;
     u16 *d = (u16 *)p->out;
-    u8 *e = s + p->count * 4;
     do {
         if (*m != 0) {
             u16 v;
-            v = (s[0] >> p->shr[0]) << p->shl[0];
-            v |= (s[1] >> p->shr[1]) << p->shl[1];
-            v |= (s[2] >> p->shr[2]) << p->shl[2];
-            v |= (s[3] >> p->shr[3]) << p->shl[3];
+            v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
+            v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
+            v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
+            v |= ((u32)s[3] >> p->shr[3]) << p->shl[3];
             *d = v;
         }
         s += 4;
@@ -75,15 +75,15 @@ void fn_80140CDC(ImgPix *p) {
 
 void fn_80140D98(ImgPix *p) {
     u8 *s = p->src;
+    u8 *e = s + p->count * 4;
     u8 *m = p->mask;
     u16 *d = (u16 *)p->out;
-    u8 *e = s + p->count * 4;
     do {
         if (*m != 0) {
             u16 v;
-            v = (s[0] >> p->shr[0]) << p->shl[0];
-            v |= (s[1] >> p->shr[1]) << p->shl[1];
-            v |= (s[2] >> p->shr[2]) << p->shl[2];
+            v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
+            v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
+            v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
             *d = v;
         }
         s += 4;
@@ -315,7 +315,7 @@ void fn_80142674(ImgDec *p) {
         p->out[1] = s[2] | (s[1] << 4);
         p->out[2] = s[4] | (s[3] << 4);
         p->out[3] = s[6] | (s[5] << 4);
-        p->out[4] = (s[7] << 4) | (p->out[4] & 0xF);
+        p->out[4] = ((s[7] << 4) & ~0xF) | (p->out[4] & 0xF);
         s += 8;
         p->out += 4;
     } while (s < e);
