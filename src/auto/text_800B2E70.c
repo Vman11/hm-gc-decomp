@@ -1862,6 +1862,7 @@ void fn_800DE8AC(TrkBuf* buf) {
 
 void fn_800DE95C(TrkBuf* buf, s8 a, s8 b) {
     s32 n;
+    s32 ok;
     fn_800DBAD0(buf, 1);
     if (buf->pos < 0x880) {
         buf->data[buf->pos++] = a;
@@ -1873,9 +1874,9 @@ void fn_800DE95C(TrkBuf* buf, s8 a, s8 b) {
     }
     n = 3;
     do {
+        ok = fn_800DAF24(buf);
         n--;
-        if (fn_800DAF24(buf) == 0) break;
-    } while (n > 0);
+    } while (ok != 0 && n > 0);
 }
 
 void fn_800DEA14(s32 arg0) {
