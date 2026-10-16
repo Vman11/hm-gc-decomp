@@ -767,6 +767,34 @@ s32 fn_800ECD08(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     return 0;
 }
 
+int fwide(void *file, int mode) {
+    MslFile *stream = (MslFile *)file;
+    int orientation;
+    int result;
+
+    if (stream == NULL || stream->mode.file_kind == 0) {
+        return 0;
+    }
+    orientation = stream->mode.file_orientation;
+    switch (orientation) {
+    case 0:
+        if (mode > 0) {
+            stream->mode.file_orientation = 2;
+        } else if (mode < 0) {
+            stream->mode.file_orientation = 1;
+        }
+        result = mode;
+        break;
+    case 2:
+        result = 1;
+        break;
+    case 1:
+        result = -1;
+        break;
+    }
+    return result;
+}
+
 double fn_800EF76C(double x, double y, int iy) {
     extern double lbl_803635C8;
     extern double lbl_803635D0;
