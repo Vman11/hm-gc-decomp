@@ -57,6 +57,16 @@ void __kill_critical_regions(void) {
 
 }
 
+extern u32 __fwrite(const void *ptr, u32 size, u32 count, void *file);
+extern int fn_800E8720(void *file, s32 offset, int mode);
+extern s32 lbl_8035A978;
+int fn_800E8014(int c) {
+    if (c == -1) {
+        return -1;
+    }
+    return lbl_802E06C8[(u8)c];
+}
+
 void fn_800E8DF8(u8 *d, const u8 *s, u32 n) {
     u32 a, b;
     u32 i;
