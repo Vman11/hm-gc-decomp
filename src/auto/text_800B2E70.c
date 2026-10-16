@@ -578,6 +578,11 @@ void fn_800BB714(void *arg0) {
     M2C_FIELD(arg0, u8 *, 9) = 0x7F;
 }
 
+void fn_800BB788(s32 *p) {
+    p[1] = 8;
+    p[2] = 0;
+}
+
 void fn_800BB79C(s32 *p) {
     extern u8 lbl_802D8F60[];
     extern f32 lbl_80363068;
@@ -1857,7 +1862,7 @@ void fn_800DE95C(TrkBuf* buf, s8 a, s8 b) {
 }
 
 void fn_800DEA14(s32 arg0) {
-    *(s32*)&lbl_803257D0 = arg0;
+    lbl_803257D0[0] = arg0;
 }
 
 s32 fn_800DF2F0(void) {
