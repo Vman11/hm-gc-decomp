@@ -902,27 +902,28 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
     }
 }
 
+extern f32 lbl_803630A0, lbl_803630A4, lbl_803630A8, lbl_803630AC;
 void fn_800BC02C(f32 m[4][4], f32 t, f32 b, f32 l, f32 r, f32 n, f32 f) {
-    f32 tmp;
-    tmp = 1.0f / (r - l);
-    m[0][0] = 2.0f * tmp;
-    m[0][1] = 0.0f;
-    m[0][2] = 0.0f;
+    f32 tmp, tmp2, tmp3;
+    tmp = lbl_803630A0 / (r - l);
+    tmp2 = lbl_803630A0 / (t - b);
+    m[0][0] = lbl_803630A4 * tmp;
+    m[0][1] = lbl_803630A8;
+    m[0][2] = lbl_803630A8;
+    tmp3 = lbl_803630A0 / (f - n);
     m[0][3] = tmp * -(r + l);
-    tmp = 1.0f / (t - b);
-    m[1][0] = 0.0f;
-    m[1][1] = 2.0f * tmp;
-    m[1][2] = 0.0f;
-    m[1][3] = tmp * -(t + b);
-    tmp = 1.0f / (f - n);
-    m[2][0] = 0.0f;
-    m[2][1] = 0.0f;
-    m[2][2] = -1.0f * tmp;
-    m[2][3] = -f * tmp;
-    m[3][0] = 0.0f;
-    m[3][1] = 0.0f;
-    m[3][2] = 0.0f;
-    m[3][3] = 1.0f;
+    m[1][0] = lbl_803630A8;
+    m[1][1] = lbl_803630A4 * tmp2;
+    m[1][2] = lbl_803630A8;
+    m[1][3] = tmp2 * -(t + b);
+    m[2][0] = lbl_803630A8;
+    m[2][1] = lbl_803630A8;
+    m[2][2] = lbl_803630AC * tmp3;
+    m[2][3] = -f * tmp3;
+    m[3][0] = lbl_803630A8;
+    m[3][1] = lbl_803630A8;
+    m[3][2] = lbl_803630A8;
+    m[3][3] = lbl_803630A0;
 }
 
 s32 DVDLowWaitCoverClose(s32 callback) {
@@ -1354,12 +1355,6 @@ u8 fn_800C4998(void) {
     return (u8) ((u32) *(u32 *)0xCC006C04 >> 8U);
 }
 
-extern u32 lbl_8035A7A8;
-extern u32 lbl_8035A7AC;
-extern void (*lbl_8035A7A0)(void);
-void fn_800C69D8();
-void OSClearContext(u8 *ctx);
-void OSSetCurrentContext(u8 *ctx);
 void fn_800C51B4(void) {
     *(u16 *)0xCC00500A = (*(u16 *)0xCC00500A & ~0x88) | 0x20;
 }
@@ -2109,10 +2104,10 @@ void fn_800D8F00(void) {
 
 void fn_800DA17C(u32 arg0) {
     extern u8 *__GXData;
-    *(volatile u8 *)0xCC008000 = 0x10;
-    *(volatile u32 *)0xCC008000 = 0x1005;
-    *(volatile u32 *)0xCC008000 = arg0;
-    *(volatile u16 *)(__GXData + 2) = 1;
+    GXWGFifo.u8 = 0x10;
+    GXWGFifo.u32 = 0x1005;
+    GXWGFifo.u32 = arg0;
+    *(u16 *)(__GXData + 2) = 1;
 }
 
 void fn_800DAA70(void) {
