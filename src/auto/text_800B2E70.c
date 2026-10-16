@@ -1893,6 +1893,16 @@ s32 fn_800CA098(void) {
     return lbl_8035A8C8;
 }
 
+void fn_800CAF1C(char *arg0) {
+    lbl_80321D60[*(s32 *)(arg0 + 0x18)].unk0 = 0;
+}
+
+void fn_800CAF3C(char *arg0, s32 arg1) {
+    UnkVoice80321D60 *v = &lbl_80321D60[*(s32 *)(arg0 + 0x18)];
+    v->unk8 = arg1;
+    v->unk4 |= 0x10000000;
+}
+
 s32 fn_800CC114(void) {
     return ((u16) *(u16 *)0xCC005000 >> 0xFU) & 1;
 }
