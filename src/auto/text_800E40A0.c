@@ -31,6 +31,10 @@ typedef struct EXIControl {
     } queue[3];
 } EXIControl;
 extern char Ecb_80328410[];
+s32 EXIGetID(s32, u32, u32 *);
+BOOL __EXIProbe(s32 chan);
+void __OSUnmaskInterrupts(u32);
+u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext);
 
 typedef struct FragmentInfo {
     void *eti_info;
@@ -1641,6 +1645,37 @@ u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext) {
     }
     ((volatile u32 *)0xCC006800)[chan * 5] = cpr;
     return prev;
+}
+
+BOOL __EXIProbe(s32 chan);
+BOOL EXIDeselect(s32 chan) {
+    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
+    BOOL enabled;
+    u32 cpr;
+
+    enabled = OSDisableInterrupts();
+    if (!(exi->state & 4)) {
+        OSRestoreInterrupts(enabled);
+        return FALSE;
+    }
+    exi->state &= ~4;
+    cpr = ((volatile u32 *)0xCC006800)[chan * 5];
+    ((volatile u32 *)0xCC006800)[chan * 5] = cpr & 0x405;
+    if (exi->state & 8) {
+        switch (chan) {
+        case 0:
+            __OSUnmaskInterrupts(0x100000);
+            break;
+        case 1:
+            __OSUnmaskInterrupts(0x20000);
+            break;
+        }
+    }
+    OSRestoreInterrupts(enabled);
+    if (chan != 2 && (cpr & 0x80)) {
+        return __EXIProbe(chan) ? TRUE : FALSE;
+    }
+    return TRUE;
 }
 
 extern void SetExiInterruptMask(s32 chan, EXIControl *exi);
