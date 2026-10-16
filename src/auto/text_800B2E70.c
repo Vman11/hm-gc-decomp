@@ -1158,6 +1158,12 @@ void fn_800C71AC(void* arg0) {
     }
 }
 
+void fn_800C75C0(void) {
+    extern u32 lbl_8035A7F4;
+    lbl_8035A7F0 = 0;
+    lbl_8035A7F4 = 0;
+}
+
 #pragma scheduling reset
 void fn_800C75D0(void** arg0) {
     if (lbl_8035A7F0 != 0) {
