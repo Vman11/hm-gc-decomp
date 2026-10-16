@@ -5600,7 +5600,7 @@ s32 fn_800E0B0C(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     gTRKExceptionStatus_802E01A4.exceptionDetected = FALSE;
 
     count = (lastRegister - firstRegister) + 1;
-    data = (u32 *)gTRKCPUState.pad0 + firstRegister;
+    data = (u32 *)&gTRKCPUState + firstRegister;
     *registersLengthPtr = count * sizeof(u32);
 
     if (read) {
