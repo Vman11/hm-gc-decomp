@@ -2,6 +2,25 @@
 #include "common.h"
 
 extern s32 lbl_8035ACB8;
+
+static inline void MtxMultVec4(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out) {
+    out[0] = v[0] * m[0][0];
+    out[1] = v[0] * m[1][0];
+    out[2] = v[0] * m[2][0];
+    out[3] = v[0] * m[3][0];
+    out[0] = v[1] * m[0][1] + out[0];
+    out[1] = v[1] * m[1][1] + out[1];
+    out[2] = v[1] * m[2][1] + out[2];
+    out[3] = v[1] * m[3][1] + out[3];
+    out[0] = v[2] * m[0][2] + out[0];
+    out[1] = v[2] * m[1][2] + out[1];
+    out[2] = v[2] * m[2][2] + out[2];
+    out[3] = v[2] * m[3][2] + out[3];
+    out[0] = out[0] + m[0][3];
+    out[1] = out[1] + m[1][3];
+    out[2] = out[2] + m[2][3];
+    out[3] = out[3] + m[3][3];
+}
 void fn_8014EB30(void **arg0) {
     extern u8 lbl_802E3F78[];
     extern u8 lbl_802E67C0[];
