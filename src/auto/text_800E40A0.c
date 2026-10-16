@@ -163,17 +163,11 @@ extern u8 lbl_803280A8[];
 extern u8 lbl_8035A970;
 void fn_800E43C8(void *pool, void *ptr) {
     u32 size;
-    u32 hdr;
 
     if (ptr == NULL) {
         return;
     }
-    hdr = ((u32 *)ptr)[-1];
-    if (hdr & 1) {
-        size = (((u32 *)ptr)[-2] & ~7) - 8;
-    } else {
-        size = ((u32 *)hdr)[2];
-    }
+    size = __msize_inline(ptr);
     if (size <= 0x44) {
         fn_800E4420(pool, ptr, size);
     } else {
