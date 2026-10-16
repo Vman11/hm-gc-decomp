@@ -254,6 +254,15 @@ void fn_801482C0(void *arg0, s16 arg1, s16 arg2, s32 arg3, s32 arg4, s32 arg5, s
     M2C_FIELD(arg0, s32 *, 0x10) = arg6;
 }
 
+void fn_801482DC(UnkStruct80148118 *__restrict dst, UnkStruct80148118 *__restrict src) {
+    dst->unk0 = src->unk0;
+    dst->unk2 = src->unk2;
+    dst->unk4 = src->unk4;
+    dst->unk8 = src->unk8;
+    dst->unkC = src->unkC;
+    dst->unk10 = src->unk10;
+}
+
 void fn_80148310(UnkStruct80148118* arg0) {
     arg0->unk0 = 0;
     arg0->unk2 = 0;
