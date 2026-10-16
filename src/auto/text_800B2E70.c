@@ -103,6 +103,11 @@ typedef struct TRKFramingState {
     u8 receiveState;
     s32 isEscape;
 } TRKFramingState;
+extern TRKFramingState lbl_803257B4;
+extern TrkBuf lbl_80323E00[3];
+s32 fn_800DF2F0(void *mutex);
+s32 fn_800DF2F8(void *mutex);
+s32 fn_800DF300(void *mutex);
 extern s32 lbl_803257D0[];
 extern void fn_800DBAD0(TrkBuf*, s32);
 extern s32 fn_800DAF24(TrkBuf*);
