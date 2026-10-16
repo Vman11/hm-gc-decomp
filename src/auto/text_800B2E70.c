@@ -2478,6 +2478,11 @@ void fn_800E18F0(void) {
     gDBCommTable.initInterrupts();
 }
 
+s32 TRKInitializeIntDrivenUART(s32 a0, s32 a1, s32 a2, void *a3) {
+    gDBCommTable.initialize(a3, TRKEXICallBack);
+    return 0;
+}
+
 void OSEnableScheduler(void);
 void TRKLoadContext(void *ctx, s32 v);
 u8 fn_800E1050(s32, s32, s32 *, s32);
