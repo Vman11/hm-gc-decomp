@@ -2468,6 +2468,14 @@ void TRKUARTInterruptHandler(void) {
 
 }
 
+void OSEnableScheduler(void);
+void TRKLoadContext(void *ctx, s32 v);
+u8 fn_800E1050(s32, s32, s32 *, s32);
+void TRKEXICallBack(s16 chan, void *ctx) {
+    OSEnableScheduler();
+    TRKLoadContext(ctx, 0x500);
+}
+
 s32 TRKTargetContinue(void) {
     TRKTargetSetStopped(0);
     UnreserveEXI2Port();
