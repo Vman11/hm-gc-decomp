@@ -2287,16 +2287,14 @@ void fn_800C9E58(u8 *arg0, u16 *arg1) {
  OSRestoreInterrupts(enabled);
 }
 
-s32 fn_800C9EC4(void) {
- extern s32 lbl_8035A8B0;
+void *fn_800C9EC4(void) {
+ extern u8 (*lbl_8035A8B0)[0x38];
  extern u32 lbl_8035A8B4, lbl_8035A8B8, lbl_8035A8BC;
- u32 index;
- s32 result;
- if (lbl_8035A8BC != 0) {
-  index = lbl_8035A8B8++;
-  result = lbl_8035A8B0 + index * 0x38;
-  lbl_8035A8B8 %= lbl_8035A8B4;
-  return result;
+ void *result;
+ if (lbl_8035A8BC) {
+ result = lbl_8035A8B0[lbl_8035A8B8++];
+ lbl_8035A8B8 %= lbl_8035A8B4;
+ return result;
  }
  return 0;
 }
@@ -3564,7 +3562,7 @@ void fn_800D9188(s32 arg0, u8 *arg1) {
 #pragma optimize_for_size reset
 void fn_800D91FC(s32 arg0, s32 arg1) {
     extern GXDataHead *__GXData;
-    u32 *reg = (u32 *)((u8 *)__GXData + (arg0 >> 1) * 4 + 0x1B0);
+    u32 *reg = (u32 *)((u32)__GXData + ((arg0 >> 1) * 4 + 0x1B0));
     if (arg0 & 1) {
         *reg = __rlwimi(*reg, arg1, 14, 13, 17);
     } else {
@@ -3826,8 +3824,8 @@ void fn_800DA058(f32 scale, f32 offset) {
     f32 zs;
     f32 zOffset;
     zOffset = lbl_80363198 * offset;
-    zs = lbl_80363198 * scale;
     M2C_FIELD(__GXData, f32 *, 0x50C) = zOffset;
+    zs = lbl_80363198 * scale;
     zScale = lbl_8036318C + zs;
     M2C_FIELD(__GXData, f32 *, 0x510) = zScale;
     zmax = M2C_FIELD(__GXData, f32 *, 0x508) * zScale;
@@ -3980,14 +3978,22 @@ s32 TRKTerminateNub(void) {
 
 #pragma push
 #pragma use_lmw_stmw on
+#pragma peephole off
 s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
- extern s32 fn_800DB970(TrkBuf *, void *, u32);
+ extern void *fn_80003488(void *,const void *,u32);
+ s32 result;
+ u32 n;
  s32 i;
  s32 error;
- i=0;
- error=0;
+ i=0; error=0;
  while (error==0 && i<length) {
-  error=fn_800DB970(buf,data+i,1);
+  u32 left=buf->count-buf->pos;
+  n=1;
+  result=0;
+  if(n>left) {result=0x302; n=left;}
+  fn_80003488(data+i,buf->data+buf->pos,n);
+  buf->pos+=n;
+  error=result;
   i++;
  }
  return error;
@@ -4200,6 +4206,26 @@ s32 TRKDispatchMessage(TrkBuf *buf) {
 s32 TRKInitializeDispatcher(void) {
     lbl_803257C8[0] = 0x20;
     return 0;
+}
+
+void fn_800DE7F0(TrkBuf* buf) {
+    s32 n;
+    s32 ok;
+    lbl_803257D0[0] = 1;
+    fn_800DBAD0(buf, 1);
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x80;
+        buf->count++;
+    }
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x00;
+        buf->count++;
+    }
+    n = 3;
+    do {
+        ok = fn_800DAF24(buf);
+        n--;
+    } while (ok != 0 && n > 0);
 }
 
 void fn_800DE8AC(TrkBuf* buf) {
