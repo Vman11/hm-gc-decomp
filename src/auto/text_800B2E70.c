@@ -1931,8 +1931,6 @@ void fn_800C74DC(void);
 void fn_800C8058(void);
 void fn_800C8464(s32);
 void fn_800C6EEC(s32);
-#pragma push
-#pragma scheduling off
 void fn_800C6FF8(void) {
     u32 i;
     s32 *head;
@@ -1945,7 +1943,6 @@ void fn_800C6FF8(void) {
         *tail++ = 0;
     }
 }
-#pragma pop
 
 #pragma scheduling on
 void fn_800C7160(void* arg0) {
