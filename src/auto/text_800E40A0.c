@@ -232,6 +232,28 @@ s32 fn_800E7F00(s32 arg0) {
     return (temp_r4 ^ arg0) - temp_r4;
 }
 
+int __flush_buffer(MslFile *file, u32 *length) {
+    u32 count;
+    int result;
+    count = file->buffer_ptr - file->buffer;
+    if (count != 0) {
+        file->buffer_len = count;
+        result = file->write_proc(file->handle, file->buffer, &file->buffer_len, file->ref_con);
+        if (length != NULL) {
+            *length = file->buffer_len;
+        }
+        if (result != 0) {
+            return result;
+        }
+        file->position += file->buffer_len;
+    }
+    file->buffer_ptr = file->buffer;
+    file->buffer_len = file->buffer_size;
+    file->buffer_len -= file->position & file->buffer_alignment;
+    file->buffer_position = file->position;
+    return 0;
+}
+
 void __prep_buffer(void *arg0) {
     M2C_FIELD(arg0, s32 *, 0x24) = (s32) M2C_FIELD(arg0, s32 *, 0x1C);
     M2C_FIELD(arg0, s32 *, 0x28) = (s32) M2C_FIELD(arg0, s32 *, 0x20);
