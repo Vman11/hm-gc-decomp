@@ -737,6 +737,45 @@ void OSReport(const char* msg, ...) {
     vprintf(msg, &args);
 }
 
+void fn_800C182C(GXRenderModeObj *rmode);
+void fn_800C2054(u32 a, u32 b, u32 c, u32 d);
+void fn_800B5F28(u16 fbWidth, u16 height) {
+    GXRenderModeObj rmode;
+
+    rmode.fbWidth = fbWidth;
+    rmode.efbHeight = 0x1E0;
+    rmode.xfbHeight = height;
+    rmode.viXOrigin = 0x28;
+    rmode.viWidth = 0x280;
+    rmode.viHeight = height;
+    switch (VIGetTvFormat()) {
+    case 0:
+    case 2:
+        if (*(volatile u16 *)0xCC00206C & 1) {
+            rmode.viTVmode = 2;
+            rmode.viYOrigin = 0;
+            rmode.xFBmode = 0;
+        } else {
+            rmode.viTVmode = 0;
+            rmode.viYOrigin = 0;
+            rmode.xFBmode = 1;
+        }
+        break;
+    case 5:
+        rmode.viTVmode = 0x14;
+        rmode.viYOrigin = 0;
+        rmode.xFBmode = 1;
+        break;
+    case 1:
+        rmode.viTVmode = 4;
+        rmode.viYOrigin = 0x2F;
+        rmode.xFBmode = 1;
+        break;
+    }
+    fn_800C182C(&rmode);
+    fn_800C2054(0, 0, 0x280, 0x1E0);
+}
+
 u16 fn_800B6B0C(void) {
     if (lbl_80359550 > 1) {
         if (*(s32*)0x800000CC == 0) {
@@ -5029,6 +5068,53 @@ s32 fn_800DB438(TrkBuf *buf, u16 *data) {
 s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
     return TRKReadBuffer_inline(buf, data, 1);
 }
+
+s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
+    extern s32 gTRKBigEndian[];
+    extern void *fn_80003488(void *, const void *, u32);
+    s32 i;
+    s32 err;
+
+    err = 0;
+    for (i = 0; err == 0 && i < count; i++) {
+        u32 value;
+        u8 *bigEndianData;
+        u8 *byteData;
+        u8 swapBuffer[4];
+        s32 error;
+        u32 length;
+        u32 bytesLeft;
+
+        value = data[i];
+        if (gTRKBigEndian[0]) {
+            bigEndianData = (u8 *)&value;
+        } else {
+            byteData = (u8 *)&value;
+            bigEndianData = swapBuffer;
+            bigEndianData[0] = byteData[3];
+            bigEndianData[1] = byteData[2];
+            bigEndianData[2] = byteData[1];
+            bigEndianData[3] = byteData[0];
+        }
+        length = 4;
+        error = 0;
+        bytesLeft = 0x880 - buf->pos;
+        if (bytesLeft < length) {
+            error = 0x301;
+            length = bytesLeft;
+        }
+        if (length == 1) {
+            buf->data[buf->pos] = *bigEndianData;
+        } else {
+            fn_80003488(buf->data + buf->pos, bigEndianData, length);
+        }
+        buf->pos += length;
+        buf->count = buf->pos;
+        err = error;
+    }
+    return err;
+}
+
 #pragma pop
 
 #pragma push
@@ -5039,6 +5125,47 @@ s32 fn_800DB66C(TrkBuf *buf, u8 *data, s32 count) {
         err = TRKAppendBuffer1_ui8(buf, data[i]);
     }
     return err;
+}
+
+s32 fn_800DB6D4(TrkBuf *buf, u64 data) {
+    extern s32 gTRKBigEndian[];
+    extern void *fn_80003488(void *, const void *, u32);
+    u8 *bigEndianData;
+    u8 *byteData;
+    u8 swapBuffer[8];
+    s32 error;
+    u32 length;
+    u32 bytesLeft;
+
+    if (gTRKBigEndian[0]) {
+        bigEndianData = (u8 *)&data;
+    } else {
+        byteData = (u8 *)&data;
+        bigEndianData = swapBuffer;
+        bigEndianData[0] = byteData[7];
+        bigEndianData[1] = byteData[6];
+        bigEndianData[2] = byteData[5];
+        bigEndianData[3] = byteData[4];
+        bigEndianData[4] = byteData[3];
+        bigEndianData[5] = byteData[2];
+        bigEndianData[6] = byteData[1];
+        bigEndianData[7] = byteData[0];
+    }
+    length = 8;
+    error = 0;
+    bytesLeft = 0x880 - buf->pos;
+    if (bytesLeft < length) {
+        error = 0x301;
+        length = bytesLeft;
+    }
+    if (length == 1) {
+        buf->data[buf->pos] = *bigEndianData;
+    } else {
+        fn_80003488(buf->data + buf->pos, bigEndianData, length);
+    }
+    buf->pos += length;
+    buf->count = buf->pos;
+    return error;
 }
 
 s32 fn_800DB7D0(TrkBuf *buf, u32 data) {
