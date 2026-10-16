@@ -1150,6 +1150,45 @@ s32 fn_8027AC20(void *arg0, u32 arg1, u8 *arg2, u32 arg3) {
     return total;
 }
 
+void fn_8027AE40(s32 arg0, void *arg1);
+void fn_8027AFC0(void *arg0) {
+    u8 *p = arg0;
+    s32 status = DVDGetDriveStatus();
+    s32 len = *(s32 *)(p + 0xB0) - *(s32 *)(p + 0x88);
+    switch (status) {
+    case -1:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 11:
+        *(s32 *)(p + 0x1C) = 1;
+        return;
+    }
+    if (*(s32 *)(p + 0xBC) == 0 && (status == 0 || status == 10)) {
+        if (*(u32 *)(p + 0x98) > 0xFFF && len != 0) {
+            *(s32 *)(p + 0xC0) = *(s32 *)(p + 0x28);
+            *(s32 *)(p + 0xC4) = fn_802753F0();
+            *(s32 *)(p + 0x20) = 1;
+            if ((u32)len > 0x1000) {
+                len = 0x1000;
+            } else if (len & 0x1F) {
+                s32 pad = -len & 0x1F;
+                *(s32 *)(p + 0x8C) = pad;
+                len += pad;
+            }
+            fn_800BD810(p + 0x4C, *(s32 *)(p + 0xA4), len,
+                        *(s32 *)(p + 0x88) - *(s32 *)(p + 0x8C) + *(s32 *)(p + 0xAC),
+                        (s32)fn_8027AE40, 0);
+        } else {
+            *(s32 *)(p + 0x44) = *(s32 *)(p + 0x48);
+        }
+    }
+}
+
 s32 fn_8027B0D4(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 0x1C) != 0) {
         return 0;
@@ -2339,7 +2378,6 @@ void fn_80285D24(u32 *arg0, u32 arg1) {
     arg0[8] = fn_80285CE0(0x200, arg1, 4, 0x30);
 }
 
-extern u32 lbl_80301D30;
 void fn_802876F8(u8 **arg0, u32 size) {
 }
 
@@ -2372,15 +2410,20 @@ void fn_8028A7BC(void) {
 }
 
 #pragma push
-#pragma scheduling off
+#pragma optimize_for_size off
+#pragma scheduling on
 void fn_8028AEAC(s32 n) {
-    u32 *dst = (u32 *)lbl_80300860[0];
-    u32 *src = (u32 *)lbl_80300860[2];
-    s32 i = n - 1;
+    u32 *dst;
+    u32 *src;
+    s32 i;
+
+    dst = (u32 *)lbl_80300860[0];
+    src = (u32 *)lbl_80300860[2];
+    i = n - 1;
     if (n) do {
         u32 v = *src++;
-        *dst = (v & 0xFF000000) + ((v >> 8) & 0xFF00) + 0x800080;
-        *++dst = ((v << 16) & 0xFF000000) + ((v & 0xFF) << 8) + 0x800080;
+        *dst = ((v & 0xFF000000) + ((v >> 8) & 0xFF00)) + 0x800080;
+        *++dst = (((v << 16) & 0xFF000000) + ((v & 0xFF) << 8)) + 0x800080;
         dst++;
     } while (i-- != 0);
     dst = (u32 *)lbl_80300860[1];
@@ -2388,8 +2431,8 @@ void fn_8028AEAC(s32 n) {
     i = n - 1;
     if (n) do {
         u32 v = *src++;
-        *dst = (v & 0xFF000000) + ((v >> 8) & 0xFF00) + 0x800080;
-        *++dst = ((v << 16) & 0xFF000000) + ((v & 0xFF) << 8) + 0x800080;
+        *dst = ((v & 0xFF000000) + ((v >> 8) & 0xFF00)) + 0x800080;
+        *++dst = (((v << 16) & 0xFF000000) + ((v & 0xFF) << 8)) + 0x800080;
         dst++;
     } while (i-- != 0);
     lbl_80300860[0] += n * 8;
