@@ -711,6 +711,41 @@ void fn_80142204(ImgPix *p) {
     } while (s < e);
 }
 
+void fn_801422DC(ImgPix *p) {
+    u16 *d;
+    u8 *s;
+    u8 *e;
+    s = p->src;
+    d = (u16 *)p->out;
+    e = s + 0x80;
+    do {
+        u32 v;
+        v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
+        v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
+        v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
+        v |= ((u32)s[3] >> p->shr[3]) << p->shl[3];
+        d[0] = v;
+        v = ((u32)s[4] >> p->shr[0]) << p->shl[0];
+        v |= ((u32)s[5] >> p->shr[1]) << p->shl[1];
+        v |= ((u32)s[6] >> p->shr[2]) << p->shl[2];
+        v |= ((u32)s[7] >> p->shr[3]) << p->shl[3];
+        d[1] = v;
+        v = ((u32)s[8] >> p->shr[0]) << p->shl[0];
+        v |= ((u32)s[9] >> p->shr[1]) << p->shl[1];
+        v |= ((u32)s[10] >> p->shr[2]) << p->shl[2];
+        v |= ((u32)s[11] >> p->shr[3]) << p->shl[3];
+        d[2] = v;
+        v = ((u32)s[12] >> p->shr[0]) << p->shl[0];
+        v |= ((u32)s[13] >> p->shr[1]) << p->shl[1];
+        v |= ((u32)s[14] >> p->shr[2]) << p->shl[2];
+        v |= ((u32)s[15] >> p->shr[3]) << p->shl[3];
+        s += 16;
+        d[3] = v;
+        d += 4;
+    } while (s < e);
+    p->out += 0x40;
+}
+
 void fn_80142488(ImgPix *p) {
     u16 *d;
     u8 *s;
