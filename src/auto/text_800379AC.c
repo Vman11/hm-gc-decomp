@@ -1,6 +1,8 @@
 /* Functions from 0x800379AC to 0x80037E64, found by decomp-toolkit. */
 #include "common.h"
 
+extern f32 lbl_8035BFC0;
+
 void fn_800379AC(void) {
 
 }
@@ -27,6 +29,27 @@ s32 fn_80037AA4(void *arg0, s32 arg1) {
     case 0x70: return M2C_FIELD(arg0, s32 *, 0x4C);
     case 0x71: return M2C_FIELD(arg0, s32 *, 0x50);
     default: return 0;
+    }
+}
+
+void fn_80037B28(void *arg0, void *arg1) {
+    switch (M2C_FIELD(arg1, s32 *, 0xC)) {
+    case 0x5E: M2C_FIELD(arg0, f32 *, 8) = M2C_FIELD(arg1, f32 *, 0x10); break;
+    case 0x5F: M2C_FIELD(arg0, f32 *, 0xC) = M2C_FIELD(arg1, f32 *, 0x10); break;
+    case 0x60: M2C_FIELD(arg0, f32 *, 0x10) = M2C_FIELD(arg1, f32 *, 0x10); break;
+    case 0x61: M2C_FIELD(arg0, f32 *, 0x14) = M2C_FIELD(arg1, f32 *, 0x10); break;
+    case 0x62: M2C_FIELD(arg0, f32 *, 0x20) = M2C_FIELD(arg1, f32 *, 0x10); break;
+    case 0x63: M2C_FIELD(arg0, f32 *, 0x24) = M2C_FIELD(arg1, f32 *, 0x10); break;
+    case 0x64:
+        if (M2C_FIELD(arg1, f32 *, 0x10) > 0.0) {
+            if (M2C_FIELD(arg0, s32 *, 0x54) == 0) {
+                M2C_FIELD(arg0, s32 *, 0x34) = 1;
+            }
+        } else {
+            M2C_FIELD(arg0, s32 *, 0x34) = 0;
+            M2C_FIELD(arg0, s32 *, 0x54) = 0;
+        }
+        break;
     }
 }
 
