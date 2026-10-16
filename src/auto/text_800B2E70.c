@@ -227,7 +227,7 @@ extern TrkDispatchFunc lbl_802E00D8[];
 extern void fn_800DBAD0(TrkBuf*, s32);
 extern s32 fn_800DAF24(TrkBuf*);
 s32 fn_800DEA20(void);
-s32 fn_800DF4D0(void*);
+s32 fn_800DF4D0();
 typedef struct DBCommTable {
     s32 (*initialize)(void *, void *);
     void (*initInterrupts)(void);
@@ -822,6 +822,23 @@ void OSReport(const char* msg, ...) {
     struct __va_list_struct args;
     __builtin_va_info(&args);
     vprintf(msg, &args);
+}
+
+void fn_800B5520(char* file, int line, char* msg, ...) {
+    struct __va_list_struct marker;
+    u32 i;
+    u32* p;
+
+    OSDisableInterrupts();
+    __builtin_va_info(&marker);
+    vprintf(msg, &marker);
+    OSReport(" in \"%s\" on line %d.\n", file, line);
+
+    OSReport("\nAddress:      Back Chain    LR Save\n");
+    for (i = 0, p = (u32*)fn_800B50D0(); p && (u32)p != 0xffffffff && i++ < 16; p = (u32*)*p) {
+        OSReport("0x%08x:   0x%08x    0x%08x\n", p, p[0], p[1]);
+    }
+    PPCHalt();
 }
 
 void fn_800C182C(GXRenderModeObj *rmode);
@@ -4572,6 +4589,46 @@ void fn_800D8CE4(u32 tevStage, u32 indStage, u32 format, u32 biasSel, u32 mtxSel
     __GXData->bpSentNot = 0;
 }
 
+void fn_800D8D50(s32 indStage, s32 scaleS, s32 scaleT) {
+    extern GXDataHead *const __GXData;
+    u32 *reg;
+    switch (indStage) {
+    case 0:
+        reg = &M2C_FIELD(__GXData, u32 *, 0x128);
+        *reg = __rlwimi(*reg, scaleS, 0, 28, 31);
+        *reg = __rlwimi(*reg, scaleT, 4, 24, 27);
+        *reg = __rlwimi(*reg, 0x25, 24, 0, 7);
+        GXWGFifo.u8 = 0x61;
+        GXWGFifo.u32 = *reg;
+        break;
+    case 1:
+        reg = &M2C_FIELD(__GXData, u32 *, 0x128);
+        *reg = __rlwimi(*reg, scaleS, 8, 20, 23);
+        *reg = __rlwimi(*reg, scaleT, 12, 16, 19);
+        *reg = __rlwimi(*reg, 0x25, 24, 0, 7);
+        GXWGFifo.u8 = 0x61;
+        GXWGFifo.u32 = *reg;
+        break;
+    case 2:
+        reg = &M2C_FIELD(__GXData, u32 *, 0x12C);
+        *reg = __rlwimi(*reg, scaleS, 0, 28, 31);
+        *reg = __rlwimi(*reg, scaleT, 4, 24, 27);
+        *reg = __rlwimi(*reg, 0x26, 24, 0, 7);
+        GXWGFifo.u8 = 0x61;
+        GXWGFifo.u32 = *reg;
+        break;
+    case 3:
+        reg = &M2C_FIELD(__GXData, u32 *, 0x12C);
+        *reg = __rlwimi(*reg, scaleS, 8, 20, 23);
+        *reg = __rlwimi(*reg, scaleT, 12, 16, 19);
+        *reg = __rlwimi(*reg, 0x26, 24, 0, 7);
+        GXWGFifo.u8 = 0x61;
+        GXWGFifo.u32 = *reg;
+        break;
+    }
+    __GXData->bpSentNot = 0;
+}
+
 void fn_800D8E94(u8 nIndStages) {
     extern GXDataHead *const __GXData;
     SETF(M2C_FIELD(__GXData, u32 *, 0x204), 3, 16, nIndStages);
@@ -5270,6 +5327,49 @@ s32 TRKTerminateNub(void) {
     s32 fn_800DBCDC(void);
     fn_800DBCDC();
     return 0;
+}
+
+s32 TRKInitializeNub(void) {
+    extern s32 gTRKBigEndian[];
+    extern u8 *gTRKInputPendingPtr[];
+    extern void usr_put_initialize(void);
+    extern s32 TRKInitializeMessageBuffers(void);
+    extern s32 TRKInitializeDispatcher(void);
+    extern void InitializeProgramEndTrap(void);
+    extern s32 TRKInitializeIntDrivenUART(s32 a0, s32 a1, s32 a2, void *a3);
+    extern void TRKTargetSetInputPendingPtr(s32 arg0);
+    extern s32 TRKInitializeSerialHandler(void);
+    extern s32 TRKInitializeTarget(void);
+    s32 result = 0;
+    s32 resultTemp;
+    u8 bendian[4];
+
+    gTRKBigEndian[0] = 1;
+    bendian[0] = 0x12;
+    bendian[1] = 0x34;
+    bendian[2] = 0x56;
+    bendian[3] = 0x78;
+    if (*(u32*)bendian == 0x12345678) {
+        gTRKBigEndian[0] = 1;
+    } else if (*(u32*)bendian == 0x78563412) {
+        gTRKBigEndian[0] = result;
+    } else {
+        result = 1;
+    }
+
+    if (result == 0) usr_put_initialize();
+    if (result == 0) result = TRKInitializeEventQueue();
+    if (result == 0) result = TRKInitializeMessageBuffers();
+    if (result == 0) result = TRKInitializeDispatcher();
+    InitializeProgramEndTrap();
+    if (result == 0) {
+        resultTemp = TRKInitializeIntDrivenUART(0xE100, 1, 0, gTRKInputPendingPtr);
+        TRKTargetSetInputPendingPtr((s32)gTRKInputPendingPtr[0]);
+        if (resultTemp != 0) result = resultTemp;
+    }
+    if (result == 0) result = TRKInitializeSerialHandler();
+    if (result == 0) result = TRKInitializeTarget();
+    return result;
 }
 
 #pragma push
@@ -6353,6 +6453,45 @@ s32 fn_800E0C00(void *data, u32 start) {
     if (error == 0 && len != 4) {
         error = 0x700;
     }
+    return error;
+}
+
+u32 fn_800E1150(u32 addr);
+s32 fn_800E0C4C(void *data, u32 start, u32 *length, s32 accessOptions, s32 read) {
+    extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
+    s32 fn_800E0D98(u32, u32, s32);
+    void fn_800DF4E0(void *, void *, u32, u32, u32);
+    s32 error;
+    u32 trans_ptr;
+    u32 target_msr;
+    u32 user_msr;
+    TRKExceptionStatus tempExceptionStatus = gTRKExceptionStatus_802E01A4;
+    gTRKExceptionStatus_802E01A4.exceptionDetected = FALSE;
+
+    trans_ptr = fn_800E1150(start);
+    error = fn_800E0D98(trans_ptr, *length, read == 0);
+    if (error != 0) {
+        *length = 0;
+    } else {
+        target_msr = fn_800DF4D0(0);
+        user_msr = target_msr | (M2C_FIELD(&gTRKCPUState, u32 *, 0x1F8) & 0x10);
+        if (read) {
+            fn_800DF4E0(data, (void *)trans_ptr, *length, target_msr, user_msr);
+        } else {
+            fn_800DF4E0((void *)trans_ptr, data, *length, user_msr, target_msr);
+            fn_800DF3E0(trans_ptr, *length);
+            if (start != trans_ptr) {
+                fn_800DF3E0(start, *length);
+            }
+        }
+    }
+
+    if (gTRKExceptionStatus_802E01A4.exceptionDetected) {
+        *length = 0;
+        error = 0x702;
+    }
+
+    gTRKExceptionStatus_802E01A4 = tempExceptionStatus;
     return error;
 }
 
