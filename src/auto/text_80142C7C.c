@@ -309,8 +309,8 @@ void fn_801438BC(Img *p) {
 }
 
 void fn_801439C4(Img *p) {
-    u8 *d = p->px;
     u32 *s = (u32 *)p->src;
+    u8 *d = p->px;
     u8 *e = d + 0x80;
     u32 v;
     do {
