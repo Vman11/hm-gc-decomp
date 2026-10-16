@@ -186,7 +186,7 @@ static inline s32 TRKAppendBuffer_inline(TrkBuf *buf, const void *data, u32 leng
     s32 error = 0;
     u32 bytesLeft;
     bytesLeft = 0x880 - buf->pos;
-    if (bytesLeft < length) {
+    if (length > bytesLeft) {
         error = 0x301;
         length = bytesLeft;
     }
@@ -3335,6 +3335,34 @@ void fn_800D50A0(s32 arg0, u8 arg1) {
     M2C_FIELD(gx, u32 *, 0x10) = __rlwimi(M2C_FIELD(gx, u32 *, 0x10), arg0, 0, 31, 31);
     M2C_FIELD(gx, u32 *, 0x10) = __rlwimi(M2C_FIELD(gx, u32 *, 0x10), arg1, 1, 30, 30);
     M2C_FIELD(__cpReg, u16 *, 4) = M2C_FIELD(gx, u32 *, 0x10);
+}
+
+void GXSetGPFifo(void *fifo);
+void GXSetCPUFifo(void *fifo);
+s32 fn_800D51D0(void);
+s32 fn_800D51D8(void);
+void fn_800D50D0(void) {
+    struct GXFifoObj { u8 pad[0x80]; } tmp;
+    void *cpu;
+    s32 base;
+    void *fifo;
+
+    fifo = (void *)fn_800D51D8();
+    if (fifo != NULL) {
+        base = M2C_FIELD(fifo, s32 *, 0x0);
+        cpu = (void *)fn_800D51D0();
+        tmp = *(struct GXFifoObj *)fifo;
+        fn_800D4C48(&tmp, base, base);
+        GXSetGPFifo(&tmp);
+        if (cpu == fifo) {
+            GXSetCPUFifo(&tmp);
+        }
+        fn_800D4C48(fifo, base, base);
+        GXSetGPFifo(fifo);
+        if (cpu == fifo) {
+            GXSetCPUFifo(cpu);
+        }
+    }
 }
 
 extern s32 lbl_8035A920;
