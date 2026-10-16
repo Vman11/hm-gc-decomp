@@ -181,6 +181,44 @@ static inline s32 TRKReadBuffer_inline(TrkBuf *buf, void *data, u32 length) {
     buf->pos += length;
     return error;
 }
+static inline s32 TRKAppendBuffer_inline(TrkBuf *buf, const void *data, u32 length) {
+    extern void *fn_80003488(void *, const void *, u32);
+    s32 error = 0;
+    u32 bytesLeft;
+    if (length == 0) {
+        return 0;
+    }
+    bytesLeft = 0x880 - buf->pos;
+    if (bytesLeft < length) {
+        error = 0x301;
+        length = bytesLeft;
+    }
+    if (length == 1) {
+        buf->data[buf->pos] = *(u8 *)data;
+    } else {
+        fn_80003488(buf->data + buf->pos, data, length);
+    }
+    buf->pos += length;
+    buf->count = buf->pos;
+    return error;
+}
+static inline s32 TRKAppendBuffer1_ui32(TrkBuf *buf, u32 data) {
+    extern s32 gTRKBigEndian[];
+    u8 *bigEndianData;
+    u8 *byteData;
+    u8 swapBuffer[4];
+    if (gTRKBigEndian[0]) {
+        bigEndianData = (u8 *)&data;
+    } else {
+        byteData = (u8 *)&data;
+        bigEndianData = swapBuffer;
+        bigEndianData[0] = byteData[3];
+        bigEndianData[1] = byteData[2];
+        bigEndianData[2] = byteData[1];
+        bigEndianData[3] = byteData[0];
+    }
+    return TRKAppendBuffer_inline(buf, bigEndianData, 4);
+}
 s32 fn_800DF2F0(void *mutex);
 s32 fn_800DF2F8(void *mutex);
 s32 fn_800DF300(void *mutex);
@@ -1331,6 +1369,28 @@ void fn_800BB79C(AnimInit *p) {
 void fn_800BBAC8(void **arg0, void **arg1) {
     *arg1 = arg0[4];
     arg0[4] = arg1;
+}
+
+extern f32 lbl_802D8B70[];
+extern f32 lbl_80363080;
+f32 fn_800BBAD8(s32 cents) {
+    f32 *table = lbl_802D8B70;
+    s32 fine;
+    s32 semi;
+
+    if (cents > 0) {
+        return table[cents % 100] * (table[100 + cents / 1200] * table[112 + (cents % 1200) / 100]);
+    } else if (cents < 0) {
+        fine = cents % 100;
+        semi = cents / 100;
+        if (fine != 0) {
+            fine += 100;
+            semi -= 1;
+        }
+        return table[124 + -semi] * table[fine];
+    } else {
+        return lbl_80363080;
+    }
 }
 
 #pragma dont_inline reset
@@ -5078,14 +5138,14 @@ s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
     err = 0;
     for (i = 0; err == 0 && i < count; i++) {
         u32 value;
+        u8 swapBuffer[4];
         u8 *bigEndianData;
         u8 *byteData;
-        u8 swapBuffer[4];
         s32 error;
         u32 length;
         u32 bytesLeft;
 
-        value = data[i];
+        value = *data;
         if (gTRKBigEndian[0]) {
             bigEndianData = (u8 *)&value;
         } else {
@@ -5099,7 +5159,7 @@ s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
         length = 4;
         error = 0;
         bytesLeft = 0x880 - buf->pos;
-        if (bytesLeft < length) {
+        if (bytesLeft < 4) {
             error = 0x301;
             length = bytesLeft;
         }
@@ -5111,6 +5171,7 @@ s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
         buf->pos += length;
         buf->count = buf->pos;
         err = error;
+        data++;
     }
     return err;
 }
