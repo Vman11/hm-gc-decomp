@@ -306,6 +306,10 @@ void *fn_800E92B8(void *ctx, const void *buf, u32 len) {
     return (void *)1;
 }
 
+void *__FileWrite(void *file, const void *buf, u32 len) {
+    return (fwrite(buf, 1, len, file) == len) ? file : 0;
+}
+
 #pragma pop
 extern s32 lbl_803596A0;
 void fn_800EB1AC(s32 arg0) {
