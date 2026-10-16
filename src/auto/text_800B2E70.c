@@ -2794,6 +2794,7 @@ s32 fn_800D0A90(u32 id) {
     extern u16 lbl_80359610;
     u32 size;
     s32 sectorSize;
+    s32* p;
 
     if ((id & 0xFFFF0000) && (id != 0x80000004 || lbl_80359610 == 0xFFFF)) {
         return 0;
@@ -2813,14 +2814,15 @@ s32 fn_800D0A90(u32 id) {
     default:
         return 0;
     }
-    sectorSize = lbl_802DF480[(id & 0x3800) >> 11];
+    p = &lbl_802DF480[(id & 0x3800) >> 11];
+    sectorSize = *p;
     if (sectorSize == 0) {
         return 0;
     }
-    if ((size * 1024 * 1024 / 8) / sectorSize < 8) {
-        return 0;
+    if ((size * 1024 * 1024 / 8) / sectorSize >= 8) {
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 extern u8 lbl_80323560[];
@@ -4133,6 +4135,31 @@ void fn_800D9A38(u8 before_tex) {
     gx->bpSentNot = 0;
 }
 
+void fn_800D9A6C(s32 pix_fmt, u32 z_fmt) {
+    extern GXDataHead *const __GXData;
+    extern u32 lbl_802DFFC8[];
+    u32 oldPeCtrl;
+    u8 aa;
+
+    oldPeCtrl = M2C_FIELD(__GXData, u32 *, 0x1DC);
+    SETF(M2C_FIELD(__GXData, u32 *, 0x1DC), 3, 0, lbl_802DFFC8[pix_fmt]);
+    SETF(M2C_FIELD(__GXData, u32 *, 0x1DC), 3, 3, z_fmt);
+    if (oldPeCtrl != M2C_FIELD(__GXData, u32 *, 0x1DC)) {
+        GXWGFifo.u8 = 0x61;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x1DC);
+        aa = (pix_fmt == 2) ? 1 : 0;
+        SETF(M2C_FIELD(__GXData, u32 *, 0x204), 1, 9, aa);
+        M2C_FIELD(__GXData, u32 *, 0x5AC) |= 4;
+    }
+    if (lbl_802DFFC8[pix_fmt] == 4) {
+        SETF(M2C_FIELD(__GXData, u32 *, 0x1D4), 2, 9, (pix_fmt - 4) & 3);
+        SETF(M2C_FIELD(__GXData, u32 *, 0x1D4), 8, 24, 0x42);
+        GXWGFifo.u8 = 0x61;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x1D4);
+    }
+    __GXData->bpSentNot = 0;
+}
+
 void fn_800D9B40(s32 dither) {
     extern GXDataHead *__GXData;
     SETF(M2C_FIELD(__GXData, u32 *, 0x1D0), 1, 2, dither);
@@ -4408,9 +4435,18 @@ s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
 #pragma use_lmw_stmw on
 #pragma inline_depth(4)
 #pragma peephole on
+s32 fn_800DB970(TrkBuf *buf, void *data, u32 length);
+#pragma push
+#pragma use_lmw_stmw on
+#pragma inline_depth(4)
+#pragma peephole on
+#pragma opt_propagation off
 s32 fn_800DB370(TrkBuf *buf, u32 *data) {
     extern s32 gTRKBigEndian[];
+    extern void *fn_80003488(void *, const void *, u32);
     s32 err;
+    u32 length;
+    u32 bytesLeft;
     u8 *bigEndianData;
     u8 *byteData;
     u8 swapBuffer[sizeof(data)];
@@ -4419,7 +4455,15 @@ s32 fn_800DB370(TrkBuf *buf, u32 *data) {
     } else {
         bigEndianData = swapBuffer;
     }
-    err = TRKReadBuffer_inline(buf, (void *)bigEndianData, sizeof(*data));
+    length = sizeof(*data);
+    err = 0;
+    bytesLeft = buf->count - buf->pos;
+    if (length > bytesLeft) {
+        err = 0x302;
+        length = bytesLeft;
+    }
+    fn_80003488(bigEndianData, buf->data + buf->pos, length);
+    buf->pos += length;
     if (!gTRKBigEndian[0] && err == 0) {
         byteData = (u8 *)data;
         byteData[0] = bigEndianData[3];
@@ -4429,10 +4473,6 @@ s32 fn_800DB370(TrkBuf *buf, u32 *data) {
     }
     return err;
 }
-#pragma pop
-
-#pragma peephole on
-#pragma inline_depth(4)
 s32 fn_800DB438(TrkBuf *buf, u16 *data) {
     extern s32 gTRKBigEndian[];
     s32 err;
