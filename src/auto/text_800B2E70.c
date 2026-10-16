@@ -939,7 +939,7 @@ void fn_800BBD48(f32 arg0) {
 }
 
 void fn_800BBED4(u32* arg0, u8* arg1) {
-    s32 idx;
+    u32 idx;
 
     if (arg0[4] != 0) {
         if (arg0[2] != 0) {
@@ -951,8 +951,8 @@ void fn_800BBED4(u32* arg0, u8* arg1) {
             *(u32*)(arg1 + 0x1C) |= 0x400000;
         }
         idx = arg0[3] * 2;
-        *(u16*)(arg1 + 0x1F6) = lbl_802D9DD8[idx];
-        *(u16*)(arg1 + 0x1F8) = lbl_802D9DD8[idx + 1];
+        *(u16*)(arg1 + 0x1F6) = ((u16*)lbl_802D9DD8)[idx];
+        *(u16*)(arg1 + 0x1F8) = ((u16*)lbl_802D9DD8)[idx + 1];
         arg0[4] = 0;
     }
 }
@@ -1388,6 +1388,34 @@ void fn_800C2608(s32 *arg0, u32 *arg1) {
     } while (a != b);
     *arg0 = c;
     *arg1 = b;
+}
+
+s32 fn_800C2644(void) {
+    extern u8 *lbl_8035A720;
+    u32 hct;
+    u32 vct;
+    u32 vct2;
+
+    vct = *(volatile u16 *)0xCC00202C & 0x7FF;
+    do {
+        vct2 = vct;
+        hct = *(volatile u16 *)0xCC00202E & 0x7FF;
+        vct = *(volatile u16 *)0xCC00202C & 0x7FF;
+    } while (vct2 != vct);
+    if ((vct - 1) * 2 + (hct - 1) / *(u16 *)(lbl_8035A720 + 0x1A) < *(u16 *)(lbl_8035A720 + 0x18)) {
+        return 1;
+    }
+    return 0;
+}
+
+void fn_800C4660(void) {
+    u16 *p = (u16 *)0xCC005000;
+    p[0x1B] |= 0x8000;
+}
+
+void fn_800C4678(void) {
+    u16 *p = (u16 *)0xCC005000;
+    p[0x1B] &= ~0x8000;
 }
 
 s32 fn_800C4768(void) {
@@ -1838,6 +1866,16 @@ s32 fn_800CC124(void) {
     return ((u16) *(u16 *)0xCC005004 >> 0xFU) & 1;
 }
 
+u32 fn_800CC134(void) {
+    return (*(u16 *)0xCC005004 << 16) | *(u16 *)0xCC005006;
+}
+
+void fn_800CC14C(u32 arg0) {
+    volatile u16 *p = (volatile u16 *)0xCC005000;
+    p[0] = arg0 >> 16;
+    p[1] = arg0;
+}
+
 extern s32 lbl_8035A8D0;
 s32 fn_800CC224(void) {
     return lbl_8035A8D0;
@@ -1879,6 +1917,37 @@ void fn_800CCB44(void *arg0) {
         M2C_FIELD(arg0, void **, 0x3C) = lbl_8035A8E4;
         lbl_8035A8E4 = arg0;
     }
+}
+
+void fn_800CCBE4(void *arg0) {
+    extern void *lbl_8035A8E4;
+    extern void *lbl_8035A8EC;
+    extern void *lbl_8035A8E8;
+    void *temp_r0;
+
+    M2C_FIELD((unsigned short)arg0, s32 *, 8) = 0;
+    M2C_FIELD(arg0, s32 *, 0) = 3;
+    if ((void *) lbl_8035A8E8 == arg0) {
+        temp_r0 = M2C_FIELD(arg0, void **, 0x38);
+        if (temp_r0 != NULL) {
+            lbl_8035A8E8 = temp_r0;
+            M2C_FIELD(M2C_FIELD(arg0, void **, 0x38), void **, 0x3C) = NULL;
+            return;
+        }
+        lbl_8035A8EC = NULL;
+        lbl_8035A8E4 = NULL;
+        lbl_8035A8E8 = NULL;
+        return;
+    }
+    if ((void *) lbl_8035A8E4 == arg0) {
+        lbl_8035A8E4 = M2C_FIELD(arg0, void **, 0x3C);
+        M2C_FIELD(M2C_FIELD(arg0, void **, 0x3C), void **, 0x38) = NULL;
+        lbl_8035A8EC = lbl_8035A8E8;
+        return;
+    }
+    lbl_8035A8EC = M2C_FIELD(arg0, void **, 0x38);
+    M2C_FIELD(M2C_FIELD(arg0, void **, 0x3C), void **, 0x38) = (void *) M2C_FIELD(arg0, void **, 0x38);
+    M2C_FIELD(M2C_FIELD(arg0, void **, 0x38), void **, 0x3C) = (void *) M2C_FIELD(arg0, void **, 0x3C);
 }
 
 void fn_800CCC78(void) {
@@ -2107,36 +2176,57 @@ u16 fn_800D665C(void) {
 }
 
 extern u16 *__peReg;
-void fn_800D6780(u32 a, u8 b) {
-    u32 v = 0;
-    SETF(v, 8, 8, a);
-    SETF(v, 8, 0, b);
+void fn_800D6780(u32 a, u32 b) {
+    u16 v = 0;
+    v = (v & ~0xFF) | (b & 0xFF);
+    v = (v & 0xFF) | (a << 8);
     __peReg[3] = v;
 }
 
 void fn_800D6794(u32 a) {
-    u32 v = 0;
-    SETF(v, 2, 0, a);
-    SETF(v, 1, 2, 1);
+    u16 v = 0;
+    v = __rlwimi(v, a, 0, 30, 31);
+    v = __rlwimi(v, 1, 2, 29, 29);
     __peReg[4] = v;
 }
 
-void fn_800D67B4(u8 a) {
-    u32 v = __peReg[1];
-    SETF(v, 1, 4, a);
+void fn_800D67B4(u32 a) {
+    u16 v = __peReg[1];
+    v = __rlwimi(v, (u8)a, 4, 27, 27);
     __peReg[1] = v;
 }
 
 void fn_800D67CC(s32 a, u32 b, u32 c, u32 d) {
     u32 v = __peReg[1];
-    SETF(v, 1, 0, (a == 1 || a == 3));
-    SETF(v, 1, 11, (a == 3));
-    SETF(v, 1, 1, (a == 2));
-    SETF(v, 4, 12, d);
-    SETF(v, 3, 8, b);
-    SETF(v, 3, 5, c);
-    SETF(v, 8, 24, 0x41);
+    v = __rlwimi(v, (a == 1 || a == 3), 0, 31, 31);
+    v = __rlwimi(v, (a == 3), 11, 20, 20);
+    v = __rlwimi(v, (a == 2), 1, 30, 30);
+    v = __rlwimi(v, d, 12, 16, 19);
+    v = __rlwimi(v, b, 8, 21, 23);
+    v = __rlwimi(v, c, 5, 24, 26);
+    v = __rlwimi(v, 0x41, 24, 0, 7);
     __peReg[1] = v;
+}
+
+void fn_800D6830(u32 a) {
+    u8 b = a;
+    u32 v = __peReg[1];
+    v = __rlwimi(v, b, 3, 28, 28);
+    __peReg[1] = v;
+}
+
+void fn_800D6848(u8 arg0, u8 arg1) {
+    M2C_FIELD(__peReg, s16 *, 4) = (s16) ((((0 & ~0xFF) | (arg1 & 0xFF)) & ~0x100) | ((arg0 << 8) & 0x100));
+}
+
+void fn_800D686C(u8 a) {
+    u32 v = __peReg[1];
+    v = __rlwimi(v, a & 0xFF, 2, 29, 29);
+    __peReg[1] = v;
+}
+
+void fn_800D6884(u8 arg0, s32 arg1, s32 arg2) {
+    *__peReg = (((((0 & ~1) | (arg0 & 1)) & ~0xE) | ((arg1 << 1) & 0xE)) & ~0x10) | ((arg2 << 4) & 0x10);
 }
 
 void fn_800D746C(s32 arg0) {
@@ -2334,6 +2424,14 @@ s32 fn_800DBAA0(void *arg0, u32 arg1) {
     return var_r5;
 }
 
+TrkBuf *TRKGetBuffer(s32 idx) {
+    TrkBuf *buf = NULL;
+    if (idx >= 0 && idx < 3) {
+        buf = &lbl_80323E00[idx];
+    }
+    return buf;
+}
+
 s32 TRKInitializeMessageBuffers(void) {
     s32 i;
 
@@ -2397,6 +2495,14 @@ void TRKGetInput(void) {
 #pragma pop
 void usr_put_initialize(void) {
 
+}
+
+extern u32 lbl_803257C8;
+typedef s32 (*TrkDispatchFunc)(TrkBuf *);
+extern TrkDispatchFunc lbl_802E00D8[];
+s32 TRKInitializeDispatcher(void) {
+    lbl_803257C8 = 0x20;
+    return 0;
 }
 
 void fn_800DE8AC(TrkBuf* buf) {
