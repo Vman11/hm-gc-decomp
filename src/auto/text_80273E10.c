@@ -151,6 +151,39 @@ u32 fn_8027438C(void) {
     } while (fn_802749A0(val) != 0);
     return val;
 }
+
+s32 fn_802743F8(u32 base, u32 size) {
+    extern u32* lbl_8035B868;
+    extern u32* lbl_8035B86C;
+    extern u32 lbl_8035B870;
+    extern u32 lbl_8035B874;
+    u32 start;
+    u32 end;
+    u32 i;
+    u32 addr;
+
+    start = (u32)fn_80273EBC() >> 12;
+    end = start + ((u32)fn_80273EB4() >> 12);
+    if (lbl_8035B874 < start) {
+        lbl_8035B874 = start;
+    }
+    if (lbl_8035B870 + size > (u32)fn_80273EB4()) {
+        return 0;
+    }
+    for (i = 0; i < size; i += 0x1000) {
+        addr = base + i;
+        do {
+            if (++lbl_8035B874 >= end) {
+                lbl_8035B874 = start;
+            }
+        } while (lbl_8035B868[lbl_8035B874] != 0);
+        lbl_8035B868[lbl_8035B874] = addr;
+        lbl_8035B86C[(addr >> 12) & 0x1FFF] = lbl_8035B874 << 12;
+        lbl_8035B870 += 0x1000;
+    }
+    return 1;
+}
+
 #pragma pop
 u32 fn_802744F8(u32 addr) {
     extern u32* lbl_8035B86C;
@@ -881,6 +914,35 @@ void fn_80276FD8(u32 count, u32 *src) {
     }
 }
 
+#pragma push
+#pragma optimize_for_size on
+void fn_80277020(s32 n, u32 *arr, s32 k, s32 *outIdx, s32 *outFlag) {
+    s32 i;
+    u32 max = 0;
+    s32 idx = 0;
+    s32 flag = 1;
+
+    for (i = 0; i < n - k; i++) {
+        u32 d = arr[i + k] - arr[i];
+        if (d > max) {
+            max = d;
+            idx = i;
+        }
+    }
+    if (max == 0) {
+        fn_802752DC(arr[n] - arr[0], k, n);
+    }
+    for (i = 0; i < n; i++) {
+        if (!(arr[i] & 1)) {
+            flag = 0;
+            break;
+        }
+    }
+    *outFlag = flag;
+    *outIdx = idx;
+}
+#pragma pop
+
 void fn_80277114(u8 *arg0) {
     fn_80283E90(lbl_802F385C, arg0 + 0xFC);
 }
@@ -1035,6 +1097,57 @@ void fn_8027ABEC(s32 *arg0, s32 arg1) {
             var_r3 += 4;
         } while (temp_cr0_eq == 0);
     }
+}
+
+s32 fn_800BD810(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
+void *memcpy(void *, const void *, u32);
+s32 fn_8027AC20(void *arg0, u32 arg1, u8 *arg2, u32 arg3) {
+    u8 buf[0x41F];
+    u8 *aligned;
+    u32 bufSize;
+    u32 len;
+    s32 total;
+
+    aligned = (u8 *)(((u32)buf + 0x1F) & ~0x1F);
+    total = 0;
+    bufSize = ((u32)buf + sizeof(buf) - (u32)aligned) & ~0x1F;
+    if (arg3 != 0) {
+        do {
+            if (arg3 >= bufSize) {
+                len = bufSize;
+            } else {
+                len = (arg3 + 0x1F) & ~0x1F;
+            }
+            fn_800BD810(arg0, (s32)aligned, len, arg1, 0, 0);
+            for (;;) {
+                switch (DVDGetDriveStatus()) {
+                case 0:
+                    goto done;
+                case -1:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    return 0;
+                }
+            }
+        done:
+            if (len > arg3) {
+                len = arg3;
+            }
+            memcpy(arg2, aligned, len);
+            arg2 += len;
+            total += len;
+            arg1 += len;
+            arg3 -= len;
+        } while (arg3 != 0);
+    }
+    return total;
 }
 
 s32 fn_8027B0D4(void *arg0) {
@@ -1522,6 +1635,22 @@ lbl_80300860[0]+=4;
 } while(n-- != 0);
 }
 
+s32 fn_80280AEC(s32 count, s32 offset) {
+    extern u8 lbl_802F8B20[];
+    u32 n = count;
+    do {
+        u16 v = *(u16 *)(lbl_802FFC60 + *lbl_80300860[2]++ * 4 + 2) | *(u16 *)(lbl_802F8B20 + *lbl_80300860[6]++ * 4 + 2);
+        ((u16 *)lbl_80300860[0])[0] = v;
+        ((u16 *)lbl_80300860[0])[1] = v;
+        v = *(u16 *)(lbl_802FFC60 + *lbl_80300860[3]++ * 4 + 2) | *(u16 *)(lbl_802F8B20 + *lbl_80300860[7]++ * 4 + 2);
+        ((u16 *)lbl_80300860[1])[0] = v;
+        ((u16 *)lbl_80300860[1])[1] = v;
+        lbl_80300860[0] += 4;
+        lbl_80300860[1] += 4;
+    } while (--n != 0);
+    return offset + count;
+}
+
 void fn_80280BD8(s32 unused, s32 count) {
 extern u8 lbl_802F8B20[];
 s32 n=count-1;
@@ -1717,6 +1846,30 @@ void fn_8028256C(s32 arg0, register s32 n) {
  state[0] += 4;
  n -= 2;
  } while(n >= 0);
+}
+
+s32 fn_802825F4(s32 count, s32 base) {
+    s32 n = count;
+    u32 v;
+    u8 *p;
+    do {
+        n -= 2;
+        p = lbl_80300860[2];
+        v = p[0] | (*lbl_80300860[4] << 8) | (p[1] << 16) | (*lbl_80300860[5] << 24);
+        lbl_80300860[4]++;
+        lbl_80300860[5]++;
+        lbl_80300860[2] = p + 2;
+        *(u32 *)lbl_80300860[0] = v;
+        *(u32 *)(lbl_80300860[0] + (s32)lbl_80300860[17]) = v;
+        p = lbl_80300860[3];
+        v = (v & 0xFF00FF00) | p[0] | (p[1] << 16);
+        lbl_80300860[3] = p + 2;
+        *(u32 *)lbl_80300860[1] = v;
+        *(u32 *)(lbl_80300860[1] + (s32)lbl_80300860[17]) = v;
+        lbl_80300860[0] += 4;
+        lbl_80300860[1] += 4;
+    } while (n > 0);
+    return base + count;
 }
 
 void fn_802826DC(s32 arg0, s32 n) {
@@ -2071,9 +2224,10 @@ void fn_80284068(int a, int *p, int c, unsigned int d, int e, int f, int g) {
 void fn_802840C0(BitStream *bs, u8 *dst, u8 *a, u8 *b, s32 n) {
     s32 nb = n;
     s32 na = n;
+    u32 bit;
     u32 v;
 
-    do {
+    while (nb != 0) {
         if (bs->count != 0) {
             v = bs->bits;
             bs->count--;
@@ -2094,7 +2248,10 @@ void fn_802840C0(BitStream *bs, u8 *dst, u8 *a, u8 *b, s32 n) {
             a++;
         }
         dst++;
-    } while (na != 0 && nb != 0);
+        if (na == 0) {
+            break;
+        }
+    }
 
     if (na != 0) {
         do {
@@ -2102,10 +2259,9 @@ void fn_802840C0(BitStream *bs, u8 *dst, u8 *a, u8 *b, s32 n) {
         } while (--na != 0);
         return;
     }
-    if (nb != 0) {
-        do {
-            *dst++ = *b++;
-        } while (--nb != 0);
+    while (nb != 0) {
+        *dst++ = *b++;
+        nb--;
     }
 }
 
