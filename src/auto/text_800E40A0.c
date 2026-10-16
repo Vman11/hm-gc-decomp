@@ -32,13 +32,26 @@ void __prep_buffer(void *arg0) {
     M2C_FIELD(arg0, s32 *, 0x34) = (s32) M2C_FIELD(arg0, s32 *, 0x18);
 }
 
-void __end_critical_region(void) {
+void __end_critical_region(int region) {
 
 }
 
-void __begin_critical_region(void) {
+void __begin_critical_region(int region) {
 
 }
+
+typedef struct __va_list_struct {
+    char gpr;
+    char fpr;
+    char reserved[2];
+    char *input_arg_area;
+    char *reg_save_area;
+} va_list[1];
+#define va_start(ap, fmt) ((void)fmt, __builtin_va_info(&ap))
+#define va_end(ap) ((void)0)
+extern u8 __files[];
+int fwide(void *, int);
+extern void __FileWrite(void);
 
 void __kill_critical_regions(void) {
 
@@ -424,8 +437,10 @@ s32 fn_800F33BC(s32 arg0) {
 }
 
 void UnlockedHandler(void) {
-    u32 id;
-    EXIGetID(0, 0, &id);
+    M2C_UNK EXIGetID(M2C_UNK, M2C_UNK *);
+    M2C_UNK sp10;
+
+    EXIGetID(0, &sp10);
 }
 
 s32 fn_800F3AF4(void) {
@@ -440,6 +455,13 @@ s32 fn_800F3AF4(void) {
     lbl_8035A9C0 = 0;
     lbl_8035A9C4 = 1;
     return 0;
+}
+
+s32 fn_800F3D80(void) {
+    if (Si_802E0CEC.unk0 == -1) {
+        return 0;
+    }
+    return 1;
 }
 
 #define SIREGS ((vu32_t *)0xCC006400)
