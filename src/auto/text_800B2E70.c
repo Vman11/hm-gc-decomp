@@ -464,6 +464,27 @@ void fn_800B3E7C(int *alarm, long long start, long long period, void *handler) {
     OSRestoreInterrupts(enabled);
 }
 
+static HeapCell *DLAddFront(HeapCell *list, HeapCell *cell) {
+    cell->next = list;
+    cell->prev = NULL;
+    if (list) {
+        list->prev = cell;
+    }
+    return cell;
+}
+
+static HeapCell *DLExtract(HeapCell *list, HeapCell *cell) {
+    if (cell->next) {
+        cell->next->prev = cell->prev;
+    }
+    if (cell->prev == NULL) {
+        return cell->next;
+    } else {
+        cell->prev->next = cell->next;
+    }
+    return list;
+}
+
 HeapCell *fn_800B4294(HeapCell *list, HeapCell *cell) {
     HeapCell *prev = 0;
     HeapCell *next = list;
