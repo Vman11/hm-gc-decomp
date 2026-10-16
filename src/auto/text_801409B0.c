@@ -223,8 +223,9 @@ void fn_80140F9C(ImgPix *p) {
 }
 
 void fn_80141190(ImgPix *p) {
+    u8 *s;
     u8 *m = p->mask;
-    u8 *s = p->px;
+    s = p->px;
     while ((u32)p->count > 1) {
         if (m[0] != 0) {
             if (m[1] != 0) {
@@ -233,14 +234,14 @@ void fn_80141190(ImgPix *p) {
                 *p->out = (*p->out & 0xF0) | s[0];
             }
         } else if (m[1] != 0) {
-            *p->out = (*p->out & ~0xFF0) | ((s[1] << 4) & 0xFF0);
+            *p->out = (s[1] << 4) | (*p->out & 0xF);
         }
         m += 2;
         s += 2;
         p->out++;
         p->count -= 2;
     }
-    if (p->count != 0 && m[0] != 0) {
+    if ((u32)p->count != 0 && m[0] != 0) {
         *p->out = s[0] | (*p->out & 0xF0);
     }
 }
@@ -348,10 +349,11 @@ void fn_8014152C(ImgDec *p) {
 }
 
 void fn_80141584(ImgDec *p) {
+    u32 c;
     u8 *d = p->dst;
     u8 *e = d + p->count * 4;
     do {
-        u32 c, v;
+        u32 v;
         u32 b = p->src[1] << 8;
         u32 a = p->src[2] << 16;
         c = p->src[0];
