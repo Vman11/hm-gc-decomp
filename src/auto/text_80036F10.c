@@ -5,55 +5,22 @@ extern f32 *lbl_80357B28[];
 extern f32 *lbl_80357B3C[];
 extern f32 lbl_8035BE98;
 
-static inline f32 getTableValue(f32 **table, s32 *idx) {
-    if (idx != NULL && table != NULL) {
-        if (*idx > 4) {
-            *idx = 4;
+static inline f32 getTableValue(f32 **table, s32 **idx) {
+    if (*idx != NULL && table != NULL) {
+        if (**idx > 4) {
+            **idx = 4;
         }
-        if (table[*idx] != NULL) {
-            return *table[*idx];
+        if (table[**idx] != NULL) {
+            return *table[**idx];
         }
     }
     return lbl_8035BE98;
 }
 
-extern f32 *lbl_80357B28[];
-extern f32 *lbl_80357B3C[];
-extern f32 lbl_8035BE98;
 u8 fn_80036F10(void *arg0) {
-    f32 v;
-    u8 ret;
-    s32 *idx;
-
-    idx = *(s32 **)((u8 *)arg0 + 0x38);
-    if (idx != NULL && lbl_80357B28 != NULL) {
-        if (*idx > 4) {
-            *idx = 4;
-        }
-        if (lbl_80357B28[**(s32 **)((u8 *)arg0 + 0x38)] != NULL) {
-            v = *lbl_80357B28[**(s32 **)((u8 *)arg0 + 0x38)];
-        } else {
-            v = lbl_8035BE98;
-        }
-    } else {
-        v = lbl_8035BE98;
-    }
-    ret = lbl_8035BE98 != v;
+    u8 ret = lbl_8035BE98 != getTableValue(lbl_80357B28, (s32 **)((u8 *)arg0 + 0x38));
     if (!ret) {
-        idx = *(s32 **)((u8 *)arg0 + 0x3C);
-        if (idx != NULL && lbl_80357B3C != NULL) {
-            if (*idx > 4) {
-                *idx = 4;
-            }
-            if (lbl_80357B3C[**(s32 **)((u8 *)arg0 + 0x3C)] != NULL) {
-                v = *lbl_80357B3C[**(s32 **)((u8 *)arg0 + 0x3C)];
-            } else {
-                v = lbl_8035BE98;
-            }
-        } else {
-            v = lbl_8035BE98;
-        }
-        ret = lbl_8035BE98 != v;
+        ret = lbl_8035BE98 != getTableValue(lbl_80357B3C, (s32 **)((u8 *)arg0 + 0x3C));
     }
     return ret;
 }
