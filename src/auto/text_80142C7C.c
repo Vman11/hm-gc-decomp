@@ -151,6 +151,16 @@ void fn_80142E60(Img *p) {
     } while (d < dend);
 }
 
+void fn_80142EB8(Img *p) {
+    u8 *q = p->px;
+    u8 *end = q + p->n * 4;
+    for (; q < end; q += 4) {
+        q[0] = (*(u8 **)((u8 *)p + 0x594))[q[0]];
+        q[1] = (*(u8 **)((u8 *)p + 0x594))[q[1] + 0x100];
+        q[2] = (*(u8 **)((u8 *)p + 0x594))[q[2] + 0x200];
+    }
+}
+
 void fn_80142FB0(Img *p) {
     u8 f;
     u8 *q = p->px;
@@ -210,6 +220,34 @@ void fn_80143474(Img *p) {
     for (; q < end; q++) {
         *q = (*(u8 **)((u8 *)p + 0x598))[*q];
     }
+}
+
+void fn_801437B4(Img *p) {
+    u8 *d = p->px;
+    u8 *e = d + 0x80;
+    do {
+        d[2] = p->src[0];
+        d[1] = p->src[1];
+        d[0] = p->src[2];
+        d[3] = p->src[3];
+        p->src += 4;
+        d[6] = p->src[0];
+        d[5] = p->src[1];
+        d[4] = p->src[2];
+        d[7] = p->src[3];
+        p->src += 4;
+        d[10] = p->src[0];
+        d[9] = p->src[1];
+        d[8] = p->src[2];
+        d[11] = p->src[3];
+        p->src += 4;
+        d[14] = p->src[0];
+        d[13] = p->src[1];
+        d[12] = p->src[2];
+        d[15] = p->src[3];
+        p->src += 4;
+        d += 16;
+    } while (d < e);
 }
 
 void fn_80143BB4(Img *p) {
