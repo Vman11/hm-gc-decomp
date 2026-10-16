@@ -10,6 +10,10 @@ typedef struct {
     u8 unkB;
 } UnkStruct_801018FC;
 
+typedef struct {
+    f32 x, y, z, w;
+} Vec4_801018FC;
+
 extern u32 lbl_80363848;
 
 void fn_801018FC(f32 *out, f32 *a, f32 *b, f32 t) {
@@ -17,14 +21,14 @@ void fn_801018FC(f32 *out, f32 *a, f32 *b, f32 t) {
     f32 y = a[1];
     f32 z = a[2];
     f32 w = a[3];
-    f32 dx = b[0] - x;
-    f32 dy = b[1] - y;
-    f32 dz = b[2] - z;
-    f32 dw = b[3] - w;
-    out[0] = t * dx + x;
-    out[1] = t * dy + y;
-    out[2] = t * dz + z;
-    out[3] = t * dw + w;
+    x += t * (b[0] - x);
+    y += t * (b[1] - y);
+    z += t * (b[2] - z);
+    w += t * (b[3] - w);
+    out[0] = x;
+    out[1] = y;
+    out[2] = z;
+    out[3] = w;
 }
 
 void fn_80101950(UnkStruct_801018FC *arg0) {
@@ -36,8 +40,14 @@ void fn_80101950(UnkStruct_801018FC *arg0) {
     arg0->unkB = 0;
 }
 
+void fn_801019A4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2, u8 arg3, u8 arg4, u8 arg5, u8 arg6);
 void fn_80101970(UnkStruct_801018FC *arg0, UnkStruct_801018FC *arg1) {
-    *arg0 = *arg1;
+    arg0->unk0 = arg1->unk0;
+    arg0->unk4 = arg1->unk4;
+    arg0->unk8 = arg1->unk8;
+    arg0->unk9 = arg1->unk9;
+    arg0->unkA = arg1->unkA;
+    arg0->unkB = arg1->unkB;
 }
 
 void fn_801019A4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2, u8 arg3, u8 arg4, u8 arg5, u8 arg6) {
@@ -55,6 +65,33 @@ void fn_801019A4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2, u8 arg3, u8 arg4,
     arg0->unk9 = arg4;
     arg0->unkA = arg5;
     arg0->unkB = arg6;
+}
+
+void fn_801019E4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2) {
+    u8 v;
+    if (arg2 < 1) {
+        arg1 &= ~0x200;
+        arg0->unk9 = 0;
+    } else {
+        arg0->unk9 = 0x1F;
+        if (arg2 > 4) {
+            arg2 = 4;
+        }
+        arg1 |= lbl_80363848;
+    }
+    arg0->unk0 = arg1;
+    arg0->unk4 = arg2;
+    arg0->unk8 = 0x1F;
+    v = 0;
+    if (arg0->unk0 & 0x800) {
+        v = 0x1F;
+    }
+    arg0->unkB = v;
+    v = 0;
+    if (arg0->unk0 & 0x400) {
+        v = 8;
+    }
+    arg0->unkA = v;
 }
 
 void fn_80101A5C(UnkStruct_801018FC *arg0) {
