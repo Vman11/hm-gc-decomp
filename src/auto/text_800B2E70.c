@@ -3783,25 +3783,23 @@ void fn_800D9E98(u32 id) {
     fn_800DA1A4(0);
 }
 
+#pragma push
+#pragma fp_contract off
 void fn_800D9F80(void) {
  extern GXDataHead *__GXData;
  extern f32 lbl_80363190, lbl_80363194;
  GXDataHead *gx=__GXData;
- f32 sx=M2C_FIELD(gx,f32 *,0x4FC)*lbl_80363190;
- f32 sy=-M2C_FIELD(gx,f32 *,0x500)*lbl_80363190;
- f32 ox=M2C_FIELD(gx,f32 *,0x4F4)+sx;
- f32 oy=M2C_FIELD(gx,f32 *,0x4F8)+M2C_FIELD(gx,f32 *,0x500)*lbl_80363190;
- f32 oz=M2C_FIELD(gx,f32 *,0x508)*M2C_FIELD(gx,f32 *,0x510);
- f32 sz=oz-M2C_FIELD(gx,f32 *,0x504)*M2C_FIELD(gx,f32 *,0x510);
- f32 tx=lbl_80363194+ox;
- f32 ty=lbl_80363194+oy;
- f32 tz=oz+M2C_FIELD(gx,f32 *,0x50C);
- GXWGFifo.u8=0x10;
- GXWGFifo.u32=0x5101A;
+ f32 sx, sy, sz, tx, ty, tz;
+ sx=M2C_FIELD(gx,f32 *,0x4FC)*lbl_80363190;
+ sy=-M2C_FIELD(gx,f32 *,0x500)*lbl_80363190;
+ sz=(M2C_FIELD(gx,f32 *,0x508)-M2C_FIELD(gx,f32 *,0x504))*M2C_FIELD(gx,f32 *,0x510);
+ tx=lbl_80363194+(M2C_FIELD(gx,f32 *,0x4F4)+sx);
+ ty=lbl_80363194+(M2C_FIELD(gx,f32 *,0x4F8)+M2C_FIELD(gx,f32 *,0x500)*lbl_80363190);
+ tz=M2C_FIELD(gx,f32 *,0x508)*M2C_FIELD(gx,f32 *,0x510)+M2C_FIELD(gx,f32 *,0x50C);
+ GXWGFifo.u8=0x10; GXWGFifo.u32=0x5101A;
  GXWGFifo.f32=sx; GXWGFifo.f32=sy; GXWGFifo.f32=sz;
  GXWGFifo.f32=tx; GXWGFifo.f32=ty; GXWGFifo.f32=tz;
 }
-
 void fn_800DA010(f32 x, f32 y, f32 width, f32 height, f32 nearZ, f32 farZ) {
  extern GXDataHead *__GXData;
  extern void fn_800D9F80(void);
@@ -4003,20 +4001,12 @@ s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
  return error;
 }
 #pragma pop
+#pragma push
+#pragma inline_depth(4)
 s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
-    extern void *fn_80003488(void *, const void *, u32);
-    s32 error = 0;
-    u32 length = 1;
-    u32 bytesLeft;
-    bytesLeft = buf->count - buf->pos;
-    if (length > bytesLeft) {
-        error = 0x302;
-        length = bytesLeft;
-    }
-    fn_80003488(data, buf->data + buf->pos, length);
-    buf->pos += length;
-    return error;
+    return TRKReadBuffer_inline(buf, data, 1);
 }
+#pragma pop
 
 #pragma push
 #pragma inline_depth(4)
