@@ -53,6 +53,23 @@ void fn_80140A78(ImgPix *p) {
     } while (s < e);
 }
 
+void fn_80140AE8(ImgPix *p) {
+    u8 *s = p->src;
+    u8 *e = s + p->count * 4;
+    u8 *m = p->mask;
+    do {
+        if (*m != 0) {
+            p->out[0] = s[3];
+            p->out[1] = s[2];
+            p->out[2] = s[1];
+            p->out[3] = s[0];
+        }
+        s += 4;
+        m++;
+        p->out += 4;
+    } while (s < e);
+}
+
 void fn_80140C14(ImgPix *p) {
     u8 *s = p->src;
     u8 *e = s + p->count * 4;
