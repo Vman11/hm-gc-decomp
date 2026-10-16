@@ -5531,9 +5531,9 @@ void fn_800DFC6C(TrkBuf *b) {
     u32 inst;
     s32 i;
 
-    error = fn_800DB7D0(b, M2C_FIELD(&gTRKCPUState, u32 *, 0x80));
+    error = fn_800DB7D0(b, gTRKCPUState.unk80);
     if (error == 0) {
-        error = fn_800E0C00(&inst, M2C_FIELD(&gTRKCPUState, u32 *, 0x80));
+        error = fn_800E0C00(&inst, gTRKCPUState.unk80);
     }
     if (error == 0) {
         error = fn_800DB7D0(b, inst);
@@ -5543,10 +5543,10 @@ void fn_800DFC6C(TrkBuf *b) {
     }
     if (error == 0) {
         for (i = 0; i < 32; i++) {
-            fn_800DB7D0(b, (u16)((u32 *)&gTRKCPUState)[i]);
+            fn_800DB7D0(b, (u16)gTRKCPUState.gpr[i]);
         }
         for (i = 0; i < 32; i++) {
-            fn_800DB6D4(b, (u16)M2C_FIELD(&gTRKCPUState, u64 *, 0x98 + i * 8));
+            fn_800DB6D4(b, (u16)gTRKCPUState.fpr[i]);
         }
     }
 }
