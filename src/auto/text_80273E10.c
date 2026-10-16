@@ -28,6 +28,19 @@ void fn_80274990(s32 arg0, u32 arg1);
 void fn_802749AC(s32 arg0, s32 arg1);
 u32 fn_80274D04(u32 arg0);
 
+extern s32 lbl_8035B85C;
+extern s32 lbl_8035B848;
+extern s32 lbl_8035B854;
+extern s32 lbl_8035B850;
+extern s32 lbl_80359F08;
+void fn_80273EF4(void);
+void fn_80274704(void (*)(void), u32);
+void fn_802745BC(void);
+void fn_80274664(void);
+void fn_80273EC4(void);
+int OSDisableInterrupts();
+int OSRestoreInterrupts();
+
 typedef struct OSContext {
     u8 data[0x2C8];
 } OSContext;
