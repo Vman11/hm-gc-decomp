@@ -44,6 +44,12 @@ void __kill_critical_regions(void) {
 
 }
 
+extern void __close_all(void);
+extern void (*__stdio_exit)(void);
+extern u32 __pformatter(void *, void *, const char *, void *, s32);
+extern void fn_800E92B8(void);
+void __stdio_atexit(void) { __stdio_exit = __close_all; }
+
 extern s32 lbl_803596A0;
 void fn_800EB1AC(s32 arg0) {
     lbl_803596A0 = arg0;
