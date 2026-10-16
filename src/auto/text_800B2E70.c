@@ -2952,6 +2952,60 @@ void fn_800C8080(u32 arg0) {
     }
 }
 
+extern void fn_800C9480(u32 arg);
+extern void fn_800C8870(void);
+extern s32 fn_800CC114(void);
+extern void fn_800CC14C(u32 value);
+extern void fn_800C7728(void);
+extern void fn_800C79A8(void *, void *);
+extern s32 fn_800C8D2C(void);
+extern void *fn_800C9EC4(void);
+extern void fn_800C45D8(void *buf, u32 len);
+extern u8 lbl_8030BA80[0x5000];
+extern u32 lbl_8035A840;
+void fn_800C8094(u32 arg0) {
+    typedef struct { u8 b[0x38]; } Unk38;
+    extern void (*lbl_8035A858)(void);
+    extern u32 lbl_8035A870;
+    u8 *base = lbl_8030BA80;
+    u8 *r;
+    Unk38 *dst;
+
+    *(u64 *)(base + 0x4A50) = OSGetTime();
+    fn_800C9480(arg0);
+    fn_800C8870();
+    r = fn_800C796C();
+    fn_800CC14C(0xBABE0180);
+    while (fn_800CC114() != 0) {
+    }
+    fn_800CC14C((u32)r);
+    while (fn_800CC114() != 0) {
+    }
+    fn_800C6F84();
+    *(u64 *)(base + 0x4A58) = OSGetTime();
+    fn_800C7728();
+    *(u64 *)(base + 0x4A60) = OSGetTime();
+    *(u64 *)(base + 0x4A68) = OSGetTime();
+    if (lbl_8035A858 != NULL) {
+        lbl_8035A858();
+    }
+    *(u64 *)(base + 0x4A70) = OSGetTime();
+    fn_800C79A8(base + 0x780, base + lbl_8035A840 * 0x280);
+    lbl_8035A840++;
+    if (lbl_8035A870 == 1) {
+        lbl_8035A840 = lbl_8035A840 % 3;
+    } else {
+        lbl_8035A840 = lbl_8035A840 & 1;
+        fn_800C45D8(base + lbl_8035A840 * 0x280, 0x280);
+    }
+    *(u64 *)(base + 0x4A78) = OSGetTime();
+    *(s32 *)(base + 0x4A80) = fn_800C8D2C();
+    dst = fn_800C9EC4();
+    if (dst != NULL) {
+        *dst = *(Unk38 *)(base + 0x4A50);
+    }
+}
+
 extern void fn_800C8094(u32);
 extern void fn_800C45D8(void *, u32);
 extern void fn_800CC2DC(void *);
@@ -3987,6 +4041,60 @@ s32 fn_800D240C(s32 *arg0) {
 
 s32 fn_800D2460(void) {
     return 0;
+}
+
+void fn_800D31A4(u8* arg0, u8* arg1) {
+    u32 offset;
+    s32 flag;
+    s32 i;
+
+    offset = *(u32*)(arg0 + 0x2C);
+    if (offset == 0xFFFFFFFF) {
+        *(u8*)(arg1 + 0x2E) = 0;
+        offset = 0;
+        *(u16*)(arg1 + 0x34) = 0;
+        *(u16*)(arg1 + 0x36) = 0;
+    }
+    flag = 0;
+    switch (arg0[7] & 3) {
+    case 1:
+        *(u32*)(arg1 + 0x3C) = offset;
+        *(u32*)(arg1 + 0x40) = offset + 0xC00;
+        offset += 0xE00;
+        break;
+    case 2:
+        *(u32*)(arg1 + 0x3C) = offset;
+        *(u32*)(arg1 + 0x40) = 0xFFFFFFFF;
+        offset += 0x1800;
+        break;
+    default:
+        *(u32*)(arg1 + 0x3C) = 0xFFFFFFFF;
+        *(u32*)(arg1 + 0x40) = 0xFFFFFFFF;
+        break;
+    }
+    for (i = 0; i < 8; i++) {
+        switch ((*(u16*)(arg0 + 0x30) >> (i * 2)) & 3) {
+        case 1:
+            ((u32*)(arg1 + 0x44))[i] = offset;
+            flag = 1;
+            offset += 0x400;
+            break;
+        case 2:
+            ((u32*)(arg1 + 0x44))[i] = offset;
+            offset += 0x800;
+            break;
+        default:
+            ((u32*)(arg1 + 0x44))[i] = 0xFFFFFFFF;
+            break;
+        }
+    }
+    if (flag) {
+        *(u32*)(arg1 + 0x64) = offset;
+        offset += 0x200;
+    } else {
+        *(u32*)(arg1 + 0x64) = 0xFFFFFFFF;
+    }
+    *(u32*)(arg1 + 0x68) = offset;
 }
 
 s32 fn_800D8318(void *);
@@ -7060,8 +7168,8 @@ s32 fn_800DECE0(char *path, u8 mode, u32 *handle, u8 *ioResult) {
     *handle = 0;
     error = fn_800DBBA0(&bufferId, &buffer);
     if (error == 0) {
-        TrkBuf *b = buffer;
         s32 err;
+        TrkBuf *b = buffer;
         if (b->pos >= 0x880) {
             err = 0x301;
         } else {
@@ -7072,8 +7180,8 @@ s32 fn_800DECE0(char *path, u8 mode, u32 *handle, u8 *ioResult) {
         error = err;
     }
     if (error == 0) {
-        TrkBuf *b = buffer;
         s32 err;
+        TrkBuf *b = buffer;
         if (b->pos >= 0x880) {
             err = 0x301;
         } else {
@@ -7775,7 +7883,7 @@ s32 fn_800E16F8(u8 *c) {
     return readErr;
 }
 
-s32 fn_800E17E8(u8 arg0) {
+s32 fn_800E17E8(s8 arg0) {
     extern s32 lbl_80325D68[];
     extern u8 lbl_80326E84[];
     lbl_80326E84[lbl_80325D68[0]++] = arg0;
