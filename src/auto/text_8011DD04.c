@@ -44,6 +44,19 @@ static inline ListHead *getHeadAC(void *arg0, u32 i) {
     return NULL;
 }
 
+static inline u32 findKeyA8(void *arg0, s32 key) {
+    u32 i;
+    for (i = 0; i < M2C_FIELD(arg0, u32 *, 0xA8); i++) {
+        if (key == M2C_FIELD(arg0, KeyEntry **, 0x4C)[i].key) return i;
+    }
+    return -1;
+}
+
+static inline ListHead *getHeadA8(void *arg0, u32 i) {
+    if (i < M2C_FIELD(arg0, u32 *, 0xA8)) return &M2C_FIELD(arg0, ListHead **, 0x94)[i];
+    return NULL;
+}
+
 static inline ListHead *getHead(ListHead *heads, u32 count, u32 i) {
     if (i < count) {
         return &heads[i];
