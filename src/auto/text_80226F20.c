@@ -7,18 +7,19 @@ typedef struct {
 } Unk80226F20;
 
 extern s32 lbl_80365C40;
-void fn_80226F20(void *arg0) {
+void fn_80226F20(Unk80226F20 *arg0) {
+    s32 *p;
     s32 i;
     for (i = 0; i < 10; i++) {
-        s32 *p = ((s32 **)((char *)arg0 + 0x254))[i];
+        p = arg0->unk_0x254[i];
         if (p) p[2] |= lbl_80365C40;
     }
 }
 
-void fn_80226FC8(void *arg0) {
+void fn_80226FC8(Unk80226F20 *arg0) {
     s32 i;
     for (i = 0; i < 10; i++) {
-        s32 *p = ((s32 **)((char *)arg0 + 0x254))[i];
+        s32 *p = arg0->unk_0x254[i];
         if (p) p[2] &= ~2;
     }
 }
