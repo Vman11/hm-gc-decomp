@@ -2,6 +2,12 @@
 #include "common.h"
 #define SETF(reg, size, shift, v) \
     ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | (((u32)(v) << (shift)) & (((1 << (size)) - 1) << (shift))))
+typedef struct ColorBits {
+    u32 unk0;
+    u32 a : 16;
+    u32 b : 8;
+    u32 c : 8;
+} ColorBits;
 typedef struct Anim {
     f32 *data;
     u32 count;
@@ -426,6 +432,23 @@ void OSClearContext(u8 *ctx) {
     }
 }
 
+extern s32 fn_800B9094(s32, s32, s32);
+void fn_800B6B64(s32 arg0, s32 arg1, s32 arg2) {
+    s32 n;
+    while (arg1 > 0) {
+        if (arg1 <= 0x100) {
+            n = arg1;
+        } else {
+            n = 0x100;
+        }
+        arg1 -= n;
+        if (fn_800B9094(arg0, n, arg2) != 0) {
+            arg2 += n;
+            arg0 += n;
+        }
+    }
+}
+
 extern void **InterruptHandlerTable_8035A590;
 void *__OSSetInterruptHandler(short type, void *handler) {
     void **p = (void **)((char *)InterruptHandlerTable_8035A590 + (type << 2));
@@ -494,6 +517,12 @@ u32 __OSUnmaskInterrupts(u32 mask) {
     }
     OSRestoreInterrupts(prev);
     return oldMask;
+}
+
+void __OSModuleInit(void) {
+    *(s32 *)0x800030CC = 0;
+    *(s32 *)0x800030C8 = 0;
+    *(s32 *)0x800030D0 = 0;
 }
 
 #pragma peephole on
@@ -1212,15 +1241,14 @@ s32 fn_800C2600(void) {
 }
 
 void fn_800C2608(s32 *arg0, u32 *arg1) {
-    volatile u16 *r = (volatile u16 *)0xCC002000;
     u32 a;
     u32 b;
     u32 c;
-    b = r[0x16] & 0x7FF;
+    b = *(volatile u16 *)0xCC00202C & 0x7FF;
     do {
         a = b;
-        b = r[0x16] & 0x7FF;
-        c = r[0x17] & 0x7FF;
+        b = *(volatile u16 *)0xCC00202C & 0x7FF;
+        c = *(volatile u16 *)0xCC00202E & 0x7FF;
     } while (a != b);
     *arg0 = c;
     *arg1 = b;
@@ -1870,35 +1898,35 @@ u16 fn_800D665C(void) {
 }
 
 extern u16 *__peReg;
-void fn_800D6780(u32 a, u32 b) {
-    u16 v = 0;
-    v = (v & ~0xFF) | (b & 0xFF);
-    v = (v & 0xFF) | (a << 8);
+void fn_800D6780(u32 a, u8 b) {
+    u32 v = 0;
+    SETF(v, 8, 8, a);
+    SETF(v, 8, 0, b);
     __peReg[3] = v;
 }
 
 void fn_800D6794(u32 a) {
-    u16 v = 0;
-    v = (v & ~3) | (a & 3);
-    v = (v & ~4) | (1 << 2);
+    u32 v = 0;
+    SETF(v, 2, 0, a);
+    SETF(v, 1, 2, 1);
     __peReg[4] = v;
 }
 
-void fn_800D67B4(u32 a) {
-    u16 v = __peReg[1];
-    v = (v & ~0x10) | ((a & 0xFF) << 4);
+void fn_800D67B4(u8 a) {
+    u32 v = __peReg[1];
+    SETF(v, 1, 4, a);
     __peReg[1] = v;
 }
 
 void fn_800D67CC(s32 a, u32 b, u32 c, u32 d) {
     u32 v = __peReg[1];
-    v = (v & ~1) | (a == 1 || a == 3);
-    v = (v & ~0x800) | ((a == 3) << 11);
-    v = (v & ~2) | ((a == 2) << 1);
-    v = (v & ~0xF000) | (d << 12);
-    v = (v & ~0x700) | (b << 8);
-    v = (v & ~0xE0) | (c << 5);
-    v = (v & 0xFFFFFF) | 0x41000000;
+    SETF(v, 1, 0, (a == 1 || a == 3));
+    SETF(v, 1, 11, (a == 3));
+    SETF(v, 1, 1, (a == 2));
+    SETF(v, 4, 12, d);
+    SETF(v, 3, 8, b);
+    SETF(v, 3, 5, c);
+    SETF(v, 8, 24, 0x41);
     __peReg[1] = v;
 }
 
@@ -1961,6 +1989,21 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
 }
 
 void fn_800D8238(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
+
+void fn_800D8278(void *arg0, f32 farg0) {
+    extern f32 lbl_80363128;
+    extern f32 lbl_80363148;
+    extern f32 lbl_8036314C;
+    u8 v;
+
+    if (farg0 < lbl_80363148) {
+        farg0 = lbl_80363148;
+    } else if (farg0 > lbl_8036314C) {
+        farg0 = lbl_8036314C;
+    }
+    v = lbl_80363128 * farg0;
+    SETF(*(u32 *)((u8 *)arg0 + 4), 8, 8, v);
+}
 
 s32 fn_800D8318(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x14);
