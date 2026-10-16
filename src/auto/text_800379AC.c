@@ -89,6 +89,9 @@ void fn_80037B28(void *arg0, void *arg1) {
             M2C_FIELD(arg0, s32 *, 0x54) = 0;
         }
         break;
+    case 0x65:
+    case 0x66:
+        break;
     }
 }
 
