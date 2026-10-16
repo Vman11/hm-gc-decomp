@@ -286,6 +286,10 @@ typedef struct TRKExceptionStatus {
     u32 exceptionAddress;
     u32 unk4;
     u16 exceptionID;
+    u8 unkA;
+    u8 unkB;
+    u8 unkC;
+    u8 exceptionDetected;
 } TRKExceptionStatus;
 
 extern TRKState_unk gTRKState;
@@ -540,6 +544,45 @@ s32 fn_800B45C4(s32 size, s32 align) {
     arenaLo = (arenaLo + align - 1) & ~(align - 1);
     __OSArenaLo_80359538 = arenaLo;
     return ptr;
+}
+
+void __OSCacheInit(void) {
+    extern u32 PPCMfhid0(void);
+    extern u32 PPCMfl2cr(void);
+    extern void PPCMtl2cr(u32);
+    extern u32 PPCMfmsr(void);
+    extern void PPCMtmsr(u32);
+    extern void ICEnable(void);
+    extern void DCEnable(void);
+    extern void L2GlobalInvalidate(void);
+    extern void DBPrintf(char *, ...);
+    extern void *OSSetErrorHandler(u16, void *);
+    extern void DMAErrorHandler();
+    u32 oldMSR;
+
+    if (!(PPCMfhid0() & 0x8000)) {
+        ICEnable();
+        DBPrintf("L1 i-caches initialized\n");
+    }
+    if (!(PPCMfhid0() & 0x4000)) {
+        DCEnable();
+        DBPrintf("L1 d-caches initialized\n");
+    }
+    if (!(PPCMfl2cr() & 0x80000000)) {
+        oldMSR = PPCMfmsr();
+        __sync();
+        PPCMtmsr(0x30);
+        __sync();
+        __sync();
+        PPCMtl2cr(PPCMfl2cr() & ~0x80000000);
+        __sync();
+        L2GlobalInvalidate();
+        PPCMtmsr(oldMSR);
+        PPCMtl2cr((PPCMfl2cr() | 0x80000000) & ~0x00200000);
+        DBPrintf("L2 cache initialized\n");
+    }
+    OSSetErrorHandler(1, DMAErrorHandler);
+    DBPrintf("Locked cache machine check handler installed\n");
 }
 
 s32 fn_800B4F6C(void) {
@@ -2051,6 +2094,34 @@ void fn_800C71AC(void* arg0) {
         void* next = *(void**)arg0;
         *prev = next;
         *(void***)((u8*)next + 0x4) = prev;
+    }
+}
+
+void fn_800C74DC(void) {
+    extern u32 lbl_8035A7F4;
+    extern u32 lbl_8035A7F8;
+    extern u32 lbl_8035A7FC;
+    extern s32 lbl_8035A818;
+    extern s32 lbl_8035A81C;
+    extern s32 lbl_8035A820;
+    u32 i;
+    u32 *a;
+    u32 *b;
+
+    lbl_8035A7F0 = 0;
+    lbl_8035A7F4 = 0;
+    lbl_8035A7F8 = 0;
+    lbl_8035A7FC = 0;
+    lbl_8035A810 = 0;
+    lbl_8035A814 = 1;
+    lbl_8035A818 = 0;
+    lbl_8035A81C = 1;
+    lbl_8035A820 = 2;
+    a = (u32 *)lbl_80308780;
+    b = (u32 *)lbl_80309E00;
+    for (i = 0; i < 0x1E0; i++) {
+        *a++ = 0;
+        *b++ = 0;
     }
 }
 
@@ -3583,6 +3654,90 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
     *color = *(u32 *)((u8 *)lt_obj + 0xC);
 }
 
+void fn_800D7A88(s32 chan, GXColor amb_color) {
+    extern GXDataHead *const __GXData;
+    u32 reg;
+    u32 colIdx;
+
+    switch (chan) {
+    case 0:
+        reg = *(u32 *)&amb_color & ~0xFF;
+        reg = __rlwimi(reg, M2C_FIELD(__GXData, u32 *, 0xA8), 0, 24, 31);
+        colIdx = 0;
+        break;
+    case 1:
+        reg = *(u32 *)&amb_color & ~0xFF;
+        reg = __rlwimi(reg, M2C_FIELD(__GXData, u32 *, 0xAC), 0, 24, 31);
+        colIdx = 1;
+        break;
+    case 2:
+        reg = M2C_FIELD(__GXData, u32 *, 0xA8);
+        reg = __rlwimi(reg, amb_color.a, 0, 24, 31);
+        colIdx = 0;
+        break;
+    case 3:
+        reg = M2C_FIELD(__GXData, u32 *, 0xAC);
+        reg = __rlwimi(reg, amb_color.a, 0, 24, 31);
+        colIdx = 1;
+        break;
+    case 4:
+        reg = *(u32 *)&amb_color;
+        colIdx = 0;
+        break;
+    case 5:
+        reg = *(u32 *)&amb_color;
+        colIdx = 1;
+        break;
+    default:
+        return;
+    }
+    GXWGFifo.u8 = 0x10;
+    GXWGFifo.u32 = colIdx + 0x100A;
+    GXWGFifo.u32 = reg;
+    __GXData->bpSentNot = 1;
+    ((u32 *)((u8 *)__GXData + 0xA8))[colIdx] = reg;
+}
+
+void fn_800D7B78(s32 chan, u32 *color) {
+    extern GXDataHead *__GXData;
+    u32 reg;
+    u32 idx;
+
+    switch (chan) {
+    case 0:
+        idx = 0;
+        reg = (*color & ~0xFF) | (M2C_FIELD(__GXData, u32 *, 0xB0) & 0xFF);
+        break;
+    case 1:
+        idx = 1;
+        reg = (*color & ~0xFF) | (M2C_FIELD(__GXData, u32 *, 0xB4) & 0xFF);
+        break;
+    case 2:
+        idx = 0;
+        reg = (M2C_FIELD(__GXData, u32 *, 0xB0) & ~0xFF) | ((u8 *)color)[3];
+        break;
+    case 3:
+        idx = 1;
+        reg = (M2C_FIELD(__GXData, u32 *, 0xB4) & ~0xFF) | ((u8 *)color)[3];
+        break;
+    case 4:
+        reg = *color;
+        idx = 0;
+        break;
+    case 5:
+        reg = *color;
+        idx = 1;
+        break;
+    default:
+        return;
+    }
+    *(volatile u8 *)0xCC008000 = 0x10;
+    *(volatile u32 *)0xCC008000 = idx + 0x100C;
+    *(volatile u32 *)0xCC008000 = reg;
+    __GXData->bpSentNot = 1;
+    ((u32 *)((u8 *)__GXData + 0xB0))[idx] = reg;
+}
+
 void fn_800D7C68(u8 nChans) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
@@ -3742,6 +3897,48 @@ void fn_800D8508(void *tlut_obj, u32 lut, s32 fmt, u16 n_entries) {
     M2C_FIELD(tlut_obj, u32 *, 4) = __rlwimi(M2C_FIELD(tlut_obj, u32 *, 4), lut, 27, 11, 31);
     M2C_FIELD(tlut_obj, u32 *, 4) = __rlwimi(M2C_FIELD(tlut_obj, u32 *, 4), 0x64, 24, 0, 7);
     M2C_FIELD(tlut_obj, u16 *, 8) = n_entries;
+}
+
+void GXInitTexCacheRegion(void *region, u8 is32bMipmap, u32 tmemEven, s32 sizeEven, u32 tmemOdd, s32 sizeOdd) {
+    u32 *t = (u32 *)region;
+    u32 widthExp2;
+
+    switch (sizeEven) {
+    case 0:
+        widthExp2 = 3;
+        break;
+    case 1:
+        widthExp2 = 4;
+        break;
+    case 2:
+        widthExp2 = 5;
+        break;
+    }
+    t[0] = 0;
+    t[0] = (t[0] & ~0x7FFF) | ((tmemEven >> 5) & 0x7FFF);
+    t[0] = (t[0] & ~0x38000) | ((widthExp2 << 15) & 0x38000);
+    t[0] = (t[0] & ~0x1C0000) | ((widthExp2 << 18) & 0x1C0000);
+    t[0] = (t[0] & ~0x200000) | ((0 << 21) & 0x200000);
+    switch (sizeOdd) {
+    case 0:
+        widthExp2 = 3;
+        break;
+    case 1:
+        widthExp2 = 4;
+        break;
+    case 2:
+        widthExp2 = 5;
+        break;
+    case 3:
+        widthExp2 = 0;
+        break;
+    }
+    t[1] = 0;
+    t[1] = (t[1] & ~0x7FFF) | ((tmemOdd >> 5) & 0x7FFF);
+    t[1] = (t[1] & ~0x38000) | ((widthExp2 << 15) & 0x38000);
+    t[1] = (t[1] & ~0x1C0000) | ((widthExp2 << 18) & 0x1C0000);
+    ((u8 *)t)[12] = is32bMipmap;
+    ((u8 *)t)[13] = 1;
 }
 
 void GXInitTlutRegion(u32 *region, u32 tmem_addr, u32 tlut_size) {
@@ -4439,6 +4636,51 @@ s32 TRKTerminateNub(void) {
     fn_800DBCDC();
     return 0;
 }
+
+#pragma push
+#pragma use_lmw_stmw on
+#pragma inline_depth(4)
+#pragma peephole on
+#pragma opt_propagation off
+s32 fn_800DB100(TrkBuf *buf, u32 *data, s32 count) {
+    extern s32 gTRKBigEndian[];
+    extern void *fn_80003488(void *, const void *, u32);
+    s32 result;
+    s32 i;
+
+    for (i = 0, result = 0; result == 0 && i < count; i++, data++) {
+        s32 err;
+        u8 *bigEndianData;
+        u32 length;
+        u32 bytesLeft;
+        u8 *byteData;
+        u8 swapBuffer[sizeof(*data)];
+        if (gTRKBigEndian[0]) {
+            bigEndianData = (u8 *)data;
+        } else {
+            bigEndianData = swapBuffer;
+        }
+        length = sizeof(*data);
+        err = 0;
+        bytesLeft = buf->count - buf->pos;
+        if (length > bytesLeft) {
+            err = 0x302;
+            length = bytesLeft;
+        }
+        fn_80003488(bigEndianData, buf->data + buf->pos, length);
+        buf->pos += length;
+        if (!gTRKBigEndian[0] && err == 0) {
+            byteData = (u8 *)data;
+            byteData[0] = bigEndianData[3];
+            byteData[1] = bigEndianData[2];
+            byteData[2] = bigEndianData[1];
+            byteData[3] = bigEndianData[0];
+        }
+        result = err;
+    }
+    return result;
+}
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw on
@@ -5359,6 +5601,38 @@ void UnreserveEXI2Port(void) {
 
 void ReserveEXI2Port(void) {
     gDBCommTable.open();
+}
+
+s32 fn_800E16F8(u8 *c) {
+    typedef struct {
+        s32 writePos;
+        s32 readPos;
+        s32 readCount;
+        s32 pad;
+        u8 buf[0x110A];
+    } TRKUARTBuf;
+    extern s32 lbl_80325D68[];
+    s32 readErr = 4;
+    TRKUARTBuf *b = (TRKUARTBuf *)lbl_80325D68;
+
+    if (b->readPos >= b->readCount) {
+        b->readPos = 0;
+        b->readCount = gDBCommTable.peek();
+        if (b->readCount > 0) {
+            if (b->readCount > 0x110A) {
+                b->readCount = 0x110A;
+            }
+            readErr = gDBCommTable.read(b->buf, b->readCount) != 0 ? -1 : 0;
+            if (readErr != 0) {
+                b->readCount = 0;
+            }
+        }
+    }
+    if (b->readPos < b->readCount) {
+        readErr = 0;
+        *c = b->buf[b->readPos++];
+    }
+    return readErr;
 }
 
 s32 fn_800E17E8(u8 arg0) {
