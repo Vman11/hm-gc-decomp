@@ -5445,7 +5445,6 @@ s32 TRKTerminateNub(void) {
     fn_800DBCDC();
     return 0;
 }
-#pragma push
 
 s32 TRKInitializeNub(void) {
     extern s32 gTRKBigEndian[];
@@ -5490,7 +5489,6 @@ s32 TRKInitializeNub(void) {
     if (result == 0) result = TRKInitializeTarget();
     return result;
 }
-#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw on
@@ -6608,6 +6606,52 @@ s32 fn_800E0070(void *arg0) {
     M2C_FIELD(arg0, s8 *, 2) = 1;
     M2C_FIELD(arg0, s8 *, 3) = 0xA;
     return 0;
+}
+
+s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
+    extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
+    extern struct { u8 TBR; u8 DEC; } gTRKRestoreFlags;
+    u32 *data;
+    u32 count;
+    s32 error;
+    TRKExceptionStatus tempExceptionStatus;
+
+    if (lastRegister > 0x60) {
+        return 0x701;
+    }
+
+    tempExceptionStatus = gTRKExceptionStatus_802E01A4;
+    gTRKExceptionStatus_802E01A4.exceptionDetected = FALSE;
+
+    *registersLengthPtr = 0;
+
+    if (firstRegister <= lastRegister) {
+        count = (lastRegister - firstRegister) + 1;
+        *registersLengthPtr += count * sizeof(u32);
+        data = (u32 *)((u8 *)&gTRKCPUState + 0x1A8) + firstRegister;
+
+        if (read) {
+            error = fn_800DB570(b, data, count);
+        } else {
+            if (data <= (u32 *)((u8 *)&gTRKCPUState + 0x1EC) &&
+                data + count - 1 >= (u32 *)((u8 *)&gTRKCPUState + 0x1E8)) {
+                gTRKRestoreFlags.TBR = 1;
+            }
+            if (data <= (u32 *)((u8 *)&gTRKCPUState + 0x278) &&
+                data + count - 1 >= (u32 *)((u8 *)&gTRKCPUState + 0x278)) {
+                gTRKRestoreFlags.DEC = 1;
+            }
+            error = fn_800DB100(b, data, count);
+        }
+    }
+
+    if (gTRKExceptionStatus_802E01A4.exceptionDetected) {
+        error = 0x702;
+        *registersLengthPtr = 0;
+    }
+
+    gTRKExceptionStatus_802E01A4 = tempExceptionStatus;
+    return error;
 }
 
 s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count);
