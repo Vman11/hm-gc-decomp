@@ -186,7 +186,7 @@ static inline s32 TRKAppendBuffer_inline(TrkBuf *buf, const void *data, u32 leng
     s32 error = 0;
     u32 bytesLeft;
     bytesLeft = 0x880 - buf->pos;
-    if (length > bytesLeft) {
+    if (bytesLeft < length) {
         error = 0x301;
         length = bytesLeft;
     }
