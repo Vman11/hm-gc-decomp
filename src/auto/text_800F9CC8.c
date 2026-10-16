@@ -34,12 +34,10 @@ static inline void RBNode_rotateLeft(RBNode_800F9CC8 **root, RBNode_800F9CC8 *x)
 
 static inline void RBNode_rotateRight(RBNode_800F9CC8 **root, RBNode_800F9CC8 *x) {
     RBNode_800F9CC8 *y = x->right;
-    x->right = y->left;
-    if (y->left != NULL) {
+    if ((x->right = y->left) != NULL) {
         x->right->parent = x;
     }
-    y->parent = x->parent;
-    if (x->parent != NULL) {
+    if ((y->parent = x->parent) != NULL) {
         if (x == x->parent->right) {
             x->parent->right = y;
         } else {
