@@ -36,6 +36,23 @@ typedef struct ImgPix {
     u8 *mask;
 } ImgPix;
 
+void fn_80140A78(ImgPix *p) {
+    u8 *s = p->src;
+    u8 *e = s + p->count * 4;
+    u8 *m = p->mask;
+    do {
+        if (*m != 0) {
+            p->out[0] = s[3];
+            p->out[1] = s[0];
+            p->out[2] = s[1];
+            p->out[3] = s[2];
+        }
+        s += 4;
+        m++;
+        p->out += 4;
+    } while (s < e);
+}
+
 void fn_80140C14(ImgPix *p) {
     u8 *s = p->src;
     u8 *e = s + p->count * 4;
@@ -432,17 +449,14 @@ void fn_801428B4(ImgDec *p) {
 }
 
 void fn_80142900(ImgDec *p) {
-    u8 *d;
-    u8 *e;
-    d = p->dst;
-    e = d + p->count * 4;
-    while (d < e) {
-        s32 v = (d[2] * 2 - 0xFF) * p->wt[2] + (d[1] * 2 - 0xFF) * p->wt[1] + (d[0] * 2 - 0xFF) * p->wt[0];
+    u8 *d = p->dst;
+    u8 *e = d + p->count * 4;
+    for (; d < e; d += 4) {
+        s32 v = (d[0] * 2 - 0xFF) * p->wt[0] + (d[1] * 2 - 0xFF) * p->wt[1] + (d[2] * 2 - 0xFF) * p->wt[2];
         if (v < 0) v = 0;
         d[0] = (u32)v >> 8;
         d[1] = (u32)v >> 8;
         d[2] = (u32)v >> 8;
-        d += 4;
     }
 }
 
