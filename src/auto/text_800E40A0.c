@@ -639,6 +639,30 @@ extern u32 __pformatter();
 void *fn_800E92B8(void *ctx, const void *buf, u32 len);
 void __stdio_atexit(void) { __stdio_exit = __close_all; }
 
+#pragma push
+#pragma use_lmw_stmw on
+int fn_800E8F6C(char *s, const char *fmt, ...) {
+    va_list args;
+    struct {
+        char *s;
+        s32 n;
+        u32 c;
+    } ctx;
+    u32 r;
+    u32 idx;
+    va_start(args, fmt);
+    ctx.s = s;
+    ctx.n = -1;
+    ctx.c = 0;
+    r = __pformatter(fn_800E92B8, &ctx, fmt, args);
+    if (s != 0) {
+        idx = -2;
+        if (r < 0xFFFFFFFF) idx = r;
+        s[idx] = 0;
+    }
+    return r;
+}
+#pragma pop
 void fn_800E904C(char *s, const char *fmt, void *args) {
     struct {
         char *s;
