@@ -44,11 +44,136 @@ void __kill_critical_regions(void) {
 
 }
 
+void fn_800E8DF8(u8 *d, const u8 *s, u32 n) {
+    u32 a, b;
+    u32 i;
+    s += n;
+    d += n;
+    i = (u32)d & 3;
+    if (i != 0) {
+        n -= i;
+        do {
+            *--d = *--s;
+        } while (--i != 0);
+    }
+    i = n >> 5;
+    if (i != 0) {
+        do {
+            a = ((u32 *)s)[-1];
+            b = ((u32 *)s)[-2];
+            ((u32 *)d)[-1] = a;
+            a = ((u32 *)s)[-3];
+            ((u32 *)d)[-2] = b;
+            b = ((u32 *)s)[-4];
+            ((u32 *)d)[-3] = a;
+            a = ((u32 *)s)[-5];
+            ((u32 *)d)[-4] = b;
+            b = ((u32 *)s)[-6];
+            ((u32 *)d)[-5] = a;
+            a = ((u32 *)s)[-7];
+            ((u32 *)d)[-6] = b;
+            b = ((u32 *)s)[-8];
+            s -= 32;
+            ((u32 *)d)[-7] = a;
+            d -= 32;
+            *(u32 *)d = b;
+        } while (--i != 0);
+    }
+    i = (n >> 2) & 7;
+    if (i != 0) {
+        do {
+            s -= 4;
+            d -= 4;
+            *(u32 *)d = *(u32 *)s;
+        } while (--i != 0);
+    }
+    n &= 3;
+    if (n != 0) {
+        do {
+            *--d = *--s;
+        } while (--n != 0);
+    }
+}
+
+void fn_800E8EA0(u8 *d, const u8 *s, u32 n) {
+    u32 a, b;
+    u32 i;
+    i = (-(u32)d) & 3;
+    s -= 1;
+    d -= 1;
+    if (i != 0) {
+        n -= i;
+        do {
+            *++d = *++s;
+        } while (--i != 0);
+    }
+    i = n >> 5;
+    s -= 3;
+    d -= 3;
+    if (i != 0) {
+        do {
+            a = ((u32 *)s)[1];
+            b = ((u32 *)s)[2];
+            ((u32 *)d)[1] = a;
+            a = ((u32 *)s)[3];
+            ((u32 *)d)[2] = b;
+            b = ((u32 *)s)[4];
+            ((u32 *)d)[3] = a;
+            a = ((u32 *)s)[5];
+            ((u32 *)d)[4] = b;
+            b = ((u32 *)s)[6];
+            ((u32 *)d)[5] = a;
+            a = ((u32 *)s)[7];
+            ((u32 *)d)[6] = b;
+            b = ((u32 *)s)[8];
+            s += 32;
+            ((u32 *)d)[7] = a;
+            d += 32;
+            *(u32 *)d = b;
+        } while (--i != 0);
+    }
+    i = (n >> 2) & 7;
+    if (i != 0) {
+        do {
+            s += 4;
+            d += 4;
+            *(u32 *)d = *(u32 *)s;
+        } while (--i != 0);
+    }
+    s += 3;
+    d += 3;
+    n &= 3;
+    if (n != 0) {
+        do {
+            *++d = *++s;
+        } while (--n != 0);
+    }
+}
+
 extern void __close_all(void);
 extern void (*__stdio_exit)(void);
 extern u32 __pformatter(void *, void *, const char *, void *, s32);
 extern void fn_800E92B8(void);
 void __stdio_atexit(void) { __stdio_exit = __close_all; }
+
+void fn_800E904C(char *s, const char *fmt, void *args) {
+    struct {
+        char *s;
+        s32 n;
+        u32 c;
+    } ctx;
+    u32 r;
+    u32 idx;
+    ctx.s = s;
+    ctx.n = -1;
+    ctx.c = 0;
+    r = __pformatter(fn_800E92B8, &ctx, fmt, args, -1);
+    if (s != 0) {
+        idx = -2;
+        if (r < 0xFFFFFFFF) idx = r;
+        s[idx] = 0;
+    }
+}
 
 extern s32 lbl_803596A0;
 void fn_800EB1AC(s32 arg0) {
@@ -61,6 +186,16 @@ s32 fn_800EB1B4(void) {
     temp_r0 = (lbl_803596A0 * 0x41C64E6D) + 0x3039;
     lbl_803596A0 = temp_r0;
     return (temp_r0 >> 0x10U) & 0x7FFF;
+}
+
+typedef unsigned int size_t;
+size_t strlen(const char* s) {
+    const unsigned char* p = (const unsigned char*)s - 1;
+    size_t n = -1;
+    do {
+        n++;
+    } while (*++p != 0);
+    return n;
 }
 
 s32 fn_800ECD08(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
@@ -223,6 +358,36 @@ void EXI2_Unreserve(void) {
 }
 
 s32 AMC_IsStub(void) {
+    return 0;
+}
+
+extern char Ecb_80328410[];
+extern s32 lbl_8035A9C0;
+extern s32 lbl_8035A9C4;
+extern s32 lbl_8035A9C8;
+extern s32 lbl_8035A9CC;
+s32 EXIGetID(s32, u32, u32 *);
+s32 fn_800B31A4();
+s32 fn_800F33BC(s32 arg0) {
+    return *(s32 *)(Ecb_80328410 + (arg0 << 6) + 0xC);
+}
+
+void UnlockedHandler(void) {
+    u32 id;
+    EXIGetID(0, 0, &id);
+}
+
+s32 fn_800F3AF4(void) {
+    if ((u32) (lbl_8035A9CC + 0x5A010000) == 0x5AU) {
+        return 0;
+    }
+    if (!(fn_800B31A4() & 0x10000000)) {
+        lbl_8035A9C8 = 0;
+        return 2;
+    }
+    lbl_8035A9C8 = 0xA5FF005A;
+    lbl_8035A9C0 = 0;
+    lbl_8035A9C4 = 1;
     return 0;
 }
 
