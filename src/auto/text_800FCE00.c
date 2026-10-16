@@ -18,3 +18,16 @@ typedef struct Pool800FCE00 {
     u32 unk18;
     s32 unk1C;
 } Pool800FCE00;
+
+void fn_800FCE00(Pool800FCE00* pool) {
+    Elem800FCE00* e = pool->unk4;
+    Elem800FCE00* end = e + pool->unk14;
+
+    for (; e < end; e++) {
+        e->unk84 = 0;
+        e->unk78 = 0;
+        e->unk88 = 0;
+    }
+    pool->unk1C = 0;
+    pool->unk18 &= ~4;
+}
