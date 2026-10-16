@@ -1,5 +1,15 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
+typedef struct Anim {
+    f32 *data;
+    u32 count;
+    f32 speed;
+    u32 idx;
+    f32 t;
+    f32 prev;
+    f32 cur;
+    f32 out;
+} Anim;
 typedef struct HeapCell {
     struct HeapCell *prev;
     struct HeapCell *next;
