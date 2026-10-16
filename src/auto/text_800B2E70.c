@@ -186,6 +186,15 @@ typedef struct TRKCPUState_unk {
     u32 unk238;
 } TRKCPUState_unk;
 
+typedef struct TRKStepStatus {
+    s32 active;
+    u8 type;
+    u32 count;
+    u32 rangeStart;
+    u32 rangeEnd;
+} TRKStepStatus;
+extern TRKStepStatus lbl_802E01B4;
+
 typedef struct UnkInterp {
     f32* unk0;
     u32 unk4;
@@ -1444,6 +1453,41 @@ s32 fn_800C2644(void) {
     return 0;
 }
 
+u32 fn_800C2748(void) {
+    extern u8 *lbl_8035A720;
+    u8 *timing = lbl_8035A720;
+    u32 line;
+    u32 previous;
+    u32 vertical;
+    u32 horizontal;
+    s32 enabled = OSDisableInterrupts();
+    vertical = *(volatile u16 *)0xCC00202C & 0x7FF;
+    do {
+        previous = vertical;
+        vertical = *(volatile u16 *)0xCC00202C & 0x7FF;
+        horizontal = *(volatile u16 *)0xCC00202E & 0x7FF;
+    } while (previous != vertical);
+    line = (vertical - 1) * 2 + (horizontal - 1) / *(u16 *)(lbl_8035A720 + 0x1A);
+    OSRestoreInterrupts(enabled);
+    if (line >= *(u16 *)(timing + 0x18))
+        line -= *(u16 *)(timing + 0x18);
+    return line >> 1;
+}
+
+void fn_800C2A64(s32 arg0, s32 arg1) {
+    void fn_800C2848(u32, u32, s32, s32);
+    u32 previous;
+    u32 vertical;
+    u32 horizontal;
+    vertical = *(volatile u16 *)0xCC00202C & 0x7FF;
+    do {
+        previous = vertical;
+        vertical = *(volatile u16 *)0xCC00202C & 0x7FF;
+        horizontal = *(volatile u16 *)0xCC00202E & 0x7FF;
+    } while (previous != vertical);
+    fn_800C2848(horizontal, vertical, arg0, arg1);
+}
+
 void fn_800C4660(void) {
     u16 *p = (u16 *)0xCC005000;
     p[0x1B] |= 0x8000;
@@ -2381,8 +2425,60 @@ void fn_800D5DE8(void) {
     M2C_FIELD(__GXData, u8 *, 0x5AB) = 0;
 }
 
+void fn_800D5E84(s32 attr, u32 base_ptr, u8 stride) {
+    extern GXDataHead *__GXData;
+    s32 cpAttr;
+    u32 phyAddr;
+    s32 idx;
+    attr = (attr == 0x19) ? 0xA : attr;
+    cpAttr = attr - 9;
+    phyAddr = base_ptr & 0x3FFFFFFF;
+    GXWGFifo.u8 = 0x08;
+    GXWGFifo.u8 = cpAttr | 0xA0;
+    GXWGFifo.u32 = phyAddr;
+    idx = cpAttr - 12;
+    if (idx >= 0 && idx < 4) {
+        *(u32 *)((u8 *)__GXData + idx * 4 + 0x88) = phyAddr;
+    }
+    GXWGFifo.u8 = 0x08;
+    GXWGFifo.u8 = cpAttr | 0xB0;
+    GXWGFifo.u32 = stride;
+    idx = cpAttr - 12;
+    if (idx >= 0 && idx < 4) {
+        *(u32 *)((u8 *)__GXData + idx * 4 + 0x98) = stride;
+    }
+}
+
 void fn_800D5F10(void) {
     *(s8 *)0xCC008000 = 0x48;
+}
+
+void fn_800D61A0(u8 nTexGens) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    SETF(M2C_FIELD(gx, u32 *, 0x204), 4, 0, nTexGens);
+    GXWGFifo.u8 = 0x10;
+    GXWGFifo.u32 = 0x103F;
+    GXWGFifo.u32 = nTexGens;
+    M2C_FIELD(gx, u32 *, 0x5AC) |= 4;
+}
+
+extern void fn_800D6B0C(void);
+extern void fn_800B2EA8(void);
+void fn_800D6270(void) {
+    extern GXDataHead *__GXData;
+    if (M2C_FIELD(__GXData, u32 *, 0x5AC)) {
+        fn_800D6B0C();
+    }
+    GXWGFifo.u32 = 0;
+    GXWGFifo.u32 = 0;
+    GXWGFifo.u32 = 0;
+    GXWGFifo.u32 = 0;
+    GXWGFifo.u32 = 0;
+    GXWGFifo.u32 = 0;
+    GXWGFifo.u32 = 0;
+    GXWGFifo.u32 = 0;
+    fn_800B2EA8();
 }
 
 u16 fn_800D665C(void) {
@@ -2528,14 +2624,15 @@ void fn_800D6E48(u16 left, u16 top, u16 wd, u16 ht) {
 
 void fn_800D6EC4(u16 left, u16 top, u16 wd, u16 ht) {
     extern GXDataHead *__GXData;
-    M2C_FIELD(__GXData, u32 *, 0x1F0) = 0;
-    M2C_FIELD(__GXData, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F0), left, 0, 22, 31);
-    M2C_FIELD(__GXData, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F0), top, 10, 12, 21);
-    M2C_FIELD(__GXData, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F0), 0x49, 24, 0, 7);
-    M2C_FIELD(__GXData, u32 *, 0x1F4) = 0;
-    M2C_FIELD(__GXData, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F4), wd - 1, 0, 22, 31);
-    M2C_FIELD(__GXData, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F4), ht - 1, 10, 12, 21);
-    M2C_FIELD(__GXData, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F4), 0x4A, 24, 0, 7);
+    GXDataHead *gx = __GXData;
+    M2C_FIELD(gx, u32 *, 0x1F0) = 0;
+    M2C_FIELD(gx, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F0), left, 0, 22, 31);
+    M2C_FIELD(gx, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F0), top, 10, 12, 21);
+    M2C_FIELD(gx, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F0), 0x49, 24, 0, 7);
+    M2C_FIELD(gx, u32 *, 0x1F4) = 0;
+    M2C_FIELD(gx, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F4), wd - 1, 0, 22, 31);
+    M2C_FIELD(gx, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F4), ht - 1, 10, 12, 21);
+    M2C_FIELD(gx, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F4), 0x4A, 24, 0, 7);
 }
 
 void fn_800D6F40(u16 wd, u16 ht) {
@@ -2664,22 +2761,27 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
 
 void fn_800D7C68(u8 nChans) {
     extern GXDataHead *__GXData;
-    SETF(M2C_FIELD(__GXData, u32 *, 0x204), 3, 4, nChans);
+    GXDataHead *gx = __GXData;
+    M2C_FIELD(gx, u32 *, 0x204) = __rlwimi(M2C_FIELD(gx, u32 *, 0x204), nChans, 4, 25, 27);
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x1009;
     GXWGFifo.u32 = nChans;
-    M2C_FIELD(__GXData, u32 *, 0x5AC) |= 4;
+    M2C_FIELD(gx, u32 *, 0x5AC) |= 4;
 }
 
 void fn_800D7CA4(s32 chan, u8 enable, s32 amb_src, s32 mat_src, u32 light_mask, s32 diff_fn, s32 attn_fn) {
     extern GXDataHead *__GXData;
     u32 reg;
-    u32 idx = chan & 3;
+    u32 idx;
+    idx = chan & 3;
     reg = 0;
     reg = __rlwimi(reg, enable, 1, 30, 30);
     reg = __rlwimi(reg, mat_src, 0, 31, 31);
     reg = __rlwimi(reg, amb_src, 6, 25, 25);
-    reg = __rlwimi(reg, (attn_fn == 0) ? 0 : diff_fn, 7, 23, 24);
+    if (attn_fn == 0) {
+        diff_fn = 0;
+    }
+    reg = __rlwimi(reg, diff_fn, 7, 23, 24);
     reg = __rlwimi(reg, (attn_fn != 2), 9, 22, 22);
     reg = __rlwimi(reg, (attn_fn != 0), 10, 21, 21);
     reg &= ~0x3C;
@@ -3305,6 +3407,20 @@ s32 fn_800DF2F8(void *mutex) {
 
 s32 fn_800DF300(void *mutex) {
     return 0;
+}
+
+void fn_800DF3E0(u32 addr, s32 length) {
+    u32 p = addr & 0xFFFFFFF1;
+    length += addr - p;
+    do {
+        __dcbst((void *)p, 0);
+        __dcbf((void *)p, 0);
+        __sync();
+        __icbi((void *)p, 0);
+        p += 8;
+        length -= 8;
+    } while (length >= 0);
+    __isync();
 }
 
 void fn_800DF418(void *dest, int val, u32 count) {
