@@ -6307,26 +6307,35 @@ s32 fn_800DAF24(TrkBuf *msg) {
     checksum = acc ^ 0xFF;
 
     err = fn_800E17E8(0x7E);
-    for (i = 0; err == 0 && i < msg->count; i++) {
-        c = msg->data[i];
-        if (c == 0x7E || c == 0x7D) {
-            err = fn_800E17E8(0x7D);
-            c ^= 0x20;
-        }
-        if (err == 0) {
+    if (err == 0) {
+        for (i = 0; i < msg->count; i++) {
+            c = msg->data[i];
+            if (c == 0x7E || c == 0x7D) {
+                err = fn_800E17E8(0x7D);
+                c ^= 0x20;
+                if (err != 0) {
+                    break;
+                }
+            }
             err = fn_800E17E8(c);
+            if (err != 0) {
+                break;
+            }
         }
     }
+
     if (err == 0) {
         c = checksum;
         if (c == 0x7E || c == 0x7D) {
             err = fn_800E17E8(0x7D);
             c ^= 0x20;
+            if (err != 0) {
+                goto end;
+            }
         }
-        if (err == 0) {
-            err = fn_800E17E8(c);
-        }
+        err = fn_800E17E8(c);
     }
+end:
     if (err == 0) {
         err = fn_800E17E8(0x7E);
     }
@@ -7746,9 +7755,9 @@ s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
 s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count);
 s32 fn_800E0B0C(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
-    u32 *data;
+    u32 error;
     u32 count;
-    s32 error;
+    u32 *data;
     TRKExceptionStatus savedException;
 
     if (lastRegister > 0x24) {
@@ -7760,7 +7769,7 @@ s32 fn_800E0B0C(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
 
     count = (lastRegister - firstRegister) + 1;
     data = (u32 *)&gTRKCPUState + firstRegister;
-    *registersLengthPtr = count * sizeof(u32);
+    *registersLengthPtr = (s32)count * sizeof(u32);
 
     if (read) {
         error = fn_800DB570(b, data, count);
