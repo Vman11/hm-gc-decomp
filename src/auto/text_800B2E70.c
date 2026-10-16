@@ -185,9 +185,6 @@ static inline s32 TRKAppendBuffer_inline(TrkBuf *buf, const void *data, u32 leng
     extern void *fn_80003488(void *, const void *, u32);
     s32 error = 0;
     u32 bytesLeft;
-    if (length == 0) {
-        return 0;
-    }
     bytesLeft = 0x880 - buf->pos;
     if (bytesLeft < length) {
         error = 0x301;
@@ -5130,48 +5127,11 @@ s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
 }
 
 s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
-    extern s32 gTRKBigEndian[];
-    extern void *fn_80003488(void *, const void *, u32);
     s32 i;
     s32 err;
 
-    err = 0;
-    for (i = 0; err == 0 && i < count; i++) {
-        u32 value;
-        u8 swapBuffer[4];
-        u8 *bigEndianData;
-        u8 *byteData;
-        s32 error;
-        u32 length;
-        u32 bytesLeft;
-
-        value = *data;
-        if (gTRKBigEndian[0]) {
-            bigEndianData = (u8 *)&value;
-        } else {
-            byteData = (u8 *)&value;
-            bigEndianData = swapBuffer;
-            bigEndianData[0] = byteData[3];
-            bigEndianData[1] = byteData[2];
-            bigEndianData[2] = byteData[1];
-            bigEndianData[3] = byteData[0];
-        }
-        length = 4;
-        error = 0;
-        bytesLeft = 0x880 - buf->pos;
-        if (bytesLeft < 4) {
-            error = 0x301;
-            length = bytesLeft;
-        }
-        if (length == 1) {
-            buf->data[buf->pos] = *bigEndianData;
-        } else {
-            fn_80003488(buf->data + buf->pos, bigEndianData, length);
-        }
-        buf->pos += length;
-        buf->count = buf->pos;
-        err = error;
-        data++;
+    for (i = 0, err = 0; err == 0 && i < count; i++) {
+        err = TRKAppendBuffer1_ui32(buf, data[i]);
     }
     return err;
 }
