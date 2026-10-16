@@ -20,6 +20,28 @@ typedef struct FragmentInfo {
 } FragmentInfo;
 extern FragmentInfo fragmentinfo_80327F98[1];
 
+extern int lbl_80359530;
+extern char lbl_8029BFD0[];
+extern char lbl_8029C008[];
+void OSReport(const char *, ...);
+void *OSGetArenaLo(void);
+void *OSGetArenaHi(void);
+void OSSetArenaLo(void *);
+int fn_800B44C8(int, int, int);
+int fn_800B4538(int, int);
+int fn_800B44B8(int);
+void fn_800B443C(int, int);
+
+extern int __aborting;
+extern int __atexit_curr_func;
+extern void (*__atexit_funcs[])(void);
+extern void (*__console_exit)(void);
+void fn_800EB264(int);
+void _ExitProcess(void);
+void __begin_critical_region(int region);
+void __end_critical_region(int region);
+void __kill_critical_regions(void);
+
 extern u8 lbl_8029BFB0[];
 u8 *fn_800E4108(void) {
     return lbl_8029BFB0;
