@@ -39,10 +39,11 @@ void fn_80142E60(Img *p) {
 }
 
 void fn_80142FB0(Img *p) {
+    u8 f;
     u8 *q = p->px;
     u8 *end = q + p->n * 4;
     for (; q < end; q += 4) {
-        u8 f = 0;
+        f = 0;
         if (p->c[0] == q[0] && p->c[1] == q[1] && p->c[2] == q[2]) {
             f = 1;
         }
