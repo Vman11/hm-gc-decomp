@@ -73,6 +73,41 @@ u8 *fn_800E4108(void) {
     return lbl_8029BFB0;
 }
 
+void fn_800E4114(int size) {
+    int arenaLo;
+    int arenaHi;
+
+    if (lbl_80359530 == -1) {
+        OSReport(lbl_8029BFD0);
+        OSReport(lbl_8029C008);
+        arenaLo = (int)OSGetArenaLo();
+        arenaHi = (int)OSGetArenaHi();
+        arenaLo = fn_800B44C8(arenaLo, arenaHi, 1);
+        OSSetArenaLo((void *)arenaLo);
+        arenaLo = (arenaLo + 0x1F) & ~0x1F;
+        arenaHi = arenaHi & ~0x1F;
+        fn_800B44B8(fn_800B4538(arenaLo, arenaHi));
+        OSSetArenaLo((void *)(arenaLo = arenaHi));
+    }
+    fn_800B443C(lbl_80359530, size);
+}
+
+void fn_800E42BC(void) {
+    fn_800EB264(1);
+    __aborting = 1;
+    __begin_critical_region(0);
+    while (__atexit_curr_func > 0) {
+        __atexit_funcs[--__atexit_curr_func]();
+    }
+    __end_critical_region(0);
+    __kill_critical_regions();
+    if (__console_exit) {
+        __console_exit();
+        __console_exit = 0;
+    }
+    _ExitProcess();
+}
+
 s32 fn_800E7F00(s32 arg0) {
     s32 temp_r4;
 
