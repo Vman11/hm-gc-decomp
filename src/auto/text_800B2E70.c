@@ -112,6 +112,7 @@ typedef struct DBCommTable {
     s32 (*close)(void);
 } DBCommTable;
 extern DBCommTable gDBCommTable;
+void TRKEXICallBack(s16 chan, void *ctx);
 extern u8 lbl_80323560[];
 extern u16 lbl_8035A8F0;
 s32 fn_800CDBD8(s32 chan, void *out);
