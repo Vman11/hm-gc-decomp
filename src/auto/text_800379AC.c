@@ -111,6 +111,25 @@ void fn_80037BD0(void *arg0, void *arg1) {
     }
 }
 
+void fn_80037C7C(void *arg0, void *arg1) {
+    switch (M2C_FIELD(arg1, s32 *, 0xC)) {
+    case 0x67: M2C_FIELD(arg0, s32 *, 0x28) = 1; break;
+    case 0x68: M2C_FIELD(arg0, s32 *, 0x2C) = 1; break;
+    case 0x69: M2C_FIELD(arg0, s32 *, 0x30) = 1; break;
+    case 0x6A:
+        M2C_FIELD(arg0, s32 *, 0x54) = 1;
+        M2C_FIELD(arg0, s32 *, 0x34) = 1;
+        break;
+    case 0x6B: M2C_FIELD(arg0, s32 *, 0x38) = 1; break;
+    case 0x6C: M2C_FIELD(arg0, s32 *, 0x3C) = 1; break;
+    case 0x6D: M2C_FIELD(arg0, s32 *, 0x40) = 1; break;
+    case 0x6E: M2C_FIELD(arg0, s32 *, 0x44) = 1; break;
+    case 0x6F: M2C_FIELD(arg0, s32 *, 0x48) = 1; break;
+    case 0x70: M2C_FIELD(arg0, s32 *, 0x4C) = 1; break;
+    case 0x71: M2C_FIELD(arg0, s32 *, 0x50) = 1; break;
+    }
+}
+
 void fn_80037D2C(void *arg0) {
     M2C_FIELD(arg0, s32 *, 0x28) = 0;
     M2C_FIELD(arg0, s32 *, 0x2C) = 0;
