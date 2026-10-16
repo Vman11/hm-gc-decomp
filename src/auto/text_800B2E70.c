@@ -2272,6 +2272,18 @@ s32 fn_800DBAA0(void *arg0, u32 arg1) {
     return var_r5;
 }
 
+s32 TRKInitializeMessageBuffers(void) {
+    s32 i;
+
+    for (i = 0; i < 3; i++) {
+        fn_800DF300(&lbl_80323E00[i]);
+        fn_800DF2F8(&lbl_80323E00[i]);
+        M2C_FIELD(&lbl_80323E00[i], s32 *, 4) = 0;
+        fn_800DF2F0(&lbl_80323E00[i]);
+    }
+    return 0;
+}
+
 s32 fn_800DBCDC(void) {
     return 0;
 }
@@ -2281,6 +2293,37 @@ s32 TRKInitializeSerialHandler(void) {
     lbl_803257B4.receiveState = 0;
     lbl_803257B4.isEscape = 0;
     return 0;
+}
+
+void fn_800DBD08(s32 bufferIdx) {
+    void fn_800DABB4(void *);
+    u8 event[0xC];
+
+    fn_800DAB9C(event, 2);
+    lbl_803257B4.msgBufID = -1;
+    M2C_FIELD(event, s32 *, 8) = bufferIdx;
+    fn_800DABB4(event);
+}
+
+void TRKGetInput(void) {
+    s32 fn_800DBDF0(void);
+    TrkBuf *TRKGetBuffer(s32);
+    s32 fn_800DB4F0(TrkBuf *, u8 *);
+    TrkBuf *buf;
+    s32 id;
+    u8 command;
+
+    id = fn_800DBDF0();
+    if (id != -1) {
+        buf = TRKGetBuffer(id);
+        fn_800DBAA0(buf, 0);
+        fn_800DB4F0(buf, &command);
+        if (command < 0x80) {
+            fn_800DBD08(id);
+        } else {
+            fn_800DBB10(id);
+        }
+    }
 }
 
 void usr_put_initialize(void) {
