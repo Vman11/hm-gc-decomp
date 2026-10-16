@@ -286,6 +286,45 @@ void __close_all(void) {
     }
     __end_critical_region(2);
 }
+
+int fn_800E63F8(const decimal *x, const decimal *y) {
+    int i;
+    int l;
+
+    if (x->sig.text[0] == 0) {
+        return y->sig.text[0] == 0;
+    }
+    if (y->sig.text[0] == 0) {
+        return x->sig.text[0] == 0;
+    }
+    if (x->exp == y->exp) {
+        l = x->sig.length;
+        if (l > y->sig.length) {
+            l = y->sig.length;
+        }
+        for (i = 0; i < l; i++) {
+            if (x->sig.text[i] != y->sig.text[i]) {
+                return 0;
+            }
+        }
+        if (l == x->sig.length) {
+            for (; i < y->sig.length; i++) {
+                if (y->sig.text[i] != 0) {
+                    return 0;
+                }
+            }
+        } else {
+            for (; i < x->sig.length; i++) {
+                if (x->sig.text[i] != 0) {
+                    return 0;
+                }
+            }
+        }
+        return 1;
+    }
+    return 0;
+}
+
 #pragma pop
 
 s32 fn_800E7F00(s32 arg0) {
