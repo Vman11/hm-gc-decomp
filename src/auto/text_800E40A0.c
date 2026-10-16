@@ -51,7 +51,7 @@ typedef struct __va_list_struct {
 #define va_end(ap) ((void)0)
 extern u8 __files[];
 int fwide(void *, int);
-extern void __FileWrite(void);
+void *__FileWrite(void *file, const void *buf, u32 len);
 
 void __kill_critical_regions(void) {
 
