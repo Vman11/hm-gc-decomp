@@ -108,6 +108,33 @@ void fn_800E42BC(void) {
     _ExitProcess();
 }
 
+void fn_800E4420(void *pool, void *ptr, u32 size);
+void fn_800E4578(void *pool, void *ptr);
+int fn_800E83C0(void *file);
+int fn_800E84F8(void *file);
+void *memset(void *, int, u32);
+extern u8 lbl_803280A8[];
+extern u8 lbl_8035A970;
+void fn_800E43C8(void *pool, void *ptr) {
+    u32 size;
+    u32 hdr;
+
+    if (ptr == NULL) {
+        return;
+    }
+    hdr = ((u32 *)ptr)[-1];
+    if (!(hdr & 1)) {
+        size = ((u32 *)hdr)[2];
+    } else {
+        size = (((u32 *)ptr)[-2] & ~7) - 8;
+    }
+    if (size <= 0x44) {
+        fn_800E4420(pool, ptr, size);
+    } else {
+        fn_800E4578(pool, ptr);
+    }
+}
+
 s32 fn_800E7F00(s32 arg0) {
     s32 temp_r4;
 
@@ -141,24 +168,6 @@ typedef struct __va_list_struct {
 #define va_end(ap) ((void)0)
 extern u8 __files[];
 int fwide(void *, int);
-
-typedef struct MslFileMode {
-    unsigned int open_mode : 2;
-    unsigned int io_mode : 3;
-    unsigned int buffer_mode : 2;
-    unsigned int file_kind : 3;
-    unsigned int file_orientation : 2;
-    unsigned int binary_io : 1;
-} MslFileMode;
-
-typedef struct MslFile {
-    u32 handle;
-    MslFileMode mode;
-    u8 state[4];
-    u8 is_dynamically_allocated;
-    u8 pad[0x4C - 0xD];
-    struct MslFile *next_file;
-} MslFile;
 void *__FileWrite(void *file, const void *buf, u32 len);
 
 void __kill_critical_regions(void) {
