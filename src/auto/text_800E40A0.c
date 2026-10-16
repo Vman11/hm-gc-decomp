@@ -905,56 +905,55 @@ void *__FileWrite(void *file, const void *buf, u32 len) {
     return (fwrite(buf, 1, len, file) == len) ? file : 0;
 }
 
-void fn_800EA1DC(decimal *d, int digits) {
-    unsigned char *end;
-    unsigned char *i;
-    signed char c;
-    int flag;
+void fn_800EA1DC(decimal *dec, int new_length) {
+    char c;
+    char *p;
+    int carry;
 
-    if (digits < 0) {
-    zero:
-        d->exp = 0;
-        d->sig.length = 1;
-        d->sig.text[0] = '0';
+    if (new_length < 0) {
+    return_zero:
+        dec->exp = 0;
+        dec->sig.length = 1;
+        *dec->sig.text = '0';
         return;
     }
-    if (digits >= d->sig.length) {
+
+    if (new_length >= dec->sig.length)
         return;
-    }
-    end = d->sig.text + digits;
-    c = *end - '0';
+
+    p = (char *)dec->sig.text + new_length + 1;
+    c = *--p - '0';
+
     if (c == 5) {
-        i = d->sig.text + d->sig.length;
-        while (--i > end && *i == '0') {
-        }
-        if (i == end) {
-            flag = end[-1] & 1;
-        } else {
-            flag = 1;
-        }
-    } else {
-        flag = c > 5;
-    }
-    while (digits != 0) {
-        c = *--end + flag - '0';
-        flag = c > 9;
-        if (flag || c == 0) {
-            digits--;
-        } else {
-            *end = c + '0';
+        char *q = &((char *)dec->sig.text)[dec->sig.length];
+
+        while (--q > p && *q == '0')
+            ;
+
+        carry = (q == p) ? p[-1] & 1 : 1;
+    } else
+        carry = (c > 5);
+
+    while (new_length) {
+        c = (*--p - '0') + carry;
+
+        if ((carry = (c > 9)) != 0 || c == 0)
+            --new_length;
+        else {
+            *p = c + '0';
             break;
         }
     }
-    if (flag) {
-        d->exp++;
-        d->sig.length = 1;
-        d->sig.text[0] = '1';
+
+    if (carry) {
+        dec->exp += 1;
+        dec->sig.length = 1;
+        *dec->sig.text = '1';
         return;
-    }
-    if (digits == 0) {
-        goto zero;
-    }
-    d->sig.length = digits;
+    } else if (new_length == 0)
+        goto return_zero;
+
+    dec->sig.length = new_length;
 }
 
 #pragma pop
