@@ -102,6 +102,65 @@ typedef struct decimal {
     } sig;
 } decimal;
 
+typedef struct decform {
+    char style;
+    char unused;
+    short digits;
+} decform;
+
+void fn_800E5B48(decimal *d, double x);
+
+static int __must_round(const decimal *d, int digits) {
+    const unsigned char *i = d->sig.text + digits;
+
+    if (*i > 5) {
+        return 1;
+    }
+    if (*i < 5) {
+        return -1;
+    }
+    {
+        const unsigned char *e = d->sig.text + d->sig.length;
+        for (i++; i < e; i++) {
+            if (*i != 0) {
+                return 1;
+            }
+        }
+    }
+    if (d->sig.text[digits - 1] & 1) {
+        return 1;
+    }
+    return -1;
+}
+
+static void __dorounddecup(decimal *d, int digits) {
+    unsigned char *b = d->sig.text;
+    unsigned char *i = b + digits - 1;
+
+    while (1) {
+        if (*i < 9) {
+            (*i)++;
+            break;
+        }
+        if (i == b) {
+            *i = 1;
+            d->exp++;
+            break;
+        }
+        *i-- = 0;
+    }
+}
+
+static void __rounddec(decimal *d, int digits) {
+    if (digits > 0 && digits < d->sig.length) {
+        int unkBool = __must_round(d, digits);
+        d->sig.length = digits;
+        if (unkBool >= 0) {
+            __dorounddecup(d, digits);
+        }
+    }
+}
+
 extern int __aborting;
 extern int __atexit_curr_func;
 extern void (*__atexit_funcs[])(void);
