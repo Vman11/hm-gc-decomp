@@ -1,6 +1,33 @@
 /* Functions from 0x801753B8 to 0x801756D8, found by decomp-toolkit. */
 #include "common.h"
 
+void fn_80175570(u8 *__restrict arg0, u8 *__restrict arg1) {
+    *(s32 *)(arg0 + 0) = *(s32 *)(arg1 + 0);
+    *(s32 *)(arg0 + 0x1C) = *(s32 *)(arg1 + 0x1C);
+    arg0[0x20] = arg1[0x20];
+    arg0[0x21] = arg1[0x21];
+    arg0[0x22] = arg1[0x22];
+    arg0[0x23] = arg1[0x23];
+    arg0[4] = arg1[4];
+    arg0[5] = arg1[5];
+    arg0[6] = arg1[6];
+    arg0[7] = arg1[7];
+    arg0[8] = arg1[8];
+    arg0[9] = arg1[9];
+    arg0[10] = arg1[10];
+    arg0[11] = arg1[11];
+    arg0[12] = arg1[12];
+    arg0[13] = arg1[13];
+    arg0[14] = arg1[14];
+    arg0[15] = arg1[15];
+    arg0[16] = arg1[16];
+    arg0[17] = arg1[17];
+    arg0[18] = arg1[18];
+    arg0[19] = arg1[19];
+    *(s32 *)(arg0 + 0x28) = *(s32 *)(arg1 + 0x28);
+    *(s32 *)(arg0 + 0x2C) = *(s32 *)(arg1 + 0x2C);
+}
+
 void fn_80175634(void *arg0, s8 arg1) {
     M2C_FIELD(arg0, s8 *, 0x21) = arg1;
 }
