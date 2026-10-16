@@ -2071,14 +2071,6 @@ s32 fn_800F0DA0(u32 *data) {
 }
 
 volatile u32 __EXIRegs[16] : 0xCC006800;
-
-typedef struct EXI2Control {
-    u8 unk0[0xC];
-    u32 state;
-    s32 immLen;
-    u8 *immBuf;
-} EXI2Control;
-extern EXI2Control *lbl_803596F0;
 void fn_800F14C0(s32 arg0, s32 arg1) {
     if (arg0 != 0) {
         *(volatile u32 *)0xCC003000 = (*(volatile u32 *)0xCC003000 & 0x1000) | 0x1000;
