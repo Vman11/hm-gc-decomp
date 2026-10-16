@@ -25,6 +25,12 @@ typedef struct __va_list_struct {
 typedef __va_list va_list;
 extern int vprintf(const char* fmt, va_list args);
 extern u16 lbl_80359550;
+extern u32 lbl_8035A7A8;
+extern u32 lbl_8035A7AC;
+extern void (*lbl_8035A7A0)(void);
+void fn_800C69D8();
+void OSClearContext(u8 *ctx);
+void OSSetCurrentContext(u8 *ctx);
 typedef struct ColorBits {
     u32 unk0;
     u32 a : 16;
