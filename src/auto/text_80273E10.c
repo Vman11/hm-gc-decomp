@@ -572,23 +572,6 @@ u32 fn_80275578(u32 hi, u32 lo, u32 d) {
 s64 OSGetTime(void);
 extern s64 lbl_802F3840;
 void fn_800C9A0C(s32, int);
-static inline void setupRangeCmd(s16 *cmd, u32 base, u32 size, u32 shift, void *dev, int flag) {
-    u32 start = base >> shift;
-    u32 end = ((base + size) >> shift) - 1;
-    u32 pos;
-    if (flag == 0) {
-        pos = *(u32 *)((u8 *)dev + 0x1B2);
-    } else {
-        pos = start;
-    }
-    cmd[2] = start >> 16;
-    cmd[3] = start;
-    cmd[4] = end >> 16;
-    cmd[5] = end;
-    cmd[6] = pos >> 16;
-    cmd[7] = pos;
-}
-
 void fn_8027564C(void *arg0, int arg1) {
     if (*(s32 *)((u8 *)arg0 + 0x50) != 0) {
         fn_800C9A0C(*(s32 *)((u8 *)arg0 + 0x50), arg1);
@@ -603,49 +586,22 @@ s32 fn_8027569C(void *arg0) {
 }
 
 void fn_800C9B74(void *, s16 *);
+#pragma push
+#pragma dont_inline off
 void fn_802756B8(void *arg0, int arg1, int arg2, int arg3) {
     u8 *p = arg0;
     s16 cmd[8];
-    u32 start;
-    u32 end;
-    u32 pos;
-    s32 dev;
 
     cmd[0] = 1;
     cmd[1] = (arg1 == 0x10) ? 10 : 25;
-    start = *(u32 *)(p + 0x58) >> *(u32 *)(p + 0x60);
-    end = ((*(u32 *)(p + 0x58) + *(u32 *)(p + 0x64)) >> *(u32 *)(p + 0x60)) - 1;
-    if (arg2 == 0) {
-        pos = *(u32 *)(*(u8 **)(p + 0x50) + 0x1B2);
-    } else {
-        pos = start;
-    }
-    cmd[2] = start >> 16;
-    cmd[3] = start;
-    cmd[4] = end >> 16;
-    cmd[5] = end;
-    cmd[6] = pos >> 16;
-    cmd[7] = pos;
+    setupRangeCmd(cmd, *(u32 *)(p + 0x58), *(u32 *)(p + 0x64), *(u32 *)(p + 0x60), *(void **)(p + 0x50), arg2);
     fn_800C9B74(*(void **)(p + 0x50), cmd);
-    dev = *(s32 *)(p + 0x54);
-    if (dev != 0) {
-        start = *(u32 *)(p + 0x5C) >> *(u32 *)(p + 0x60);
-        end = ((*(u32 *)(p + 0x5C) + *(u32 *)(p + 0x64)) >> *(u32 *)(p + 0x60)) - 1;
-        if (arg2 == 0) {
-            pos = *(u32 *)((u8 *)dev + 0x1B2);
-        } else {
-            pos = start;
-        }
-        cmd[2] = start >> 16;
-        cmd[3] = start;
-        cmd[4] = end >> 16;
-        cmd[5] = end;
-        cmd[6] = pos >> 16;
-        cmd[7] = pos;
-        fn_800C9B74((void *)dev, cmd);
+    if (*(s32 *)(p + 0x54) != 0) {
+        setupRangeCmd(cmd, *(u32 *)(p + 0x5C), *(u32 *)(p + 0x64), *(u32 *)(p + 0x60), *(void **)(p + 0x54), arg2);
+        fn_800C9B74(*(void **)(p + 0x54), cmd);
     }
 }
-
+#pragma pop
 void *memset();
 #pragma push
 #pragma use_lmw_stmw on
@@ -953,6 +909,39 @@ void fn_80276E38(u8* arg0) {
         *(s32*)(arg0 + 0x280) = fn_802753F0();
         *(s32*)(arg0 + 0x284) = *(s32*)(arg0 + 0x270) - 1;
     }
+}
+
+void fn_80276E80(u8 *arg0, s32 arg1) {
+    u32 *offsets;
+    if (arg1 != 0) {
+        arg1--;
+    }
+    *(s32 *)(arg0 + 0x308) = 0;
+    if (*(s32 *)(arg0 + 0x2F8) != 0) {
+        fn_80276B84(arg0);
+    }
+    *(s32 *)(arg0 + 0x10) = *(s32 *)(arg0 + 0xC);
+    if (arg1 == 0) {
+        s32 now = fn_802753F0();
+        if (*(s32 *)(arg0 + 0x2F0) == 0) {
+            *(s32 *)(arg0 + 0x2F0) = now;
+        }
+        if ((u32)(now - *(s32 *)(arg0 + 0x2F0)) > 300000) {
+            *(s32 *)(arg0 + 0x2F0) = now;
+            *(s32 *)(arg0 + 0x2F4) = 1;
+        }
+    }
+    if (*(s32 *)(arg0 + 0x108) != 0) {
+        offsets = *(u32 **)(arg0 + 0x10C);
+        *(s32 *)(arg0 + 0x104) = *(s32 *)(arg0 + 0x108) + ((offsets[arg1] & ~1) - (offsets[0] & ~1));
+    } else {
+        offsets = *(u32 **)(arg0 + 0x10C);
+        (*(void (**)(u8 *, s32, u32, s32, u32))(arg0 + 0x114))(arg0 + 0x110, arg1, offsets[arg1] & ~1, *(s32 *)(arg0 + 0x104), (offsets[arg1 + 1] & ~1) - (offsets[arg1] & ~1));
+    }
+    if (*(s32 *)(arg0 + 0x2F8) != 0) {
+        fn_80276B84(arg0);
+    }
+    *(s32 *)(arg0 + 0xC) = arg1 + 1;
 }
 
 #pragma pop
@@ -1513,11 +1502,6 @@ s32 fn_8027E300(s32 count, s32 base) {
 void fn_8027E378(s32 x, s32 count) {
     extern s32 lbl_803008C0[];
     extern u32 *lbl_802F7AE0[];
-    s32 *t0 = lbl_803008C0;
-    u32 **ytab = lbl_802F7AE0;
-    s32 *t3 = lbl_803008C0 + 768;
-    s32 *t1 = lbl_803008C0 + 256;
-    s32 *t2 = lbl_803008C0 + 512;
     s32 n = count - 1;
     if (count != 0) do {
         u8 *u = lbl_80300860[4];
@@ -1530,13 +1514,13 @@ void fn_8027E378(s32 x, s32 count) {
         dst = (u32 *)lbl_80300860[0];
         v = lbl_80300860[5];
         y = lbl_80300860[2];
-        r = t0[*u];
+        r = lbl_803008C0[*u];
         lbl_80300860[9] = (u8 *)r;
-        g = t2[*u] + t1[*v];
+        g = (lbl_803008C0 + 512)[*u] + (lbl_803008C0 + 256)[*v];
         lbl_80300860[8] = (u8 *)g;
-        b = t3[*v];
+        b = (lbl_803008C0 + 768)[*v];
         lbl_80300860[10] = (u8 *)b;
-        tbl = ytab[*y];
+        tbl = lbl_802F7AE0[*y];
         lbl_80300860[2] = y + 1;
         *dst = tbl[r] | (tbl[g] << 8) | (tbl[b] << 16);
         lbl_80300860[0] += 4;
