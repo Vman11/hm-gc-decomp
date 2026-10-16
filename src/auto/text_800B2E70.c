@@ -2715,6 +2715,28 @@ void fn_800DAB9C(void *arg0, s8 arg1) {
     M2C_FIELD(arg0, s32 *, 8) = -1;
 }
 
+s32 TRKGetNextEvent(void *event) {
+    extern struct {
+        s32 mutex;
+        s32 count;
+        s32 first;
+        u8 events[2][0xC];
+        s32 eventID;
+    } lbl_80323DD0;
+    s32 result = 0;
+    fn_800DF2F8(&lbl_80323DD0);
+    if (lbl_80323DD0.count > 0) {
+        memcpy(event, lbl_80323DD0.events[lbl_80323DD0.first], 0xC);
+        lbl_80323DD0.count--;
+        if (++lbl_80323DD0.first == 2) {
+            lbl_80323DD0.first = 0;
+        }
+        result = 1;
+    }
+    fn_800DF2F0(&lbl_80323DD0);
+    return result;
+}
+
 s32 TRKInitializeEventQueue(void) {
     extern struct {
         s32 mutex;
