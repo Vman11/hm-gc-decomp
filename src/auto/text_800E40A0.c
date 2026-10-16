@@ -13,6 +13,25 @@ int OSDisableInterrupts(void);
 int OSRestoreInterrupts(int);
 s32 fn_800F0CC4(u32, void*, s32);
 
+typedef void (*EXICallback)(s32 chan, void *context);
+typedef struct EXIControl {
+    EXICallback exiCallback;
+    EXICallback tcCallback;
+    EXICallback extCallback;
+    volatile s32 state;
+    int immLen;
+    u8 *immBuf;
+    u32 dev;
+    u32 id;
+    s32 idTime;
+    int items;
+    struct {
+        u32 dev;
+        EXICallback callback;
+    } queue[3];
+} EXIControl;
+extern char Ecb_80328410[];
+
 typedef struct FragmentInfo {
     void *eti_info;
     void *toc;
