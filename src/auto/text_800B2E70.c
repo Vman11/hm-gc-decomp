@@ -1973,3 +1973,8 @@ void TRKUARTInterruptHandler(void) {
 
 }
 
+extern u8 lbl_80327F90[];
+void fn_800E1AD8(u8 v) {
+    lbl_80327F90[0] = v;
+}
+
