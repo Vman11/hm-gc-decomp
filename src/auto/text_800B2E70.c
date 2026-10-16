@@ -1,5 +1,10 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
+typedef struct HeapCell {
+    struct HeapCell *prev;
+    struct HeapCell *next;
+    int size;
+} HeapCell;
 s32 fn_800DF4D0(void*);
 extern char* lbl_803595E8;
 void OSRegisterVersion(const char*);
