@@ -10,6 +10,14 @@ void fn_8028F484(f32 *, f32 *);
 
 void fn_80275C64(void);
 u32 fn_80274D04(u32 arg0);
+
+typedef struct BitStream {
+    u32 *ptr;
+    u32 unk4;
+    u32 bits;
+    s32 count;
+} BitStream;
+
 void fn_80275F98();
 void fn_80276058(void *);
 void fn_8027564C(void *, int);
@@ -344,6 +352,15 @@ void fn_80274A48(void) {
     lbl_8035B87C = OSGetArenaLo();
     OSSetArenaLo((u8*)lbl_8035B87C + 0x4000);
     fn_80274C8C();
+}
+
+void fn_80274BB4(void)
+{
+    s32 i;
+
+    for (i = 0; i < 0x1000; i++) {
+        lbl_8035B880[i] = 0;
+    }
 }
 
 void fn_80274C8C(void) {
@@ -797,6 +814,38 @@ void fn_80276A90(s8 *dst, s16 *src, u32 len) {
         *dst++ = *src++ >> 8;
     }
 }
+
+#pragma push
+#pragma use_lmw_stmw on
+u32 fn_80276AB8(u8 *arg0) {
+    u32 ms;
+    u32 len;
+    u32 wrap;
+    u32 base;
+    u32 pos;
+    u32 start = *(u32 *)(arg0 + 0x40);
+    u32 end = *(u32 *)(arg0 + 0x4C);
+
+    if (start < end) {
+        len = end - start;
+        ms = (len * 1000) / ((u32)(*(s32 *)(arg0 + 0x6C) * *(s32 *)(arg0 + 0x70) * *(s32 *)(arg0 + 0x74)) >> 3);
+        pos = *(u32 *)(arg0 + 0x38) - len;
+        *(u32 *)(arg0 + 0x38) = pos;
+        base = *(u32 *)(arg0 + 0x2C);
+        if (pos < base) {
+            wrap = base - pos;
+            *(u32 *)(arg0 + 0x38) = pos + *(u32 *)(arg0 + 0x28);
+            memset((u8 *)base, 0, len - wrap);
+            memset(*(u8 **)(arg0 + 0x38), 0, wrap);
+        } else {
+            memset((u8 *)pos, 0, len);
+        }
+        *(u32 *)(arg0 + 0x40) += len;
+        return ms;
+    }
+    return 0;
+}
+#pragma pop
 
 void fn_80276E38(u8* arg0) {
     if (*(s32*)(arg0 + 0x280) == 0) {
@@ -1718,6 +1767,47 @@ void fn_802827BC(s32 arg0, s32 n) {
 
 #pragma push
 #pragma use_lmw_stmw on
+s32 fn_80282838(s32 count, s32 base) {
+    u32 mask = 0xFF00FF00;
+    s32 n = count;
+    do {
+        u8 *u = lbl_80300860[4];
+        u8 *y = lbl_80300860[2];
+        u32 b = *u << 8;
+        u8 *a = lbl_80300860[5];
+        u8 *y2 = y + 2;
+        u32 v = y[0];
+        u32 c = y[1];
+        u32 d;
+        u8 *dst;
+        u++;
+        d = *a;
+        v |= b;
+        c <<= 16;
+        dst = lbl_80300860[0];
+        v |= c;
+        d <<= 24;
+        a++;
+        lbl_80300860[4] = u;
+        lbl_80300860[5] = a;
+        v |= d;
+        lbl_80300860[2] = y2;
+        *(u32 *)dst = v;
+        y = lbl_80300860[3];
+        dst = lbl_80300860[1];
+        v = (v & mask) | y[0] | (y[1] << 16);
+        lbl_80300860[3] = y + 2;
+        *(u32 *)dst = v;
+        lbl_80300860[0] += 4;
+        lbl_80300860[1] += 4;
+        n -= 2;
+    } while (n > 0);
+    return base + count;
+}
+#pragma pop
+
+#pragma push
+#pragma use_lmw_stmw on
 void fn_802829C4(s32 a0,s32 a1,s32 a2,s32 a3,s32 a4,s32 a5,s32 a6,s32 a7,s32 a8,s32 a9,s32 a10,s32 a11,s32 a12,s32 a13) {
     extern void fn_8027C408();
     extern u8 lbl_80301920[];
@@ -1804,28 +1894,42 @@ s32 fn_802838BC(s32 arg0, s32 arg1) {
 void fn_8028391C(s32 **list, s32 *item);
 #pragma push
 #pragma use_lmw_stmw on
-void fn_80283984(s32 *arg0) {
-    s32 *p;
-    s32 *list;
+void fn_80283984(void *arg0) {
+    M2C_UNK fn_8028391C(void **, void *);
+    void *sp8;
+    s32 temp_r3;
+    void *var_r31;
+    void *var_r31_2;
 
-    arg0[13]++;
-    if (arg0[0] == 1) {
-        p = (s32 *)arg0[12];
-        list = NULL;
-        while (p != NULL) {
-            if (arg0[0] != 1) {
-                return;
-            }
-            if (p[3] == 1) {
-                p[2] = ((s32 (*)(s32 *, s32))p[5])(p, arg0[13]);
-                if (p[2] != 0) {
-                    fn_8028391C(&list, p);
+    M2C_FIELD(arg0, s32 *, 0x34) = (s32) (M2C_FIELD(arg0, s32 *, 0x34) + 1);
+    if ((s32) M2C_FIELD(arg0, s32 *, 0) == 1) {
+        var_r31 = M2C_FIELD(arg0, void **, 0x30);
+        sp8 = NULL;
+        if (var_r31 != NULL) {
+loop_2:
+            if ((s32) M2C_FIELD(arg0, s32 *, 0) == 1) {
+                if ((s32) M2C_FIELD(var_r31, s32 *, 0xC) == 1) {
+                    temp_r3 = M2C_FIELD(var_r31, s32 (**)(void *, s32), 0x14)(var_r31, M2C_FIELD(arg0, s32 *, 0x34));
+                    M2C_FIELD(var_r31, s32 *, 8) = temp_r3;
+                    if (temp_r3 != 0) {
+                        fn_8028391C(&sp8, var_r31);
+                    }
                 }
+                var_r31 = M2C_FIELD(var_r31, void **, 0);
+                if (var_r31 == NULL) {
+                    goto block_7;
+                }
+                goto loop_2;
             }
-            p = (s32 *)p[0];
-        }
-        for (p = list; p != NULL; p = (s32 *)p[1]) {
-            ((void (*)(s32 *, s32))p[6])(p, arg0[13]);
+        } else {
+block_7:
+            var_r31_2 = sp8;
+            if (var_r31_2 != NULL) {
+                do {
+                    M2C_FIELD(var_r31_2, M2C_UNK (**)(void *, s32), 0x18)(var_r31_2, M2C_FIELD(arg0, s32 *, 0x34));
+                    var_r31_2 = M2C_FIELD(var_r31_2, void **, 4);
+                } while (var_r31_2 != NULL);
+            }
         }
     }
 }
@@ -2078,6 +2182,62 @@ void fn_8028BDF4(s32 n, f32 *a, s32 *ip, s32 nw, f32 *w) {
     } else if (n == 4) {
         fn_8028F7A4(a);
     }
+}
+
+void fn_8028C71C(float *a)
+{
+    float x1r, x1i, x2r, x2i, x3r, x3i, x4r, x4i,
+        x5r, x5i, x7r, x7i, x8r, x8i, x10r, x10i,
+        x11r, x11i, x12r, x12i, x13r, x13i, x14r, x14i;
+
+    x2r = a[4];
+    x2i = a[5];
+    x4r = a[8];
+    x4i = a[9];
+    x8r = a[16];
+    x8i = a[17];
+    x10r = a[20];
+    x12r = a[24];
+    x12i = a[25];
+    x1r = a[2];
+    x1i = a[3];
+    x3r = a[6];
+    x3i = a[7];
+    x5r = a[10];
+    a[2] = x8r;
+    a[3] = x8i;
+    a[4] = x4r;
+    a[5] = x4i;
+    a[6] = x12r;
+    a[7] = x12i;
+    a[8] = x2r;
+    a[9] = x2i;
+    a[10] = x10r;
+    x10i = a[21];
+    x5i = a[11];
+    x7r = a[14];
+    x7i = a[15];
+    x11r = a[22];
+    x11i = a[23];
+    x13r = a[26];
+    x13i = a[27];
+    x14r = a[28];
+    x14i = a[29];
+    a[11] = x10i;
+    a[29] = x7i;
+    a[14] = x14r;
+    a[15] = x14i;
+    a[16] = x1r;
+    a[17] = x1i;
+    a[20] = x5r;
+    a[21] = x5i;
+    a[22] = x13r;
+    a[23] = x13i;
+    a[24] = x3r;
+    a[25] = x3i;
+    a[26] = x11r;
+    a[27] = x11i;
+    a[28] = x7r;
 }
 
 void fn_8028C954(f32 *m) {
