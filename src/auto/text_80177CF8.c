@@ -17,11 +17,11 @@ void fn_80177D1C(GXColor *__restrict arg0, GXColor *__restrict arg1) {
     arg1->a = arg0[3].a;
 }
 
-void fn_80177D40(void *arg0, void *arg1) {
-    M2C_FIELD(arg1, u8 *, 0) = (u8) M2C_FIELD(arg0, u8 *, 4);
-    M2C_FIELD(arg1, u8 *, 1) = (u8) M2C_FIELD(arg0, u8 *, 5);
-    M2C_FIELD(arg1, u8 *, 2) = (u8) M2C_FIELD(arg0, u8 *, 6);
-    M2C_FIELD(arg1, u8 *, 3) = (u8) M2C_FIELD(arg0, u8 *, 7);
+void fn_80177D40(GXColor *__restrict arg0, GXColor *__restrict arg1) {
+    arg1->r = arg0[1].r;
+    arg1->g = arg0[1].g;
+    arg1->b = arg0[1].b;
+    arg1->a = arg0[1].a;
 }
 
 void fn_80177D64(GXColor *arg0, GXColor *arg1) {
