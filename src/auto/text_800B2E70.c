@@ -4557,10 +4557,14 @@ s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg) {
 
     *outMsg = NULL;
     for (i = 0; i < 3; i++) {
-        buf = TRKGetBuffer(i);
+        buf = NULL;
+        if (i >= 0 && i < 3) {
+            buf = &lbl_80323E00[i];
+        }
         fn_800DF2F8(buf);
         if (M2C_FIELD(buf, s32 *, 4) == 0) {
-            fn_800DBAD0(buf, 1);
+            buf->count = 0;
+            buf->pos = 0;
             error = 0;
             M2C_FIELD(buf, s32 *, 4) = 1;
             *outMsg = buf;
@@ -5219,7 +5223,6 @@ void* __va_arg(struct __va_list_struct* list, int type) {
     int regsize = 4;
 
     if (type == 3) {
-        maxsize = 8;
         size = 8;
         g_reg = list->fpr;
         curr = &(list->fpr);
@@ -5228,7 +5231,7 @@ void* __va_arg(struct __va_list_struct* list, int type) {
     }
     if (type == 2) {
         size = 8;
-        maxsize--;
+        maxsize = 7;
         if (g_reg & 1)
             even = 1;
         increment = 2;
