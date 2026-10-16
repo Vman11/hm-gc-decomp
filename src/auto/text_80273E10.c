@@ -3350,18 +3350,3 @@ void fn_80293964(u16 *dst) {
     d[29] = a12; d[30] = a13; d[31] = a14;
 }
 #pragma pop
-typedef struct {
-    s32 unk0;
-    f32 unk4;
-    u32 unk8;
-    u32 unkC;
-    s32 unk10;
-    s16 *unk14;
-    s32 unk18;
-    s32 unk1C;
-    s32 unk20;
-    s32 unk24;
-    s32 unk28;
-    s16 *unk2C;
-    s32 unk30;
-} Fn80283750Struct;
