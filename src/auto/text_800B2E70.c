@@ -5943,6 +5943,45 @@ void fn_800DC374(TrkBuf* buf) {
     } while (ok != 0 && n > 0);
 }
 
+void fn_800DC9A4(TrkBuf* buf) {
+    s32 n;
+    s32 ok;
+    if (TRKTargetStopped() == 0) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x16;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+    } else {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x00;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        if (ok == 0) {
+            TRKTargetContinue();
+        }
+    }
+}
+
 s32 fn_800DE654(TrkBuf* buf) {
     extern void fn_800053E0(void);
     s32 n;
