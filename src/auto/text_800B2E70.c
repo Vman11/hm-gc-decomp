@@ -2161,7 +2161,18 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
     *color = *(u32 *)((u8 *)lt_obj + 0xC);
 }
 
+extern u8 lbl_80359668[];
+void fn_800D821C(u32 *arg0, u32 arg1, u32 arg2) {
+    *arg0 = (arg1 & 3) | (*arg0 & ~3);
+    SETF(*arg0, 2, 2, arg2);
+}
+
 void fn_800D8238(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
+
+void fn_800D8240(u32 *arg0, s32 arg1, s32 arg2) {
+    SETF(*arg0, 1, 4, (arg2 == 1) ? 1 : 0);
+    SETF(*arg0, 3, 5, lbl_80359668[arg1]);
+}
 
 void fn_800D8278(void *arg0, f32 farg0) {
     extern f32 lbl_80363128;
