@@ -11,6 +11,19 @@ typedef struct OSResetFunctionQueue {
     OSResetFunctionInfo *tail;
 } OSResetFunctionQueue;
 extern OSResetFunctionQueue ResetFunctionQueue_8035A5B8;
+typedef struct UnkEntry_800BAA78 {
+    s32 type;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    u8 *unk18;
+} UnkEntry_800BAA78;
+typedef struct UnkHeader_800BAA78 {
+    u32 count;
+    UnkEntry_800BAA78 entries[1];
+} UnkHeader_800BAA78;
 typedef struct GXRenderModeObj {
     u32 viTVmode;
     u16 fbWidth;
@@ -1407,6 +1420,27 @@ long long fn_800BA5E8(long long arg0) {
     result = *(long long *)0x800030D8 + arg0;
     OSRestoreInterrupts();
     return result;
+}
+
+extern s32 lbl_802D8A80[];
+extern s32 lbl_802D8AB0[];
+void fn_800BA640(s32 days, s32* td) {
+    s32 year;
+    s32 n;
+    s32 month;
+    s32* p_days;
+
+    td[6] = (days + 6) % 7;
+    for (year = days / 365; days < (n = year * 365 + (year < 1 ? 0 : (year + 3) / 4 - (year - 1) / 100 + (year - 1) / 400)); year--) {
+    }
+    days -= n;
+    td[5] = year;
+    td[7] = days;
+    p_days = ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) ? lbl_802D8AB0 : lbl_802D8A80;
+    for (month = 12; days < p_days[--month];) {
+    }
+    td[4] = month;
+    td[3] = days - p_days[month] + 1;
 }
 
 void InitMetroTRK_BBA(void) {
@@ -3781,37 +3815,18 @@ BOOL fn_800D3850(BOOL final) {
     extern u32 lbl_8035A908;
     extern s64 lbl_8035A910;
     extern u32 lbl_8035A918;
-    u32 ctrH0, ctrH1, ctrL;
-    volatile u16 *hi;
-    volatile u16 *lo;
     u32 peCountNew;
     s64 timeNew;
 
     if (!final) {
         if (!lbl_8035A918) {
-            hi = &__memReg[0x27];
-            lo = &__memReg[0x28];
-            ctrH0 = *hi;
-            do {
-                ctrH1 = ctrH0;
-                ctrH0 = *hi;
-                ctrL = *lo;
-            } while (ctrH0 != ctrH1);
-            lbl_8035A908 = (ctrH0 << 16) | ctrL;
+            lbl_8035A908 = __GXReadMEMCounterU32(0x27, 0x28);
             lbl_8035A910 = OSGetTime();
             lbl_8035A918 = 1;
             return FALSE;
         }
         timeNew = OSGetTime();
-        hi = &__memReg[0x27];
-        lo = &__memReg[0x28];
-        ctrH0 = *hi;
-        do {
-            ctrH1 = ctrH0;
-            ctrH0 = *hi;
-            ctrL = *lo;
-        } while (ctrH0 != ctrH1);
-        peCountNew = (ctrH0 << 16) | ctrL;
+        peCountNew = __GXReadMEMCounterU32(0x27, 0x28);
         if (timeNew - lbl_8035A910 < 10) {
             return FALSE;
         }
@@ -5409,6 +5424,50 @@ void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = zenv1;
     gx->bpSentNot = 0;
+}
+
+void fn_800D944C(s32 stage, s32 coord, u32 map, s32 color) {
+    typedef struct {
+        u8 pad0[0x100];
+        u32 tref[8];
+        u8 pad1[0x554 - 0x120];
+        u32 texmapId[16];
+        u32 tevTcEnab;
+        u8 pad2[0x5AC - 0x598];
+        u32 dirtyState;
+    } GXTevData;
+    extern GXDataHead *__GXData;
+    extern s32 lbl_802DFFA0[];
+    u32 *ptref;
+    u32 tmap;
+    u32 tcoord;
+
+    ptref = &((GXTevData *)__GXData)->tref[stage / 2];
+    ((GXTevData *)__GXData)->texmapId[stage] = map;
+    tmap = map & ~0x100;
+    tmap = (tmap >= 8) ? 0 : tmap;
+    if (coord >= 8) {
+        tcoord = 0;
+        ((GXTevData *)__GXData)->tevTcEnab &= ~(1 << stage);
+    } else {
+        tcoord = coord;
+        ((GXTevData *)__GXData)->tevTcEnab |= (1 << stage);
+    }
+    if (stage & 1) {
+        SETF(*ptref, 3, 12, tmap);
+        SETF(*ptref, 3, 15, tcoord);
+        SETF(*ptref, 3, 19, (color == 0xFF) ? 7 : lbl_802DFFA0[color]);
+        SETF(*ptref, 1, 18, (map != 0xFF && !(map & 0x100)));
+    } else {
+        SETF(*ptref, 3, 0, tmap);
+        SETF(*ptref, 3, 3, tcoord);
+        SETF(*ptref, 3, 7, (color == 0xFF) ? 7 : lbl_802DFFA0[color]);
+        SETF(*ptref, 1, 6, (map != 0xFF && !(map & 0x100)));
+    }
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = *ptref;
+    __GXData->bpSentNot = 0;
+    ((GXTevData *)__GXData)->dirtyState |= 1;
 }
 
 void fn_800D95E8(u8 nStages) {
