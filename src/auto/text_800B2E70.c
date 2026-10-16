@@ -1909,6 +1909,15 @@ void fn_800CAF64(char *arg0, s32 arg1) {
     v->unk4 |= 0x40000000;
 }
 
+void fn_800CAF8C(char *arg0, s32 arg1) {
+    UnkVoice80321D60 *v;
+    if ((u32)lbl_8035A8C8 != 3) {
+        v = &lbl_80321D60[*(s32 *)(arg0 + 0x18)];
+        v->unk10 = arg1;
+        v->unk4 |= 0x40000000;
+    }
+}
+
 s32 fn_800CC114(void) {
     return ((u16) *(u16 *)0xCC005000 >> 0xFU) & 1;
 }
