@@ -19,3 +19,26 @@ typedef struct {
 } UnkArrays;
 
 extern f32 lbl_80363864;
+
+void fn_80102A6C(UnkArrays *arg0) {
+    Unk14 *p;
+    Unk14 *pend;
+    Unk10 *q;
+    Unk10 *qend;
+
+    p = arg0->a;
+    pend = p + arg0->countAB;
+    for (; p < pend; p++) {
+        p->x = lbl_80363864;
+    }
+    q = arg0->b;
+    qend = q + arg0->countAB;
+    for (; q < qend; q++) {
+        q->x = lbl_80363864;
+    }
+    q = arg0->c;
+    qend = q + arg0->countC;
+    for (; q < qend; q++) {
+        q->x = lbl_80363864;
+    }
+}
