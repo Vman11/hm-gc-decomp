@@ -15,6 +15,20 @@ void fn_80037A34(void) {
 
 }
 
+f32 fn_80037A38(void *arg0, s32 arg1) {
+    switch (arg1) {
+    case 0x5E: return M2C_FIELD(arg0, f32 *, 8);
+    case 0x5F: return M2C_FIELD(arg0, f32 *, 0xC);
+    case 0x60: return M2C_FIELD(arg0, f32 *, 0x10);
+    case 0x61: return M2C_FIELD(arg0, f32 *, 0x14);
+    case 0x62: return M2C_FIELD(arg0, f32 *, 0x18);
+    case 0x63: return M2C_FIELD(arg0, f32 *, 0x1C);
+    case 0x64: return M2C_FIELD(arg0, f32 *, 0x20);
+    case 0x65: return M2C_FIELD(arg0, f32 *, 0x24);
+    default: return lbl_8035BFC0;
+    }
+}
+
 s32 fn_80037AA4(void *arg0, s32 arg1) {
     switch (arg1) {
     case 0x67: return M2C_FIELD(arg0, s32 *, 0x28);
