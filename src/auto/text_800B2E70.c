@@ -112,7 +112,8 @@ typedef struct HeapCell {
     int size;
 } HeapCell;
 typedef struct TrkBuf {
-    u8 pad0[8];
+    u32 mutex;
+    s32 isInUse;
     s32 count;
     u32 pos;
     u8 data[0x880];
@@ -4548,6 +4549,8 @@ TrkBuf *TRKGetBuffer(s32 idx) {
     return buf;
 }
 
+#pragma push
+#pragma use_lmw_stmw on
 s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg) {
     extern void fn_800DC0AC(const char *);
     extern char lbl_8029BDF8[];
@@ -4562,11 +4565,11 @@ s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg) {
             buf = &lbl_80323E00[i];
         }
         fn_800DF2F8(buf);
-        if (M2C_FIELD(buf, s32 *, 4) == 0) {
+        if (((s32 *)buf)[1] == 0) {
             buf->count = 0;
             buf->pos = 0;
+            ((s32 *)buf)[1] = 1;
             error = 0;
-            M2C_FIELD(buf, s32 *, 4) = 1;
             *outMsg = buf;
             *msgID = i;
             i = 3;
@@ -4578,7 +4581,7 @@ s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg) {
     }
     return error;
 }
-
+#pragma pop
 s32 TRKInitializeMessageBuffers(void) {
     s32 i;
 
