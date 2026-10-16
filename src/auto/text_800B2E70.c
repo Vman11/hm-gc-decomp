@@ -120,6 +120,11 @@ typedef struct HeapCell {
     struct HeapCell *next;
     int size;
 } HeapCell;
+typedef struct HeapDesc {
+    int size;
+    HeapCell *free;
+    HeapCell *allocated;
+} HeapDesc;
 typedef struct TrkBuf {
     u32 mutex;
     s32 isInUse;
@@ -4578,6 +4583,52 @@ void fn_800DA1A4(s32 attr) {
 void fn_800DAA70(void) {
     extern void *__cpReg;
     M2C_FIELD(__cpReg, s16 *, 4) = 4;
+}
+
+void TRKNubMainLoop(void) {
+    struct {
+        u8 eventType;
+        s32 eventID;
+        s32 msgBufID;
+    } event;
+    s32 isShutdownRequested;
+    s32 isNewInput;
+
+    isShutdownRequested = 0;
+    isNewInput = 0;
+    while (isShutdownRequested == 0) {
+        if (TRKGetNextEvent(&event) != 0) {
+            isNewInput = 0;
+            switch (event.eventType) {
+            case 0:
+                break;
+            case 2:
+                TRKDispatchMessage(TRKGetBuffer(event.msgBufID));
+                break;
+            case 1:
+                isShutdownRequested = 1;
+                break;
+            case 3:
+            case 4:
+                TRKTargetInterrupt(&event);
+                break;
+            case 5:
+                TRKTargetSupportRequest();
+                break;
+            }
+            TRKDestructEvent(&event);
+            continue;
+        }
+        if (isNewInput == 0 || *gTRKInputPendingPtr != 0) {
+            isNewInput = 1;
+            TRKGetInput();
+            continue;
+        }
+        if (TRKTargetStopped() == 0) {
+            TRKTargetContinue();
+        }
+        isNewInput = 0;
+    }
 }
 
 void TRKDestructEvent(void *arg0) {
