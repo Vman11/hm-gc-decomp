@@ -67,6 +67,49 @@ int fn_800E8014(int c) {
     return lbl_802E06C8[(u8)c];
 }
 
+#pragma push
+#pragma dont_inline on
+u32 fwrite(const void *ptr, u32 size, u32 count, void *file) {
+    u32 result;
+    __begin_critical_region(2);
+    result = __fwrite(ptr, size, count, file);
+    __end_critical_region(2);
+    return result;
+}
+#pragma pop
+int fseek(void *file, s32 offset, int mode) {
+    int result;
+    __begin_critical_region(2);
+    result = fn_800E8720(file, offset, mode);
+    __end_critical_region(2);
+    return result;
+}
+
+s32 fn_800E895C(void *file) {
+    s32 position;
+    u32 kind;
+    u32 state;
+
+    __begin_critical_region(2);
+    kind = (M2C_FIELD(file, u16 *, 0x4) >> 6) & 7;
+    if ((kind != 1 && kind != 2) || M2C_FIELD(file, u8 *, 0xA) != 0) {
+        position = -1;
+        lbl_8035A978 = 0x28;
+    } else {
+        state = (M2C_FIELD(file, u8 *, 0x8) >> 5) & 7;
+        if (state == 0) {
+            position = M2C_FIELD(file, s32 *, 0x18);
+        } else {
+            position = M2C_FIELD(file, s32 *, 0x34) + (M2C_FIELD(file, s32 *, 0x24) - M2C_FIELD(file, s32 *, 0x1C));
+            if (state >= 3) {
+                position -= state - 2;
+            }
+        }
+    }
+    __end_critical_region(2);
+    return position;
+}
+
 void fn_800E8DF8(u8 *d, const u8 *s, u32 n) {
     u32 a, b;
     u32 i;
