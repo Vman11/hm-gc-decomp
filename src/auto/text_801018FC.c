@@ -10,10 +10,6 @@ typedef struct {
     u8 unkB;
 } UnkStruct_801018FC;
 
-typedef struct {
-    f32 x, y, z, w;
-} Vec4_801018FC;
-
 extern u32 lbl_80363848;
 
 void fn_801018FC(f32 *out, f32 *a, f32 *b, f32 t) {
@@ -21,14 +17,14 @@ void fn_801018FC(f32 *out, f32 *a, f32 *b, f32 t) {
     f32 y = a[1];
     f32 z = a[2];
     f32 w = a[3];
-    x += t * (b[0] - x);
-    y += t * (b[1] - y);
-    z += t * (b[2] - z);
-    w += t * (b[3] - w);
-    out[0] = x;
-    out[1] = y;
-    out[2] = z;
-    out[3] = w;
+    f32 dx = b[0] - x;
+    f32 dy = b[1] - y;
+    f32 dz = b[2] - z;
+    f32 dw = b[3] - w;
+    out[0] = t * dx + x;
+    out[1] = t * dy + y;
+    out[2] = t * dz + z;
+    out[3] = t * dw + w;
 }
 
 void fn_80101950(UnkStruct_801018FC *arg0) {
