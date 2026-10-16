@@ -464,6 +464,8 @@ void __close_all(void) {
     __end_critical_region(2);
 }
 
+#pragma push
+#pragma dont_inline off
 void fn_800E59A4(const decform *f, double x, decimal *d) {
     short digits = f->digits;
     int i;
@@ -484,7 +486,7 @@ void fn_800E59A4(const decform *f, double x, decimal *d) {
         d->sig.text[i] += '0';
     }
 }
-
+#pragma pop
 int fn_800E63F8(const decimal *x, const decimal *y) {
     int i;
     int l;
@@ -645,6 +647,30 @@ int fn_800E83C0(void *arg0) {
     file->buffer_len = 0;
     return 0;
 }
+
+#pragma push
+#pragma dont_inline off
+int fn_800E84F8(void *arg0) {
+    MslFile *file = (MslFile *)arg0;
+    int flush_result;
+    int close_result;
+
+    if (file == NULL) {
+        return -1;
+    }
+    if (file->mode.file_kind == 0) {
+        return 0;
+    }
+    flush_result = fn_800E83C0(file);
+    close_result = ((int (*)(u32))file->close_proc)(file->handle);
+    file->mode.file_kind = 0;
+    file->handle = 0;
+    if (file->state.free_buffer) {
+        fn_800E4358(file->buffer);
+    }
+    return (flush_result || close_result) ? -1 : 0;
+}
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
