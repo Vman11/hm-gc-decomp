@@ -2690,6 +2690,13 @@ void fn_800D8F28(s32 arg0, s32 arg1) {
     gx->bpSentNot = 0;
 }
 
+void fn_800D95E8(u8 nStages) {
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    M2C_FIELD(gx, u32 *, 0x204) = __rlwimi(M2C_FIELD(gx, u32 *, 0x204), nStages - 1, 10, 18, 21);
+    M2C_FIELD(gx, u32 *, 0x5AC) |= 4;
+}
+
 void fn_800DA17C(u32 arg0) {
     extern GXDataHead *const __GXData;
     GXDataHead *gx = __GXData;
