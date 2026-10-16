@@ -2362,19 +2362,20 @@ void fn_800D58D4(void) {
 }
 
 void fn_800D5DE8(void) {
-    extern GXDataHead *const __GXData;
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
     u8 i;
     for (i = 0; i < 8; i++) {
-        if (M2C_FIELD(__GXData, u8 *, 0x5AB) & (1 << i)) {
-            GXWGFifo.u8 = 0x08;
-            GXWGFifo.u8 = i | 0x70;
-            GXWGFifo.u32 = (&M2C_FIELD(__GXData, u32 *, 0x1C))[i];
-            GXWGFifo.u8 = 0x08;
-            GXWGFifo.u8 = i | 0x80;
-            GXWGFifo.u32 = (&M2C_FIELD(__GXData, u32 *, 0x3C))[i];
-            GXWGFifo.u8 = 0x08;
-            GXWGFifo.u8 = i | 0x90;
-            GXWGFifo.u32 = (&M2C_FIELD(__GXData, u32 *, 0x5C))[i];
+        if (M2C_FIELD(gx, u8 *, 0x5AB) & (1 << i)) {
+            (*(volatile PPCWGPipe *)0xCC008000).u8 = 0x08;
+            (*(volatile PPCWGPipe *)0xCC008000).u8 = i | 0x70;
+            (*(volatile PPCWGPipe *)0xCC008000).u32 = *(u32 *)((u8 *)gx + i * 4 + 0x1C);
+            (*(volatile PPCWGPipe *)0xCC008000).u8 = 0x08;
+            (*(volatile PPCWGPipe *)0xCC008000).u8 = i | 0x80;
+            (*(volatile PPCWGPipe *)0xCC008000).u32 = *(u32 *)((u8 *)gx + i * 4 + 0x3C);
+            (*(volatile PPCWGPipe *)0xCC008000).u8 = 0x08;
+            (*(volatile PPCWGPipe *)0xCC008000).u8 = i | 0x90;
+            (*(volatile PPCWGPipe *)0xCC008000).u32 = *(u32 *)((u8 *)gx + i * 4 + 0x5C);
         }
     }
     M2C_FIELD(__GXData, u8 *, 0x5AB) = 0;
@@ -2525,6 +2526,18 @@ void fn_800D6E48(u16 left, u16 top, u16 wd, u16 ht) {
     M2C_FIELD(gx, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E4), 0x4A, 24, 0, 7);
 }
 
+void fn_800D6EC4(u16 left, u16 top, u16 wd, u16 ht) {
+    extern GXDataHead *__GXData;
+    M2C_FIELD(__GXData, u32 *, 0x1F0) = 0;
+    M2C_FIELD(__GXData, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F0), left, 0, 22, 31);
+    M2C_FIELD(__GXData, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F0), top, 10, 12, 21);
+    M2C_FIELD(__GXData, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F0), 0x49, 24, 0, 7);
+    M2C_FIELD(__GXData, u32 *, 0x1F4) = 0;
+    M2C_FIELD(__GXData, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F4), wd - 1, 0, 22, 31);
+    M2C_FIELD(__GXData, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F4), ht - 1, 10, 12, 21);
+    M2C_FIELD(__GXData, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1F4), 0x4A, 24, 0, 7);
+}
+
 void fn_800D6F40(u16 wd, u16 ht) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
@@ -2584,6 +2597,18 @@ void fn_800D746C(s32 arg0) {
     M2C_FIELD(__GXData, s32 *, 0x1EC) = (s32) ((M2C_FIELD(__GXData, s32 *, 0x1EC) & ~0x180) | ((arg0 << 7) & 0x180));
 }
 
+void fn_800D7774(void) {
+    extern GXDataHead *__GXData;
+    u32 reg;
+    reg = 0x550003FF;
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    reg = 0x560003FF;
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    __GXData->bpSentNot = 0;
+}
+
 void fn_800D77AC(void *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
     M2C_FIELD(arg0, f32 *, 0x10) = farg0;
     M2C_FIELD(arg0, f32 *, 0x14) = farg1;
@@ -2637,6 +2662,45 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
     *color = *(u32 *)((u8 *)lt_obj + 0xC);
 }
 
+void fn_800D7C68(u8 nChans) {
+    extern GXDataHead *__GXData;
+    SETF(M2C_FIELD(__GXData, u32 *, 0x204), 3, 4, nChans);
+    GXWGFifo.u8 = 0x10;
+    GXWGFifo.u32 = 0x1009;
+    GXWGFifo.u32 = nChans;
+    M2C_FIELD(__GXData, u32 *, 0x5AC) |= 4;
+}
+
+void fn_800D7CA4(s32 chan, u8 enable, s32 amb_src, s32 mat_src, u32 light_mask, s32 diff_fn, s32 attn_fn) {
+    extern GXDataHead *__GXData;
+    u32 reg;
+    u32 idx = chan & 3;
+    reg = 0;
+    reg = __rlwimi(reg, enable, 1, 30, 30);
+    reg = __rlwimi(reg, mat_src, 0, 31, 31);
+    reg = __rlwimi(reg, amb_src, 6, 25, 25);
+    reg = __rlwimi(reg, (attn_fn == 0) ? 0 : diff_fn, 7, 23, 24);
+    reg = __rlwimi(reg, (attn_fn != 2), 9, 22, 22);
+    reg = __rlwimi(reg, (attn_fn != 0), 10, 21, 21);
+    reg &= ~0x3C;
+    reg = __rlwimi(reg, light_mask, 2, 26, 29);
+    reg &= ~0x7800;
+    reg = __rlwimi(reg, light_mask, 7, 17, 20);
+    GXWGFifo.u8 = 0x10;
+    GXWGFifo.u32 = idx + 0x100E;
+    GXWGFifo.u32 = reg;
+    if (chan == 4) {
+        GXWGFifo.u8 = 0x10;
+        GXWGFifo.u32 = 0x1010;
+        GXWGFifo.u32 = reg;
+    } else if (chan == 5) {
+        GXWGFifo.u8 = 0x10;
+        GXWGFifo.u32 = 0x1011;
+        GXWGFifo.u32 = reg;
+    }
+    __GXData->bpSentNot = 1;
+}
+
 extern u8 lbl_80359668[8];
 void fn_800D821C(u32 *arg0, u32 arg1, u32 arg2) {
     *arg0 = (arg1 & 3) | (*arg0 & ~3);
@@ -2686,6 +2750,21 @@ s32 fn_800D8318(void *arg0) {
 
 u8 fn_800D8320(void *arg0) {
     return (u8) (((M2C_FIELD(arg0, u8 *, 0x1F) & 1) - 1) == 0);
+}
+
+void fn_800D8508(void *tlut_obj, u32 lut, s32 fmt, u16 n_entries) {
+    M2C_FIELD(tlut_obj, u32 *, 0) = 0;
+    M2C_FIELD(tlut_obj, u32 *, 0) = __rlwimi(M2C_FIELD(tlut_obj, u32 *, 0), fmt, 10, 20, 21);
+    M2C_FIELD(tlut_obj, u32 *, 4) = __rlwimi(M2C_FIELD(tlut_obj, u32 *, 4), lut, 27, 11, 31);
+    M2C_FIELD(tlut_obj, u32 *, 4) = __rlwimi(M2C_FIELD(tlut_obj, u32 *, 4), 0x64, 24, 0, 7);
+    M2C_FIELD(tlut_obj, u16 *, 8) = n_entries;
+}
+
+void GXInitTlutRegion(u32 *region, u32 tmem_addr, u32 tlut_size) {
+    *region = 0;
+    *region = __rlwimi(*region, tmem_addr - 0x80000, 23, 22, 31);
+    *region = __rlwimi(*region, tlut_size, 10, 11, 21);
+    *region = __rlwimi(*region, 0x65, 24, 0, 7);
 }
 
 s32 fn_800D874C(s32 arg0) {
@@ -3226,6 +3305,63 @@ s32 fn_800DF2F8(void *mutex) {
 
 s32 fn_800DF300(void *mutex) {
     return 0;
+}
+
+void fn_800DF418(void *dest, int val, u32 count) {
+    u32 v = (u8)val;
+    u32 i;
+    union {
+        u8 *cpd;
+        u32 *lpd;
+    } dstu;
+
+    dstu.cpd = ((u8 *)dest) - 1;
+
+    if (count >= 32) {
+        i = (~(u32)dstu.cpd) & 3;
+        if (i) {
+            count -= i;
+            do {
+                *++(dstu.cpd) = v;
+            } while (--i);
+        }
+
+        if (v) {
+            v |= v << 24 | v << 16 | v << 8;
+        }
+
+        dstu.lpd = ((u32 *)(dstu.cpd + 1)) - 1;
+
+        i = count >> 5;
+        if (i) {
+            do {
+                *++(dstu.lpd) = v;
+                *++(dstu.lpd) = v;
+                *++(dstu.lpd) = v;
+                *++(dstu.lpd) = v;
+                *++(dstu.lpd) = v;
+                *++(dstu.lpd) = v;
+                *++(dstu.lpd) = v;
+                *++(dstu.lpd) = v;
+            } while (--i);
+        }
+
+        i = (count & 31) >> 2;
+        if (i) {
+            do {
+                *++(dstu.lpd) = v;
+            } while (--i);
+        }
+
+        dstu.cpd = ((u8 *)(dstu.lpd + 1)) - 1;
+        count &= 3;
+    }
+
+    if (count) {
+        do {
+            *++(dstu.cpd) = v;
+        } while (--count);
+    }
 }
 
 void TRKTargetSetInputPendingPtr(s32 arg0) {
