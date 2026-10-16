@@ -4508,6 +4508,43 @@ s32 fn_800DB66C(TrkBuf *buf, u8 *data, s32 count) {
     return err;
 }
 
+s32 fn_800DB7D0(TrkBuf *buf, u32 data) {
+    extern s32 gTRKBigEndian[];
+    extern void *fn_80003488(void *, const void *, u32);
+    u8 *bigEndianData;
+    u8 *byteData;
+    u8 swapBuffer[4];
+    s32 error;
+    u32 length;
+    u32 bytesLeft;
+
+    if (gTRKBigEndian[0]) {
+        bigEndianData = (u8 *)&data;
+    } else {
+        byteData = (u8 *)&data;
+        bigEndianData = swapBuffer;
+        bigEndianData[0] = byteData[3];
+        bigEndianData[1] = byteData[2];
+        bigEndianData[2] = byteData[1];
+        bigEndianData[3] = byteData[0];
+    }
+    length = 4;
+    error = 0;
+    bytesLeft = 0x880 - buf->pos;
+    if (bytesLeft < length) {
+        error = 0x301;
+        length = bytesLeft;
+    }
+    if (length == 1) {
+        buf->data[buf->pos] = *bigEndianData;
+    } else {
+        fn_80003488(buf->data + buf->pos, bigEndianData, length);
+    }
+    buf->pos += length;
+    buf->count = buf->pos;
+    return error;
+}
+
 s32 fn_800DB8A8(TrkBuf *buf, u16 data) {
     extern s32 gTRKBigEndian[];
     extern void *fn_80003488(void *, const void *, u32);
