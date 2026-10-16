@@ -3222,6 +3222,80 @@ s32 fn_800CDF90(s32 arg0) {
     return 1;
 }
 
+s32 fn_800CDFE0(u32 arg0) {
+    s32 var_ctr;
+    s32 var_r10;
+    s32 var_r7;
+    s32 var_r7_2;
+    s32 var_r7_3;
+    s32 var_r7_4;
+    s32 var_r9;
+    u32 temp_r6;
+    u32 temp_r8;
+    u32 temp_r8_2;
+    u32 temp_r8_3;
+    u32 var_r8;
+
+    var_ctr = 8;
+    temp_r6 = arg0 >> 0x1FU;
+    var_r9 = 0;
+    var_r10 = 1;
+    var_r7 = 0;
+    var_r8 = 0;
+    do {
+        if (var_r8 > 0xFU) {
+            if (var_r8 == 0x1F) {
+                var_r7_2 = var_r7 | temp_r6;
+            } else {
+                var_r7_2 = var_r7 | ((u32) (arg0 & (1 << var_r8)) >> var_r10);
+                var_r10 += 2;
+            }
+        } else {
+            var_r7_2 = var_r7 | ((arg0 & (1 << var_r8)) << ((0x1F - var_r8) - var_r9));
+            var_r9 += 1;
+        }
+        temp_r8 = var_r8 + 1;
+        if (temp_r8 > 0xFU) {
+            if (temp_r8 == 0x1F) {
+                var_r7_3 = var_r7_2 | temp_r6;
+            } else {
+                var_r7_3 = var_r7_2 | ((u32) (arg0 & (1 << temp_r8)) >> var_r10);
+                var_r10 += 2;
+            }
+        } else {
+            var_r7_3 = var_r7_2 | ((arg0 & (1 << temp_r8)) << ((0x1F - temp_r8) - var_r9));
+            var_r9 += 1;
+        }
+        temp_r8_2 = temp_r8 + 1;
+        if (temp_r8_2 > 0xFU) {
+            if (temp_r8_2 == 0x1F) {
+                var_r7_4 = var_r7_3 | temp_r6;
+            } else {
+                var_r7_4 = var_r7_3 | ((u32) (arg0 & (1 << temp_r8_2)) >> var_r10);
+                var_r10 += 2;
+            }
+        } else {
+            var_r7_4 = var_r7_3 | ((arg0 & (1 << temp_r8_2)) << ((0x1F - temp_r8_2) - var_r9));
+            var_r9 += 1;
+        }
+        temp_r8_3 = temp_r8_2 + 1;
+        if (temp_r8_3 > 0xFU) {
+            if (temp_r8_3 == 0x1F) {
+                var_r7 = var_r7_4 | temp_r6;
+            } else {
+                var_r7 = var_r7_4 | ((u32) (arg0 & (1 << temp_r8_3)) >> var_r10);
+                var_r10 += 2;
+            }
+        } else {
+            var_r7 = var_r7_4 | ((arg0 & (1 << temp_r8_3)) << ((0x1F - temp_r8_3) - var_r9));
+            var_r9 += 1;
+        }
+        var_r8 = temp_r8_3 + 1;
+        var_ctr -= 1;
+    } while (var_ctr != 0);
+    return var_r7;
+}
+
 void fn_800CEEAC(void *arg0) {
     u8 *p = lbl_80323560;
     s32 value;
@@ -4421,6 +4495,49 @@ void fn_800D7D5C(int fmt, u16 wd, u16 ht, u32* rowTiles, u32* colTiles, u32* cmp
     *cmpTiles = (fmt == 0x6 || fmt == 0x16) ? 2 : 1;
 }
 
+void fn_800D80B8(u32 *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias, u8 bias_clamp, u8 do_edge_lod, s32 max_aniso) {
+    extern u8 lbl_80359668[];
+    extern f32 lbl_80363128;
+    extern f32 lbl_80363138;
+    extern f32 lbl_8036313C;
+    extern f32 lbl_80363140;
+    extern f32 lbl_80363144;
+    extern f32 lbl_80363148;
+    extern f32 lbl_8036314C;
+    u8 lbias;
+    u8 lmin;
+    u8 lmax;
+
+    if (lod_bias < lbl_80363138) {
+        lod_bias = lbl_80363138;
+    } else if (lod_bias >= lbl_8036313C) {
+        lod_bias = lbl_80363140;
+    }
+    lbias = (u8)(lbl_80363144 * lod_bias);
+    obj[0] = (obj[0] & ~0x1FE00) | ((u32)lbias << 9);
+    obj[0] = (obj[0] & ~0x10) | ((mag_filt == 1 ? 1 : 0) << 4);
+    obj[0] = (obj[0] & ~0xE0) | ((u32)lbl_80359668[min_filt] << 5);
+    obj[0] = (obj[0] & ~0x100) | ((do_edge_lod ? 0 : 1) << 8);
+    obj[0] = (obj[0] & ~0x20000);
+    obj[0] = (obj[0] & ~0x40000);
+    obj[0] = (obj[0] & ~0x180000) | ((max_aniso << 19) & 0x180000);
+    obj[0] = (obj[0] & ~0x200000) | ((bias_clamp << 21) & 0x200000);
+    if (min_lod < lbl_80363148) {
+        min_lod = lbl_80363148;
+    } else if (min_lod > lbl_8036314C) {
+        min_lod = lbl_8036314C;
+    }
+    lmin = (u8)(lbl_80363128 * min_lod);
+    if (max_lod < lbl_80363148) {
+        max_lod = lbl_80363148;
+    } else if (max_lod > lbl_8036314C) {
+        max_lod = lbl_8036314C;
+    }
+    lmax = (u8)(lbl_80363128 * max_lod);
+    obj[1] = (obj[1] & ~0xFF) | lmin;
+    obj[1] = (obj[1] & ~0xFF00) | ((u32)lmax << 8);
+}
+
 extern u8 lbl_80359668[8];
 void fn_800D821C(u32 *arg0, u32 arg1, u32 arg2) {
     *arg0 = (arg1 & 3) | (*arg0 & ~3);
@@ -5323,14 +5440,29 @@ void TRKNubWelcome(void) {
     TRK_board_display("MetroTRK for GAMECUBE v2.0");
 }
 
+s32 TRKTerminateNub(void) {
+    s32 fn_800DBCDC(void);
+    fn_800DBCDC();
+    return 0;
+}
 #pragma push
-#pragma inline_depth(4)
-#pragma auto_inline off
-static inline s32 TRK_InitializeEndian(void) {
-    extern s32 gTRKBigEndian[];
-    u8 bendian[4];
-    s32 result = 0;
 
+s32 TRKInitializeNub(void) {
+    extern s32 gTRKBigEndian[];
+    extern u8 *gTRKInputPendingPtr[];
+    extern void usr_put_initialize(void);
+    extern s32 TRKInitializeMessageBuffers(void);
+    extern s32 TRKInitializeDispatcher(void);
+    extern void InitializeProgramEndTrap(void);
+    extern s32 TRKInitializeIntDrivenUART(s32 a0, s32 a1, s32 a2, void *a3);
+    extern void TRKTargetSetInputPendingPtr(s32 arg0);
+    extern s32 TRKInitializeSerialHandler(void);
+    extern s32 TRKInitializeTarget(void);
+    s32 result;
+    s32 resultTemp;
+    u8 bendian[4];
+
+    result = 0;
     gTRKBigEndian[0] = 1;
     bendian[0] = 0x12;
     bendian[1] = 0x34;
@@ -5343,29 +5475,6 @@ static inline s32 TRK_InitializeEndian(void) {
     } else {
         result = 1;
     }
-    return result;
-}
-
-s32 TRKTerminateNub(void) {
-    s32 fn_800DBCDC(void);
-    fn_800DBCDC();
-    return 0;
-}
-
-s32 TRKInitializeNub(void) {
-    extern u8 *gTRKInputPendingPtr[];
-    extern void usr_put_initialize(void);
-    extern s32 TRKInitializeMessageBuffers(void);
-    extern s32 TRKInitializeDispatcher(void);
-    extern void InitializeProgramEndTrap(void);
-    extern s32 TRKInitializeIntDrivenUART(s32 a0, s32 a1, s32 a2, void *a3);
-    extern void TRKTargetSetInputPendingPtr(s32 arg0);
-    extern s32 TRKInitializeSerialHandler(void);
-    extern s32 TRKInitializeTarget(void);
-    s32 result;
-    s32 resultTemp;
-
-    result = TRK_InitializeEndian();
 
     if (result == 0) usr_put_initialize();
     if (result == 0) result = TRKInitializeEventQueue();
