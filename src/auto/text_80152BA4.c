@@ -8,29 +8,37 @@ void fn_80152BA4(void) {
 
 }
 
+u8 fn_80152E38(f32 *a, f32 *b) {
+    return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3] &&
+           a[4] == b[4] && a[5] == b[5] && a[6] == b[6] && a[7] == b[7] &&
+           a[8] == b[8] && a[9] == b[9] && a[10] == b[10] && a[11] == b[11] &&
+           a[12] == b[12] && a[13] == b[13] && a[14] == b[14] && a[15] == b[15];
+}
+
 void fn_80153358(f32 *dst, f32 *src) {
-    f32 a = src[4];
-    f32 b = src[8];
-    f32 c = src[12];
-    f32 d = src[1];
-    f32 e = src[9];
-    f32 f = src[13];
-    f32 g = src[2];
-    f32 h = src[6];
-    f32 i = src[14];
-    f32 j = src[3];
-    f32 k = src[7];
-    f32 l = src[11];
+    f32 a, b, c, d, e, f, g, h, i, j, k, l;
+    a = src[4];
+    b = src[8];
     dst[1] = a;
+    c = src[12];
     dst[2] = b;
+    d = src[1];
     dst[3] = c;
+    e = src[9];
     dst[4] = d;
+    f = src[13];
     dst[6] = e;
+    g = src[2];
     dst[7] = f;
+    h = src[6];
     dst[8] = g;
+    i = src[14];
     dst[9] = h;
+    j = src[3];
     dst[11] = i;
+    k = src[7];
     dst[12] = j;
+    l = src[11];
     dst[13] = k;
     dst[14] = l;
 }
