@@ -6303,6 +6303,8 @@ s32 TRKInitializeNub(void) {
     return result;
 }
 
+#pragma push
+#pragma inline_depth(4)
 s32 fn_800DAF24(TrkBuf *msg) {
     s32 err;
     u8 checksum;
