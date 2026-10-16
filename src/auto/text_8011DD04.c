@@ -60,7 +60,7 @@ s32 fn_8011DD10(void *arg0, ListNode *node) {
     u32 i = findKeyAC(arg0, node->key);
     ListHead *head;
     if (i < M2C_FIELD(arg0, u32 *, 0xAC)) {
-        head = getHead(M2C_FIELD(arg0, ListHead **, 0x98), M2C_FIELD(arg0, u32 *, 0xAC), i);
+        head = getHeadAC(arg0, i);
         if (node->prev != NULL) {
             if ((node->prev->next = node->next) != NULL) node->next->prev = node->prev;
             else head->last = node->prev;
