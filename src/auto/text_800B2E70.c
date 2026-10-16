@@ -11,6 +11,15 @@ typedef struct OSResetFunctionQueue {
     OSResetFunctionInfo *tail;
 } OSResetFunctionQueue;
 extern OSResetFunctionQueue ResetFunctionQueue_8035A5B8;
+typedef struct DVDDiskID {
+    char gameName[4];
+    char company[2];
+    u8 diskNumber;
+    u8 gameVersion;
+    u8 streaming;
+    u8 streamingBufSize;
+    u8 padding[22];
+} DVDDiskID;
 typedef union PPCWGPipe {
     u8 u8;
     u16 u16;
@@ -3899,46 +3908,46 @@ void fn_800D8508(void *tlut_obj, u32 lut, s32 fmt, u16 n_entries) {
     M2C_FIELD(tlut_obj, u16 *, 8) = n_entries;
 }
 
-void GXInitTexCacheRegion(void *region, u8 is32bMipmap, u32 tmemEven, s32 sizeEven, u32 tmemOdd, s32 sizeOdd) {
-    u32 *t = (u32 *)region;
-    u32 widthExp2;
+void GXInitTexCacheRegion(void *arg0, s8 arg1, u32 arg2, s32 arg3, u32 arg4, s32 arg5, s32 arg6) {
+    s32 var_r9;
 
-    switch (sizeEven) {
-    case 0:
-        widthExp2 = 3;
+    var_r9 = arg6;
+    switch (arg3) {                                 /* switch 1; irregular */
+    case 0:                                         /* switch 1 */
+        var_r9 = 3;
         break;
-    case 1:
-        widthExp2 = 4;
+    case 1:                                         /* switch 1 */
+        var_r9 = 4;
         break;
-    case 2:
-        widthExp2 = 5;
-        break;
-    }
-    t[0] = 0;
-    t[0] = (t[0] & ~0x7FFF) | ((tmemEven >> 5) & 0x7FFF);
-    t[0] = (t[0] & ~0x38000) | ((widthExp2 << 15) & 0x38000);
-    t[0] = (t[0] & ~0x1C0000) | ((widthExp2 << 18) & 0x1C0000);
-    t[0] = (t[0] & ~0x200000) | ((0 << 21) & 0x200000);
-    switch (sizeOdd) {
-    case 0:
-        widthExp2 = 3;
-        break;
-    case 1:
-        widthExp2 = 4;
-        break;
-    case 2:
-        widthExp2 = 5;
-        break;
-    case 3:
-        widthExp2 = 0;
+    case 2:                                         /* switch 1 */
+        var_r9 = 5;
         break;
     }
-    t[1] = 0;
-    t[1] = (t[1] & ~0x7FFF) | ((tmemOdd >> 5) & 0x7FFF);
-    t[1] = (t[1] & ~0x38000) | ((widthExp2 << 15) & 0x38000);
-    t[1] = (t[1] & ~0x1C0000) | ((widthExp2 << 18) & 0x1C0000);
-    ((u8 *)t)[12] = is32bMipmap;
-    ((u8 *)t)[13] = 1;
+    M2C_FIELD(arg0, s32 *, 0) = 0;
+    M2C_FIELD(arg0, s32 *, 0) = (s32) ((M2C_FIELD(arg0, s32 *, 0) & ~0x7FFF) | ((arg2 >> 5U) & 0x7FFF));
+    M2C_FIELD(arg0, s32 *, 0) = (s32) ((M2C_FIELD(arg0, s32 *, 0) & ~0x38000) | ((var_r9 << 0xF) & 0x38000));
+    M2C_FIELD(arg0, s32 *, 0) = (s32) ((M2C_FIELD(arg0, s32 *, 0) & ~0x1C0000) | ((var_r9 << 0x12) & 0x1C0000));
+    M2C_FIELD(arg0, s32 *, 0) = (s32) (M2C_FIELD(arg0, s32 *, 0) & ~0x200000);
+    switch (arg5) {                                 /* switch 2; irregular */
+    case 0:                                         /* switch 2 */
+        var_r9 = 3;
+        break;
+    case 1:                                         /* switch 2 */
+        var_r9 = 4;
+        break;
+    case 2:                                         /* switch 2 */
+        var_r9 = 5;
+        break;
+    case 3:                                         /* switch 2 */
+        var_r9 = 0;
+        break;
+    }
+    M2C_FIELD(arg0, s32 *, 4) = 0;
+    M2C_FIELD(arg0, s32 *, 4) = (s32) ((M2C_FIELD(arg0, s32 *, 4) & ~0x7FFF) | ((arg4 >> 5U) & 0x7FFF));
+    M2C_FIELD(arg0, s32 *, 4) = (s32) ((M2C_FIELD(arg0, s32 *, 4) & ~0x38000) | ((var_r9 << 0xF) & 0x38000));
+    M2C_FIELD(arg0, s32 *, 4) = (s32) ((M2C_FIELD(arg0, s32 *, 4) & ~0x1C0000) | ((var_r9 << 0x12) & 0x1C0000));
+    M2C_FIELD(arg0, s8 *, 0xC) = arg1;
+    M2C_FIELD(arg0, s8 *, 0xD) = 1;
 }
 
 void GXInitTlutRegion(u32 *region, u32 tmem_addr, u32 tlut_size) {
@@ -5519,6 +5528,40 @@ s32 fn_800E0070(void *arg0) {
     M2C_FIELD(arg0, s8 *, 2) = 1;
     M2C_FIELD(arg0, s8 *, 3) = 0xA;
     return 0;
+}
+
+s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count);
+s32 fn_800E0B0C(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
+    extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
+    s32 error;
+    u32 count;
+    u32 *data;
+    TRKExceptionStatus savedException;
+
+    if (lastRegister > 0x24) {
+        return 0x701;
+    }
+
+    savedException = gTRKExceptionStatus_802E01A4;
+    gTRKExceptionStatus_802E01A4.exceptionDetected = FALSE;
+
+    count = (lastRegister - firstRegister) + 1;
+    data = (u32 *)&gTRKCPUState + firstRegister;
+    *registersLengthPtr = count * sizeof(u32);
+
+    if (read) {
+        error = fn_800DB570(b, data, count);
+    } else {
+        error = fn_800DB100(b, data, count);
+    }
+
+    if (gTRKExceptionStatus_802E01A4.exceptionDetected) {
+        *registersLengthPtr = 0;
+        error = 0x702;
+    }
+
+    gTRKExceptionStatus_802E01A4 = savedException;
+    return error;
 }
 
 s32 fn_800E0C00(void *data, u32 start) {
