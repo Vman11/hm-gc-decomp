@@ -162,6 +162,31 @@ typedef struct MslFile {
     struct MslFile *next_file;
 } MslFile;
 
+typedef struct FixBlock {
+    struct FixBlock *prev_;
+    struct FixBlock *next_;
+    u32 client_size_;
+    struct FixSubBlock *start_;
+    u32 n_allocated_;
+} FixBlock;
+
+typedef struct FixSubBlock {
+    FixBlock *block_;
+    struct FixSubBlock *next_;
+} FixSubBlock;
+
+typedef struct FixStart {
+    FixBlock *tail_;
+    FixBlock *head_;
+} FixStart;
+
+typedef struct __mem_pool_obj {
+    void *start_;
+    FixStart fix_start[6];
+} __mem_pool_obj;
+
+extern u32 lbl_8029C048[];
+
 extern u8 lbl_8029BFB0[];
 void __unregister_fragment(int fragmentID) {
     FragmentInfo *f;
