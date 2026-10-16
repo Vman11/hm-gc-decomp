@@ -1985,6 +1985,14 @@ void DBInitComm(u8 **inputFlagPtr, s32 mtrCallback) {
     OSRestoreInterrupts(enabled);
 }
 
+typedef struct EXI2Control {
+    u8 unk0[0xC];
+    u32 state;
+    s32 immLen;
+    u8 *immBuf;
+} EXI2Control;
+extern EXI2Control *lbl_803596F0;
+
 s32 fn_800F0E4C(void *buf, s32 len, s32 mode);
 s32 fn_800F0B3C(u32 *data) {
     u32 cmd;
