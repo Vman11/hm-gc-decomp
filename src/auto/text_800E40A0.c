@@ -155,11 +155,17 @@ extern u8 lbl_803280A8[];
 extern u8 lbl_8035A970;
 void fn_800E43C8(void *pool, void *ptr) {
     u32 size;
+    u32 hdr;
 
     if (ptr == NULL) {
         return;
     }
-    size = (((u32 *)ptr)[-1] & 1) ? (((u32 *)ptr)[-2] & ~7) - 8 : ((u32 *)((u32 *)ptr)[-1])[2];
+    hdr = ((u32 *)ptr)[-1];
+    if (hdr & 1) {
+        size = (((u32 *)ptr)[-2] & ~7) - 8;
+    } else {
+        size = ((u32 *)hdr)[2];
+    }
     if (size <= 0x44) {
         fn_800E4420(pool, ptr, size);
     } else {
@@ -178,6 +184,31 @@ int fn_800E480C(void) {
         file = file->next_file;
     }
     return result;
+}
+
+#pragma push
+#pragma dont_inline on
+void __close_all(void) {
+    MslFile *p = (MslFile *)__files;
+    MslFile *plast;
+
+    __begin_critical_region(2);
+    while (p) {
+        if (p->mode.file_kind != 0) {
+            fn_800E84F8(p);
+        }
+        plast = p;
+        p = p->next_file;
+        if (plast->is_dynamically_allocated) {
+            fn_800E4358(plast);
+        } else {
+            plast->mode.file_kind = 3;
+            if (p && p->is_dynamically_allocated) {
+                plast->next_file = NULL;
+            }
+        }
+    }
+    __end_critical_region(2);
 }
 
 s32 fn_800E7F00(s32 arg0) {
