@@ -262,4 +262,4 @@ void fn_80148310(UnkStruct80148118* arg0) {
     arg0->unkC = 0;
     arg0->unk10 = 0;
 }
-
+typedef struct S801482DC { u16 a; u16 b; s32 c; s32 d; s32 e; s32 f; } S801482DC;
