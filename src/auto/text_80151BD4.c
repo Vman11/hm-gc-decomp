@@ -39,6 +39,3 @@ void fn_80151BD4(f32* m, f32* x, f32* y, f32* z) {
     m[14] = lbl_80364544;
     m[15] = lbl_8036453C;
 }
-typedef struct Vec80151BD4 {
-    f32 x, y, z;
-} Vec80151BD4;
