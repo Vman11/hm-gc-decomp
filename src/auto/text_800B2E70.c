@@ -1894,7 +1894,8 @@ s32 fn_800CA098(void) {
 }
 
 void fn_800CAF1C(char *arg0) {
-    lbl_80321D60[*(s32 *)(arg0 + 0x18)].unk0 = 0;
+    s32 *p = &lbl_80321D60[*(s32 *)(arg0 + 0x18)].unk0;
+    *p = 0;
 }
 
 void fn_800CAF3C(char *arg0, s32 arg1) {
@@ -2211,9 +2212,55 @@ s32 fn_800D2460(void) {
     return 0;
 }
 
+void *fn_800D382C(u32 id) {
+    extern void *__GXData;
+    return (id >= 20) ? 0 : (u8 *)__GXData + 0x388 + id * 0x10;
+}
+
+void fn_800D4C48(void *fifo, s32 rd, s32 wr) {
+    BOOL enabled = OSDisableInterrupts();
+    M2C_FIELD(fifo, s32 *, 0x14) = rd;
+    M2C_FIELD(fifo, s32 *, 0x18) = wr;
+    M2C_FIELD(fifo, s32 *, 0x1C) = wr - rd;
+    if (M2C_FIELD(fifo, s32 *, 0x1C) < 0) {
+        M2C_FIELD(fifo, s32 *, 0x1C) += M2C_FIELD(fifo, s32 *, 0x8);
+    }
+    OSRestoreInterrupts(enabled);
+}
+
 void fn_800D4CB8(void *arg0, s32 arg1, s32 arg2) {
     M2C_FIELD(arg0, s32 *, 0xC) = arg1;
     M2C_FIELD(arg0, s32 *, 0x10) = arg2;
+}
+
+void fn_800D4FF4(void) {
+    extern void *__GXData;
+    extern void *__cpReg;
+    void *gx = __GXData;
+    M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), 1, 0, 31, 31);
+    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(gx, u32 *, 8);
+}
+
+void fn_800D5018(void) {
+    extern void *__GXData;
+    extern void *__cpReg;
+    M2C_FIELD(__GXData, u32 *, 8) = __rlwimi(M2C_FIELD(__GXData, u32 *, 8), 0, 0, 31, 31);
+    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(__GXData, u32 *, 8);
+}
+
+void fn_800D503C(u8 arg0) {
+    extern void *__GXData;
+    extern void *__cpReg;
+    M2C_FIELD(__GXData, u32 *, 8) = __rlwimi(M2C_FIELD(__GXData, u32 *, 8), arg0 ? 1 : 0, 4, 27, 27);
+    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(__GXData, u32 *, 8);
+}
+
+void fn_800D5070(s32 arg0, u8 arg1) {
+    extern void *__GXData;
+    extern void *__cpReg;
+    M2C_FIELD(__GXData, u32 *, 8) = __rlwimi(M2C_FIELD(__GXData, u32 *, 8), arg0, 2, 29, 29);
+    M2C_FIELD(__GXData, u32 *, 8) = __rlwimi(M2C_FIELD(__GXData, u32 *, 8), arg1, 3, 28, 28);
+    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(__GXData, u32 *, 8);
 }
 
 extern s32 lbl_8035A920;
