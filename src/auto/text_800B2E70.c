@@ -11,6 +11,21 @@ typedef struct OSResetFunctionQueue {
     OSResetFunctionInfo *tail;
 } OSResetFunctionQueue;
 extern OSResetFunctionQueue ResetFunctionQueue_8035A5B8;
+typedef struct GXRenderModeObj {
+    u32 viTVmode;
+    u16 fbWidth;
+    u16 efbHeight;
+    u16 xfbHeight;
+    u16 viXOrigin;
+    u16 viYOrigin;
+    u16 viWidth;
+    u16 viHeight;
+    u32 xFBmode;
+    u8 field_rendering;
+    u8 aa;
+    u8 sample_pattern[12][2];
+    u8 vfilter[7];
+} GXRenderModeObj;
 typedef struct DVDDiskID {
     char gameName[4];
     char company[2];
@@ -525,9 +540,8 @@ void *fn_800B4340(int heap, u32 size) {
     HeapCell *cell;
     HeapCell *newCell;
     u32 leftoverSize;
-    HeapCell *list;
 
-    hd = &((HeapDesc *)lbl_8035A568)[heap];
+    hd = (HeapDesc *)lbl_8035A568 + heap;
     size = (size + 0x20 + 0x20 - 1) & ~(0x20 - 1);
 
     for (cell = hd->free; cell != NULL; cell = cell->next) {
@@ -542,16 +556,7 @@ void *fn_800B4340(int heap, u32 size) {
 
     leftoverSize = cell->size - size;
     if (leftoverSize < 0x40) {
-        list = hd->free;
-        if (cell->next) {
-            cell->next->prev = cell->prev;
-        }
-        if (cell->prev == NULL) {
-            list = cell->next;
-        } else {
-            cell->prev->next = cell->next;
-        }
-        hd->free = list;
+        hd->free = DLExtract(hd->free, cell);
     } else {
         cell->size = size;
         newCell = (HeapCell *)((char *)cell + size);
@@ -568,13 +573,7 @@ void *fn_800B4340(int heap, u32 size) {
         }
     }
 
-    list = hd->allocated;
-    cell->next = list;
-    cell->prev = NULL;
-    if (list) {
-        list->prev = cell;
-    }
-    hd->allocated = cell;
+    hd->allocated = DLAddFront(hd->allocated, cell);
     return (char *)cell + 0x20;
 }
 
