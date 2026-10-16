@@ -77,11 +77,14 @@ void fn_80141424(ImgDec *p) {
 }
 
 void fn_8014188C(ImgDec *p) {
-    u16 *s = (u16 *)p->src;
-    u8 *d = p->dst;
-    u8 *e = d + p->count * 4;
+    u8 *e;
+    u16 *s;
+    u8 *d;
+    u32 v;
+    d = p->dst;
+    s = (u16 *)p->src;
+    e = d + p->count * 4;
     do {
-        u32 v;
         v = (u32)*s >> p->shr[0];
         d[0] = (v << p->shl[0]) | (v & p->mask[0]);
         v = (u32)*s >> p->shr[1];
@@ -96,11 +99,9 @@ void fn_8014188C(ImgDec *p) {
 }
 
 void fn_8014193C(ImgDec *p) {
-    u8 *d;
-    u8 *e;
-    e = (u8 *)p + p->count;
-    d = p->buf;
-    e += 0x138;
+    u8 *e = (u8 *)p + p->count;
+    u8 *d = p->buf;
+    e = e + 0x138;
     do {
         *d = *p->src++;
         d++;
