@@ -178,20 +178,19 @@ void fn_80273EC4(void) {
     OSSetArenaLo(lo + lbl_8035B848);
 }
 
-void fn_802740E4(void) {
-    M2C_UNK fn_80274128();
-    M2C_UNK fn_802742F8();
-    M2C_UNK fn_8027438C();
+u32 fn_80274128(void);
+u32 fn_802742F8(void);
+u32 fn_8027438C(void);
+
+u32 fn_802740E4(void) {
     extern s32 lbl_80359F14;
     if ((s32) lbl_80359F14 == 0) {
-        fn_80274128();
-        return;
+        return fn_80274128();
     }
     if ((s32) lbl_80359F14 == 1) {
-        fn_802742F8();
-        return;
+        return fn_802742F8();
     }
-    fn_8027438C();
+    return fn_8027438C();
 }
 
 #pragma push
