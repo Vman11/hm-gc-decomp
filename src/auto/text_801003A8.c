@@ -4,7 +4,15 @@ typedef struct { f32 x, y, z, w; } Quat_;
 extern f32 lbl_803637D8;
 
 void fn_801003A8(Quat_ *out, Quat_ *a, Quat_ *b) {
-    f32 ax = a->x, bw = b->w, ay = a->y, bx = b->x, aw = a->w, by = b->y, az = a->z, bz = b->z;
+    f32 bw, ax, aw, bx, ay, by, az, bz;
+    ax = a->x;
+    bw = b->w;
+    ay = a->y;
+    bx = b->x;
+    aw = a->w;
+    by = b->y;
+    az = a->z;
+    bz = b->z;
     out->x = -((az * by) - ((ay * bz) + ((bx * aw) + (ax * bw))));
     out->y = -((ax * bz) - ((az * bx) + ((by * aw) + (ay * bw))));
     out->z = -((ay * bx) - ((ax * by) + ((bz * aw) + (az * bw))));
@@ -12,7 +20,15 @@ void fn_801003A8(Quat_ *out, Quat_ *a, Quat_ *b) {
 }
 
 void fn_8010041C(Quat_ *a, Quat_ *b) {
-    f32 ax = a->x, bw = b->w, ay = a->y, aw = a->w, bx = b->x, by = b->y, az = a->z, bz = b->z;
+    f32 bw, bx, bz, by, ax, ay, az, aw;
+    ax = a->x;
+    bw = b->w;
+    ay = a->y;
+    aw = a->w;
+    bx = b->x;
+    by = b->y;
+    az = a->z;
+    bz = b->z;
     a->x = -((az * by) - ((ay * bz) + ((bx * aw) + (ax * bw))));
     a->y = -((ax * bz) - ((az * bx) + ((by * aw) + (ay * bw))));
     a->z = -((ay * bx) - ((ax * by) + ((bz * aw) + (az * bw))));
