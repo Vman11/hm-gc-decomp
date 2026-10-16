@@ -53,6 +53,25 @@ void fn_8015304C(f32 *__restrict dst, f32 *__restrict src) {
     dst[15] -= src[15];
 }
 
+void fn_80153150(f32 *__restrict dst, f32 *__restrict a, f32 *__restrict b) {
+    dst[0] = a[0] + b[0];
+    dst[1] = a[1] + b[1];
+    dst[2] = a[2] + b[2];
+    dst[3] = a[3] + b[3];
+    dst[4] = a[4] + b[4];
+    dst[5] = a[5] + b[5];
+    dst[6] = a[6] + b[6];
+    dst[7] = a[7] + b[7];
+    dst[8] = a[8] + b[8];
+    dst[9] = a[9] + b[9];
+    dst[10] = a[10] + b[10];
+    dst[11] = a[11] + b[11];
+    dst[12] = a[12] + b[12];
+    dst[13] = a[13] + b[13];
+    dst[14] = a[14] + b[14];
+    dst[15] = a[15] + b[15];
+}
+
 void fn_80153254(f32 *__restrict dst, f32 *__restrict src) {
     dst[0] += src[0];
     dst[1] += src[1];
