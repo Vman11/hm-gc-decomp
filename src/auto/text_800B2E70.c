@@ -5159,7 +5159,7 @@ s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
     s32 err;
 
     for (i = 0, err = 0; err == 0 && i < count; i++) {
-        err = TRKAppendBuffer1_ui32(buf, data[i]);
+        err = TRKAppendBuffer1_ui32(buf, *data++);
     }
     return err;
 }
@@ -6158,6 +6158,48 @@ void fn_800E18F0(void) {
 s32 TRKInitializeIntDrivenUART(s32 a0, s32 a1, s32 a2, void *a3) {
     gDBCommTable.initialize(a3, TRKEXICallBack);
     return 0;
+}
+
+s32 Hu_IsStub(void);
+s32 AMC_IsStub(void);
+void DBInitComm();
+void DBInitInterrupts();
+void DBQueryData();
+void DBRead();
+void DBWrite();
+void DBOpen();
+void DBClose();
+void EXI2_Init();
+void EXI2_EnableInterrupts();
+void EXI2_Poll();
+void EXI2_ReadN();
+void EXI2_WriteN();
+void EXI2_Reserve();
+void EXI2_Unreserve();
+s32 InitMetroTRKCommTable(s32 hwId) {
+    s32 result;
+    if (hwId == 1) {
+        OSReport("MetroTRK : Set to GDEV hardware\n");
+        result = Hu_IsStub();
+        gDBCommTable.initialize = (void *)DBInitComm;
+        gDBCommTable.initInterrupts = (void *)DBInitInterrupts;
+        gDBCommTable.peek = (void *)DBQueryData;
+        gDBCommTable.read = (void *)DBRead;
+        gDBCommTable.write = (void *)DBWrite;
+        gDBCommTable.open = (void *)DBOpen;
+        gDBCommTable.close = (void *)DBClose;
+    } else {
+        OSReport("MetroTRK : Set to AMC DDH hardware\n");
+        result = AMC_IsStub();
+        gDBCommTable.initialize = (void *)EXI2_Init;
+        gDBCommTable.initInterrupts = (void *)EXI2_EnableInterrupts;
+        gDBCommTable.peek = (void *)EXI2_Poll;
+        gDBCommTable.read = (void *)EXI2_ReadN;
+        gDBCommTable.write = (void *)EXI2_WriteN;
+        gDBCommTable.open = (void *)EXI2_Reserve;
+        gDBCommTable.close = (void *)EXI2_Unreserve;
+    }
+    return result;
 }
 
 void OSEnableScheduler(void);
