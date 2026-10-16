@@ -592,6 +592,21 @@ s32 fn_800EB1B4(void) {
     return (temp_r0 >> 0x10U) & 0x7FFF;
 }
 
+int fn_800EB264(int sig) {
+    extern void (*lbl_803283E0[])(int);
+    void exit(int);
+    void (*handler)(int);
+    if (sig < 1 || sig > 6) return -1;
+    __begin_critical_region(4);
+    handler = lbl_803283E0[sig - 1];
+    if (handler != (void (*)(int))1) lbl_803283E0[sig - 1] = 0;
+    __end_critical_region(4);
+    if (handler == (void (*)(int))1 || (handler == 0 && sig == 1)) return 0;
+    if (handler == 0) exit(0);
+    handler(sig);
+    return 0;
+}
+
 char* fn_800EB324(const char* str, const char* pat) {
     unsigned char* s1 = (unsigned char*)str - 1;
     unsigned char* p1 = (unsigned char*)pat - 1;
