@@ -197,6 +197,38 @@ void fn_80140E38(ImgPix *p) {
     } while (s < e);
 }
 
+void fn_80140E80(ImgPix *p) {
+    u8 *s;
+    u8 *m;
+    m = p->mask;
+    s = p->px;
+    if (m[0] != 0) {
+        *p->out = (*p->out & 0xF0) | s[0];
+    }
+    m++;
+    s++;
+    p->out++;
+    p->count--;
+    while ((u32)p->count > 1) {
+        if (m[0] != 0) {
+            if (m[1] != 0) {
+                *p->out = s[1] | (s[0] << 4);
+            } else {
+                *p->out = (*p->out & 0xF) | (s[0] << 4);
+            }
+        } else if (m[1] != 0) {
+            *p->out = s[1] | (*p->out & 0xF0);
+        }
+        m += 2;
+        s += 2;
+        p->out++;
+        p->count -= 2;
+    }
+    if ((u32)p->count != 0 && m[0] != 0) {
+        *p->out = ((s[0] << 4) & 0xFF0) | (*p->out & ~0xFF0);
+    }
+}
+
 void fn_80140F9C(ImgPix *p) {
     u8 *s;
     u8 *m;
