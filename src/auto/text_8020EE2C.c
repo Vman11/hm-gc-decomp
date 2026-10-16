@@ -28,12 +28,11 @@ s32 fn_8020EE78(void* arg0, u32 arg1) {
 }
 
 s32 fn_8020EEA0(void* arg0, u32 arg1) {
-    u8* p;
-    if (arg1 >= *(u32*)((u8*)arg0 + 8)) {
+    Tbl* t = arg0;
+    if (arg1 >= t->n0) {
         return 0;
     }
-    p = *(u8**)arg0 + arg1 * 0x1C;
-    return *(s32*)(p + 8);
+    return t->a[arg1].f8;
 }
 
 s32 fn_8020EEC8(void* arg0, u32 arg1) {
