@@ -16,12 +16,10 @@ typedef struct RBNode_800F9CC8 {
 
 static inline void RBNode_rotateLeft(RBNode_800F9CC8 **root, RBNode_800F9CC8 *x) {
     RBNode_800F9CC8 *y = x->left;
-    x->left = y->right;
-    if (y->right != NULL) {
+    if ((x->left = y->right) != NULL) {
         x->left->parent = x;
     }
-    y->parent = x->parent;
-    if (x->parent != NULL) {
+    if ((y->parent = x->parent) != NULL) {
         if (x == x->parent->right) {
             x->parent->right = y;
         } else {
