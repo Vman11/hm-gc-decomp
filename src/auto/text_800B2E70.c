@@ -2521,6 +2521,7 @@ s32 fn_800E1AE4(s32 arg0) {
     }
 }
 
+void TRKEXICallBack(s16 chan, void *ctx);
 s32 fn_800E1B68(s32 arg0, s32 arg1, s32 *arg2) {
     s32 tmp;
     u8 r;
@@ -2534,8 +2535,6 @@ s32 fn_800E1B68(s32 arg0, s32 arg1, s32 *arg2) {
     r = fn_800E1050(0xD0, 1, &tmp, arg1);
     *arg2 = tmp;
     switch (r) {
-    case 1:
-        return 1;
     case 0:
         return 0;
     case 2:
