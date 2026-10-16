@@ -6,6 +6,7 @@ typedef struct {
 } Mtx44Struct;
 
 extern f32 lbl_80364564;
+extern f32 lbl_80364560;
 f32 fn_80153574(f32 *m) {
     return m[10] * (m[0] * m[5]) + m[8] * (m[1] * m[6]) + m[9] * (m[2] * m[4])
          - m[8] * (m[2] * m[5]) - m[10] * (m[1] * m[4]) - m[9] * (m[0] * m[6]);
