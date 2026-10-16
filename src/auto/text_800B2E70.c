@@ -4565,10 +4565,10 @@ s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg) {
             buf = &lbl_80323E00[i];
         }
         fn_800DF2F8(buf);
-        if (((s32 *)buf)[1] == 0) {
+        if (buf->isInUse == 0) {
             buf->count = 0;
             buf->pos = 0;
-            ((s32 *)buf)[1] = 1;
+            buf->isInUse = 1;
             error = 0;
             *outMsg = buf;
             *msgID = i;
