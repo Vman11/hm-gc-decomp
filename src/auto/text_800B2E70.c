@@ -3212,6 +3212,11 @@ void TRKUARTInterruptHandler(void) {
 
 }
 
+void TRK_board_display(char *str) {
+    extern char lbl_8029BEA4[];
+    OSReport(lbl_8029BEA4, str);
+}
+
 void UnreserveEXI2Port(void) {
     gDBCommTable.close();
 }
