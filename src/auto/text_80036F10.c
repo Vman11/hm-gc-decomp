@@ -18,8 +18,8 @@ static inline f32 getTableValue(f32 **table, s32 **idx) {
 }
 
 u8 fn_80036F10(void *arg0) {
-    u8 ret = lbl_8035BE98 != getTableValue(lbl_80357B28, (s32 **)((u8 *)arg0 + 0x38));
-    if (!ret) {
+    BOOL ret = lbl_8035BE98 != getTableValue(lbl_80357B28, (s32 **)((u8 *)arg0 + 0x38));
+    if (!(u8)ret) {
         ret = lbl_8035BE98 != getTableValue(lbl_80357B3C, (s32 **)((u8 *)arg0 + 0x3C));
     }
     return ret;
