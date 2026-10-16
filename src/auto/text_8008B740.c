@@ -2,8 +2,7 @@
 #include "common.h"
 
 extern u8 lbl_802C6990[];
-extern u8 lbl_80359348[8];
-extern u8 lbl_80359348[8];
+extern u8 lbl_80359348[];
 void fn_8008B740(void *arg0) {
     M2C_FIELD(arg0, s32 *, 0x54) = 7;
     M2C_FIELD(arg0, s32 *, 0x2C) = 7;
