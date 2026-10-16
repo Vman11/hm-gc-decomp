@@ -353,8 +353,8 @@ void fn_80142830(ImgDec *p) {
 }
 
 void fn_801428B4(ImgDec *p) {
-    u32 *s = (u32 *)p->px;
     u32 *d = (u32 *)p->out;
+    u32 *s = (u32 *)p->px;
     u32 *e = s + 4;
     do {
         d[0] = s[0];
