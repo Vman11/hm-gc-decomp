@@ -6,7 +6,13 @@ typedef struct Img {
     u32 val;
     u8 c[4];
     u8 r[4];
-    u8 pad14[0x9c - 0x14];
+    u8 pad14[0x3c - 0x14];
+    u32 rsh[3];
+    u8 pad48[4];
+    u32 lsh[3];
+    u8 pad58[0x7c - 0x58];
+    u32 mask[3];
+    u8 pad88[0x9c - 0x88];
     s32 n;
     u8 padA0[4];
     s32 m;
