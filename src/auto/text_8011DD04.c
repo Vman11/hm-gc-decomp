@@ -106,17 +106,10 @@ s32 fn_8011DDE0(void *arg0, ListNode *node) {
 }
 
 s32 fn_8011DE7C(void *arg0, ListNode *node) {
-    u32 count = M2C_FIELD(arg0, u32 *, 0xA8);
-    u32 i;
+    u32 i = findKeyA8(arg0, node->key);
     ListHead *head;
-    for(i=0; i<count; i++) {
-        if(node->key == M2C_FIELD(arg0, KeyEntry **, 0x4C)[i].key) goto found;
-    }
-    i = -1;
-found:
-    if (i < count) {
-        if(i < count) head = &M2C_FIELD(arg0, ListHead **, 0x94)[i];
-        else head = NULL;
+    if (i < M2C_FIELD(arg0, u32 *, 0xA8)) {
+        head = getHeadA8(arg0, i);
         if (node->prev != NULL) {
             if ((node->prev->next = node->next) != NULL) node->next->prev = node->prev;
             else head->last = node->prev;
