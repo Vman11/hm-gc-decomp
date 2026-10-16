@@ -6371,6 +6371,48 @@ void fn_800DFC6C(TrkBuf *b) {
     }
 }
 
+s32 TRKTargetInterrupt(void *event) {
+    s32 result = 0;
+    switch (*(u8 *)event) {
+    case 3:
+    case 4:
+        if (lbl_802E01B4.active != 0) {
+            BOOL done = TRUE;
+            M2C_FIELD(&gTRKCPUState, u32 *, 0x1F8) &= ~0x400;
+            if (lbl_802E01B4.active != 0 && (u16)M2C_FIELD(&gTRKCPUState, u32 *, 0x2F8) == 0xD00) {
+                switch (lbl_802E01B4.type) {
+                case 0:
+                    if (lbl_802E01B4.count > 0) {
+                        done = FALSE;
+                    }
+                    break;
+                case 1:
+                    if (gTRKCPUState.unk80 >= lbl_802E01B4.rangeStart && gTRKCPUState.unk80 <= lbl_802E01B4.rangeEnd) {
+                        done = FALSE;
+                    }
+                    break;
+                }
+            }
+            if (done) {
+                lbl_802E01B4.active = 0;
+            } else {
+                lbl_802E01B4.active = 1;
+                M2C_FIELD(&gTRKCPUState, u32 *, 0x1F8) |= 0x400;
+                if (lbl_802E01B4.type == 0 || lbl_802E01B4.type == 0x10) {
+                    lbl_802E01B4.count--;
+                }
+                gTRKState.unk98 = 0;
+            }
+        }
+        if (lbl_802E01B4.active == 0) {
+            gTRKState.unk98 = 1;
+            result = fn_800DF308(0x90);
+        }
+        break;
+    }
+    return result;
+}
+
 void TRKPostInterruptEvent(void) {
     void fn_800DAB9C(void *, s8);
     void fn_800DABB4(void *);
