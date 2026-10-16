@@ -657,6 +657,30 @@ void fn_800B7E04(void) {
     lbl_8035A5B0 = 1;
 }
 
+void OSRegisterResetFunction(void *arg0) {
+    OSResetFunctionInfo *info = arg0;
+    OSResetFunctionInfo *iter;
+    OSResetFunctionInfo *prev;
+    for (iter = ResetFunctionQueue_8035A5B8.head; iter != NULL; iter = iter->next) {
+        if (iter->priority > info->priority) break;
+    }
+    if (iter == NULL) {
+        prev = ResetFunctionQueue_8035A5B8.tail;
+        if (prev == NULL) ResetFunctionQueue_8035A5B8.head = info;
+        else prev->next = info;
+        info->prev = prev;
+        info->next = NULL;
+        ResetFunctionQueue_8035A5B8.tail = info;
+    } else {
+        info->next = iter;
+        prev = iter->prev;
+        iter->prev = info;
+        info->prev = prev;
+        if (prev == NULL) ResetFunctionQueue_8035A5B8.head = info;
+        else prev->next = info;
+    }
+}
+
 u32 OSGetResetCode(void) {
     u32 code;
     if (*(u8 *)0x800030E2 != 0) {
@@ -727,6 +751,16 @@ void OSInitThreadQueue(void *arg0) {
 
 s32 fn_800B9790(void) {
     return *(s32 *)0x800000E4;
+}
+
+s32 OSDisableScheduler(void) {
+    extern s32 Reschedule_8035A5F0;
+    s32 previous;
+    s32 enabled = OSDisableInterrupts();
+    previous = Reschedule_8035A5F0;
+    Reschedule_8035A5F0 = previous + 1;
+    OSRestoreInterrupts(enabled);
+    return previous;
 }
 
 void fn_800B981C(void *arg0) {
@@ -2482,7 +2516,7 @@ void fn_800D5F10(void) {
 void fn_800D61A0(u8 nTexGens) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
-    SETF(M2C_FIELD(gx, u32 *, 0x204), 4, 0, nTexGens);
+    M2C_FIELD(gx, u32 *, 0x204) = __rlwimi(M2C_FIELD(gx, u32 *, 0x204), nTexGens, 0, 28, 31);
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x103F;
     GXWGFifo.u32 = nTexGens;
@@ -3549,7 +3583,7 @@ s32 TRKTargetStopped(void) {
     return M2C_FIELD(&gTRKState, s32 *, 0x98);
 }
 
-s32 fn_800DF8AC(u32 start, u32 end) {
+s32 fn_800DF8AC(u8 unused, u32 start, u32 end) {
     if (start < end) {
         fn_800DF3E0(start, end - start);
         return 0;
