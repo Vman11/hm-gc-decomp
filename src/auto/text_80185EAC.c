@@ -13,3 +13,24 @@ typedef struct {
 void fn_80185EAC(s32 arg0) {
     lbl_8035AE18 = arg0;
 }
+
+extern f32 lbl_80364988;
+void fn_80185EB4(FloatGrid *dst, FloatGrid *a, FloatGrid *b, f32 t) {
+    f32 *pa;
+    f32 *pb;
+    f32 *p;
+    f32 *end;
+    s32 border2 = dst->border + dst->border;
+    f32 s;
+
+    p = dst->data;
+    end = p + (dst->width + border2) * (dst->height + border2);
+    s = lbl_80364988 - t;
+    pa = a->data;
+    pb = b->data;
+
+    for (; p < end; p++) {
+        *p = s * *pa++ + t * *pb++;
+    }
+}
+
