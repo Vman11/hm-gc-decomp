@@ -616,6 +616,11 @@ void fn_800BB79C(s32 *p) {
     f[6] = lbl_80363068;
 }
 
+void fn_800BBAC8(void **arg0, void **arg1) {
+    *arg1 = arg0[4];
+    arg0[4] = arg1;
+}
+
 #pragma dont_inline reset
 
 void fn_800BBBD4(UnkStep* arg0) {
