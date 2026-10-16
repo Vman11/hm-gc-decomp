@@ -13,6 +13,13 @@ int OSDisableInterrupts(void);
 int OSRestoreInterrupts(int);
 void fn_800F0CC4(u32, void*, u32);
 
+typedef struct FragmentInfo {
+    void *eti_info;
+    void *toc;
+    int active;
+} FragmentInfo;
+extern FragmentInfo fragmentinfo_80327F98[1];
+
 extern u8 lbl_8029BFB0[];
 u8 *fn_800E4108(void) {
     return lbl_8029BFB0;
@@ -757,6 +764,44 @@ void DBInitComm(u8 **inputFlagPtr, s32 mtrCallback) {
     __OSMaskInterrupts(0x18000);
     *(volatile u32 *)0xCC006828 = 0;
     OSRestoreInterrupts(enabled);
+}
+
+extern u8 *lbl_803596F8;
+extern void (*lbl_8035A9B0)(s32);
+extern u8 lbl_803283F8[];
+void fn_800F1500(void (*)(void));
+void fn_800F16A4(void);
+s32 fn_800F10E4(void *, s32, s32, s32);
+s32 fn_800F1328(void);
+s32 fn_800F156C(s32);
+s32 fn_800F15EC(void);
+void *memset(void *, int, unsigned long);
+void EXI2_Init(u8 **inputPendingPtr, void (*monitorCallback)(s32)) {
+    s32 ret;
+    u32 cmd;
+    u32 status;
+    u32 data;
+    int enabled;
+
+    *inputPendingPtr = lbl_803596F8;
+    enabled = OSDisableInterrupts();
+    lbl_8035A9B0 = monitorCallback;
+    OSRestoreInterrupts(enabled);
+    fn_800F16E4();
+    ret = 0;
+    data = 0;
+    status = 0x01000003;
+    while (ret == 0) {
+        ret = fn_800F156C(5);
+    }
+    cmd = 0x80000000;
+    fn_800F10E4(&cmd, 2, 1, 0);
+    fn_800F1328();
+    fn_800F10E4(&status, 4, 1, 0);
+    fn_800F1328();
+    fn_800F10E4(&data, 4, 1, 0);
+    fn_800F1328();
+    fn_800F15EC();
 }
 
 void EXI2_Reserve(void) {
