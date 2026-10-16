@@ -44,6 +44,19 @@ void fn_8014136C(ImgDec *p) {
     } while (d < e);
 }
 
+void fn_801413C8(ImgDec *p) {
+    u8 *d = p->dst;
+    u8 *e = d + p->count * 4;
+    do {
+        d[0] = p->src[0];
+        d[1] = p->src[1];
+        d[2] = p->src[2];
+        d[3] = p->src[3];
+        d += 4;
+        p->src += 4;
+    } while (d < e);
+}
+
 void fn_8014188C(ImgDec *p) {
     u8 *d = p->dst;
     u8 *e = d + p->count * 4;
@@ -85,8 +98,8 @@ void fn_80141970(ImgDec *p) {
 }
 
 void fn_801419BC(ImgDec *p) {
-    u8 *d = p->buf;
     s32 n = p->count;
+    u8 *d = p->buf;
     do {
         d[0] = *p->src >> 4;
         if (--n == 0) return;
