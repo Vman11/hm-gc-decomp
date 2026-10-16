@@ -2252,16 +2252,25 @@ void fn_800D5018(void) {
 void fn_800D503C(u8 arg0) {
     extern void *__GXData;
     extern void *__cpReg;
-    M2C_FIELD(__GXData, u32 *, 8) = __rlwimi(M2C_FIELD(__GXData, u32 *, 8), arg0 ? 1 : 0, 4, 27, 27);
-    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(__GXData, u32 *, 8);
+    void *gx;
+    u32 v;
+    if (arg0) {
+        v = 1;
+    } else {
+        v = 0;
+    }
+    gx = __GXData;
+    M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), v, 4, 27, 27);
+    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(gx, u32 *, 8);
 }
 
 void fn_800D5070(s32 arg0, u8 arg1) {
     extern void *__GXData;
     extern void *__cpReg;
-    M2C_FIELD(__GXData, u32 *, 8) = __rlwimi(M2C_FIELD(__GXData, u32 *, 8), arg0, 2, 29, 29);
-    M2C_FIELD(__GXData, u32 *, 8) = __rlwimi(M2C_FIELD(__GXData, u32 *, 8), arg1, 3, 28, 28);
-    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(__GXData, u32 *, 8);
+    void *gx = __GXData;
+    M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), arg0, 2, 29, 29);
+    M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), arg1, 3, 28, 28);
+    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(gx, u32 *, 8);
 }
 
 extern s32 lbl_8035A920;
