@@ -80,7 +80,6 @@ s32 fn_80100504(Quat_ *out, Quat_ *a, Quat_ *b, Quat_ *uv) {
     extern u32 lbl_803637D0;
     extern u32 lbl_803637D4;
     u32 flags = 0;
-    f32 w, h, x, y, t;
 
     if (a->x > b->x) {
         out->x = a->x;
@@ -114,26 +113,7 @@ s32 fn_80100504(Quat_ *out, Quat_ *a, Quat_ *b, Quat_ *uv) {
     }
 
     if (flags != 0) {
-        w = uv->z - uv->x;
-        x = uv->x;
-        if (flags & 4) {
-            t = (out->z - b->x) / (b->z - b->x);
-            uv->z = x + t * w;
-        }
-        if (flags & 1) {
-            t = (out->x - b->x) / (b->z - b->x);
-            uv->x = uv->x + t * w;
-        }
-        h = uv->w - uv->y;
-        y = uv->y;
-        if (flags & 8) {
-            t = (out->w - b->y) / (b->w - b->y);
-            uv->w = y + t * h;
-        }
-        if (flags & 2) {
-            t = (out->y - b->y) / (b->w - b->y);
-            uv->y = uv->y + t * h;
-        }
+        fn_80100504_adjustUV(uv, out, b, flags);
     }
     return 1;
 }
