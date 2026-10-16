@@ -1314,6 +1314,8 @@ void OSClearStack(u32 arg0) {
     while ((u32)p < end) *p++ = value;
 }
 
+#pragma push
+#pragma auto_inline off
 u64 OSGetTime(void) {
     u32 high1;
     u32 low;
@@ -1326,6 +1328,7 @@ u64 OSGetTime(void) {
     } while (high1 != high2);
     return ((u64)high1 << 32) | low;
 }
+#pragma pop
 
 u32 OSGetTick(void) {
     return __mftb();
@@ -6543,17 +6546,16 @@ void fn_800DEA14(s32 arg0) {
 
 s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
     s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
-    TrkBuf *b;
-    s32 err;
     s32 replyBufferId;
     s32 bufferId;
     TrkBuf *buffer;
     s32 error;
     TrkBuf *replyBuffer;
+    s32 err;
 
     error = fn_800DBBA0(&bufferId, &buffer);
     if (error == 0) {
-        b = buffer;
+        TrkBuf *b = buffer;
         if (b->pos >= 0x880) {
             err = 0x301;
         } else {
@@ -6570,7 +6572,7 @@ s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
         error = fn_800DB7D0(buffer, *position);
     }
     if (error == 0) {
-        b = buffer;
+        TrkBuf *b = buffer;
         if (b->pos >= 0x880) {
             err = 0x301;
         } else {
