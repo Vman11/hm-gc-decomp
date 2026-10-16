@@ -70,6 +70,27 @@ void fn_80140AE8(ImgPix *p) {
     } while (s < e);
 }
 
+void fn_80140B58(ImgPix *p) {
+    u8 *s = p->src;
+    u8 *e = s + p->count * 4;
+    u8 *m = p->mask;
+    do {
+        if (*m != 0) {
+            u32 v;
+            v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
+            v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
+            v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
+            v |= ((u32)s[3] >> p->shr[3]) << p->shl[3];
+            p->out[0] = v;
+            p->out[1] = v >> 8;
+            p->out[2] = v >> 16;
+        }
+        s += 4;
+        m++;
+        p->out += 3;
+    } while (s < e);
+}
+
 void fn_80140C14(ImgPix *p) {
     u8 *s = p->src;
     u8 *e = s + p->count * 4;
