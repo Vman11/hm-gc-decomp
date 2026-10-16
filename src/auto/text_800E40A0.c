@@ -379,6 +379,65 @@ void fn_800E8C8C(void* dst, const void* src, unsigned long n) {
     }
 }
 
+void fn_800E8D38(void *dst, const void *src, unsigned long n) {
+    unsigned long i, v1, v2;
+    unsigned int src_offset, left_shift, right_shift;
+    unsigned char *cps;
+    unsigned char *cpd;
+    unsigned long *lps;
+    unsigned long *lpd;
+
+    cps = ((unsigned char *)src) - 1;
+    cpd = ((unsigned char *)dst) - 1;
+
+    i = (-(unsigned long)dst) & 3;
+
+    if (i) {
+        n -= i;
+        do
+            *++cpd = *++cps;
+        while (--i);
+    }
+
+    src_offset = ((unsigned int)(cps + 1)) & 3;
+
+    left_shift = src_offset << 3;
+    right_shift = 32 - left_shift;
+
+    cps -= src_offset;
+
+    lps = ((unsigned long *)(cps + 1)) - 1;
+    lpd = ((unsigned long *)(cpd + 1)) - 1;
+
+    i = n >> 3;
+
+    v1 = *++lps;
+
+    do {
+        v2 = *++lps;
+        *++lpd = (v1 << left_shift) | (v2 >> right_shift);
+        v1 = *++lps;
+        *++lpd = (v2 << left_shift) | (v1 >> right_shift);
+    } while (--i);
+
+    if (n & 4) {
+        v2 = *++lps;
+        *++lpd = (v1 << left_shift) | (v2 >> right_shift);
+    }
+
+    cps = ((unsigned char *)(lps + 1)) - 1;
+    cpd = ((unsigned char *)(lpd + 1)) - 1;
+
+    n &= 3;
+
+    if (n) {
+        cps -= 4 - src_offset;
+        do
+            *++cpd = *++cps;
+        while (--n);
+    }
+}
+
 #pragma pop
 void fn_800E8DF8(u8 *d, const u8 *s, u32 n) {
     u32 a, b;
@@ -590,6 +649,32 @@ s32 fn_800EB1B4(void) {
     temp_r0 = (lbl_803596A0 * 0x41C64E6D) + 0x3039;
     lbl_803596A0 = temp_r0;
     return (temp_r0 >> 0x10U) & 0x7FFF;
+}
+
+int fn_800EB1D4(void *arg0, int arg1, int arg2) {
+    u8 *s;
+    u8 c;
+    switch (arg2) {
+    case 0:
+        s = M2C_FIELD(arg0, u8 **, 0);
+        c = *s;
+        if ((s8)c == 0) {
+            M2C_FIELD(arg0, int *, 4) = 1;
+            return -1;
+        }
+        M2C_FIELD(arg0, u8 **, 0) = s + 1;
+        return c;
+    case 1:
+        if (M2C_FIELD(arg0, int *, 4) == 0)
+            M2C_FIELD(arg0, u8 **, 0)--;
+        else
+            M2C_FIELD(arg0, int *, 4) = 0;
+        return arg1;
+    case 2:
+        return M2C_FIELD(arg0, int *, 4);
+    default:
+        return 0;
+    }
 }
 
 int fn_800EB264(int sig) {
