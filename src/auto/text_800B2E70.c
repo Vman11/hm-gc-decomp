@@ -727,6 +727,26 @@ s32 fn_800B91B8(void) {
     return ret;
 }
 
+void fn_800B9238(s32 arg0) {
+    SramControlBlock *scb = &Scb_803078A0;
+    u32 flag = (arg0 & 1) << 2;
+    s32 enabled = OSDisableInterrupts();
+    if (scb->locked != 0) {
+        OSRestoreInterrupts(enabled);
+        scb = NULL;
+    } else {
+        scb->enabled = enabled;
+        scb->locked = 1;
+    }
+    if (flag == (scb->flags & 4)) {
+        fn_800B8D00(0, 0);
+    } else {
+        scb->flags &= ~4;
+        scb->flags |= flag;
+        fn_800B8D00(1, 0);
+    }
+}
+
 extern u8 __OSSystemCallVectorStart[];
 extern u8 __OSSystemCallVectorEnd[];
 extern void *memcpy(void *, const void *, unsigned long);
@@ -789,14 +809,19 @@ void fn_800B981C(void *arg0) {
 }
 
 s32 fn_800B9884(void *arg0) {
-    s32 priority = M2C_FIELD(arg0, s32 *, 0x2D4);
+    s32 p;
+    s32 priority;
+    void *thread;
     void *mutex;
-    for (mutex = M2C_FIELD(arg0, void **, 0x2F4); mutex != NULL; mutex = M2C_FIELD(mutex, void **, 0x10)) {
-        void *thread = M2C_FIELD(mutex, void **, 0);
+    priority = M2C_FIELD(arg0, s32 *, 0x2D4);
+    mutex = M2C_FIELD(arg0, void **, 0x2F4);
+    while (mutex != NULL) {
+        thread = M2C_FIELD(mutex, void **, 0);
         if (thread != NULL) {
-            s32 p = M2C_FIELD(thread, s32 *, 0x2D0);
+            p = M2C_FIELD(thread, s32 *, 0x2D0);
             if (p < priority) priority = p;
         }
+        mutex = M2C_FIELD(mutex, void **, 0x10);
     }
     return priority;
 }
@@ -2487,25 +2512,28 @@ void fn_800D5E84(s32 attr, u32 base_ptr, u8 stride) {
     extern GXDataHead *__GXData;
     s32 cpAttr;
     u32 phyAddr;
-    s32 idx;
-    if (attr == 0x19) {
-        attr = 0xA;
-    }
+    attr = (attr == 0x19) ? 0xA : attr;
     cpAttr = attr - 9;
     phyAddr = base_ptr & 0x3FFFFFFF;
-    GXWGFifo.u8 = 0x08;
-    GXWGFifo.u8 = cpAttr | 0xA0;
-    GXWGFifo.u32 = phyAddr;
-    idx = cpAttr - 12;
-    if (idx >= 0 && idx < 4) {
-        ((u32 *)((u8 *)__GXData + 0x88))[idx] = phyAddr;
+    {
+        s32 regAddr;
+        GXWGFifo.u8 = 0x08;
+        GXWGFifo.u8 = cpAttr | 0xA0;
+        GXWGFifo.u32 = phyAddr;
+        regAddr = cpAttr - 12;
+        if (regAddr >= 0 && regAddr < 4) {
+            ((u32 *)((u8 *)__GXData + 0x88))[regAddr] = phyAddr;
+        }
     }
-    GXWGFifo.u8 = 0x08;
-    GXWGFifo.u8 = cpAttr | 0xB0;
-    GXWGFifo.u32 = stride;
-    idx = cpAttr - 12;
-    if (idx >= 0 && idx < 4) {
-        ((u32 *)((u8 *)__GXData + 0x98))[idx] = stride;
+    {
+        s32 regAddr;
+        GXWGFifo.u8 = 0x08;
+        GXWGFifo.u8 = cpAttr | 0xB0;
+        GXWGFifo.u32 = stride;
+        regAddr = cpAttr - 12;
+        if (regAddr >= 0 && regAddr < 4) {
+            ((u32 *)((u8 *)__GXData + 0x98))[regAddr] = stride;
+        }
     }
 }
 
@@ -2525,22 +2553,23 @@ void fn_800D61A0(u8 nTexGens) {
 
 void GXSetMisc(s32 token, u32 val) {
     extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
     switch (token) {
     case 0:
         break;
     case 1:
-        __GXData->vLim = val;
-        __GXData->vNumNot = !__GXData->vLim;
-        __GXData->bpSentNot = 1;
-        if (__GXData->vLim) {
-            M2C_FIELD(__GXData, u32 *, 0x5AC) |= 8;
+        gx->vNum = val;
+        gx->vNumNot = !gx->vNum;
+        gx->bpSentNot = 1;
+        if (gx->vNum) {
+            M2C_FIELD(gx, u32 *, 0x5AC) |= 8;
         }
         break;
     case 2:
-        M2C_FIELD(__GXData, u8 *, 0x5A9) = (val != 0);
+        M2C_FIELD(gx, u8 *, 0x5A9) = (val > 0);
         break;
     case 3:
-        M2C_FIELD(__GXData, u8 *, 0x5AA) = (val != 0);
+        M2C_FIELD(gx, u8 *, 0x5AA) = (val > 0);
         break;
     }
 }
