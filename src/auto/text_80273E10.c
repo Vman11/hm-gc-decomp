@@ -71,6 +71,47 @@ void fn_802740E4(void) {
     fn_8027438C();
 }
 
+#pragma push
+#pragma dont_inline on
+u32 fn_802742F8(void) {
+    extern s32 lbl_80359F10;
+    extern u32 lbl_8035B860;
+    s32 fn_802749A0(u32);
+    u32 OSGetTick(void);
+    u32 val;
+    u32 n;
+
+    do {
+        if (lbl_80359F10 != 0) {
+            val = lbl_8035B860++;
+            if (lbl_8035B860 >= (u32)fn_80273EAC()) {
+                lbl_80359F10 = 0;
+                lbl_8035B860 = 0;
+            }
+        } else {
+            n = fn_80273EAC();
+            val = OSGetTick() % n;
+        }
+    } while (fn_802749A0(val) != 0);
+    return val;
+}
+#pragma pop
+u32 fn_8027438C(void) {
+    extern s32 lbl_80359F10;
+    extern u32 lbl_8035B860;
+    s32 fn_802749A0(u32);
+    u32 val;
+
+    do {
+        val = lbl_8035B860++;
+        if (lbl_8035B860 >= (u32)fn_80273EAC()) {
+            lbl_80359F10 = 0;
+            lbl_8035B860 = 0;
+        }
+    } while (fn_802749A0(val) != 0);
+    return val;
+}
+
 u32 fn_802744F8(u32 addr) {
     extern u32* lbl_8035B86C;
     void fn_80274558(u32);
