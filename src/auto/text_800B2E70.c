@@ -10,6 +10,23 @@ typedef struct Anim {
     f32 cur;
     f32 out;
 } Anim;
+typedef struct AnimInit {
+    s32 unk0;
+    s32 unk4;
+    void *unk8;
+    s32 unkC;
+    f32 unk10;
+    s32 unk14;
+    f32 unk18;
+    f32 unk1C;
+    f32 unk20;
+    f32 unk24;
+    s32 unk28;
+} AnimInit;
+extern s32 fn_800E2584();
+extern f32 lbl_80363088;
+extern f32 lbl_80363068;
+extern u8 lbl_802D8F60[];
 typedef struct HeapCell {
     struct HeapCell *prev;
     struct HeapCell *next;
