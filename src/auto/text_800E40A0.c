@@ -243,6 +243,36 @@ void fn_800E904C(char *s, const char *fmt, void *args) {
     }
 }
 
+u32 fn_800E90C4(char *s, u32 n, const char *fmt, void *args) {
+    struct {
+        char *s;
+        u32 n;
+        u32 c;
+    } ctx;
+    u32 r;
+    ctx.s = s;
+    ctx.n = n;
+    ctx.c = 0;
+    r = __pformatter(fn_800E92B8, &ctx, fmt, args);
+    if (s != 0) {
+        s[(r < n) ? r : n - 1] = 0;
+    }
+    return r;
+}
+
+int vprintf(const char *format, void *args) {
+    int result;
+
+    if (fwide(__files + 0x50, -1) >= 0) {
+        return -1;
+    }
+    __begin_critical_region(2);
+    result = __pformatter(__FileWrite, __files + 0x50, format, args);
+    __end_critical_region(2);
+    return result;
+}
+#pragma pop
+
 #pragma push
 #pragma dont_inline on
 int fn_800E91D0(const char *format, ...) {
@@ -355,8 +385,50 @@ s32 fn_800ECD08(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     return 0;
 }
 
+double fn_800EF76C(double x, double y, int iy) {
+    extern double lbl_803635C8;
+    extern double lbl_803635D0;
+    extern double lbl_803635D8;
+    extern double lbl_803635E0;
+    extern double lbl_803635E8;
+    extern double lbl_803635F0;
+    extern double lbl_803635F8;
+    double z, r, v;
+    int ix;
+    ix = (*(int *)&x) & 0x7fffffff;
+    if (ix < 0x3e400000) {
+        if ((int)x == 0) return x;
+    }
+    z = x * x;
+    v = z * x;
+    r = lbl_803635D0 + z * (lbl_803635D8 + z * (lbl_803635E0 + z * lbl_803635E8));
+    r = lbl_803635C8 + z * r;
+    if (iy == 0) return x + v * (lbl_803635F0 + z * r);
+    else return x - ((z * (lbl_803635F8 * y - v * r) - y) - v * lbl_803635F0);
+}
+
 double fn_800EFD7C(double x, double y) {
     *(int *)&x = (*(int *)&x & 0x7fffffff) | (*(int *)&y & 0x80000000);
+    return x;
+}
+
+double fn_800EFFC0(double x, int *eptr) {
+    extern double lbl_80363688;
+    int hx, ix, lx;
+    hx = *(int *)&x;
+    ix = 0x7fffffff & hx;
+    lx = *(1 + (int *)&x);
+    *eptr = 0;
+    if (ix >= 0x7ff00000 || ((ix | lx) == 0)) return x;
+    if (ix < 0x00100000) {
+        x *= lbl_80363688;
+        hx = *(int *)&x;
+        ix = hx & 0x7fffffff;
+        *eptr = -54;
+    }
+    *eptr += (ix >> 20) - 1022;
+    hx = (hx & 0x800fffff) | 0x3fe00000;
+    *(int *)&x = hx;
     return x;
 }
 
@@ -484,6 +556,18 @@ void DBInitInterrupts(void) {
     lbl_8035A994 = fn_800F0B00;
     __OSSetInterruptHandler(0x19, fn_800F0AC0);
     __OSUnmaskInterrupts(0x40);
+}
+
+void DBInitComm(u8 **inputFlagPtr, s32 mtrCallback) {
+    extern u8 *lbl_8035A9A0;
+    extern s32 lbl_8035A990;
+    int enabled = OSDisableInterrupts();
+    lbl_8035A9A0 = &lbl_8035A9A4;
+    *inputFlagPtr = lbl_8035A9A0;
+    lbl_8035A990 = mtrCallback;
+    __OSMaskInterrupts(0x18000);
+    *(volatile u32 *)0xCC006828 = 0;
+    OSRestoreInterrupts(enabled);
 }
 
 void EXI2_Reserve(void) {
