@@ -24,3 +24,16 @@ void fn_80134908(void* arg0) {
     *(u16*)((u8*)arg0 + 0x1A) &= ~2;
 }
 
+void fn_80134918(void *arg0, u8 *arg1) {
+    u8 a, b, c, d;
+    a = arg1[0];
+    b = arg1[1];
+    ((u8 *)arg0)[0x14] = a;
+    c = arg1[2];
+    ((u8 *)arg0)[0x15] = b;
+    d = arg1[3];
+    ((u8 *)arg0)[0x16] = c;
+    ((u8 *)arg0)[0x17] = d;
+    *(u16 *)((u8 *)arg0 + 0x1A) |= lbl_803640E0;
+}
+

@@ -49,13 +49,13 @@ void fn_80222420(Unk_80222420* arg0, f32 farg0) {
     if (lbl_80365A30 == arg0->unk0) {
         arg0->unk4 = lbl_80365A34;
     } else {
-        arg0->unk4 = arg0->unk4 + (f32)__fabs(farg0) / arg0->unk0;
+        arg0->unk4 += (f32)__fabs(farg0) / arg0->unk0;
         if (arg0->unk4 >= lbl_80365A34) {
             arg0->unk4 = lbl_80365A34;
         }
     }
-    temp_r6->unkB0[other].unk28 = lbl_80365A34 - arg0->unk4;
-    temp_r6->unkB0[arg0->unk8].unk28 = arg0->unk4;
+    ((f32(*)[15])temp_r6->unkB0)[other][10] = lbl_80365A34 - arg0->unk4;
+    ((f32(*)[15])temp_r6->unkB0)[arg0->unk8][10] = arg0->unk4;
 }
 
 void fn_802224D0(Unk_80222420* arg0, f32 farg0) {

@@ -1,13 +1,13 @@
 /* Functions from 0x80208924 to 0x802089D4, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80208924(volatile u32 *arg0) {
+void fn_80208924(void **arg0) {
     extern u8 lbl_802EF934[];
     extern u8 lbl_802EFC40[];
     extern u8 lbl_802EF920[];
-    u32 a = (u32)lbl_802EF934;
-    u32 b = (u32)lbl_802EFC40;
-    u32 c = (u32)lbl_802EF920;
+    void *c = lbl_802EF920;
+    void *b = lbl_802EFC40;
+    void *a = lbl_802EF934;
     arg0[0] = a;
     arg0[0] = b;
     arg0[0] = c;

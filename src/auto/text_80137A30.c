@@ -23,11 +23,16 @@ void fn_80137A4C(u8 *arg0) {
     *(u16 *)(arg0 + 0xC) &= ~0x8;
 }
 
-void fn_80137A5C(GXColor *arg0, GXColor *__restrict arg1) {
-    arg0->r = arg1->r;
-    arg0->g = arg1->g;
-    arg0->b = arg1->b;
-    arg0->a = arg1->a;
+void fn_80137A5C(GXColor *arg0, GXColor *arg1) {
+    u8 t0, t1;
+    t0 = arg1->r;
+    t1 = arg1->g;
+    arg0->r = t0;
+    t0 = arg1->b;
+    arg0->g = t1;
+    t1 = arg1->a;
+    arg0->a = t1;
+    arg0->b = t0;
     *(u16 *)((u8 *)arg0 + 0xC) |= lbl_80364188;
 }
 

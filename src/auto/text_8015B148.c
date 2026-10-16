@@ -16,7 +16,8 @@ void fn_8015B148(void* arg0) {
 
 void fn_8015B158(void* arg0, s32* arg1, s32* arg2, s32 arg3) {
     u8* p = (u8*)arg0;
-    *arg1 = *(s32*)(p + *(s32*)(p + 0x64) * 4 + 0x50);
+    Unk8015B158* indexed = (Unk8015B158*)((u32)arg0 + *(u32*)(p + 0x64) * 4);
+    *arg1 = indexed->unk_0x50;
     *arg2 = *(s32*)(p + 0x5C);
     *(u16*)(p + 0x1A) |= lbl_803645C8;
     if (arg3 & 1) {

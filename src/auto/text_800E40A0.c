@@ -87,7 +87,7 @@ void fn_800E4114(int size) {
         arenaLo = (arenaLo + 0x1F) & ~0x1F;
         arenaHi = arenaHi & ~0x1F;
         fn_800B44B8(fn_800B4538(arenaLo, arenaHi));
-        OSSetArenaLo((void *)(arenaLo = arenaHi));
+        OSSetArenaLo((void *)arenaHi);
     }
     fn_800B443C(lbl_80359530, size);
 }
@@ -939,6 +939,16 @@ s32 fn_800F3D80(void) {
         return 0;
     }
     return 1;
+}
+
+BOOL fn_800F3DA0(s32 chan) {
+    extern struct { s32 chan; u32 unk4[7]; } Packet_803284D0[];
+    BOOL busy = TRUE;
+    s32 *packet = &Packet_803284D0[chan].chan;
+    if (*packet == -1 && Si_802E0CEC.unk0 != chan) {
+        busy = FALSE;
+    }
+    return busy;
 }
 
 #define SIREGS ((vu32_t *)0xCC006400)

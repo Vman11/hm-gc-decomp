@@ -50,6 +50,7 @@ s32 fn_800F7640(UnkHeap800F7520* arg0) {
 
 void fn_800F7670(UnkManager800F7670* arg0, UnkHeap800F7520* arg1, UnkHeap800F7520* arg2) {
     UnkHeap800F7520* p;
+    u32 generation;
     u32 value;
     u32 i;
     do {
@@ -58,10 +59,11 @@ void fn_800F7670(UnkManager800F7670* arg0, UnkHeap800F7520* arg1, UnkHeap800F752
             if (arg0->unk28C == (u32)p->unk24) break;
         }
     } while (p < arg0->entries + 16);
+    generation = arg0->unk28C;
     value = arg1->unk24;
     for (i = 0; i < 2; ++i) {
         for (p = arg0->entries; p < arg0->entries + 16; ++p) {
-            if (value == (u32)p->unk24) p->unk24 = arg0->unk28C;
+            if (value == (u32)p->unk24) p->unk24 = generation;
         }
         value = arg2->unk24;
     }

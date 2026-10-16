@@ -47,3 +47,19 @@ void fn_80136560(IdList* p) {
         }
     }
 }
+
+void fn_801365BC(IdList* p) {
+    Entry10* e;
+    u32 i;
+    u32 j;
+    p->numIds = 0;
+    for (i = 0; i < p->groupCount; i++) {
+        for (j = 0; j < p->groups[i].count; j++) {
+            e = &p->groups[i].entries[j];
+            if (e->flags & 0x1C00) {
+                p->ids[p->numIds++] = e->id;
+            }
+        }
+    }
+}
+

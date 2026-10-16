@@ -6,7 +6,7 @@ extern u8 lbl_802E06C8[];
 extern u8 lbl_802E07C8[];
 void fn_800F6FBC(char *src, char *dst) {
     u32 i;
-    char c;
+    char c = src[0];
     dst[0] = 0;
     for (i = 0; i < 8; i++) {
         c = src[i];

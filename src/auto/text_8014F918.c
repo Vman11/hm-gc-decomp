@@ -21,29 +21,43 @@ void fn_8014F950(f32 (*__restrict m)[4], f32 *__restrict v) {
     v[2] = m[2][0];
 }
 
-void fn_8014F96C(f32 (*m)[4], f32 *v, f32 *w) {
-    int i;
-    for (i = 0; i < 3; i++) v[i] = m[i][0];
-    for (i = 0; i < 3; i++) w[i] = m[i][1];
+void fn_8014F96C(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict w) {
+    v[0] = m[0][0];
+    v[1] = m[1][0];
+    v[2] = m[2][0];
+    w[0] = m[0][1];
+    w[1] = m[1][1];
+    w[2] = m[2][1];
 }
 
-void fn_8014F9A0(f32 (*m)[4], f32 *c, f32 *b) {
-    int i;
-    for (i = 0; i < 3; i++) b[i] = m[i][1];
-    for (i = 0; i < 3; i++) c[i] = m[i][2];
+void fn_8014F9A0(f32 (*__restrict m)[4], f32 *__restrict c, f32 *__restrict b) {
+    b[0] = m[0][1];
+    b[1] = m[1][1];
+    b[2] = m[2][1];
+    c[0] = m[0][2];
+    c[1] = m[1][2];
+    c[2] = m[2][2];
 }
 
-void fn_8014F9D4(f32 (*m)[4], f32 *a, f32 *c) {
-    int i;
-    for (i = 0; i < 3; i++) a[i] = m[i][0];
-    for (i = 0; i < 3; i++) c[i] = m[i][2];
+void fn_8014F9D4(f32 (*__restrict m)[4], f32 *__restrict a, f32 *__restrict c) {
+    a[0] = m[0][0];
+    a[1] = m[1][0];
+    a[2] = m[2][0];
+    c[0] = m[0][2];
+    c[1] = m[1][2];
+    c[2] = m[2][2];
 }
 
-void fn_8014FA08(f32 (*m)[4], f32 *a, f32 *b, f32 *c) {
-    int i;
-    for (i = 0; i < 3; i++) a[i] = m[i][0];
-    for (i = 0; i < 3; i++) b[i] = m[i][1];
-    for (i = 0; i < 3; i++) c[i] = m[i][2];
+void fn_8014FA08(f32 (*__restrict m)[4], f32 *a, f32 *b, f32 *c) {
+    a[0] = m[0][0];
+    a[1] = m[1][0];
+    a[2] = m[2][0];
+    b[0] = m[0][1];
+    b[1] = m[1][1];
+    b[2] = m[2][1];
+    c[0] = m[0][2];
+    c[1] = m[1][2];
+    c[2] = m[2][2];
 }
 
 void fn_8014FA54(f32 (*__restrict m)[4], f32 *__restrict v) {

@@ -28,16 +28,16 @@ void fn_80225EC0(void *arg0, u32 arg1, f32 *arg2)
 void fn_80225F58(void *arg0, u32 arg1)
 {
     s32 offset = 0;
-    s32 i;
-    for (i = 0; i < 0x14B; i++) {
+    s32 count = 0x14B;
+    do {
         void **entry = (void **)(*(s8 **)((s8 *)arg0 + 0x2978) + offset);
         void *first = entry[0];
         void *second;
         if ((first != NULL && *(u32 *)((s8 *)first + 0x3C) == arg1) ||
             ((second = entry[1]) != NULL && *(u32 *)((s8 *)second + 0x3C) == arg1)) {
             entry[0] = NULL;
-            *(u32 *)(*(s8 **)((s8 *)arg0 + 0x2978) + (offset + 4)) = 0;
+            *(void **)(*(s8 **)((s8 *)arg0 + 0x2978) + offset + 4) = NULL;
         }
         offset += 8;
-    }
+    } while (--count != 0);
 }

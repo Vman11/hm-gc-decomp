@@ -33,43 +33,50 @@ s32 fn_8010F1D8(void *arg0) {
 }
 
 void fn_8010F1E0(void *arg0, u32 type, UnkParam *p) {
-    u32 i;
     switch (type) {
     case 1:
         if (p->val.i > 1) p->val.i = 1;
         if (p->val.i < 0) p->val.i = 0;
         break;
     case 2:
-        if (p->desc->max.i < p->val.i) p->val.i = p->desc->max.i;
-        if (p->desc->min.i > p->val.i) p->val.i = p->desc->min.i;
+        if (p->val.i > p->desc->max.i) p->val.i = p->desc->max.i;
+        if (p->val.i < p->desc->min.i) p->val.i = p->desc->min.i;
         break;
     case 3:
-        if (p->desc->max.f < p->val.f) p->val.f = p->desc->max.f;
-        if (p->desc->min.f > p->val.f) p->val.f = p->desc->min.f;
+        if (p->val.f > p->desc->max.f) p->val.f = p->desc->max.f;
+        if (p->val.f < p->desc->min.f) p->val.f = p->desc->min.f;
         break;
-    case 7:
+    case 7: {
+        u32 i;
         for (i = 0; i < p->desc->count; i++) {
             if (p->val.bytes[i] > 0xFF) p->val.bytes[i] = 0xFF;
         }
         break;
-    case 6:
+    }
+    case 6: {
+        u32 i;
         for (i = 0; i < p->desc->count; i++) {
             if (p->val.ints[i] > 1) p->val.ints[i] = 1;
             if (p->val.ints[i] < 0) p->val.ints[i] = 0;
         }
         break;
-    case 8:
+    }
+    case 8: {
+        u32 i;
         for (i = 0; i < p->desc->count; i++) {
-            if (p->desc->max.i < p->val.ints[i]) p->val.ints[i] = p->desc->max.i;
-            if (p->desc->min.i > p->val.ints[i]) p->val.ints[i] = p->desc->min.i;
+            if (p->val.ints[i] > p->desc->max.i) p->val.ints[i] = p->desc->max.i;
+            if (p->val.ints[i] < p->desc->min.i) p->val.ints[i] = p->desc->min.i;
         }
         break;
-    case 9:
+    }
+    case 9: {
+        u32 i;
         for (i = 0; i < p->desc->count; i++) {
-            if (p->desc->max.f < p->val.floats[i]) p->val.floats[i] = p->desc->max.f;
-            if (p->desc->min.f > p->val.floats[i]) p->val.floats[i] = p->desc->min.f;
+            if (p->val.floats[i] > p->desc->max.f) p->val.floats[i] = p->desc->max.f;
+            if (p->val.floats[i] < p->desc->min.f) p->val.floats[i] = p->desc->min.f;
         }
         break;
+    }
     case 10:
     case 11:
         break;
