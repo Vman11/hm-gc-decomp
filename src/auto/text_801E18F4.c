@@ -16,6 +16,19 @@ typedef struct List801E1A5C {
     s32 count;
 } List801E1A5C;
 
+typedef struct List801E18F4 {
+    u8 pad[0x48];
+    Node801E1A5C* head;
+    Node801E1A5C* tail;
+    Node801E1A5C* freeHead;
+    Node801E1A5C* freeTail;
+    Node801E1A5C* head2;
+    Node801E1A5C* tail2;
+    Node801E1A5C* freeHead2;
+    Node801E1A5C* freeTail2;
+    s32 count;
+} List801E18F4;
+
 void fn_801E1A5C(List801E1A5C* list, u32 id) {
     Node801E1A5C* node;
     for (node = list->head; node != NULL; node = node->next) {
