@@ -125,6 +125,14 @@ typedef struct TRKFramingState {
 } TRKFramingState;
 extern TRKFramingState lbl_803257B4;
 extern TrkBuf lbl_80323E00[3];
+static inline s32 TRKAppendBuffer1_ui8(TrkBuf *buf, u8 data) {
+    if (buf->pos >= 0x880) {
+        return 0x301;
+    }
+    buf->data[buf->pos++] = data;
+    buf->count++;
+    return 0;
+}
 s32 fn_800DF2F0(void *mutex);
 s32 fn_800DF2F8(void *mutex);
 s32 fn_800DF300(void *mutex);
@@ -3380,6 +3388,29 @@ void fn_800D8F28(s32 arg0, s32 arg1) {
     gx->bpSentNot = 0;
 }
 
+void fn_800D9258(s32 arg0, s32 arg1) {
+    extern GXDataHead *__GXData;
+    u32 *reg = (u32 *)((u8 *)__GXData + (arg0 >> 1) * 4 + 0x1B0);
+    if (arg0 & 1) {
+        SETF(*reg, 5, 19, arg1);
+    } else {
+        SETF(*reg, 5, 9, arg1);
+    }
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = *reg;
+    __GXData->bpSentNot = 0;
+}
+
+void fn_800D92B4(s32 arg0, s32 arg1, s32 arg2) {
+    extern GXDataHead *const __GXData;
+    u32 *reg = (u32 *)((u8 *)__GXData + arg0 * 4 + 0x170);
+    SETF(*reg, 2, 0, arg1);
+    SETF(*reg, 2, 2, arg2);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = *reg;
+    __GXData->bpSentNot = 0;
+}
+
 void fn_800D92FC(s32 id, s32 red, s32 green, s32 blue, s32 alpha) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
@@ -3570,12 +3601,12 @@ void fn_800DA058(f32 scale, f32 offset) {
     extern f32 lbl_80363198;
     extern f32 lbl_8036318C;
     GXDataHead *gx = __GXData;
-    f32 zOffset;
-    f32 zScale;
-    f32 zmin;
-    f32 zmax;
     f32 sz;
     f32 oz;
+    f32 zmax;
+    f32 zmin;
+    f32 zScale;
+    f32 zOffset;
     zOffset = lbl_80363198 * offset;
     zScale = lbl_80363198 * scale;
     M2C_FIELD(gx, f32 *, 0x50C) = zOffset;
@@ -3594,17 +3625,21 @@ void fn_800DA058(f32 scale, f32 offset) {
     gx->bpSentNot = 1;
 }
 
-void fn_800DA0C4(u32 left, u32 top, u32 wd, u32 ht) {
+void fn_800DA0C4(s32 left, s32 top, s32 wd, s32 ht) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
     u32 tp;
     u32 lf;
+    u32 bm;
+    u32 rt;
     tp = top + 342;
-    M2C_FIELD(gx, u32 *, 0xF8) = __rlwimi(M2C_FIELD(gx, u32 *, 0xF8), tp, 0, 21, 31);
+    bm = tp + ht - 1;
     lf = left + 342;
+    rt = lf + wd - 1;
+    M2C_FIELD(gx, u32 *, 0xF8) = __rlwimi(M2C_FIELD(gx, u32 *, 0xF8), tp, 0, 21, 31);
     M2C_FIELD(gx, u32 *, 0xF8) = __rlwimi(M2C_FIELD(gx, u32 *, 0xF8), lf, 12, 9, 19);
-    M2C_FIELD(gx, u32 *, 0xFC) = __rlwimi(M2C_FIELD(gx, u32 *, 0xFC), tp + ht - 1, 0, 21, 31);
-    M2C_FIELD(gx, u32 *, 0xFC) = __rlwimi(M2C_FIELD(gx, u32 *, 0xFC), lf + wd - 1, 12, 9, 19);
+    M2C_FIELD(gx, u32 *, 0xFC) = __rlwimi(M2C_FIELD(gx, u32 *, 0xFC), bm, 0, 21, 31);
+    M2C_FIELD(gx, u32 *, 0xFC) = __rlwimi(M2C_FIELD(gx, u32 *, 0xFC), rt, 12, 9, 19);
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = M2C_FIELD(gx, u32 *, 0xF8);
     GXWGFifo.u8 = 0x61;
@@ -3614,9 +3649,10 @@ void fn_800DA0C4(u32 left, u32 top, u32 wd, u32 ht) {
 
 void fn_800DA13C(s32 x_off, s32 y_off) {
     extern GXDataHead *const __GXData;
-    u32 reg = 0;
+    u32 reg;
     u32 hx = x_off + 342;
     u32 hy = y_off + 342;
+    reg = 0;
     reg = __rlwimi(reg, hx, 31, 22, 31);
     reg = __rlwimi(reg, hy, 9, 12, 21);
     reg = __rlwimi(reg, 0x59, 24, 0, 7);
@@ -3635,21 +3671,25 @@ void fn_800DA17C(u32 arg0) {
 }
 
 void fn_800DA1A4(s32 attr) {
-    extern GXDataHead *const __GXData;
+    extern GXDataHead *__GXData;
+    GXDataHead *gx = __GXData;
+    u32 reg;
     if (attr < 5) {
         GXWGFifo.u8 = 0x08;
         GXWGFifo.u8 = 0x30;
-        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x80);
+        reg = M2C_FIELD(gx, u32 *, 0x80);
+        GXWGFifo.u32 = reg;
         GXWGFifo.u8 = 0x10;
         GXWGFifo.u32 = 0x1018;
-        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x80);
+        GXWGFifo.u32 = reg;
     } else {
         GXWGFifo.u8 = 0x08;
         GXWGFifo.u8 = 0x40;
-        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x84);
+        reg = M2C_FIELD(gx, u32 *, 0x84);
+        GXWGFifo.u32 = reg;
         GXWGFifo.u8 = 0x10;
         GXWGFifo.u32 = 0x1019;
-        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x84);
+        GXWGFifo.u32 = reg;
     }
     __GXData->bpSentNot = 1;
 }
@@ -3718,6 +3758,37 @@ s32 TRKTerminateNub(void) {
     s32 fn_800DBCDC(void);
     fn_800DBCDC();
     return 0;
+}
+
+s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
+    extern void *fn_80003488(void *, const void *, u32);
+    s32 error = 0;
+    u32 length = 1;
+    u32 bytesLeft = buf->count - buf->pos;
+    if (length > bytesLeft) {
+        error = 0x302;
+        length = bytesLeft;
+    }
+    fn_80003488(data, buf->data + buf->pos, length);
+    buf->pos += length;
+    return error;
+}
+
+s32 fn_800DB66C(TrkBuf *buf, u8 *data, s32 length) {
+    s32 error = 0;
+    s32 i;
+    for (i = 0; error == 0 && i < length; i++) {
+        u8 byte = *data;
+        if (buf->pos >= 0x880) {
+            error = 0x301;
+        } else {
+            buf->data[buf->pos++] = byte;
+            buf->count++;
+            error = 0;
+        }
+        data++;
+    }
+    return error;
 }
 
 s32 fn_800DB970(TrkBuf *buf, void *data, u32 length) {
