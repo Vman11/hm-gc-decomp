@@ -526,6 +526,47 @@ void fn_800B3E7C(int *alarm, long long start, long long period, void *handler) {
     OSRestoreInterrupts(enabled);
 }
 
+u64 __OSGetSystemTime(void);
+#pragma push
+#pragma dont_inline on
+#pragma peephole off
+void fn_800B3EF8(void *arg0) {
+    extern struct { OSAlarm *head; OSAlarm *tail; } AlarmQueue_8035A560;
+    OSAlarm *alarm = arg0;
+    OSAlarm *next;
+    BOOL enabled = OSDisableInterrupts();
+    s64 delta;
+
+    if (alarm->handler == 0) {
+        OSRestoreInterrupts(enabled);
+        return;
+    }
+
+    next = alarm->next;
+    if (next == 0) {
+        AlarmQueue_8035A560.tail = alarm->prev;
+    } else {
+        next->prev = alarm->prev;
+    }
+    if (alarm->prev) {
+        alarm->prev->next = next;
+    } else {
+        AlarmQueue_8035A560.head = next;
+        if (next) {
+            delta = next->fire - __OSGetSystemTime();
+            if (delta < 0) {
+                PPCMtdec(0);
+            } else if (delta < 0x80000000) {
+                PPCMtdec((u32)delta);
+            } else {
+                PPCMtdec(0x7fffffff);
+            }
+        }
+    }
+    alarm->handler = 0;
+    OSRestoreInterrupts(enabled);
+}
+#pragma pop
 static HeapCell *DLAddFront(HeapCell *list, HeapCell *cell) {
     cell->next = list;
     cell->prev = NULL;
@@ -1806,10 +1847,10 @@ s32 fn_800C0300(void **node) {
 extern u32 lbl_802DA128[18];
 extern u32 lbl_802DA128[];
 u8 ErrorCode2Num(u32 errorCode) {
-    u32 i;
+    int i;
 
     for (i = 0; i < 18; i++) {
-        if (errorCode == lbl_802DA128[i]) {
+        if (lbl_802DA128[i] == errorCode) {
             return (u8)i;
         }
     }
@@ -3605,6 +3646,56 @@ void fn_800D56F4(void) {
     GXWGFifo.u32 = 0x1008;
     GXWGFifo.u32 = reg;
     __GXData->bpSentNot = 1;
+}
+
+extern u8 lbl_80359620[];
+extern u8 lbl_80359624[];
+extern u8 lbl_80359628[];
+extern u8 lbl_80359620[4];
+extern u8 lbl_80359624[4];
+extern u8 lbl_80359628[4];
+void fn_800D57B0(void) {
+    extern GXDataHead *const __GXData;
+    static u8 tbl1[] = { 0, 4, 1, 2 };
+    static u8 tbl2[] = { 0, 8, 1, 2 };
+    static u8 tbl3[] = { 0, 12, 1, 2 };
+    s32 nc;
+    u32 vlm;
+    u32 b;
+    u32 vl;
+    u32 vh;
+    u32 va;
+
+    if (__GXData->vNum == 0) {
+        return;
+    }
+    vl = M2C_FIELD(__GXData, u32 *, 0x14);
+    vh = M2C_FIELD(__GXData, u32 *, 0x18);
+    va = M2C_FIELD(__GXData, u32 *, 0x1C);
+    nc = (va >> 9) & 1;
+
+    vlm = vl & 1;
+    vlm += (u8)((vl >> 1) & 1);
+    vlm += (u8)((vl >> 2) & 1);
+    vlm += (u8)((vl >> 3) & 1);
+    vlm += (u8)((vl >> 4) & 1);
+    vlm += (u8)((vl >> 5) & 1);
+    vlm += (u8)((vl >> 6) & 1);
+    vlm += (u8)((vl >> 7) & 1);
+    vlm += (u8)((vl >> 8) & 1);
+    vlm += tbl3[(vl >> 9) & 3];
+    vlm += tbl3[(vl >> 11) & 3] * ((nc == 1) ? 3 : 1);
+    vlm += tbl1[(vl >> 13) & 3];
+    vlm += tbl1[(vl >> 15) & 3];
+    vlm += tbl2[vh & 3];
+    vlm += tbl2[(vh >> 2) & 3];
+    vlm += tbl2[(vh >> 4) & 3];
+    vlm += tbl2[(vh >> 6) & 3];
+    vlm += tbl2[(vh >> 8) & 3];
+    vlm += tbl2[(vh >> 10) & 3];
+    vlm += tbl2[(vh >> 12) & 3];
+    vlm += tbl2[(vh >> 14) & 3];
+    __GXData->vLim = vlm;
 }
 
 void fn_800D58D4(void) {
@@ -5835,6 +5926,45 @@ void fn_800DEA14(s32 arg0) {
     lbl_803257D0[0] = arg0;
 }
 
+s32 fn_800DEBC0(u32 replyError, u8 *ioResult) {
+    s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
+    s32 replyBufferId;
+    s32 bufferId;
+    TrkBuf *buffer;
+    s32 error;
+    TrkBuf *replyBuffer;
+    s32 err;
+
+    error = fn_800DBBA0(&bufferId, &buffer);
+    if (error == 0) {
+        TrkBuf *b = buffer;
+        if (b->pos >= 0x880) {
+            err = 0x301;
+        } else {
+            b->data[b->pos++] = 0xD3;
+            err = 0;
+            b->count++;
+        }
+        error = err;
+    }
+    if (error == 0) {
+        error = fn_800DB7D0(buffer, replyError);
+    }
+    if (error == 0) {
+        *ioResult = 0;
+        error = fn_800DEE88(buffer, &replyBufferId, 3, 3, 0);
+        if (error == 0) {
+            replyBuffer = TRKGetBuffer(replyBufferId);
+            fn_800DBAA0(replyBuffer, 2);
+        }
+        if (error == 0) {
+            error = fn_800DB4F0(replyBuffer, ioResult);
+        }
+        fn_800DBB10(replyBufferId);
+    }
+    fn_800DBB10(bufferId);
+    return error;
+}
 s32 fn_800DF2F0(void *mutex) {
     return 0;
 }
