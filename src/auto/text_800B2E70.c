@@ -2715,6 +2715,23 @@ void fn_800DAB9C(void *arg0, s8 arg1) {
     M2C_FIELD(arg0, s32 *, 8) = -1;
 }
 
+s32 TRKInitializeEventQueue(void) {
+    extern struct {
+        s32 mutex;
+        s32 count;
+        s32 first;
+        u8 events[2][0xC];
+        s32 eventID;
+    } lbl_80323DD0;
+    fn_800DF300(&lbl_80323DD0);
+    fn_800DF2F8(&lbl_80323DD0);
+    lbl_80323DD0.count = 0;
+    lbl_80323DD0.first = 0;
+    lbl_80323DD0.eventID = 0x100;
+    fn_800DF2F0(&lbl_80323DD0);
+    return 0;
+}
+
 void TRKNubWelcome(void) {
     void TRK_board_display(char *);
     TRK_board_display("MetroTRK for GAMECUBE v2.0");
