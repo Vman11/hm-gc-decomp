@@ -138,6 +138,20 @@ void fn_801419BC(ImgDec *p) {
     } while (--n != 0);
 }
 
+void fn_80141A54(ImgDec *p) {
+    u8 *d;
+    s32 n;
+    n = p->count;
+    d = p->buf;
+    do {
+        d[0] = *p->src & 0xF;
+        if (--n == 0) return;
+        d[1] = *p->src >> 4;
+        d += 2;
+        p->src++;
+    } while (--n != 0);
+}
+
 void fn_80141AA0(ImgDec *p) {
     u8 *d = p->buf;
     u8 *e = d + ((u32)p->count >> 1);
