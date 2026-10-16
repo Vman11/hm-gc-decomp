@@ -456,10 +456,10 @@ void fn_800E8D38(void *dst, const void *src, unsigned long n) {
     unsigned long i, v1, v2;
     unsigned int src_offset, left_shift, right_shift;
 
+    i = (-(unsigned long)dst) & 3;
+
     ((unsigned char *)src) = ((unsigned char *)src) - 1;
     ((unsigned char *)dst) = ((unsigned char *)dst) - 1;
-
-    i = (-(unsigned long)dst) & 3;
 
     if (i) {
         n -= i;
