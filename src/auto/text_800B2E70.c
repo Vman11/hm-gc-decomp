@@ -26,6 +26,7 @@ typedef struct GXRenderModeObj {
     u8 sample_pattern[12][2];
     u8 vfilter[7];
 } GXRenderModeObj;
+u32 VIGetTvFormat(void);
 typedef struct DVDDiskID {
     char gameName[4];
     char company[2];
@@ -540,8 +541,9 @@ void *fn_800B4340(int heap, u32 size) {
     HeapCell *cell;
     HeapCell *newCell;
     u32 leftoverSize;
+    HeapCell *list;
 
-    hd = (HeapDesc *)lbl_8035A568 + heap;
+    hd = &((HeapDesc *)lbl_8035A568)[heap];
     size = (size + 0x20 + 0x20 - 1) & ~(0x20 - 1);
 
     for (cell = hd->free; cell != NULL; cell = cell->next) {
@@ -556,7 +558,16 @@ void *fn_800B4340(int heap, u32 size) {
 
     leftoverSize = cell->size - size;
     if (leftoverSize < 0x40) {
-        hd->free = DLExtract(hd->free, cell);
+        list = hd->free;
+        if (cell->next) {
+            cell->next->prev = cell->prev;
+        }
+        if (cell->prev == NULL) {
+            list = cell->next;
+        } else {
+            cell->prev->next = cell->next;
+        }
+        hd->free = list;
     } else {
         cell->size = size;
         newCell = (HeapCell *)((char *)cell + size);
@@ -573,7 +584,13 @@ void *fn_800B4340(int heap, u32 size) {
         }
     }
 
-    hd->allocated = DLAddFront(hd->allocated, cell);
+    list = hd->allocated;
+    cell->next = list;
+    cell->prev = NULL;
+    if (list) {
+        list->prev = cell;
+    }
+    hd->allocated = cell;
     return (char *)cell + 0x20;
 }
 
@@ -3123,6 +3140,35 @@ s32 fn_800D240C(s32 *arg0) {
 
 s32 fn_800D2460(void) {
     return 0;
+}
+
+s32 fn_800D8318(void *);
+u8 fn_800D8320(void *);
+void *fn_800D3730(void *obj, s32 id)
+{
+    extern void *__GXData;
+    s32 fmt;
+    u8 mipmap;
+
+    fmt = fn_800D8318(obj);
+    mipmap = fn_800D8320(obj);
+    id = id % 8;
+    switch (fmt) {
+    case 6:
+        if (mipmap) {
+            return (u8 *)__GXData + 0x308 + id * 0x10;
+        }
+        return (u8 *)__GXData + 0x288 + id * 0x10;
+    case 8:
+    case 9:
+    case 10:
+        return (u8 *)__GXData + 0x208 + id * 0x10;
+    default:
+        if (mipmap) {
+            return (u8 *)__GXData + 0x288 + id * 0x10;
+        }
+        return (u8 *)__GXData + 0x208 + id * 0x10;
+    }
 }
 
 void *fn_800D382C(u32 id) {
