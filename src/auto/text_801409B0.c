@@ -99,9 +99,11 @@ void fn_8014188C(ImgDec *p) {
 }
 
 void fn_8014193C(ImgDec *p) {
-    u8 *e = (u8 *)p + p->count;
-    u8 *d = p->buf;
-    e = e + 0x138;
+    u8 *d;
+    u8 *e;
+    d = p->buf;
+    e = (u8 *)p + p->count;
+    e += 0x138;
     do {
         *d = *p->src++;
         d++;
@@ -134,5 +136,15 @@ void fn_801419BC(ImgDec *p) {
         d += 2;
         p->src++;
     } while (--n != 0);
+}
+
+void fn_80141AA0(ImgDec *p) {
+    u8 *d = p->buf;
+    u8 *e = d + ((u32)p->count >> 1);
+    do {
+        *d = *p->src;
+        d++;
+        p->src++;
+    } while (d < e);
 }
 
