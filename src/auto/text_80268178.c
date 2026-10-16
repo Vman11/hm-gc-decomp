@@ -1,7 +1,7 @@
 /* Functions from 0x80268178 to 0x80268290, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80268178(s32 *object, u32 value) {
+void fn_80268178(s32 *object, s32 value) {
     s32 index;
     switch (value) {
     case 13: index = 1; break;
@@ -16,7 +16,11 @@ void fn_80268178(s32 *object, u32 value) {
     case 15: index = 20; break;
     default: index = 0; break;
     }
-    if (object[index + 346] == value) object[index + 346] = 15;
+    {
+        s32 current = object[index + 346];
+        if (current != value) return;
+        object[index + 346] = 15;
+    }
 }
 
 void fn_8026820C(s32 *object, u32 value) {
