@@ -3531,9 +3531,12 @@ void fn_800D90A4(s32 stage, s32 op, s32 bias, s32 scale, u8 clamp, s32 out_reg) 
 void fn_800D910C(s32 id, u8 *color) {
  extern GXDataHead *const __GXData;
  u32 lo=0, hi=0;
- SETF(lo,11,0,color[0]); SETF(lo,11,12,color[3]);
- SETF(hi,11,0,color[2]); SETF(hi,11,12,color[1]);
- SETF(lo,8,24,id*2+0xE0); SETF(hi,8,24,id*2+0xE1);
+ lo=__rlwimi(lo,color[0],0,21,31);
+ lo=__rlwimi(lo,color[3],12,9,19);
+ hi=__rlwimi(hi,color[2],0,21,31);
+ hi=__rlwimi(hi,color[1],12,9,19);
+ lo=__rlwimi(lo,id*2+0xE0,24,0,7);
+ hi=__rlwimi(hi,id*2+0xE1,24,0,7);
  GXWGFifo.u8=0x61; GXWGFifo.u32=lo;
  GXWGFifo.u8=0x61; GXWGFifo.u32=hi;
  GXWGFifo.u8=0x61; GXWGFifo.u32=hi;
@@ -4605,10 +4608,10 @@ void InitializeProgramEndTrap(void) {
     extern void *fn_80003488(void *, const void *, u32);
     extern void DCFlushRange(void *, u32);
     extern u8 lbl_8029BEA0[];
-    u8 *endTrap = (u8 *)PPCHalt + 4;
-    fn_80003488(endTrap, lbl_8029BEA0, 4);
-    ICInvalidateRange(endTrap, 4);
-    DCFlushRange(endTrap, 4);
+    u8 *ppcHalt = (u8 *)PPCHalt;
+    fn_80003488(ppcHalt + 4, lbl_8029BEA0, 4);
+    ICInvalidateRange(ppcHalt + 4, 4);
+    DCFlushRange(ppcHalt + 4, 4);
 }
 
 void TRK_board_display(char *str) {
