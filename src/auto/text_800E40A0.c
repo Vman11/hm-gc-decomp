@@ -1084,7 +1084,8 @@ char* fn_800EB324(const char* str, const char* pat) {
 extern unsigned char* lbl_803596A8;
 extern unsigned char* lbl_803596AC;
 char* fn_800EB38C(char* str, const char* set) {
-    unsigned char *p, *n, c;
+    unsigned char *p, *n;
+    int c;
     unsigned char map[32] = {0};
 
     if (str) {
@@ -1093,12 +1094,12 @@ char* fn_800EB38C(char* str, const char* set) {
 
     p = (unsigned char*)set - 1;
     while (c = *++p) {
-        map[c >> 3] |= (1 << (c & 7));
+        map[(unsigned char)c >> 3] |= (1 << (c & 7));
     }
 
     p = lbl_803596AC - 1;
     while (c = *++p) {
-        if (!(map[c >> 3] & (1 << (c & 7)))) {
+        if (!(map[(unsigned char)c >> 3] & (1 << (c & 7)))) {
             break;
         }
     }
@@ -1109,20 +1110,20 @@ char* fn_800EB38C(char* str, const char* set) {
     }
 
     n = p;
-    while (c = *++n) {
-        if (map[c >> 3] & (1 << (c & 7))) {
+    while (c = *++p) {
+        if (map[(unsigned char)c >> 3] & (1 << (c & 7))) {
             break;
         }
     }
 
     if (!c) {
         lbl_803596AC = lbl_803596A8;
-        return (char*)p;
+        return (char*)n;
     }
 
-    *n = 0;
-    lbl_803596AC = n + 1;
-    return (char*)p;
+    lbl_803596AC = p + 1;
+    *p = 0;
+    return (char*)n;
 }
 
 char* fn_800EB4C8(const char* str, int chr) {
@@ -2113,5 +2114,33 @@ u32 fn_800F4A40(u32 poll) {
     SIREGS[12] = poll;
     OSRestoreInterrupts(enabled);
     return poll;
+}
+
+typedef void (*SITypeAndStatusCallback)(s32 chan, u32 type);
+extern u32 Type_802E0D00[];
+extern SITypeAndStatusCallback lbl_80328630[][4];
+u32 SIGetType(s32 chan);
+u32 fn_800F5334(s32 chan, SITypeAndStatusCallback callback) {
+    int enabled;
+    u32 type;
+
+    enabled = OSDisableInterrupts();
+    type = SIGetType(chan);
+    if (Type_802E0D00[chan] & 0x80) {
+        int i;
+        for (i = 0; i < 4; ++i) {
+            if (lbl_80328630[chan][i] == callback) {
+                break;
+            }
+            if (lbl_80328630[chan][i] == 0) {
+                lbl_80328630[chan][i] = callback;
+                break;
+            }
+        }
+    } else {
+        callback(chan, type);
+    }
+    OSRestoreInterrupts(enabled);
+    return type;
 }
 
