@@ -6355,6 +6355,7 @@ end:
     }
     return err;
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw on
