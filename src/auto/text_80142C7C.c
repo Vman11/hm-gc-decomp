@@ -19,18 +19,111 @@ typedef struct Img {
     u8 *px;
 } Img;
 
-void fn_80142E0C(Img *p) {
-    s32 n = p->n;
+void fn_80142C7C(Img *p) {
     s32 m = p->m;
-    u8 *s = p->buf;
-    u8 *d = p->dst;
-    s32 e = m * 2 - n;
+    u8 *s = p->buf + 0x20;
+    s32 n = p->n;
+    s32 n2 = m * 2;
+    u8 *d = *(u8 **)((u8 *)p + 0x180);
     u8 *send = s + n;
+    s32 e = n2 - n;
     do {
         if (e <= 0) {
-            e += m * 2;
+            e += n2;
         } else {
             e += (m - n) * 2;
+            *d = *s;
+            d++;
+        }
+        s++;
+    } while (s < send);
+}
+
+void fn_80142CD0(Img *p) {
+    s32 n = p->n;
+    u8 *s = p->buf + 0x20;
+    s32 m = p->m;
+    u8 *d = *(u8 **)((u8 *)p + 0x180);
+    s32 n2 = n * 2;
+    s32 e = n2 - m;
+    u8 *dend = d + m;
+    do {
+        *d = *s;
+        if (e <= 0) {
+            e += n2;
+            d++;
+        } else {
+            e += (n - m) * 2;
+            s++;
+            d++;
+        }
+    } while (d < dend);
+}
+
+void fn_80142D28(Img *p) {
+    s32 m = p->m;
+    s32 n = p->n;
+    s32 m2 = m * 2;
+    u8 *s = p->px;
+    u8 *d = *(u8 **)((u8 *)p + 0x178);
+    s32 e = m2 - n;
+    u8 *send = s + n * 4;
+    do {
+        if (e <= 0) {
+            e += m2;
+        } else {
+            e += (m - n) * 2;
+            d[0] = s[0];
+            d[1] = s[1];
+            d[2] = s[2];
+            d[3] = s[3];
+            d += 4;
+        }
+        s += 4;
+    } while (s < send);
+}
+
+void fn_80142D98(Img *p) {
+    s32 n = p->n;
+    s32 m = p->m;
+    s32 n2 = n * 2;
+    u8 *d = *(u8 **)((u8 *)p + 0x178);
+    u8 *s = p->px;
+    s32 e = n2 - m;
+    u8 *dend = d + m * 4;
+    do {
+        d[0] = s[0];
+        d[1] = s[1];
+        d[2] = s[2];
+        d[3] = s[3];
+        if (e <= 0) {
+            e += n2;
+            d += 4;
+        } else {
+            e += (n - m) * 2;
+            s += 4;
+            d += 4;
+        }
+    } while (d < dend);
+}
+
+void fn_80142E0C(Img *p) {
+    s32 m = p->m;
+    s32 n = p->n;
+    s32 m2 = m * 2;
+    s32 e = m2 - n;
+    s32 k = (m - n) * 2;
+    u8 *d;
+    u8 *s;
+    u8 *send;
+    s = p->buf;
+    d = p->dst;
+    send = s + n;
+    do {
+        if (e <= 0) {
+            e += m2;
+        } else {
+            e += k;
             *d = *s;
             d++;
         }
