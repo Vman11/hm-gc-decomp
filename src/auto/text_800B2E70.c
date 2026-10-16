@@ -2430,7 +2430,9 @@ void fn_800D5E84(s32 attr, u32 base_ptr, u8 stride) {
     s32 cpAttr;
     u32 phyAddr;
     s32 idx;
-    attr = (attr == 0x19) ? 0xA : attr;
+    if (attr == 0x19) {
+        attr = 0xA;
+    }
     cpAttr = attr - 9;
     phyAddr = base_ptr & 0x3FFFFFFF;
     GXWGFifo.u8 = 0x08;
@@ -2438,14 +2440,14 @@ void fn_800D5E84(s32 attr, u32 base_ptr, u8 stride) {
     GXWGFifo.u32 = phyAddr;
     idx = cpAttr - 12;
     if (idx >= 0 && idx < 4) {
-        *(u32 *)((u8 *)__GXData + idx * 4 + 0x88) = phyAddr;
+        ((u32 *)((u8 *)__GXData + 0x88))[idx] = phyAddr;
     }
     GXWGFifo.u8 = 0x08;
     GXWGFifo.u8 = cpAttr | 0xB0;
     GXWGFifo.u32 = stride;
     idx = cpAttr - 12;
     if (idx >= 0 && idx < 4) {
-        *(u32 *)((u8 *)__GXData + idx * 4 + 0x98) = stride;
+        ((u32 *)((u8 *)__GXData + 0x98))[idx] = stride;
     }
 }
 
@@ -2461,6 +2463,28 @@ void fn_800D61A0(u8 nTexGens) {
     GXWGFifo.u32 = 0x103F;
     GXWGFifo.u32 = nTexGens;
     M2C_FIELD(gx, u32 *, 0x5AC) |= 4;
+}
+
+void GXSetMisc(s32 token, u32 val) {
+    extern GXDataHead *__GXData;
+    switch (token) {
+    case 0:
+        break;
+    case 1:
+        __GXData->vLim = val;
+        __GXData->vNumNot = !__GXData->vLim;
+        __GXData->bpSentNot = 1;
+        if (__GXData->vLim) {
+            M2C_FIELD(__GXData, u32 *, 0x5AC) |= 8;
+        }
+        break;
+    case 2:
+        M2C_FIELD(__GXData, u8 *, 0x5A9) = (val != 0);
+        break;
+    case 3:
+        M2C_FIELD(__GXData, u8 *, 0x5AA) = (val != 0);
+        break;
+    }
 }
 
 extern void fn_800D6B0C(void);
@@ -3501,8 +3525,32 @@ s32 TRKTargetStopped(void) {
     return M2C_FIELD(&gTRKState, s32 *, 0x98);
 }
 
+s32 fn_800DF8AC(u32 start, u32 end) {
+    if (start < end) {
+        fn_800DF3E0(start, end - start);
+        return 0;
+    }
+    return 0x700;
+}
+
 s32 fn_800DFAF0(void) {
     return M2C_FIELD(&gTRKCPUState, s32 *, 0x80);
+}
+
+s32 fn_800DFB00(u32 rangeStart, u32 rangeEnd, s32 stepOver) {
+    if (stepOver != 0) {
+        return 0x703;
+    }
+    lbl_802E01B4.type = 1;
+    lbl_802E01B4.rangeStart = rangeStart;
+    lbl_802E01B4.rangeEnd = rangeEnd;
+    lbl_802E01B4.active = 1;
+    M2C_FIELD(&gTRKCPUState, u32 *, 0x1F8) |= 0x400;
+    if (lbl_802E01B4.type == 0 || lbl_802E01B4.type == 0x10) {
+        lbl_802E01B4.count--;
+    }
+    gTRKState.unk98 = 0;
+    return 0;
 }
 
 s32 fn_800DFBE8(void *b) {
