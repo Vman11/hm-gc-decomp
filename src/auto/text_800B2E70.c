@@ -3388,13 +3388,124 @@ void fn_800D8F28(s32 arg0, s32 arg1) {
     gx->bpSentNot = 0;
 }
 
+void fn_800D8FB4(s32 stage, s32 a, s32 b, s32 c, s32 d) {
+    extern GXDataHead *const __GXData;
+    u32 *pTevReg = &M2C_FIELD(__GXData, u32 *, 0x130 + stage * 4);
+    u32 reg = *pTevReg;
+    reg = __rlwimi(reg, a, 12, 16, 19);
+    reg = __rlwimi(reg, b, 8, 20, 23);
+    reg = __rlwimi(reg, c, 4, 24, 27);
+    reg = __rlwimi(reg, d, 0, 28, 31);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    *pTevReg = reg;
+    __GXData->bpSentNot = 0;
+}
+
+void fn_800D8FF8(s32 stage, s32 a, s32 b, s32 c, s32 d) {
+    extern GXDataHead *const __GXData;
+    u32 *pTevReg = &M2C_FIELD(__GXData, u32 *, 0x170 + stage * 4);
+    u32 reg = *pTevReg;
+    reg = __rlwimi(reg, a, 13, 16, 18);
+    reg = __rlwimi(reg, b, 10, 19, 21);
+    reg = __rlwimi(reg, c, 7, 22, 24);
+    reg = __rlwimi(reg, d, 4, 25, 27);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    *pTevReg = reg;
+    __GXData->bpSentNot = 0;
+}
+
+void fn_800D903C(s32 stage, s32 op, s32 bias, s32 scale, u8 clamp, s32 out_reg) {
+    extern GXDataHead *__GXData;
+    u32 reg = M2C_FIELD(__GXData, u32 *, 0x130 + stage * 4);
+    reg = __rlwimi(reg, op, 18, 13, 13);
+    if (op <= 1) {
+        reg = __rlwimi(reg, scale, 20, 10, 11);
+        reg = __rlwimi(reg, bias, 16, 14, 15);
+    } else {
+        reg = __rlwimi(reg, op, 19, 10, 11);
+        reg = __rlwimi(reg, 3, 16, 14, 15);
+    }
+    reg = __rlwimi(reg, clamp, 19, 12, 12);
+    reg = __rlwimi(reg, out_reg, 22, 8, 9);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    M2C_FIELD(__GXData, u32 *, 0x130 + stage * 4) = reg;
+    __GXData->bpSentNot = 0;
+}
+
+void fn_800D90A4(s32 stage, s32 op, s32 bias, s32 scale, u8 clamp, s32 out_reg) {
+    extern GXDataHead *__GXData;
+    u32 reg = M2C_FIELD(__GXData, u32 *, 0x170 + stage * 4);
+    reg = __rlwimi(reg, op, 18, 13, 13);
+    if (op <= 1) {
+        reg = __rlwimi(reg, scale, 20, 10, 11);
+        reg = __rlwimi(reg, bias, 16, 14, 15);
+    } else {
+        reg = __rlwimi(reg, op, 19, 10, 11);
+        reg = __rlwimi(reg, 3, 16, 14, 15);
+    }
+    reg = __rlwimi(reg, clamp, 19, 12, 12);
+    reg = __rlwimi(reg, out_reg, 22, 8, 9);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = reg;
+    M2C_FIELD(__GXData, u32 *, 0x170 + stage * 4) = reg;
+    __GXData->bpSentNot = 0;
+}
+
+void fn_800D910C(s32 id, u8 *color) {
+ extern GXDataHead *const __GXData;
+ u32 lo=0, hi=0;
+ SETF(lo,11,0,color[0]); SETF(lo,11,12,color[3]);
+ SETF(hi,11,0,color[2]); SETF(hi,11,12,color[1]);
+ SETF(lo,8,24,id*2+0xE0); SETF(hi,8,24,id*2+0xE1);
+ GXWGFifo.u8=0x61; GXWGFifo.u32=lo;
+ GXWGFifo.u8=0x61; GXWGFifo.u32=hi;
+ GXWGFifo.u8=0x61; GXWGFifo.u32=hi;
+ GXWGFifo.u8=0x61; GXWGFifo.u32=hi;
+ __GXData->bpSentNot=0;
+}
+
+void fn_800D9188(s32 arg0, u8 *arg1) {
+    extern GXDataHead *const __GXData;
+    u32 a = 0;
+    u32 b = 0;
+    a = __rlwimi(a, arg1[0], 0, 24, 31);
+    a = __rlwimi(a, arg1[3], 12, 12, 19);
+    b = __rlwimi(b, arg1[2], 0, 24, 31);
+    b = __rlwimi(b, arg1[1], 12, 12, 19);
+    a = __rlwimi(a, 8, 20, 8, 11);
+    b = __rlwimi(b, 8, 20, 8, 11);
+    a = __rlwimi(a, arg0 * 2 + 0xE0, 24, 0, 7);
+    b = __rlwimi(b, arg0 * 2 + 0xE1, 24, 0, 7);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = a;
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = b;
+    __GXData->bpSentNot = 0;
+}
+
+void fn_800D91FC(s32 arg0, s32 arg1) {
+    extern GXDataHead *__GXData;
+    u32 *reg = (u32 *)((u8 *)__GXData + (arg0 >> 1) * 4 + 0x1B0);
+    if (arg0 & 1) {
+        *reg = __rlwimi(*reg, arg1, 14, 13, 17);
+    } else {
+        *reg = __rlwimi(*reg, arg1, 4, 23, 27);
+    }
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = *reg;
+    __GXData->bpSentNot = 0;
+}
+
 void fn_800D9258(s32 arg0, s32 arg1) {
     extern GXDataHead *__GXData;
     u32 *reg = (u32 *)((u8 *)__GXData + (arg0 >> 1) * 4 + 0x1B0);
     if (arg0 & 1) {
-        SETF(*reg, 5, 19, arg1);
+        *reg = __rlwimi(*reg, arg1, 19, 8, 12);
     } else {
-        SETF(*reg, 5, 9, arg1);
+        *reg = __rlwimi(*reg, arg1, 9, 18, 22);
     }
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = *reg;
@@ -3404,8 +3515,8 @@ void fn_800D9258(s32 arg0, s32 arg1) {
 void fn_800D92B4(s32 arg0, s32 arg1, s32 arg2) {
     extern GXDataHead *const __GXData;
     u32 *reg = (u32 *)((u8 *)__GXData + arg0 * 4 + 0x170);
-    SETF(*reg, 2, 0, arg1);
-    SETF(*reg, 2, 2, arg2);
+    *reg = __rlwimi(*reg, arg1, 0, 30, 31);
+    *reg = __rlwimi(*reg, arg2, 2, 28, 29);
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = *reg;
     __GXData->bpSentNot = 0;
@@ -3596,32 +3707,62 @@ void fn_800D9E98(u32 id) {
     fn_800DA1A4(0);
 }
 
+void fn_800D9F80(void) {
+ extern GXDataHead *__GXData;
+ extern f32 lbl_80363190, lbl_80363194;
+ GXDataHead *gx=__GXData;
+ f32 sx=M2C_FIELD(gx,f32 *,0x4FC)*lbl_80363190;
+ f32 sy=-M2C_FIELD(gx,f32 *,0x500)*lbl_80363190;
+ f32 ox=M2C_FIELD(gx,f32 *,0x4F4)+sx;
+ f32 oy=M2C_FIELD(gx,f32 *,0x4F8)+M2C_FIELD(gx,f32 *,0x500)*lbl_80363190;
+ f32 oz=M2C_FIELD(gx,f32 *,0x508)*M2C_FIELD(gx,f32 *,0x510);
+ f32 sz=oz-M2C_FIELD(gx,f32 *,0x504)*M2C_FIELD(gx,f32 *,0x510);
+ f32 tx=lbl_80363194+ox;
+ f32 ty=lbl_80363194+oy;
+ f32 tz=oz+M2C_FIELD(gx,f32 *,0x50C);
+ GXWGFifo.u8=0x10;
+ GXWGFifo.u32=0x5101A;
+ GXWGFifo.f32=sx; GXWGFifo.f32=sy; GXWGFifo.f32=sz;
+ GXWGFifo.f32=tx; GXWGFifo.f32=ty; GXWGFifo.f32=tz;
+}
+
+void fn_800DA010(f32 x, f32 y, f32 width, f32 height, f32 nearZ, f32 farZ) {
+ extern GXDataHead *__GXData;
+ extern void fn_800D9F80(void);
+ GXDataHead *gx = __GXData;
+ M2C_FIELD(gx,f32 *,0x4F4)=x;
+ M2C_FIELD(gx,f32 *,0x4F8)=y;
+ M2C_FIELD(gx,f32 *,0x4FC)=width;
+ M2C_FIELD(gx,f32 *,0x500)=height;
+ M2C_FIELD(gx,f32 *,0x504)=nearZ;
+ M2C_FIELD(gx,f32 *,0x508)=farZ;
+ fn_800D9F80();
+ __GXData->bpSentNot=1;
+}
+
 void fn_800DA058(f32 scale, f32 offset) {
     extern GXDataHead *__GXData;
     extern f32 lbl_80363198;
     extern f32 lbl_8036318C;
     GXDataHead *gx = __GXData;
-    f32 sz;
-    f32 oz;
-    f32 zmax;
     f32 zmin;
-    f32 zScale;
-    f32 zOffset;
-    zOffset = lbl_80363198 * offset;
-    zScale = lbl_80363198 * scale;
-    M2C_FIELD(gx, f32 *, 0x50C) = zOffset;
-    zScale = lbl_8036318C + zScale;
-    M2C_FIELD(gx, f32 *, 0x510) = zScale;
-    zmax = M2C_FIELD(gx, f32 *, 0x508) * zScale;
-    zmin = M2C_FIELD(gx, f32 *, 0x504) * zScale;
-    oz = zOffset + zmax;
-    sz = zmax - zmin;
+    f32 zmax;
+    f32 zs;
+    offset = lbl_80363198 * offset;
+    zs = lbl_80363198 * scale;
+    M2C_FIELD(gx, f32 *, 0x50C) = offset;
+    scale = lbl_8036318C + zs;
+    M2C_FIELD(gx, f32 *, 0x510) = scale;
+    zmax = M2C_FIELD(gx, f32 *, 0x508) * scale;
+    zmin = M2C_FIELD(gx, f32 *, 0x504) * scale;
+    offset = offset + zmax;
+    zmin = zmax - zmin;
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x101C;
-    GXWGFifo.f32 = sz;
+    GXWGFifo.f32 = zmin;
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x101F;
-    GXWGFifo.f32 = oz;
+    GXWGFifo.f32 = offset;
     gx->bpSentNot = 1;
 }
 
@@ -3760,6 +3901,23 @@ s32 TRKTerminateNub(void) {
     return 0;
 }
 
+s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
+ extern void *fn_80003488(void *,const void *,u32);
+ s32 i=0;
+ s32 error=0;
+ while (error==0 && i<length) {
+  u32 n=1;
+  s32 result=0;
+  u32 left=buf->count-buf->pos;
+  if(n>left) {result=0x302; n=left;}
+  fn_80003488(data+i,buf->data+buf->pos,n);
+  buf->pos+=n;
+  error=result;
+  i++;
+ }
+ return error;
+}
+
 s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
     extern void *fn_80003488(void *, const void *, u32);
     s32 error = 0;
@@ -3774,23 +3932,16 @@ s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
     return error;
 }
 
-s32 fn_800DB66C(TrkBuf *buf, u8 *data, s32 length) {
-    s32 error = 0;
-    s32 i;
-    for (i = 0; error == 0 && i < length; i++) {
-        u8 byte = *data;
-        if (buf->pos >= 0x880) {
-            error = 0x301;
-        } else {
-            buf->data[buf->pos++] = byte;
-            buf->count++;
-            error = 0;
-        }
-        data++;
+#pragma push
+#pragma inline_depth(4)
+s32 fn_800DB66C(TrkBuf *buf, u8 *data, s32 count) {
+    s32 err, i;
+    for (i = 0, err = 0; err == 0 && i < count; i++) {
+        err = TRKAppendBuffer1_ui8(buf, data[i]);
     }
-    return error;
+    return err;
 }
-
+#pragma pop
 s32 fn_800DB970(TrkBuf *buf, void *data, u32 length) {
     extern void *fn_80003488(void *, const void *, u32);
     s32 error = 0;
