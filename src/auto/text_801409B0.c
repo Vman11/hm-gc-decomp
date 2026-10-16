@@ -95,8 +95,8 @@ void fn_80140D98(ImgPix *p) {
 
 void fn_80140E38(ImgPix *p) {
     u8 *s = p->px;
-    u8 *m = p->mask;
     u8 *e = s + p->count;
+    u8 *m = p->mask;
     do {
         if (*m != 0) {
             *p->out = *s;
