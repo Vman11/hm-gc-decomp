@@ -19,6 +19,25 @@ typedef struct Img {
     u8 *px;
 } Img;
 
+void fn_80142E0C(Img *p) {
+    s32 n = p->n;
+    s32 m = p->m;
+    u8 *s = p->buf;
+    u8 *d = p->dst;
+    s32 e = m * 2 - n;
+    u8 *send = s + n;
+    do {
+        if (e <= 0) {
+            e += m * 2;
+        } else {
+            e += (m - n) * 2;
+            *d = *s;
+            d++;
+        }
+        s++;
+    } while (s < send);
+}
+
 void fn_80142E60(Img *p) {
     s32 n = p->n;
     s32 m = p->m;
@@ -168,8 +187,8 @@ void fn_80144AA8(Img *p) {
 
 void fn_80144B18(Img *p) {
     u32 *d = (u32 *)p->buf;
-    u32 *s = (u32 *)p->src;
     u32 *e = d + 4;
+    u32 *s = (u32 *)p->src;
     do {
         d[0] = s[0];
         d[1] = s[1];
