@@ -3545,8 +3545,10 @@ void fn_800D9188(s32 arg0, u8 *arg1) {
     extern GXDataHead *const __GXData;
     u32 a = 0;
     u32 b = 0;
+    u32 first;
     a = __rlwimi(a, arg1[0], 0, 24, 31);
-    a = __rlwimi(a, arg1[3], 12, 12, 19);
+    first = a;
+    a = __rlwimi(first, arg1[3], 12, 12, 19);
     b = __rlwimi(b, arg1[2], 0, 24, 31);
     b = __rlwimi(b, arg1[1], 12, 12, 19);
     a = __rlwimi(a, 8, 20, 8, 11);
@@ -3888,9 +3890,10 @@ void fn_800DA17C(u32 arg0) {
 
 void fn_800DA1A4(s32 attr) {
     extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
+    GXDataHead *gx;
     u32 reg;
     if (attr < 5) {
+        gx = __GXData;
         GXWGFifo.u8 = 0x08;
         GXWGFifo.u8 = 0x30;
         reg = M2C_FIELD(gx, u32 *, 0x80);
@@ -3899,6 +3902,7 @@ void fn_800DA1A4(s32 attr) {
         GXWGFifo.u32 = 0x1018;
         GXWGFifo.u32 = reg;
     } else {
+        gx = __GXData;
         GXWGFifo.u8 = 0x08;
         GXWGFifo.u8 = 0x40;
         reg = M2C_FIELD(gx, u32 *, 0x84);
@@ -4205,6 +4209,28 @@ s32 TRKDispatchMessage(TrkBuf *buf) {
 
 s32 TRKInitializeDispatcher(void) {
     lbl_803257C8[0] = 0x20;
+    return 0;
+}
+
+s32 fn_800DE654(TrkBuf* buf) {
+    extern void fn_800053E0(void);
+    s32 n;
+    s32 ok;
+    fn_800DBAD0(buf, 1);
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x80;
+        buf->count++;
+    }
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x00;
+        buf->count++;
+    }
+    n = 3;
+    do {
+        ok = fn_800DAF24(buf);
+        n--;
+    } while (ok != 0 && n > 0);
+    fn_800053E0();
     return 0;
 }
 
