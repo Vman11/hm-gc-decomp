@@ -194,6 +194,20 @@ int DBRead(void* buf, u32 size) {
     return 0;
 }
 
+void __OSMaskInterrupts(u32);
+void __OSUnmaskInterrupts(u32);
+void __OSSetInterruptHandler(s16, void*);
+void fn_800F0AC0(void);
+void fn_800F0B00(void);
+extern void* lbl_8035A994;
+void DBInitInterrupts(void) {
+    __OSMaskInterrupts(0x18000);
+    __OSMaskInterrupts(0x40);
+    lbl_8035A994 = fn_800F0B00;
+    __OSSetInterruptHandler(0x19, fn_800F0AC0);
+    __OSUnmaskInterrupts(0x40);
+}
+
 void EXI2_Reserve(void) {
 
 }
@@ -204,5 +218,50 @@ void EXI2_Unreserve(void) {
 
 s32 AMC_IsStub(void) {
     return 0;
+}
+
+void fn_800F49B0(s32 chan, u32 val) {
+    ((volatile u32 *)0xCC006400)[chan * 3] = val;
+}
+
+typedef volatile u32 vu32_t;
+extern struct { u32 unk0; u32 poll; } Si_802E0CEC;
+#define SIREGS ((vu32_t *)0xCC006400)
+
+void fn_800F49C4(void) {
+    SIREGS[14] = 0x80000000;
+}
+
+u32 SISetXY(u32 x, u32 y) {
+    u32 poll;
+    int enabled;
+    poll = (x << 16) | (y << 8);
+    enabled = OSDisableInterrupts();
+    Si_802E0CEC.poll &= ~0x03FFFF00;
+    Si_802E0CEC.poll |= poll;
+    poll = Si_802E0CEC.poll;
+    SIREGS[12] = poll;
+    OSRestoreInterrupts(enabled);
+    return poll;
+}
+
+u32 fn_800F4A40(u32 poll) {
+    int enabled;
+    u32 en;
+    if (poll == 0) {
+        return Si_802E0CEC.poll;
+    }
+    enabled = OSDisableInterrupts();
+    poll >>= 24;
+    en = (poll >> 4) & 0xF;
+    Si_802E0CEC.poll &= ~en;
+    poll &= (en | 0x03FFFFF0);
+    poll &= 0xFC0000FF;
+    Si_802E0CEC.poll |= poll;
+    poll = Si_802E0CEC.poll;
+    SIREGS[14] = 0x80000000;
+    SIREGS[12] = poll;
+    OSRestoreInterrupts(enabled);
+    return poll;
 }
 
