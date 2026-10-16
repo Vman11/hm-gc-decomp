@@ -5,10 +5,11 @@ typedef struct { s32 f0; s32 f4; s32 f8; s32 pad[4]; } Elem1C;
 typedef struct { Elem1C* a; Elem1C* b; u32 n0; u32 n1; } Tbl;
 
 s32 fn_8020EE2C(void* arg0, u32 arg1) {
-    if (arg1 >= *(u32*)((u8*)arg0 + 0xC)) {
+    Tbl* t = arg0;
+    if (arg1 >= t->n1) {
         return 0;
     }
-    return *(s32*)(*(u8**)((u8*)arg0 + 4) + arg1 * 0x1C + 4);
+    return t->b[arg1].f4;
 }
 
 s32 fn_8020EE54(void *arg0, u32 arg1) {
