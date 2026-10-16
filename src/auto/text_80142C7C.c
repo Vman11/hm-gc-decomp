@@ -138,6 +138,20 @@ void fn_801449C8(Img *p) {
     } while (d < e);
 }
 
+void fn_80144A38(Img *p) {
+    u8 *d = p->buf;
+    u8 *e = d + 0x20;
+    do {
+        d[0] = *p->src >> 4;
+        p->src++;
+        d[1] = *p->src & 0xF;
+        d[2] = *p->src >> 4;
+        p->src++;
+        d[3] = *p->src & 0xF;
+        d += 4;
+    } while (d < e);
+}
+
 void fn_80144AA8(Img *p) {
     u8 *d = p->buf;
     u8 *e = d + 0x20;
