@@ -5325,6 +5325,7 @@ void TRKNubWelcome(void) {
 
 #pragma push
 #pragma inline_depth(4)
+#pragma auto_inline off
 static inline s32 TRK_InitializeEndian(void) {
     extern s32 gTRKBigEndian[];
     u8 bendian[4];
