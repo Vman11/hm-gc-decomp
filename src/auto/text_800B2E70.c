@@ -5,6 +5,15 @@ typedef struct HeapCell {
     struct HeapCell *next;
     int size;
 } HeapCell;
+typedef struct TrkBuf {
+    u8 pad0[8];
+    s32 count;
+    u32 pos;
+    u8 data[0x880];
+} TrkBuf;
+extern s32 lbl_803257D0;
+extern void fn_800DBAD0(TrkBuf*, s32);
+extern s32 fn_800DAF24(TrkBuf*);
 s32 fn_800DF4D0(void*);
 extern u8 lbl_80323560[];
 extern u16 lbl_8035A8F0;
@@ -1971,6 +1980,14 @@ void TRK_main(void) {
 
 void TRKUARTInterruptHandler(void) {
 
+}
+
+s32 TRKTargetContinue(void) {
+    TRKTargetSetStopped(0);
+    UnreserveEXI2Port();
+    TRKSwapAndGo();
+    ReserveEXI2Port();
+    return 0;
 }
 
 extern u8 lbl_80327F90[];
