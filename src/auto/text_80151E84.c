@@ -25,6 +25,3 @@ void fn_80151E84(f32 *m, f32 *v) {
     m[14] = lbl_80364544;
     m[15] = lbl_8036453C;
 }
-typedef struct {
-    f32 x, y, z;
-} Vec3f;
