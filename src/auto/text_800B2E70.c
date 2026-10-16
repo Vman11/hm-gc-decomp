@@ -424,18 +424,33 @@ void OSClearContext(u8 *ctx) {
     }
 }
 
+extern void **InterruptHandlerTable_8035A590;
+void *__OSSetInterruptHandler(short type, void *handler) {
+    void **p = (void **)((char *)InterruptHandlerTable_8035A590 + (type << 2));
+    void *old = *p;
+    *p = handler;
+    return old;
+}
+
+extern void ExternalInterruptHandler(void);
+extern void *memset(void *, int, unsigned long);
+extern u32 __OSMaskInterrupts(u32);
+void *fn_800B7290(s16 type) {
+    return InterruptHandlerTable_8035A590[type];
+}
+
 extern s32 lbl_8035A5B0;
 void fn_800BA3B4(void* arg0);
 void fn_800B7E04(void) {
     lbl_8035A5B0 = 1;
 }
 
-void __OSUnlockSram(void) {
-    fn_800B8D00(0);
+void __OSUnlockSram(s32 commit) {
+    fn_800B8D00(commit, 0);
 }
 
-void __OSUnlockSramEx(void) {
-    fn_800B8D00(0x14);
+void __OSUnlockSramEx(s32 commit) {
+    fn_800B8D00(commit, 0x14);
 }
 
 extern SramControlBlock Scb_803078A0;
@@ -444,17 +459,19 @@ s32 __OSSyncSram(void) {
 }
 
 s32 fn_800B91B8(void) {
+    SramControlBlock *scb = &Scb_803078A0;
     s32 enabled;
     s32 ret;
 
     enabled = OSDisableInterrupts();
-    if (Scb_803078A0.locked != 0) {
+    if (scb->locked != 0) {
         OSRestoreInterrupts(enabled);
+        scb = NULL;
         ret = 0;
     } else {
-        Scb_803078A0.enabled = enabled;
-        Scb_803078A0.locked = 1;
-        if (Scb_803078A0.flags & 4) {
+        scb->enabled = enabled;
+        scb->locked = 1;
+        if (scb->flags & 4) {
             ret = 1;
         } else {
             ret = 0;
