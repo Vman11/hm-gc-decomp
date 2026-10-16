@@ -2497,13 +2497,6 @@ void usr_put_initialize(void) {
 
 }
 
-extern u32 lbl_803257C8;
-typedef s32 (*TrkDispatchFunc)(TrkBuf *);
-extern TrkDispatchFunc lbl_802E00D8[];
-s32 TRKInitializeDispatcher(void) {
-    lbl_803257C8 = 0x20;
-    return 0;
-}
 
 void fn_800DE8AC(TrkBuf* buf) {
     s32 n;
