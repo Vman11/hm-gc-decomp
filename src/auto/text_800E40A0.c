@@ -188,6 +188,54 @@ s32 fn_800EB1B4(void) {
     return (temp_r0 >> 0x10U) & 0x7FFF;
 }
 
+char* fn_800EB764(char* dst, const char* src) {
+    unsigned char* d = (unsigned char*)dst;
+    const unsigned char* s = (const unsigned char*)src;
+    unsigned int a = (unsigned int)s & 3;
+    if (((unsigned int)d & 3) == a) {
+        if (a != 0) {
+            unsigned char c = *s;
+            *d = c;
+            if (c == 0) return dst;
+            {
+                unsigned int k = 3 - a;
+                while (k != 0) {
+                    c = *++s;
+                    *++d = c;
+                    if (c == 0) return dst;
+                    k--;
+                }
+            }
+            d++;
+            s++;
+        }
+        {
+            unsigned int w = *(unsigned int*)s;
+            if (!(((w - 0x01010101) & 0x80808080))) {
+                d -= 4;
+                do {
+                    d += 4;
+                    *(unsigned int*)d = w;
+                    s += 4;
+                    w = *(unsigned int*)s;
+                } while (!(((w - 0x01010101) & 0x80808080)));
+                d += 4;
+            }
+        }
+    }
+    {
+        unsigned char c = *s;
+        *d = c;
+        if (c != 0) {
+            do {
+                c = *++s;
+                *++d = c;
+            } while (c != 0);
+        }
+    }
+    return dst;
+}
+
 typedef unsigned int size_t;
 size_t strlen(const char* s) {
     const unsigned char* p = (const unsigned char*)s - 1;
@@ -368,8 +416,11 @@ extern s32 lbl_8035A9C8;
 extern s32 lbl_8035A9CC;
 s32 EXIGetID(s32, u32, u32 *);
 s32 fn_800B31A4();
+typedef volatile u32 vu32_t;
+extern struct { s32 unk0; volatile u32 poll; u32 unk8[2]; } Si_802E0CEC;
+
 s32 fn_800F33BC(s32 arg0) {
-    return *(s32 *)(Ecb_80328410 + (arg0 << 6) + 0xC);
+    return ((struct { u32 unk0[3]; s32 state; u32 unk10[12]; } *)Ecb_80328410)[arg0].state;
 }
 
 void UnlockedHandler(void) {
@@ -391,8 +442,6 @@ s32 fn_800F3AF4(void) {
     return 0;
 }
 
-typedef volatile u32 vu32_t;
-extern struct { u32 unk0; volatile u32 poll; u32 unk8[2]; } Si_802E0CEC;
 #define SIREGS ((vu32_t *)0xCC006400)
 
 void fn_800F49B0(s32 chan, u32 val) {
