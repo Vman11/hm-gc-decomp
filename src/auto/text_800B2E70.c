@@ -3701,6 +3701,17 @@ void *fn_800D382C(u32 id) {
 
 extern volatile u16 *__memReg;
 
+static inline u32 __GXReadMEMCounterU32(u32 addrHi, u32 addrLo) {
+    u32 ctrH0, ctrH1, ctrL;
+    ctrH0 = __memReg[addrHi];
+    do {
+        ctrH1 = ctrH0;
+        ctrH0 = __memReg[addrHi];
+        ctrL = __memReg[addrLo];
+    } while (ctrH0 != ctrH1);
+    return (ctrH0 << 16) | ctrL;
+}
+
 
 void fn_800D4F64(void *);
 void fn_800D6908(void *);
