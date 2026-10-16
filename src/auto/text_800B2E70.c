@@ -4358,6 +4358,38 @@ void fn_800DAB9C(void *arg0, s8 arg1) {
     M2C_FIELD(arg0, s32 *, 8) = -1;
 }
 
+s32 fn_800DABB4(void *event) {
+    extern struct {
+        s32 mutex;
+        s32 count;
+        s32 first;
+        struct {
+            s32 type;
+            u32 eventID;
+            s32 msgBufID;
+        } events[2];
+        u32 eventID;
+    } lbl_80323DD0;
+    extern void *fn_80003488(void *, const void *, u32);
+    s32 result = 0;
+    s32 nextEventID;
+    fn_800DF2F8(&lbl_80323DD0);
+    if (lbl_80323DD0.count == 2) {
+        result = 0x100;
+    } else {
+        nextEventID = (lbl_80323DD0.first + lbl_80323DD0.count) % 2;
+        fn_80003488(&lbl_80323DD0.events[nextEventID], event, 0xC);
+        lbl_80323DD0.events[nextEventID].eventID = lbl_80323DD0.eventID;
+        lbl_80323DD0.eventID++;
+        if (lbl_80323DD0.eventID < 0x100) {
+            lbl_80323DD0.eventID = 0x100;
+        }
+        lbl_80323DD0.count++;
+    }
+    fn_800DF2F0(&lbl_80323DD0);
+    return result;
+}
+
 s32 TRKGetNextEvent(void *event) {
     extern struct {
         s32 mutex;
@@ -4894,6 +4926,45 @@ s32 fn_800DF300(void *mutex) {
     return 0;
 }
 
+#pragma push
+#pragma dont_inline off
+#pragma auto_inline off
+s32 fn_800DF308(u8 cmd) {
+    s32 fn_800DFC6C(void *);
+    s32 fn_800DFBE8(void *);
+    s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
+    s32 replyID;
+    s32 msgID;
+    TrkBuf *buf;
+    s32 result;
+    s32 err;
+
+    result = fn_800DBBA0(&msgID, &buf);
+    if (result == 0) {
+        TrkBuf *b = buf;
+        if (b->pos >= 0x880) {
+            err = 0x301;
+        } else {
+            b->data[b->pos++] = cmd;
+            err = 0;
+            b->count++;
+        }
+        if (err == 0) {
+            if (cmd == 0x90) {
+                fn_800DFC6C(buf);
+            } else {
+                fn_800DFBE8(buf);
+            }
+        }
+        result = fn_800DEE88(buf, &replyID, 2, 3, 1);
+        if (result == 0) {
+            fn_800DBB10(replyID);
+        }
+        fn_800DBB10(msgID);
+    }
+    return result;
+}
+#pragma pop
 void fn_800DF3E0(u32 addr, s32 length) {
     u32 p = addr & 0xFFFFFFF1;
     length += addr - p;
@@ -5225,6 +5296,24 @@ s32 fn_800E17E8(u8 arg0) {
     extern u8 lbl_80326E84[];
     lbl_80326E84[lbl_80325D68[0]++] = arg0;
     return 0;
+}
+
+s32 fn_800E1810(void) {
+    extern s32 lbl_80325D68[];
+    extern u8 lbl_80326E84[];
+    s32 retval = 0;
+    s32 result;
+
+    while (lbl_80325D68[0] < 0x800) {
+        lbl_80326E84[lbl_80325D68[0]] = 0;
+        lbl_80325D68[0]++;
+    }
+    if (lbl_80325D68[0] != 0) {
+        result = gDBCommTable.write(lbl_80326E84, lbl_80325D68[0]);
+        retval = result != 0 ? -1 : 0;
+        lbl_80325D68[0] = 0;
+    }
+    return retval;
 }
 
 void fn_800E18F0(void) {
