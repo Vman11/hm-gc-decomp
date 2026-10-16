@@ -20,6 +20,20 @@ typedef struct ImgDec {
     u8 *px;
 } ImgDec;
 
+typedef struct ImgPix {
+    u8 pad0[0x5C];
+    u32 shr[4];
+    u32 shl[4];
+    u8 pad7C[0x9C - 0x7C];
+    s32 count;
+    u8 padA0[0xB4 - 0xA0];
+    u8 *out;
+    u8 padB8[0x188 - 0xB8];
+    u8 *src;
+    u8 *px;
+    u8 *mask;
+} ImgPix;
+
 void fn_80141268(ImgDec *p) {
     u8 *s = p->px;
     u8 *e = s + ((u32)p->count >> 1);
