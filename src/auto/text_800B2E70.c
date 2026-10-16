@@ -6551,9 +6551,6 @@ void fn_800DEA14(s32 arg0) {
     lbl_803257D0[0] = arg0;
 }
 
-#pragma push
-#pragma dont_inline off
-#pragma auto_inline off
 s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
     s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
     TrkBuf *b;
@@ -6613,7 +6610,6 @@ s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
     fn_800DBB10(bufferId);
     return error;
 }
-#pragma pop
 s32 fn_800DEBC0(u32 replyError, u8 *ioResult) {
     s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
     s32 err;
