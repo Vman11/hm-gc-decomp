@@ -1102,7 +1102,7 @@ void fn_8027ABEC(s32 *arg0, s32 arg1) {
 s32 fn_800BD810(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 void *memcpy(void *, const void *, u32);
 s32 fn_8027AC20(void *arg0, u32 arg1, u8 *arg2, u32 arg3) {
-    u8 buf[0x41F];
+    u8 buf[0x400 + 0x18];
     u8 *aligned;
     u32 bufSize;
     u32 len;
@@ -1110,7 +1110,7 @@ s32 fn_8027AC20(void *arg0, u32 arg1, u8 *arg2, u32 arg3) {
 
     aligned = (u8 *)(((u32)buf + 0x1F) & ~0x1F);
     total = 0;
-    bufSize = ((u32)buf + sizeof(buf) - (u32)aligned) & ~0x1F;
+    bufSize = ((u32)buf + 0x41F - (u32)aligned) & ~0x1F;
     if (arg3 != 0) {
         do {
             if (arg3 >= bufSize) {
@@ -1260,10 +1260,6 @@ void fn_8027B8B4(void *arg0) {
  lbl_80300860[0]=s0+d; lbl_80300860[1]=s1+d;
 }
 
-extern u32 lbl_80301D20;
-extern u32 lbl_80301D24;
-extern u8 ***lbl_80301D28;
-extern u32 *lbl_80301D2C;
 void fn_8027D75C(s32 unused, s32 n) {
     extern u32 lbl_80300460[];
     u32 v;
@@ -1828,6 +1824,58 @@ void fn_802823C4(s32 unused, s32 n) {
     } while (n >= 0);
 }
 
+s32 fn_80282464(register s32 count, s32 base) {
+    register u32 mask = 0xFF00FF00;
+    register s32 n = count;
+    do {
+        u8 *u = lbl_80300860[4];
+        u8 *y = lbl_80300860[2];
+        u32 b = *u;
+        u32 a = *y;
+        u8 *d;
+        u32 v;
+        u++;
+        d = lbl_80300860[5];
+        b <<= 8;
+        v = a | b;
+        a <<= 16;
+        v |= a;
+        b = *d;
+        d++;
+        b <<= 24;
+        lbl_80300860[5] = d;
+        lbl_80300860[4] = u;
+        v |= b;
+        *(u32 *)lbl_80300860[0] = v;
+        v &= mask;
+        y = lbl_80300860[2];
+        a = y[1];
+        lbl_80300860[2] = y + 2;
+        v |= a;
+        a <<= 16;
+        v |= a;
+        ((u32 *)lbl_80300860[0])[1] = v;
+        v &= mask;
+        a = lbl_80300860[3][0];
+        v |= a;
+        a <<= 16;
+        v |= a;
+        *(u32 *)lbl_80300860[1] = v;
+        v &= mask;
+        y = lbl_80300860[3];
+        a = y[1];
+        lbl_80300860[3] = y + 2;
+        v |= a;
+        a <<= 16;
+        v |= a;
+        ((u32 *)lbl_80300860[1])[1] = v;
+        lbl_80300860[0] += 8;
+        lbl_80300860[1] += 8;
+        n -= 2;
+    } while (n > 0);
+    return base + count;
+}
+
 void fn_8028256C(s32 arg0, register s32 n) {
  register u8 **state = lbl_80300860;
  n -= 2;
@@ -2279,6 +2327,22 @@ u32 fn_80285CE0(u32 arg0, u32 arg1, u32 arg2, u32 arg3) {
     return ((arg0 * arg2 >> 3) + ((arg1 >> 3) * arg3 * arg2 >> 3) + 3) & ~3;
 }
 
+void fn_80285D24(u32 *arg0, u32 arg1) {
+    arg0[0] = fn_80285CE0(0x200, arg1, 4, 1);
+    arg0[1] = fn_80285CE0(0x200, arg1 >> 1, 4, 1);
+    arg0[2] = fn_80285CE0(0x200, arg1, 8, 0x40);
+    arg0[3] = fn_80285CE0(0x200, arg1, 8, 8);
+    arg0[4] = fn_80285CE0(0x200, arg1, 5, 1);
+    arg0[5] = fn_80285CE0(0x200, arg1, 5, 1);
+    arg0[6] = fn_80285CE0(0x200, arg1, 0xB, 1);
+    arg0[7] = fn_80285CE0(0x200, arg1, 0xB, 1);
+    arg0[8] = fn_80285CE0(0x200, arg1, 4, 0x30);
+}
+
+extern u32 lbl_80301D30;
+void fn_802876F8(u8 **arg0, u32 size) {
+}
+
 void fn_8028A7A0(void) {
 
 }
@@ -2306,6 +2370,34 @@ void fn_8028A7B8(void) {
 
 void fn_8028A7BC(void) {
 }
+
+#pragma push
+#pragma scheduling off
+void fn_8028AEAC(s32 n) {
+    u32 *dst = (u32 *)lbl_80300860[0];
+    u32 *src = (u32 *)lbl_80300860[2];
+    s32 i = n - 1;
+    if (n) do {
+        u32 v = *src++;
+        *dst = (v & 0xFF000000) + ((v >> 8) & 0xFF00) + 0x800080;
+        *++dst = ((v << 16) & 0xFF000000) + ((v & 0xFF) << 8) + 0x800080;
+        dst++;
+    } while (i-- != 0);
+    dst = (u32 *)lbl_80300860[1];
+    src = (u32 *)lbl_80300860[3];
+    i = n - 1;
+    if (n) do {
+        u32 v = *src++;
+        *dst = (v & 0xFF000000) + ((v >> 8) & 0xFF00) + 0x800080;
+        *++dst = ((v << 16) & 0xFF000000) + ((v & 0xFF) << 8) + 0x800080;
+        dst++;
+    } while (i-- != 0);
+    lbl_80300860[0] += n * 8;
+    lbl_80300860[1] += n * 8;
+    lbl_80300860[3] += n * 4;
+    lbl_80300860[2] += n * 4;
+}
+#pragma pop
 
 #pragma optimize_for_size off
 #pragma scheduling on
