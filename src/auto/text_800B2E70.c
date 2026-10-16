@@ -2766,6 +2766,12 @@ void TRKNubWelcome(void) {
     TRK_board_display("MetroTRK for GAMECUBE v2.0");
 }
 
+s32 TRKTerminateNub(void) {
+    s32 fn_800DBCDC(void);
+    fn_800DBCDC();
+    return 0;
+}
+
 s32 fn_800DBAA0(void *arg0, u32 arg1) {
     s32 var_r5;
 
