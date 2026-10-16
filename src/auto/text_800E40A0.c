@@ -404,10 +404,10 @@ double fn_800EF76C(double x, double y, int iy) {
     }
     z = x * x;
     v = z * x;
-    r = lbl_803635D0 + z * (lbl_803635D8 + z * (lbl_803635E0 + z * lbl_803635E8));
+    r = lbl_803635D0 + z * (lbl_803635D8 + z * (lbl_803635E0 + lbl_803635E8 * z));
     r = lbl_803635C8 + z * r;
     if (iy == 0) return x + v * (lbl_803635F0 + z * r);
-    else return x - ((z * (lbl_803635F8 * y - v * r) - y) - v * lbl_803635F0);
+    else return x - ((z * (lbl_803635F8 * y - v * r) - y) - lbl_803635F0 * v);
 }
 
 double fn_800EFD7C(double x, double y) {
