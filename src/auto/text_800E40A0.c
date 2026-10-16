@@ -453,6 +453,47 @@ u32 fwrite(const void *ptr, u32 size, u32 count, void *file) {
     __end_critical_region(2);
     return result;
 }
+
+s32 fn_800E895C(void *file);
+int fn_800E83C0(void *arg0) {
+    MslFile *file = (MslFile *)arg0;
+    u32 position;
+
+    if (file == NULL) {
+        return fn_800E480C();
+    }
+    if (file->state.error || file->mode.file_kind == 0) {
+        return -1;
+    }
+    if (file->mode.io_mode == 1) {
+        return 0;
+    }
+    if (file->state.io_state >= 3) {
+        file->state.io_state = 2;
+    }
+    if (file->state.io_state == 2) {
+        file->buffer_len = 0;
+    }
+    if (file->state.io_state != 1) {
+        file->state.io_state = 0;
+        return 0;
+    }
+    if (file->mode.file_kind != 1) {
+        position = 0;
+    } else {
+        position = fn_800E895C(file);
+    }
+    if (__flush_buffer(file, 0)) {
+        file->state.error = 1;
+        file->buffer_len = 0;
+        return -1;
+    }
+    file->state.io_state = 0;
+    file->position = position;
+    file->buffer_len = 0;
+    return 0;
+}
+
 #pragma push
 #pragma dont_inline on
 int fseek(void *file, s32 offset, int mode) {
@@ -1038,6 +1079,50 @@ char* fn_800EB324(const char* str, const char* pat) {
         }
     }
     return 0;
+}
+
+extern unsigned char* lbl_803596A8;
+extern unsigned char* lbl_803596AC;
+char* fn_800EB38C(char* str, const char* set) {
+    unsigned char *p, *n, c;
+    unsigned char map[32] = {0};
+
+    if (str) {
+        lbl_803596AC = (unsigned char*)str;
+    }
+
+    p = (unsigned char*)set - 1;
+    while (c = *++p) {
+        map[c >> 3] |= (1 << (c & 7));
+    }
+
+    p = lbl_803596AC - 1;
+    while (c = *++p) {
+        if (!(map[c >> 3] & (1 << (c & 7)))) {
+            break;
+        }
+    }
+
+    if (!c) {
+        lbl_803596AC = lbl_803596A8;
+        return NULL;
+    }
+
+    n = p;
+    while (c = *++n) {
+        if (map[c >> 3] & (1 << (c & 7))) {
+            break;
+        }
+    }
+
+    if (!c) {
+        lbl_803596AC = lbl_803596A8;
+        return (char*)p;
+    }
+
+    *n = 0;
+    lbl_803596AC = n + 1;
+    return (char*)p;
 }
 
 char* fn_800EB4C8(const char* str, int chr) {
