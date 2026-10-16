@@ -2500,6 +2500,10 @@ void usr_put_initialize(void) {
 
 }
 
+s32 TRKInitializeDispatcher(void) {
+    lbl_803257C8[0] = 0x20;
+    return 0;
+}
 
 void fn_800DE8AC(TrkBuf* buf) {
     s32 n;
