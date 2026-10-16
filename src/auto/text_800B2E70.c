@@ -242,7 +242,11 @@ typedef struct TRKState_unk {
 } TRKState_unk;
 
 typedef struct TRKCPUState_unk {
-    u8 pad0[0x238];
+    u32 gpr[32];
+    u32 unk80;
+    u8 pad84[0x14];
+    u64 fpr[32];
+    u8 pad198[0xA0];
     u32 unk238;
 } TRKCPUState_unk;
 
