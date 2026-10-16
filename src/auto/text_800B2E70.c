@@ -182,6 +182,16 @@ typedef struct DBCommTable {
 } DBCommTable;
 extern DBCommTable gDBCommTable;
 void TRKEXICallBack(s16 chan, void *ctx);
+s32 TRKGetNextEvent(void *event);
+void TRKDestructEvent(void *event);
+TrkBuf *TRKGetBuffer(s32 idx);
+s32 TRKDispatchMessage(TrkBuf *buf);
+void TRKGetInput(void);
+s32 TRKTargetStopped(void);
+s32 TRKTargetContinue(void);
+s32 TRKTargetInterrupt(void *event);
+s32 TRKTargetSupportRequest(void);
+extern u8 *gTRKInputPendingPtr;
 extern u8 lbl_80323560[];
 extern u16 lbl_8035A8F0;
 s32 fn_800CDBD8(s32 chan, void *out);
@@ -1598,6 +1608,23 @@ void __DVDStoreErrorCode(u32 code) {
  }
  ((u8 *)__OSLockSramEx())[0x24] = value;
  __OSUnlockSramEx(1);
+}
+
+s32 fn_800EB540(const char *, const char *, u32);
+BOOL fn_800C04F8(DVDDiskID *id1, DVDDiskID *id2) {
+    if (id1->gameName[0] && id2->gameName[0] && fn_800EB540(id1->gameName, id2->gameName, 4)) {
+        return FALSE;
+    }
+    if (!id1->company[0] || !id2->company[0] || fn_800EB540(id1->company, id2->company, 2)) {
+        return FALSE;
+    }
+    if (id1->diskNumber != 0xff && id2->diskNumber != 0xff && id1->diskNumber != id2->diskNumber) {
+        return FALSE;
+    }
+    if (id1->gameVersion != 0xff && id2->gameVersion != 0xff && id1->gameVersion != id2->gameVersion) {
+        return FALSE;
+    }
+    return TRUE;
 }
 
 void fn_800C05F0(void) {
@@ -5442,6 +5469,33 @@ s32 fn_800DFBE8(void *b) {
     return error;
 }
 
+void fn_800DFC6C(TrkBuf *b) {
+    s32 fn_800DB6D4(TrkBuf *, u64);
+    s32 fn_800E0C00(void *, u32);
+    s32 error;
+    u32 inst;
+    s32 i;
+
+    error = fn_800DB7D0(b, M2C_FIELD(&gTRKCPUState, u32 *, 0x80));
+    if (error == 0) {
+        error = fn_800E0C00(&inst, M2C_FIELD(&gTRKCPUState, u32 *, 0x80));
+    }
+    if (error == 0) {
+        error = fn_800DB7D0(b, inst);
+    }
+    if (error == 0) {
+        error = fn_800DB8A8(b, M2C_FIELD(&gTRKCPUState, u32 *, 0x2F8));
+    }
+    if (error == 0) {
+        for (i = 0; i < 32; i++) {
+            fn_800DB7D0(b, (u16)((u32 *)&gTRKCPUState)[i]);
+        }
+        for (i = 0; i < 32; i++) {
+            fn_800DB6D4(b, (u16)M2C_FIELD(&gTRKCPUState, u64 *, 0x98 + i * 8));
+        }
+    }
+}
+
 void TRKPostInterruptEvent(void) {
     void fn_800DAB9C(void *, s8);
     void fn_800DABB4(void *);
@@ -5533,9 +5587,9 @@ s32 fn_800E0070(void *arg0) {
 s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count);
 s32 fn_800E0B0C(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
-    s32 error;
-    u32 count;
     u32 *data;
+    u32 count;
+    s32 error;
     TRKExceptionStatus savedException;
 
     if (lastRegister > 0x24) {
@@ -5546,7 +5600,7 @@ s32 fn_800E0B0C(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     gTRKExceptionStatus_802E01A4.exceptionDetected = FALSE;
 
     count = (lastRegister - firstRegister) + 1;
-    data = (u32 *)&gTRKCPUState + firstRegister;
+    data = (u32 *)gTRKCPUState.pad0 + firstRegister;
     *registersLengthPtr = count * sizeof(u32);
 
     if (read) {
