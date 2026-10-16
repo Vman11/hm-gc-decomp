@@ -611,9 +611,10 @@ u32 __OSUnmaskInterrupts(u32 mask) {
 }
 
 void __OSModuleInit(void) {
-    *(s32 *)0x800030CC = 0;
-    *(s32 *)0x800030C8 = 0;
-    *(s32 *)0x800030D0 = 0;
+    void** list = (void**)0x800030C8;
+    list[1] = 0;
+    list[0] = 0;
+    *(void**)0x800030D0 = 0;
 }
 
 #pragma peephole on
@@ -2161,7 +2162,7 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
     *color = *(u32 *)((u8 *)lt_obj + 0xC);
 }
 
-extern u8 lbl_80359668[];
+extern u8 lbl_80359668[8];
 void fn_800D821C(u32 *arg0, u32 arg1, u32 arg2) {
     *arg0 = (arg1 & 3) | (*arg0 & ~3);
     SETF(*arg0, 2, 2, arg2);
@@ -2187,6 +2188,19 @@ void fn_800D8278(void *arg0, f32 farg0) {
         var_f1 = lbl_8036314C;
     }
     M2C_FIELD(arg0, s32 *, 4) = (s32) ((M2C_FIELD(arg0, s32 *, 4) & ~0xFF00) | (((s32) (lbl_80363128 * var_f1) << 8) & 0xFF00));
+}
+
+void fn_800D82C8(u32 *arg0, f32 arg1) {
+    extern f32 lbl_80363128;
+    extern f32 lbl_80363148;
+    extern f32 lbl_8036314C;
+
+    if (arg1 < lbl_80363148) {
+        arg1 = lbl_80363148;
+    } else if (arg1 > lbl_8036314C) {
+        arg1 = lbl_8036314C;
+    }
+    SETF(arg0[1], 8, 0, (u8)(lbl_80363128 * arg1));
 }
 
 s32 fn_800D8318(void *arg0) {
