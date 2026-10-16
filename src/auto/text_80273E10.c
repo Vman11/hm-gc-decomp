@@ -227,6 +227,77 @@ void fn_80273EC4(void) {
     OSSetArenaLo(lo + lbl_8035B848);
 }
 
+u32 fn_800C4EBC(void);
+u16 fn_800C51D4(void);
+void fn_800C51B4(void);
+void fn_800C4EF8(u32, u32, u32, u32);
+u64 fn_800E27FC(u32, u32, u32, u32);
+void DCFlushRange(void *, u32);
+void DCInvalidateRange(void *, u32);
+u32 fn_802740E4(void);
+u32 fn_80274980(s32 arg0);
+u32 fn_802748F8(u32 arg0);
+void fn_80274590(u32 arg0);
+u32 fn_802744F8(u32 addr);
+void fn_8027483C(s32 arg0, s32 arg1);
+u32 fn_802745A8(u32 arg0);
+BOOL fn_80274538(u32 addr);
+void fn_80274558(u32 addr);
+void fn_802747D0(u32 arg0, u32 arg1, s32 arg2);
+extern void (*lbl_8035B858)(u32, u32, u32, u32, s32);
+void fn_80273EF4(u32 arg0) {
+    extern u8 *lbl_8035B84C;
+    u32 start;
+    u8 *buf;
+    s32 flushed;
+    u32 idx;
+    u32 page;
+    s32 status;
+    int level;
+    u32 entry;
+    u64 t;
+
+    t = OSGetTime() * 8;
+    start = fn_800E27FC(t >> 32, t, 0, *(u32 *)0x800000F8 / 4 / 125000);
+    page = arg0 & ~0xFFF;
+    flushed = 0;
+    idx = fn_802740E4();
+    buf = lbl_8035B84C + (idx << 12);
+    entry = fn_80274980(idx);
+    level = OSDisableInterrupts();
+    while (fn_800C4EBC() != 0) {
+    }
+    status = fn_800C51D4();
+    if (entry != 0) {
+        if ((s32)fn_802748F8(entry) != 0) {
+            fn_80274590(entry);
+            flushed = 1;
+            DCFlushRange(buf, 0x1000);
+            fn_800C4EF8(0, (u32)buf, fn_802744F8(entry), 0x1000);
+            while (fn_800C4EBC() != 0) {
+            }
+        }
+        fn_8027483C(entry, idx);
+    }
+    DCInvalidateRange(buf, 0x1000);
+    if ((s32)fn_802745A8(page) != 0) {
+        fn_800C4EF8(1, (u32)buf, fn_802744F8(page), 0x1000);
+        while (fn_800C4EBC() != 0) {
+        }
+    } else if (fn_80274538(page) == 0) {
+        fn_80274558(page);
+    }
+    if (status == 0) {
+        fn_800C51B4();
+    }
+    fn_802747D0(page, (u32)buf, idx);
+    OSRestoreInterrupts(level);
+    if (lbl_8035B858 != NULL) {
+        t = OSGetTime() * 8;
+        lbl_8035B858(arg0, (u32)buf, idx, (u32)fn_800E27FC(t >> 32, t, 0, *(u32 *)0x800000F8 / 4 / 125000) - start, flushed);
+    }
+}
+
 u32 fn_80274128(void);
 u32 fn_802742F8(void);
 u32 fn_8027438C(void);
@@ -4056,67 +4127,13 @@ void fn_8028B480(s32 n, u32 *dst, u32 *src) {
 }
 
 void fn_8028B510(BitBuf *dst, BitBuf *src, u32 n) {
-    u32 v;
-    u32 w;
-
-    while (n > 7) {
-        if (src->bits > 7) {
-            v = src->buf & 0xFF;
-            src->bits -= 8;
-            src->buf >>= 8;
-        } else {
-            u32 bits = src->bits;
-            u32 *p = src->ptr;
-            u32 old = src->buf;
-            w = *p;
-            src->bits = bits + 24;
-            src->ptr = p + 1;
-            src->buf = w >> (8 - bits);
-            v = (old | (w << bits)) & 0xFF;
-        }
-        v &= lbl_802AB0C0[8];
-        dst->buf |= v << dst->bits;
-        dst->bits += 8;
-        if (dst->bits > 31) {
-            *dst->ptr = dst->buf;
-            dst->ptr++;
-            dst->bits -= 32;
-            if (dst->bits != 0) {
-                dst->buf = v >> (8 - dst->bits);
-            } else {
-                dst->buf = 0;
-            }
-        }
-        n -= 8;
+    u32 k = 8;
+    while (n >= k) {
+        BitBuf_Write(dst, BitBuf_Read(src, k), k);
+        n -= k;
     }
     if (n != 0) {
-        u32 bits = src->bits;
-        if (bits >= n) {
-            w = src->buf;
-            src->bits = bits - n;
-            v = w & (0xFFFFFFFF >> (32 - n));
-            src->buf = w >> n;
-        } else {
-            u32 *p = src->ptr;
-            w = *p;
-            v = (src->buf | (w << bits)) & (0xFFFFFFFF >> (32 - n));
-            src->ptr = p + 1;
-            src->buf = w >> (n - bits);
-            src->bits = bits - (n - 32);
-        }
-        v &= lbl_802AB0C0[n];
-        dst->buf |= v << dst->bits;
-        dst->bits += n;
-        if (dst->bits > 31) {
-            *dst->ptr = dst->buf;
-            dst->ptr++;
-            dst->bits -= 32;
-            if (dst->bits != 0) {
-                dst->buf = v >> (n - dst->bits);
-            } else {
-                dst->buf = 0;
-            }
-        }
+        BitBuf_Write(dst, BitBuf_Read(src, n), n);
     }
 }
 
