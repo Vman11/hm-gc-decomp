@@ -464,6 +464,27 @@ void __close_all(void) {
     __end_critical_region(2);
 }
 
+void fn_800E59A4(const decform *f, double x, decimal *d) {
+    short digits = f->digits;
+    int i;
+
+    fn_800E5B48(d, x);
+    if (d->sig.text[0] > 9) {
+        return;
+    }
+    if (digits > 36) {
+        digits = 36;
+    }
+    __rounddec(d, digits);
+    while (d->sig.length < digits) {
+        d->sig.text[d->sig.length++] = 0;
+    }
+    d->exp -= d->sig.length - 1;
+    for (i = 0; i < d->sig.length; i++) {
+        d->sig.text[i] += '0';
+    }
+}
+
 int fn_800E63F8(const decimal *x, const decimal *y) {
     int i;
     int l;
@@ -2046,7 +2067,7 @@ void DBInitComm(u8 **inputFlagPtr, s32 mtrCallback) {
 
 typedef struct EXI2Control {
     u8 unk0[0xC];
-    u32 state;
+    volatile u32 state;
     s32 immLen;
     u8 *immBuf;
 } EXI2Control;
@@ -2135,6 +2156,33 @@ s32 fn_800F0DA0(u32 *data) {
     }
     exi[10] &= 0x405;
     return !err;
+}
+
+s32 fn_800F1328(void) {
+    int enabled;
+    s32 i;
+    s32 len;
+    u8 *buf;
+    u32 data;
+    EXI2Control *exi = lbl_803596F0;
+
+    while (exi->state & 4) {
+        if (!(((volatile u32 *)0xCC006800)[13] & 1)) {
+            enabled = OSDisableInterrupts();
+            if (lbl_803596F0->state & 3) {
+                if ((lbl_803596F0->state & 2) && (len = lbl_803596F0->immLen) != 0) {
+                    buf = lbl_803596F0->immBuf;
+                    data = ((volatile u32 *)0xCC006800)[14];
+                    for (i = 0; i < len; i++) {
+                        *buf++ = data >> ((3 - i) * 8);
+                    }
+                }
+                lbl_803596F0->state &= ~3;
+            }
+            OSRestoreInterrupts(enabled);
+            break;
+        }
+    }
 }
 
 volatile u32 __EXIRegs[16] : 0xCC006800;
