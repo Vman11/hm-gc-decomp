@@ -2,6 +2,31 @@
 #include "common.h"
 
 extern s32 lbl_8035AC98;
+
+static inline s32 MaskShift(u32 mask) {
+    s32 shift;
+    if (mask == 0) {
+        return 32;
+    }
+    for (shift = 0; !(mask & 1); shift++) {
+        mask >>= 1;
+    }
+    return shift;
+}
+
+static inline s32 MaskBits(u32 mask) {
+    s32 bits;
+    if (mask == 0) {
+        return 0;
+    }
+    while (!(mask & 1)) {
+        mask >>= 1;
+    }
+    for (bits = 0; mask & 1; bits++) {
+        mask >>= 1;
+    }
+    return bits;
+}
 void fn_80147568(s32 arg0) {
     lbl_8035AC98 = arg0;
 }
