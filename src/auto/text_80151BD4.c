@@ -1,6 +1,10 @@
 /* Functions from 0x80151BD4 to 0x80151D58, found by decomp-toolkit. */
 #include "common.h"
 
+typedef struct Vec80151BD4 {
+    f32 x, y, z;
+} Vec80151BD4;
+
 void fn_80151BD4(f32* m, f32* x, f32* y, f32* z) {
     extern f32 lbl_8036453C;
     extern f32 lbl_80364544;
