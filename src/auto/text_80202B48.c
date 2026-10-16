@@ -121,3 +121,61 @@ void fn_80202C98(void *arg0) {
     M2C_FIELD(M2C_FIELD(arg0, void **, 0x14), void **, 0xB4) = NULL;
 }
 
+s32 fn_80202EE0(u8* arg0, u8* arg1, u8* arg2) {
+    s32 found = 0;
+    u8* p;
+    u8* owner;
+
+    *(s32*)(arg0 + 0x14) = 0;
+    arg0[0x1C] = 0;
+    *(f32*)(arg0 + 0x4) = lbl_80365730;
+    *(f32*)(arg0 + 0x8) = lbl_80365730;
+    *(f32*)(arg0 + 0xC) = lbl_80365730;
+    *(f32*)(arg0 + 0x2C) = lbl_80365734;
+    *(u8**)(arg0 + 0x10) = arg1;
+    *(u8**)(arg0 + 0x18) = arg2;
+    *(s32*)(arg0 + 0x20) = 0;
+    *(s32*)(arg0 + 0x24) = *(s32*)(*(u8**)(arg0 + 0x10) + 0xC);
+
+    for (p = *(u8**)(arg1 + 0x2C); p != NULL; p = *(u8**)(p + 0x1CC)) {
+        if (p == arg0) {
+            found = 1;
+            break;
+        }
+    }
+    if (!found) {
+        if ((*(u8**)(arg0 + 0x1D0) = *(u8**)(*(u8**)(arg0 + 0x10) + 0x30)) != NULL) {
+            *(u8**)(*(u8**)(*(u8**)(arg0 + 0x10) + 0x30) + 0x1CC) = arg0;
+        } else {
+            *(u8**)(*(u8**)(arg0 + 0x10) + 0x2C) = arg0;
+        }
+        *(u8**)(*(u8**)(arg0 + 0x10) + 0x30) = arg0;
+        *(u8**)(arg0 + 0x1CC) = NULL;
+    }
+
+    for (p = *(u8**)(arg2 + 0x68); p != NULL; p = *(u8**)(p + 0x1D4)) {
+        if (p == arg0) {
+            if (!found) {
+                owner = *(u8**)(arg0 + 0x10);
+                if ((*(u8**)(owner + 0x30) = *(u8**)(*(u8**)(owner + 0x30) + 0x1D0)) != NULL) {
+                    *(u8**)(*(u8**)(*(u8**)(arg0 + 0x10) + 0x30) + 0x1CC) = NULL;
+                } else {
+                    *(u8**)(*(u8**)(arg0 + 0x10) + 0x2C) = NULL;
+                }
+                found = 1;
+            }
+            break;
+        }
+    }
+    if (!found) {
+        if ((*(u8**)(arg0 + 0x1D8) = *(u8**)(*(u8**)(arg0 + 0x18) + 0x6C)) != NULL) {
+            *(u8**)(*(u8**)(*(u8**)(arg0 + 0x18) + 0x6C) + 0x1D4) = arg0;
+        } else {
+            *(u8**)(*(u8**)(arg0 + 0x18) + 0x68) = arg0;
+        }
+        *(u8**)(*(u8**)(arg0 + 0x18) + 0x6C) = arg0;
+        *(u8**)(arg0 + 0x1D4) = NULL;
+    }
+    return found;
+}
+
