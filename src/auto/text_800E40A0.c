@@ -136,6 +136,16 @@ void fn_800E42BC(void) {
     _ExitProcess();
 }
 
+void fn_800E4358(void *ptr) {
+    __begin_critical_region(1);
+    if (!lbl_8035A970) {
+        memset(lbl_803280A8, 0, 0x34);
+        lbl_8035A970 = 1;
+    }
+    fn_800E43C8(lbl_803280A8, ptr);
+    __end_critical_region(1);
+}
+
 void fn_800E4420(void *pool, void *ptr, u32 size);
 void fn_800E4578(void *pool, void *ptr);
 int fn_800E83C0(void *file);
@@ -145,17 +155,11 @@ extern u8 lbl_803280A8[];
 extern u8 lbl_8035A970;
 void fn_800E43C8(void *pool, void *ptr) {
     u32 size;
-    u32 hdr;
 
     if (ptr == NULL) {
         return;
     }
-    hdr = ((u32 *)ptr)[-1];
-    if (!(hdr & 1)) {
-        size = ((u32 *)hdr)[2];
-    } else {
-        size = (((u32 *)ptr)[-2] & ~7) - 8;
-    }
+    size = (((u32 *)ptr)[-1] & 1) ? (((u32 *)ptr)[-2] & ~7) - 8 : ((u32 *)((u32 *)ptr)[-1])[2];
     if (size <= 0x44) {
         fn_800E4420(pool, ptr, size);
     } else {
