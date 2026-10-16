@@ -21,7 +21,7 @@ typedef struct TrkBuf {
     u32 pos;
     u8 data[0x880];
 } TrkBuf;
-extern s32 lbl_803257D0;
+extern s32 lbl_803257D0[];
 extern void fn_800DBAD0(TrkBuf*, s32);
 extern s32 fn_800DAF24(TrkBuf*);
 s32 fn_800DF4D0(void*);
@@ -576,6 +576,22 @@ void fn_800BB714(void *arg0) {
     M2C_FIELD(arg0, s32 *, 4) = 2;
     M2C_FIELD(arg0, u8 *, 8) = a;
     M2C_FIELD(arg0, u8 *, 9) = 0x7F;
+}
+
+void fn_800BB79C(s32 *p) {
+    extern u8 lbl_802D8F60[];
+    extern f32 lbl_80363068;
+    f32 *f = (f32 *)p;
+    p[1] = 0xE;
+    p[10] = 0;
+    p[2] = (s32)lbl_802D8F60;
+    p[3] = 0x40;
+    f[4] = lbl_80363068;
+    p[5] = 0;
+    f[9] = lbl_80363068;
+    f[8] = lbl_80363068;
+    f[7] = lbl_80363068;
+    f[6] = lbl_80363068;
 }
 
 #pragma dont_inline reset
