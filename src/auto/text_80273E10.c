@@ -106,7 +106,7 @@ extern s32 lbl_8035B848;
 extern s32 lbl_8035B854;
 extern s32 lbl_8035B850;
 extern s32 lbl_80359F08;
-void fn_80273EF4(void);
+void fn_80273EF4(u32);
 void fn_80274704();
 void fn_802745BC(void);
 void fn_80274664(void);
