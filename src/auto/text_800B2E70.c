@@ -3577,7 +3577,7 @@ void fn_800D91FC(s32 arg0, s32 arg1) {
 
 void fn_800D9258(s32 arg0, s32 arg1) {
     extern GXDataHead *__GXData;
-    u32 *reg = (u32 *)((u8 *)__GXData + (arg0 >> 1) * 4 + 0x1B0);
+    u32 *reg = (u32 *)((u32)__GXData + ((arg0 >> 1) * 4 + 0x1B0));
     if (arg0 & 1) {
         *reg = __rlwimi(*reg, arg1, 19, 8, 12);
     } else {
@@ -4654,6 +4654,28 @@ s32 fn_800E1B68(s32 arg0, s32 arg1, s32 *arg2) {
     }
     tmp = *arg2;
     r = fn_800E1050(0xD0, 1, &tmp, arg1);
+    *arg2 = tmp;
+    switch (r) {
+    case 0:
+        return 0;
+    case 2:
+        return 2;
+    default:
+        return 1;
+    }
+}
+
+s32 fn_800E1C24(s32 arg0, s32 arg1, s32 *arg2) {
+    s32 tmp;
+    u8 r;
+    if (fn_800E1AC8() == 0) {
+        return 1;
+    }
+    if (fn_800DEA20() == 0) {
+        return 1;
+    }
+    tmp = *arg2;
+    r = fn_800E1050(0xD1, 0, &tmp, arg1);
     *arg2 = tmp;
     switch (r) {
     case 0:
