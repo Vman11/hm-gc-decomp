@@ -2175,6 +2175,48 @@ u8 fn_800D8320(void *arg0) {
     return (u8) (((M2C_FIELD(arg0, u8 *, 0x1F) & 1) - 1) == 0);
 }
 
+s32 fn_800D874C(s32 arg0) {
+    extern GXDataHead *const __GXData;
+    GXDataHead *gx = __GXData;
+    s32 old = M2C_FIELD(gx, s32 *, 0x4C8);
+    M2C_FIELD(gx, s32 *, 0x4C8) = arg0;
+    return old;
+}
+
+s32 fn_800D8760(s32 arg0) {
+    extern GXDataHead *const __GXData;
+    s32 *p = &M2C_FIELD(__GXData, s32 *, 0x4CC);
+    s32 old;
+    old = *p;
+    *p = arg0;
+    return old;
+}
+
+void fn_800D8774(u32 tmap, u32 tcoord) {
+    extern GXDataHead *const __GXData;
+    GXDataHead *gx = __GXData;
+    u32 *tImage0 = (u32 *)((u8 *)gx + 0x514);
+    u32 *tMode0 = (u32 *)((u8 *)gx + 0x534);
+    u32 *suTs0 = (u32 *)((u8 *)gx + 0xB8);
+    u32 *suTs1 = (u32 *)((u8 *)gx + 0xD8);
+    u16 w, h;
+    u8 s_bias, t_bias;
+
+    w = tImage0[tmap] & 0x3FF;
+    h = (tImage0[tmap] >> 10) & 0x3FF;
+    SETF(suTs0[tcoord], 16, 0, w);
+    SETF(suTs1[tcoord], 16, 0, h);
+    s_bias = (tMode0[tmap] & 3) == 1;
+    t_bias = ((tMode0[tmap] >> 2) & 3) == 1;
+    SETF(suTs0[tcoord], 1, 16, s_bias);
+    SETF(suTs1[tcoord], 1, 16, t_bias);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = suTs0[tcoord];
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = suTs1[tcoord];
+    gx->bpSentNot = 0;
+}
+
 void fn_800D8F00(void) {
 
 }
