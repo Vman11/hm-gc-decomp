@@ -6513,7 +6513,7 @@ u32 fn_800E1150(u32 addr) {
 }
 
 void fn_800E18F0(void);
-s32 fn_800DF4D0(void*);
+s32 fn_800DF4D0();
 void EnableMetroTRKInterrupts(void) {
     fn_800E18F0();
 }
