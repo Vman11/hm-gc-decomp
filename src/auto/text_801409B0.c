@@ -49,8 +49,8 @@ void fn_801409B0(ImgPix *p) {
             *o |= ((u32)s[3] >> p->shr[3]) << p->shl[3];
         }
         s += 4;
-        o++;
         m++;
+        o++;
     } while (s < e);
     p->out += p->count * 4;
 }
@@ -296,6 +296,26 @@ void fn_8014152C(ImgDec *p) {
         d[3] = 0xFF;
         d += 4;
         p->src += 4;
+    } while (d < e);
+}
+
+void fn_80141584(ImgDec *p) {
+    u8 *d = p->dst;
+    u8 *e = d + p->count * 4;
+    do {
+        u8 *s = p->src;
+        u32 c, v;
+        p->src = s + 3;
+        c = s[0] | (s[1] << 8) | (s[2] << 16);
+        v = c >> p->shr[0];
+        d[0] = (v << p->shl[0]) | (v & p->mask[0]);
+        v = c >> p->shr[1];
+        d[1] = (v << p->shl[1]) | (v & p->mask[1]);
+        v = c >> p->shr[2];
+        d[2] = (v << p->shl[2]) | (v & p->mask[2]);
+        v = c >> p->shr[3];
+        d[3] = (v << p->shl[3]) | (v & p->mask[3]);
+        d += 4;
     } while (d < e);
 }
 
