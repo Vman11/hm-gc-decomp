@@ -149,10 +149,10 @@ void* memchr(const void* src, int val, unsigned long n) {
 }
 
 void fn_800E8C8C(void* dst, const void* src, unsigned long n) {
-    unsigned char* cps = ((unsigned char*)src) + n;
-    unsigned char* cpd = ((unsigned char*)dst) + n;
-    unsigned long v1, v2;
+    const char* cps = ((char*)src) + n;
+    char* cpd = ((char*)dst) + n;
     int src_offset, left_shift, right_shift;
+    unsigned long v1, v2;
     unsigned long i;
 
     i = ((unsigned long)cpd) & 3;
@@ -406,6 +406,19 @@ char* fn_800EB6F4(char* dst, const char* src) {
     while (*++q);
     q--;
     while (*++q = *++p);
+    return dst;
+}
+
+char* fn_800EB720(char* dst, const char* src, u32 n) {
+    const unsigned char* p = (const unsigned char*)src - 1;
+    unsigned char* q = (unsigned char*)dst - 1;
+    n++;
+    while (--n) {
+        if (!(*++q = *++p)) {
+            while (--n) *++q = 0;
+            break;
+        }
+    }
     return dst;
 }
 
