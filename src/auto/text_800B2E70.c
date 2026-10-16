@@ -2,6 +2,16 @@
 #include "common.h"
 #define SETF(reg, size, shift, v) \
     ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | (((u32)(v) << (shift)) & (((1 << (size)) - 1) << (shift))))
+typedef struct __va_list_struct {
+    char gpr;
+    char fpr;
+    char reserved[2];
+    char* input_arg_area;
+    char* reg_save_area;
+} __va_list[1];
+typedef __va_list va_list;
+extern int vprintf(const char* fmt, va_list args);
+extern u16 lbl_80359550;
 typedef struct ColorBits {
     u32 unk0;
     u32 a : 16;
@@ -438,6 +448,15 @@ void OSClearContext(u8 *ctx) {
     if ((u32)ctx == *cur) {
         *cur = 0;
     }
+}
+
+void __OSContextInit(void) {
+    extern void OSSwitchFPUContext(void);
+    extern void* __OSSetExceptionHandler(u8, void*);
+    extern char lbl_802D7BEC[];
+    __OSSetExceptionHandler(7, OSSwitchFPUContext);
+    *(s32*)0x800000D8 = 0;
+    DBPrintf(lbl_802D7BEC);
 }
 
 extern s32 fn_800B9094(s32, s32, s32);
@@ -1998,17 +2017,19 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
 
 void fn_800D8238(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
 
-void fn_800D8278(ColorBits *arg0, f32 farg0) {
+void fn_800D8278(void *arg0, f32 farg0) {
     extern f32 lbl_80363128;
     extern f32 lbl_80363148;
     extern f32 lbl_8036314C;
+    f32 var_f1;
 
-    if (farg0 < lbl_80363148) {
-        farg0 = lbl_80363148;
-    } else if (farg0 > lbl_8036314C) {
-        farg0 = lbl_8036314C;
+    var_f1 = farg0;
+    if (var_f1 < lbl_80363148) {
+        var_f1 = lbl_80363148;
+    } else if (var_f1 > lbl_8036314C) {
+        var_f1 = lbl_8036314C;
     }
-    arg0->b = lbl_80363128 * farg0;
+    M2C_FIELD(arg0, s32 *, 4) = (s32) ((M2C_FIELD(arg0, s32 *, 4) & ~0xFF00) | (((s32) (lbl_80363128 * var_f1) << 8) & 0xFF00));
 }
 
 s32 fn_800D8318(void *arg0) {
