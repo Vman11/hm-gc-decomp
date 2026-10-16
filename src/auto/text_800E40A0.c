@@ -36,7 +36,7 @@ extern int __aborting;
 extern int __atexit_curr_func;
 extern void (*__atexit_funcs[])(void);
 extern void (*__console_exit)(void);
-void fn_800EB264(int);
+int fn_800EB264(int);
 void _ExitProcess(void);
 void __begin_critical_region(int region);
 void __end_critical_region(int region);
