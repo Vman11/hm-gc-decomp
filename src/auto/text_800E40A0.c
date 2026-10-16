@@ -167,6 +167,19 @@ void fn_800E43C8(void *pool, void *ptr) {
     }
 }
 
+int fn_800E480C(void) {
+    int result = 0;
+    MslFile *file = (MslFile *)__files;
+
+    while (file) {
+        if (file->mode.file_kind && fn_800E83C0(file)) {
+            result = -1;
+        }
+        file = file->next_file;
+    }
+    return result;
+}
+
 s32 fn_800E7F00(s32 arg0) {
     s32 temp_r4;
 
