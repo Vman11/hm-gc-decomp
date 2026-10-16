@@ -221,7 +221,7 @@ void fn_800E8EA0(u8 *d, const u8 *s, u32 n) {
 extern void __close_all(void);
 extern void (*__stdio_exit)(void);
 extern u32 __pformatter();
-extern void fn_800E92B8(void);
+void *fn_800E92B8(void *ctx, const void *buf, u32 len);
 void __stdio_atexit(void) { __stdio_exit = __close_all; }
 
 void fn_800E904C(char *s, const char *fmt, void *args) {
