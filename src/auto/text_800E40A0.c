@@ -291,6 +291,21 @@ int fn_800E91D0(const char *format, ...) {
     __end_critical_region(2);
     return result;
 }
+
+void *fn_800E92B8(void *ctx, const void *buf, u32 len) {
+    u32 count;
+    u32 c = M2C_FIELD(ctx, u32 *, 8);
+    u32 n = M2C_FIELD(ctx, u32 *, 4);
+
+    count = n - c;
+    if (c + len <= n) {
+        count = len;
+    }
+    memcpy(M2C_FIELD(ctx, char **, 0) + c, buf, count);
+    M2C_FIELD(ctx, u32 *, 8) += count;
+    return (void *)1;
+}
+
 #pragma pop
 extern s32 lbl_803596A0;
 void fn_800EB1AC(s32 arg0) {
