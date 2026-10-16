@@ -5323,6 +5323,8 @@ void TRKNubWelcome(void) {
     TRK_board_display("MetroTRK for GAMECUBE v2.0");
 }
 
+#pragma push
+#pragma inline_depth(4)
 static inline s32 TRK_InitializeEndian(void) {
     extern s32 gTRKBigEndian[];
     u8 bendian[4];
