@@ -941,7 +941,7 @@ void fn_80276058(void *);
 void fn_8027564C(void *, int);
 void fn_802756B8(void *, int, int, int);
 extern unsigned int lbl_802F3848[2];
-void fn_802767E0(void);
+s32 fn_802767E0();
 extern void fn_80275C64(void);
 extern s32 fn_8027569C(void *);
 extern s32 fn_802753F0(void);
@@ -1944,6 +1944,28 @@ lbl_80300860[1]+=2;
 return base+count;
 }
 
+void fn_80280560(s32 arg0, s32 arg1) {
+    extern s32 lbl_803008C0[];
+    extern s32 lbl_802F72A0[];
+    extern u16 lbl_802F8F40[][2];
+    extern u16 lbl_802F9B60[][2];
+    extern u16 lbl_802FA780[][2];
+    s32 r, g, b, yv;
+    while (arg1-- != 0) {
+        arg0++;
+        lbl_80300860[9] = (u8 *)(r = lbl_803008C0[*lbl_80300860[4]]);
+        lbl_80300860[8] = (u8 *)(g = lbl_803008C0[512 + *lbl_80300860[4]] + lbl_803008C0[256 + *lbl_80300860[5]]);
+        lbl_80300860[10] = (u8 *)(b = lbl_803008C0[768 + *lbl_80300860[5]]);
+        yv = lbl_802F72A0[*lbl_80300860[2]++];
+        *(u16 *)lbl_80300860[0] = lbl_802F8F40[yv + r + 0x100][1] | lbl_802F9B60[yv + g + 0x100][1] | lbl_802FA780[yv + b + 0x100][1];
+        lbl_80300860[0] += 2;
+        if (!(arg0 & 1)) {
+            lbl_80300860[4]++;
+            lbl_80300860[5]++;
+        }
+    }
+}
+
 void fn_802808BC(s32 unused, s32 count) {
 extern u8 lbl_802F8B20[];
 s32 n=count-1;
@@ -2484,6 +2506,34 @@ void fn_80282C94(s16 *dst, f32 *src, s32 count, f32 scale) {
  src++;
  } while(remain-- != 0);
  }
+}
+
+s32 fn_802830B4(s32, f32, s32, s32, s32, s32, s16 *, s32, s32, s32);
+void fn_80283750(Fn80283750Struct *arg0, s16 **arg1, s32 *arg2, s32 arg3, s32 *arg4) {
+    s32 ret;
+    u32 i;
+    u32 half;
+    u32 j;
+
+    ret = fn_802830B4(arg0->unk0, arg0->unk4, arg0->unk10, arg0->unk30, arg0->unk24, arg0->unk28, arg0->unk14, arg3, arg0->unk1C, arg0->unk20);
+    if (arg0->unk18 != 0) {
+        arg0->unk18 = 0;
+    } else {
+        half = arg0->unkC >> 1;
+        for (i = 0, j = half; i < half; i++, j--) {
+            arg0->unk14[i] = (arg0->unk14[i] * i + arg0->unk2C[i] * j) / half;
+        }
+    }
+    memcpy(arg0->unk2C, (u8 *)arg0->unk14 + (arg0->unk8 - arg0->unkC), arg0->unkC);
+    if (arg2 != NULL) {
+        *arg2 = arg0->unk8 - arg0->unkC;
+    }
+    if (arg1 != NULL) {
+        *arg1 = arg0->unk14;
+    }
+    if (arg4 != NULL) {
+        *arg4 = arg3 + ret;
+    }
 }
 
 s32 fn_802838BC(s32 arg0, s32 arg1) {
