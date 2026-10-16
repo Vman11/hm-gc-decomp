@@ -3,8 +3,7 @@
 
 typedef struct ImgDec {
     u8 pad0[0x3C];
-    u32 shr[3];
-    u8 pad48[4];
+    u32 shr[4];
     u32 shl[3];
     u8 pad58[0x7C - 0x58];
     u32 mask[3];
