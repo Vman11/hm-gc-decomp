@@ -6,6 +6,11 @@ typedef struct {
 } Mtx44Struct;
 
 extern f32 lbl_80364564;
+f32 fn_80153574(f32 *m) {
+    return m[10] * (m[0] * m[5]) + m[8] * (m[1] * m[6]) + m[9] * (m[2] * m[4])
+         - m[8] * (m[2] * m[5]) - m[10] * (m[1] * m[4]) - m[9] * (m[0] * m[6]);
+}
+
 void fn_801535CC(void *arg0, f32 farg0) {
     M2C_FIELD(arg0, f32 *, 0) = (f32) (M2C_FIELD(arg0, f32 *, 0) * farg0);
     M2C_FIELD(arg0, f32 *, 4) = (f32) (M2C_FIELD(arg0, f32 *, 4) * farg0);
@@ -16,6 +21,18 @@ void fn_801535CC(void *arg0, f32 farg0) {
     M2C_FIELD(arg0, f32 *, 0x20) = (f32) (M2C_FIELD(arg0, f32 *, 0x20) * farg0);
     M2C_FIELD(arg0, f32 *, 0x24) = (f32) (M2C_FIELD(arg0, f32 *, 0x24) * farg0);
     M2C_FIELD(arg0, f32 *, 0x28) = (f32) (M2C_FIELD(arg0, f32 *, 0x28) * farg0);
+}
+
+void fn_801538B8(f32* dst, f32* src) {
+    dst[0] = src[0];
+    dst[5] = src[1];
+    dst[10] = src[2];
+    dst[1] = lbl_80364564;
+    dst[2] = lbl_80364564;
+    dst[4] = lbl_80364564;
+    dst[6] = lbl_80364564;
+    dst[8] = lbl_80364564;
+    dst[9] = lbl_80364564;
 }
 
 void fn_80153904(f32* m) {
@@ -58,7 +75,7 @@ void fn_80153988(f32* m) {
 }
 
 void fn_80153A0C(f32* dst, f32* src) {
-    f32 a, b;
+    f32 b, a;
     a = src[0];
     b = src[1];
     dst[0] = a;
