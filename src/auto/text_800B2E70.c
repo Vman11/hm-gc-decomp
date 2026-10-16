@@ -3212,6 +3212,10 @@ void TRKUARTInterruptHandler(void) {
 
 }
 
+void UnreserveEXI2Port(void) {
+    gDBCommTable.close();
+}
+
 void ReserveEXI2Port(void) {
     gDBCommTable.open();
 }
