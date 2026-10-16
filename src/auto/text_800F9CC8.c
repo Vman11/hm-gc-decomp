@@ -17,16 +17,18 @@ typedef struct RBNode_800F9CC8 {
 static inline void RBNode_rotateLeft(RBNode_800F9CC8 **root, RBNode_800F9CC8 *x) {
     RBNode_800F9CC8 *y = x->left;
     x->left = y->right;
-    if (x->left != NULL) {
+    if (y->right != NULL) {
         x->left->parent = x;
     }
     y->parent = x->parent;
-    if (x->parent == NULL) {
-        *root = y;
-    } else if (x == x->parent->right) {
-        x->parent->right = y;
+    if (x->parent != NULL) {
+        if (x == x->parent->right) {
+            x->parent->right = y;
+        } else {
+            x->parent->left = y;
+        }
     } else {
-        x->parent->left = y;
+        *root = y;
     }
     y->right = x;
     x->parent = y;
@@ -51,6 +53,45 @@ static inline void RBNode_rotateRight(RBNode_800F9CC8 **root, RBNode_800F9CC8 *x
 }
 
 void fn_800F9CC8(RBNode_800F9CC8 **root, RBNode_800F9CC8 *x) {
+    RBNode_800F9CC8 *y;
+
+    x->black = 0;
+    while (x->parent != NULL && !x->parent->black) {
+        if (x->parent == x->parent->parent->right) {
+            y = x->parent->parent->left;
+            if (y != NULL && !y->black) {
+                y->black = 1;
+                x->parent->black = 1;
+                x = x->parent->parent;
+                x->black = 0;
+            } else {
+                if (x == x->parent->left) {
+                    x = x->parent;
+                    RBNode_rotateLeft(root, x);
+                }
+                x->parent->black = 1;
+                x->parent->parent->black = 0;
+                RBNode_rotateRight(root, x->parent->parent);
+            }
+        } else {
+            y = x->parent->parent->right;
+            if (y != NULL && !y->black) {
+                y->black = 1;
+                x->parent->black = 1;
+                x = x->parent->parent;
+                x->black = 0;
+            } else {
+                if (x == x->parent->right) {
+                    x = x->parent;
+                    RBNode_rotateRight(root, x);
+                }
+                x->parent->black = 1;
+                x->parent->parent->black = 0;
+                RBNode_rotateLeft(root, x->parent->parent);
+            }
+        }
+    }
+    (*root)->black = 1;
 }
 
 TreeNode_800F9F44 *fn_800F9F44(TreeNode_800F9F44 *node) {
