@@ -111,6 +111,19 @@ s32 fn_800E895C(void *file) {
     __end_critical_region(2);
     return position;
 }
+
+void* __memrchr(const void* src, int val, unsigned long n) {
+    const unsigned char* p;
+    unsigned long v = (val & 0xff);
+
+    for (p = (unsigned char*)src + n, n++; --n;) {
+        if (*--p == v) {
+            return (void*)p;
+        }
+    }
+    return 0;
+}
+
 #pragma pop
 void fn_800E8DF8(u8 *d, const u8 *s, u32 n) {
     u32 a, b;
@@ -443,8 +456,9 @@ double fn_800EFFC0(double x, int *eptr) {
     *eptr = 0;
     if (ix >= 0x7ff00000 || ((ix | lx) == 0)) return x;
     if (ix < 0x00100000) {
+        double two54 = lbl_80363688;
         *eptr = -54;
-        x *= lbl_80363688;
+        x *= two54;
         hx = *(int *)&x;
         ix = hx & 0x7fffffff;
     }
