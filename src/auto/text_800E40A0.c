@@ -377,6 +377,44 @@ void* memchr(const void* src, int val, unsigned long n) {
     return 0;
 }
 
+void fn_800E8C8C(void *dst, const void *src, unsigned long n);
+void fn_800E8D38(void *dst, const void *src, unsigned long n);
+void fn_800E8DF8(u8 *d, const u8 *s, u32 n);
+void fn_800E8EA0(u8 *d, const u8 *s, u32 n);
+void *memmove(void *dst, const void *src, unsigned long n) {
+    const unsigned char *p;
+    unsigned char *q;
+    int rev = ((unsigned long)src < (unsigned long)dst);
+
+    if (n >= 32) {
+        if (((unsigned long)dst ^ (unsigned long)src) & 3) {
+            if (!rev) {
+                fn_800E8D38(dst, src, n);
+            } else {
+                fn_800E8C8C(dst, src, n);
+            }
+        } else {
+            if (!rev) {
+                fn_800E8EA0(dst, src, n);
+            } else {
+                fn_800E8DF8(dst, src, n);
+            }
+        }
+        return dst;
+    }
+
+    if (!rev) {
+        for (p = (const unsigned char *)src - 1, q = (unsigned char *)dst - 1, n++; --n;) {
+            *++q = *++p;
+        }
+    } else {
+        for (p = (const unsigned char *)src + n, q = (unsigned char *)dst + n, n++; --n;) {
+            *--q = *--p;
+        }
+    }
+    return dst;
+}
+
 void fn_800E8C8C(void* dst, const void* src, unsigned long n) {
     unsigned long i;
     int src_offset, left_shift, right_shift;
@@ -417,58 +455,54 @@ void fn_800E8C8C(void* dst, const void* src, unsigned long n) {
 void fn_800E8D38(void *dst, const void *src, unsigned long n) {
     unsigned long i, v1, v2;
     unsigned int src_offset, left_shift, right_shift;
-    unsigned char *cps;
-    unsigned char *cpd;
-    unsigned long *lps;
-    unsigned long *lpd;
 
-    cps = ((unsigned char *)src) - 1;
-    cpd = ((unsigned char *)dst) - 1;
+    ((unsigned char *)src) = ((unsigned char *)src) - 1;
+    ((unsigned char *)dst) = ((unsigned char *)dst) - 1;
 
     i = (-(unsigned long)dst) & 3;
 
     if (i) {
         n -= i;
         do
-            *++cpd = *++cps;
+            *++((unsigned char *)dst) = *++((unsigned char *)src);
         while (--i);
     }
 
-    src_offset = ((unsigned int)(cps + 1)) & 3;
+    src_offset = ((unsigned int)(((unsigned char *)src) + 1)) & 3;
 
     left_shift = src_offset << 3;
     right_shift = 32 - left_shift;
 
-    cps -= src_offset;
+    ((unsigned char *)src) -= src_offset;
 
-    lps = ((unsigned long *)(cps + 1)) - 1;
-    lpd = ((unsigned long *)(cpd + 1)) - 1;
+    ((unsigned long *)src) = ((unsigned long *)(((unsigned char *)src) + 1)) - 1;
+    ((unsigned long *)dst) = ((unsigned long *)(((unsigned char *)dst) + 1)) - 1;
 
     i = n >> 3;
 
-    v1 = *++lps;
+    v1 = *++((unsigned long *)src);
 
     do {
-        v2 = *++lps;
-        *++lpd = (v1 << left_shift) | (v2 >> right_shift);
-        v1 = *++lps;
-        *++lpd = (v2 << left_shift) | (v1 >> right_shift);
+        v2 = *++((unsigned long *)src);
+        *++((unsigned long *)dst) = (v1 << left_shift) | (v2 >> right_shift);
+        v1 = *++((unsigned long *)src);
+        *++((unsigned long *)dst) = (v2 << left_shift) | (v1 >> right_shift);
     } while (--i);
 
     if (n & 4) {
-        v2 = *++lps;
-        *++lpd = (v1 << left_shift) | (v2 >> right_shift);
+        v2 = *++((unsigned long *)src);
+        *++((unsigned long *)dst) = (v1 << left_shift) | (v2 >> right_shift);
     }
 
-    cps = ((unsigned char *)(lps + 1)) - 1;
-    cpd = ((unsigned char *)(lpd + 1)) - 1;
+    ((unsigned char *)src) = ((unsigned char *)(((unsigned long *)src) + 1)) - 1;
+    ((unsigned char *)dst) = ((unsigned char *)(((unsigned long *)dst) + 1)) - 1;
 
     n &= 3;
 
     if (n) {
-        cps -= 4 - src_offset;
+        ((unsigned char *)src) -= 4 - src_offset;
         do
-            *++cpd = *++cps;
+            *++((unsigned char *)dst) = *++((unsigned char *)src);
         while (--n);
     }
 }
@@ -875,6 +909,43 @@ size_t strlen(const char* s) {
         n++;
     } while (*++p != 0);
     return n;
+}
+
+double fn_800EB838(char *str) {
+    double fn_800EB8C4(int, int (*)(void *, int, int), void *, int *, int *);
+    double fabs(double);
+    extern double lbl_803596B8, lbl_803596C0, lbl_803631E8;
+    extern s32 lbl_8035A978;
+    struct { char *str; int end; } state;
+    int error;
+    int count;
+    double value, magnitude;
+    state.str = str;
+    state.end = 0;
+    value = fn_800EB8C4(0x7FFFFFFF, fn_800EB1D4, &state, &count, &error);
+    magnitude = fabs(value);
+    if (error != 0 || (lbl_803631E8 != value && (magnitude < lbl_803596B8 || magnitude > lbl_803596C0)))
+        lbl_8035A978 = 0x22;
+    return value;
+}
+
+int fn_800EC8D0(char *str) {
+    u32 fn_800EC990(int, int, int (*)(void *, int, int), void *, int *, int *, int *);
+    extern s32 lbl_8035A978;
+    struct { char *str; int end; } state;
+    int error;
+    int negative;
+    int count;
+    u32 value;
+    state.str = str;
+    state.end = 0;
+    value = fn_800EC990(10, 0x7FFFFFFF, fn_800EB1D4, &state, &count, &negative, &error);
+    if (error != 0 || (negative == 0 && value > 0x7FFFFFFFU) || (negative != 0 && value > 0x80000000U)) {
+        lbl_8035A978 = 0x22;
+        return (negative != 0) + 0x7FFFFFFF;
+    }
+    if (negative != 0) value = -value;
+    return value;
 }
 
 s32 fn_800ECD08(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
