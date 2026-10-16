@@ -2306,7 +2306,8 @@ void fn_800DBD08(s32 bufferIdx) {
     M2C_FIELD(event, s32 *, 8) = bufferIdx;
     fn_800DABB4(event);
 }
-#pragma pop
+#pragma push
+#pragma dont_inline on
 void TRKGetInput(void) {
     s32 fn_800DBDF0(void);
     TrkBuf *TRKGetBuffer(s32);
@@ -2314,6 +2315,7 @@ void TRKGetInput(void) {
     TrkBuf *buf;
     s32 id;
     u8 command;
+    u8 event[0xC];
 
     id = fn_800DBDF0();
     if (id != -1) {
@@ -2321,13 +2323,16 @@ void TRKGetInput(void) {
         fn_800DBAA0(buf, 0);
         fn_800DB4F0(buf, &command);
         if (command < 0x80) {
-            fn_800DBD08(id);
+            fn_800DAB9C(event, 2);
+            lbl_803257B4.msgBufID = -1;
+            M2C_FIELD(event, s32 *, 8) = id;
+            fn_800DABB4(event);
         } else {
             fn_800DBB10(id);
         }
     }
 }
-
+#pragma pop
 void usr_put_initialize(void) {
 
 }
