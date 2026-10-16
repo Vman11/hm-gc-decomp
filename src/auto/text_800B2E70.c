@@ -3782,6 +3782,16 @@ void fn_800DBAD0(TrkBuf *buf, s32 keepData) {
     }
 }
 
+void fn_800DBB10(s32 idx) {
+    TrkBuf *buf;
+    if (idx != -1 && idx >= 0 && idx < 3) {
+        buf = &lbl_80323E00[idx];
+        fn_800DF2F8(buf);
+        M2C_FIELD(buf, s32 *, 4) = 0;
+        fn_800DF2F0(buf);
+    }
+}
+
 TrkBuf *TRKGetBuffer(s32 idx) {
     TrkBuf *buf = NULL;
     if (idx >= 0 && idx < 3) {
