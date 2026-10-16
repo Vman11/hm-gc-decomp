@@ -8,6 +8,14 @@ typedef struct ColorBits {
     u32 b : 8;
     u32 c : 8;
 } ColorBits;
+static inline f32 ClampF(f32 v, f32 lo, f32 hi) {
+    if (v < lo) {
+        return lo;
+    } else if (v > hi) {
+        return hi;
+    }
+    return v;
+}
 typedef struct Anim {
     f32 *data;
     u32 count;
@@ -1990,19 +1998,17 @@ void fn_800D7A00(void *lt_obj, u32 *color) {
 
 void fn_800D8238(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
 
-void fn_800D8278(void *arg0, f32 farg0) {
+void fn_800D8278(ColorBits *arg0, f32 farg0) {
     extern f32 lbl_80363128;
     extern f32 lbl_80363148;
     extern f32 lbl_8036314C;
-    u8 v;
 
     if (farg0 < lbl_80363148) {
         farg0 = lbl_80363148;
     } else if (farg0 > lbl_8036314C) {
         farg0 = lbl_8036314C;
     }
-    v = lbl_80363128 * farg0;
-    SETF(*(u32 *)((u8 *)arg0 + 4), 8, 8, v);
+    arg0->b = lbl_80363128 * farg0;
 }
 
 s32 fn_800D8318(void *arg0) {
