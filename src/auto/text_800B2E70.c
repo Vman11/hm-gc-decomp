@@ -241,6 +241,17 @@ extern void fn_800DBAD0(TrkBuf*, s32);
 extern s32 fn_800DAF24(TrkBuf*);
 s32 fn_800E17E8(s8 arg0);
 s32 fn_800E1810(void);
+static inline s32 TRKWriteEscaped(u8 c) {
+    s32 err;
+    if (c == 0x7E || c == 0x7D) {
+        err = fn_800E17E8(0x7D);
+        c ^= 0x20;
+        if (err != 0) {
+            return err;
+        }
+    }
+    return fn_800E17E8(c);
+}
 s32 fn_800DEA20(void);
 s32 fn_800DF4D0();
 typedef struct DBCommTable {
@@ -6290,6 +6301,57 @@ s32 TRKInitializeNub(void) {
     if (result == 0) result = TRKInitializeSerialHandler();
     if (result == 0) result = TRKInitializeTarget();
     return result;
+}
+
+s32 fn_800DAF24(TrkBuf *msg) {
+    s32 err;
+    u8 checksum;
+    u32 i;
+    u8 c;
+    u32 acc = 0;
+
+    for (i = 0; i < msg->count; i++) {
+        acc = (acc + msg->data[i]) & 0xFF;
+    }
+    checksum = acc ^ 0xFF;
+
+    err = fn_800E17E8(0x7E);
+    if (err == 0) {
+        for (i = 0; i < msg->count; i++) {
+            c = msg->data[i];
+            if (c == 0x7E || c == 0x7D) {
+                err = fn_800E17E8(0x7D);
+                c ^= 0x20;
+                if (err != 0) {
+                    break;
+                }
+            }
+            err = fn_800E17E8(c);
+            if (err != 0) {
+                break;
+            }
+        }
+    }
+
+    if (err == 0) {
+        c = checksum;
+        if (checksum == 0x7E || checksum == 0x7D) {
+            err = fn_800E17E8(0x7D);
+            c ^= 0x20;
+            if (err != 0) {
+                goto end;
+            }
+        }
+        err = fn_800E17E8(c);
+    }
+end:
+    if (err == 0) {
+        err = fn_800E17E8(0x7E);
+    }
+    if (err == 0) {
+        err = fn_800E1810();
+    }
+    return err;
 }
 
 #pragma push
