@@ -3659,32 +3659,28 @@ void fn_800D57B0(void) {
     static u8 tbl1[] = { 0, 4, 1, 2 };
     static u8 tbl2[] = { 0, 8, 1, 2 };
     static u8 tbl3[] = { 0, 12, 1, 2 };
-    s32 nc;
     u32 vlm;
-    u32 b;
-    u32 vl;
-    u32 vh;
-    u32 va;
+    u32 vl, vh;
+    s32 va;
 
     if (__GXData->vNum == 0) {
         return;
     }
     vl = M2C_FIELD(__GXData, u32 *, 0x14);
     vh = M2C_FIELD(__GXData, u32 *, 0x18);
-    va = M2C_FIELD(__GXData, u32 *, 0x1C);
-    nc = (va >> 9) & 1;
+    va = (M2C_FIELD(__GXData, u32 *, 0x1C) >> 9) & 1;
 
     vlm = vl & 1;
-    vlm += (u8)((vl >> 1) & 1);
-    vlm += (u8)((vl >> 2) & 1);
-    vlm += (u8)((vl >> 3) & 1);
-    vlm += (u8)((vl >> 4) & 1);
-    vlm += (u8)((vl >> 5) & 1);
-    vlm += (u8)((vl >> 6) & 1);
-    vlm += (u8)((vl >> 7) & 1);
-    vlm += (u8)((vl >> 8) & 1);
+    vlm += (vl >> 1) & 1;
+    vlm += (vl >> 2) & 1;
+    vlm += (vl >> 3) & 1;
+    vlm += (vl >> 4) & 1;
+    vlm += (vl >> 5) & 1;
+    vlm += (vl >> 6) & 1;
+    vlm += (vl >> 7) & 1;
+    vlm += (vl >> 8) & 1;
     vlm += tbl3[(vl >> 9) & 3];
-    vlm += tbl3[(vl >> 11) & 3] * ((nc == 1) ? 3 : 1);
+    vlm += tbl3[(vl >> 11) & 3] * ((va == 1) ? 3 : 1);
     vlm += tbl1[(vl >> 13) & 3];
     vlm += tbl1[(vl >> 15) & 3];
     vlm += tbl2[vh & 3];
@@ -4840,6 +4836,31 @@ void fn_800D95E8(u8 nStages) {
     M2C_FIELD(gx, u32 *, 0x5AC) |= 4;
 }
 
+void fn_800D9834(u8 enable, u16 center, u16 *table) {
+    extern GXDataHead *__GXData;
+    u32 i;
+    u32 range_adj;
+    u32 range_c;
+
+    if (enable) {
+        for (i = 0; i < 10; i += 2) {
+            range_adj = 0;
+            range_adj = (range_adj & ~0xFFF) | ((u32)table[i] & 0xFFF);
+            range_adj = (range_adj & ~0xFFF000) | (((u32)table[i + 1] << 12) & 0xFFF000);
+            range_adj = (range_adj & ~0xFF000000) | ((((i >> 1) + 0xE9) << 24) & 0xFF000000);
+            GXWGFifo.u8 = 0x61;
+            GXWGFifo.u32 = range_adj;
+        }
+    }
+    range_c = 0;
+    range_c = (range_c & ~0x3FF) | ((u32)(center + 342) & 0x3FF);
+    range_c = (range_c & ~0x400) | (((u32)enable << 10) & 0x400);
+    range_c = (range_c & ~0xFF000000) | ((0xE8 << 24) & 0xFF000000);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = range_c;
+    __GXData->bpSentNot = 0;
+}
+
 void fn_800D9958(u32 type, u32 src_factor, u32 dst_factor, u32 op) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
@@ -5928,16 +5949,17 @@ void fn_800DEA14(s32 arg0) {
 
 s32 fn_800DEBC0(u32 replyError, u8 *ioResult) {
     s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
+    s32 err;
     s32 replyBufferId;
     s32 bufferId;
     TrkBuf *buffer;
     s32 error;
     TrkBuf *replyBuffer;
-    s32 err;
+    TrkBuf *b;
 
     error = fn_800DBBA0(&bufferId, &buffer);
     if (error == 0) {
-        TrkBuf *b = buffer;
+        b = buffer;
         if (b->pos >= 0x880) {
             err = 0x301;
         } else {
