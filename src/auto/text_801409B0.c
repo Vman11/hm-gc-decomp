@@ -22,7 +22,7 @@ typedef struct ImgDec {
 
 void fn_80141268(ImgDec *p) {
     u8 *s = p->px;
-    u8 *e = s + (p->count >> 1);
+    u8 *e = s + ((u32)p->count >> 1);
     do {
         u8 v = *s;
         s++;
@@ -57,17 +57,36 @@ void fn_801413C8(ImgDec *p) {
     } while (d < e);
 }
 
-void fn_8014188C(ImgDec *p) {
+void fn_80141424(ImgDec *p) {
     u8 *d = p->dst;
     u8 *e = d + p->count * 4;
-    u16 *s = (u16 *)p->src;
+    u32 *s = (u32 *)p->src;
+    u32 v;
     do {
-        u32 v;
         v = *s >> p->shr[0];
         d[0] = (v << p->shl[0]) | (v & p->mask[0]);
         v = *s >> p->shr[1];
         d[1] = (v << p->shl[1]) | (v & p->mask[1]);
         v = *s >> p->shr[2];
+        s += 1;
+        d[2] = (v << p->shl[2]) | (v & p->mask[2]);
+        d[3] = 0xFF;
+        d += 4;
+    } while (d < e);
+    p->src += p->count * 4;
+}
+
+void fn_8014188C(ImgDec *p) {
+    u16 *s = (u16 *)p->src;
+    u8 *d = p->dst;
+    u8 *e = d + p->count * 4;
+    do {
+        u32 v;
+        v = (u32)*s >> p->shr[0];
+        d[0] = (v << p->shl[0]) | (v & p->mask[0]);
+        v = (u32)*s >> p->shr[1];
+        d[1] = (v << p->shl[1]) | (v & p->mask[1]);
+        v = (u32)*s >> p->shr[2];
         s++;
         d[2] = (v << p->shl[2]) | (v & p->mask[2]);
         d[3] = 0xFF;
