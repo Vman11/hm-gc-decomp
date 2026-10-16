@@ -2071,6 +2071,14 @@ s32 fn_800F0DA0(u32 *data) {
 }
 
 volatile u32 __EXIRegs[16] : 0xCC006800;
+
+typedef struct EXI2Control {
+    u8 unk0[0xC];
+    u32 state;
+    s32 immLen;
+    u8 *immBuf;
+} EXI2Control;
+extern EXI2Control *lbl_803596F0;
 void fn_800F14C0(s32 arg0, s32 arg1) {
     if (arg0 != 0) {
         *(volatile u32 *)0xCC003000 = (*(volatile u32 *)0xCC003000 & 0x1000) | 0x1000;
@@ -2295,6 +2303,44 @@ void UnlockedHandler(void) {
     M2C_UNK sp10;
 
     EXIGetID(0, &sp10);
+}
+
+s32 fn_800F37AC(s32 chan, u32 dev, u32 *id) {
+    s32 EXIDeselect(s32);
+    s32 EXIImm(s32, void *, s32, s32, void *);
+    s32 EXILock(s32, u32, void *);
+    s32 EXISelect(s32, u32, s32);
+    s32 EXISync(s32);
+    s32 EXIUnlock(s32);
+    s32 fn_800F2864(s32, void *);
+    s32 fn_800F2970(s32);
+    BOOL err;
+    u32 cmd;
+
+    if (chan != 2 && dev == 0 && !fn_800F2864(chan, 0)) {
+        return 0;
+    }
+    err = !EXILock(chan, dev, 0);
+    if (!err) {
+        err = !EXISelect(chan, dev, 0);
+        if (!err) {
+            cmd = 0x20011300;
+            err = FALSE;
+            err |= !EXIImm(chan, &cmd, 4, 1, 0);
+            err |= !EXISync(chan);
+            err |= !EXIImm(chan, id, 4, 0, 0);
+            err |= !EXISync(chan);
+            err |= !EXIDeselect(chan);
+        }
+        EXIUnlock(chan);
+    }
+    if (chan != 2 && dev == 0) {
+        fn_800F2970(chan);
+    }
+    if (err) {
+        return 0;
+    }
+    return (*id + 1 != 0x10000) ? 1 : 0;
 }
 
 s32 fn_800F3AF4(void) {
