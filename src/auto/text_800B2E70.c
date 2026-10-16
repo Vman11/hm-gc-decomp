@@ -1978,3 +1978,19 @@ void fn_800E1AD8(u8 v) {
     lbl_80327F90[0] = v;
 }
 
+s32 fn_800E1AE4(s32 arg0) {
+    u8 r;
+    if (fn_800DEA20() == 0) {
+        return 1;
+    }
+    r = fn_800E1060(0xD3, arg0);
+    switch (r) {
+    case 0:
+        return 0;
+    case 2:
+        return 2;
+    default:
+        return 1;
+    }
+}
+
