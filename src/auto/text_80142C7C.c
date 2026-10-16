@@ -308,6 +308,34 @@ void fn_801438BC(Img *p) {
     } while (d < e);
 }
 
+void fn_801439C4(Img *p) {
+    u8 *d = p->px;
+    u32 *s = (u32 *)p->src;
+    u8 *e = d + 0x80;
+    u32 v;
+    do {
+        v = s[0] >> p->rsh[0]; d[0] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = s[0] >> p->rsh[1]; d[1] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = s[0] >> p->rsh[2]; d[2] = (v << p->lsh[2]) | (v & p->mask[2]);
+        d[3] = 0xFF;
+        v = s[1] >> p->rsh[0]; d[4] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = s[1] >> p->rsh[1]; d[5] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = s[1] >> p->rsh[2]; d[6] = (v << p->lsh[2]) | (v & p->mask[2]);
+        d[7] = 0xFF;
+        v = s[2] >> p->rsh[0]; d[8] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = s[2] >> p->rsh[1]; d[9] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = s[2] >> p->rsh[2]; d[10] = (v << p->lsh[2]) | (v & p->mask[2]);
+        d[11] = 0xFF;
+        v = s[3] >> p->rsh[0]; d[12] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = s[3] >> p->rsh[1]; d[13] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = s[3] >> p->rsh[2]; d[14] = (v << p->lsh[2]) | (v & p->mask[2]);
+        s += 4;
+        d[15] = 0xFF;
+        d += 16;
+    } while (d < e);
+    p->src += 0x80;
+}
+
 void fn_80143BB4(Img *p) {
     u8 *d = p->px;
     u8 *e = d + 0x80;
@@ -418,6 +446,48 @@ void fn_80144130(Img *p) {
         p->src += 3;
         d += 16;
     } while (d < e);
+}
+
+void fn_801446C8(Img *p) {
+    u16 *s;
+    u8 *d = p->px;
+    u8 *e;
+    u32 v;
+    s = (u16 *)p->src;
+    e = d + 0x80;
+    do {
+        v = (u32)s[0] >> p->rsh[0];
+        d[0] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = (u32)s[0] >> p->rsh[1];
+        d[1] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = (u32)s[0] >> p->rsh[2];
+        d[2] = (v << p->lsh[2]) | (v & p->mask[2]);
+        d[3] = 0xFF;
+        v = (u32)s[1] >> p->rsh[0];
+        d[4] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = (u32)s[1] >> p->rsh[1];
+        d[5] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = (u32)s[1] >> p->rsh[2];
+        d[6] = (v << p->lsh[2]) | (v & p->mask[2]);
+        d[7] = 0xFF;
+        v = (u32)s[2] >> p->rsh[0];
+        d[8] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = (u32)s[2] >> p->rsh[1];
+        d[9] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = (u32)s[2] >> p->rsh[2];
+        d[10] = (v << p->lsh[2]) | (v & p->mask[2]);
+        d[11] = 0xFF;
+        v = (u32)s[3] >> p->rsh[0];
+        d[12] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = (u32)s[3] >> p->rsh[1];
+        d[13] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = (u32)s[3] >> p->rsh[2];
+        s += 4;
+        d[14] = (v << p->lsh[2]) | (v & p->mask[2]);
+        d[15] = 0xFF;
+        d += 16;
+    } while (d < e);
+    p->src += 0x40;
 }
 
 void fn_801448B8(Img *p) {
