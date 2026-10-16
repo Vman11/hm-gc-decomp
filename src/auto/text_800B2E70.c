@@ -1418,6 +1418,13 @@ void fn_800CDBA0(u32 arg) {
     *(u32 *)(p + 0x21c) = arg ? arg : (u32)(p + 0x220);
 }
 
+int fn_800CDCF4(int chan) {
+    if (chan < 0 || chan >= 2) {
+        return -128;
+    }
+    return *(int *)(lbl_80323560 + chan * 0x110 + 4);
+}
+
 s32 fn_800CF4C0(void *arg0) {
     return M2C_FIELD(arg0, s32 *, 0x88);
 }
