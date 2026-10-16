@@ -31,6 +31,19 @@ void fn_8016CA28(void *arg0, void *arg1) {
     M2C_FIELD(arg0, void **, 0x1F40) = arg1;
 }
 
+void fn_8016CA38(u8 *arg0, u8 *arg1) {
+    u8 **pp = (u8 **)(arg0 + 0x1F3C);
+    u8 *p = *pp;
+    while (p != NULL) {
+        if (p == arg1) {
+            *pp = *(u8 **)(arg1 + 0x20);
+            return;
+        }
+        pp = (u8 **)(p + 0x20);
+        p = *pp;
+    }
+}
+
 void fn_8016CA68(void *arg0, void *arg1) {
     M2C_FIELD(arg1, void **, 0x20) = (void *) M2C_FIELD(arg0, void **, 0x1F3C);
     M2C_FIELD(arg0, void **, 0x1F3C) = arg1;
