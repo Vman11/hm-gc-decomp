@@ -483,6 +483,39 @@ s32 fn_800E895C(void *file) {
     return position;
 }
 
+char *fn_800EB720(char *dst, const char *src, u32 n);
+#pragma push
+#pragma dont_inline off
+#pragma use_lmw_stmw on
+u32 wcstombs(char *s, const u16 *pwcs, u32 n) {
+    int chars_written = 0;
+    int result;
+    char temp[3];
+    u16 *source;
+
+    if (!s || !pwcs) {
+        return 0;
+    }
+
+    source = (u16 *)pwcs;
+    while (chars_written <= n) {
+        if (!*source) {
+            *(s + chars_written) = '\0';
+            break;
+        } else {
+            result = unicode_to_UTF8(temp, *source++);
+            if ((chars_written + result) <= n) {
+                fn_800EB720(s + chars_written, temp, result);
+                chars_written += result;
+            } else {
+                break;
+            }
+        }
+    }
+
+    return chars_written;
+}
+#pragma pop
 int fn_800E8B1C(const void* src1, const void* src2, unsigned long n) {
     const unsigned char* p1;
     const unsigned char* p2;
@@ -870,6 +903,58 @@ void *fn_800E92B8(void *ctx, const void *buf, u32 len) {
 
 void *__FileWrite(void *file, const void *buf, u32 len) {
     return (fwrite(buf, 1, len, file) == len) ? file : 0;
+}
+
+void fn_800EA1DC(decimal *d, int digits) {
+    unsigned char *end;
+    unsigned char *i;
+    signed char c;
+    int flag;
+
+    if (digits < 0) {
+    zero:
+        d->exp = 0;
+        d->sig.length = 1;
+        d->sig.text[0] = '0';
+        return;
+    }
+    if (digits >= d->sig.length) {
+        return;
+    }
+    end = d->sig.text + digits;
+    c = *end - '0';
+    if (c == 5) {
+        i = d->sig.text + d->sig.length;
+        while (--i > end && *i == '0') {
+        }
+        if (i == end) {
+            flag = end[-1] & 1;
+        } else {
+            flag = 1;
+        }
+    } else {
+        flag = c > 5;
+    }
+    while (digits != 0) {
+        c = *--end + flag - '0';
+        flag = c > 9;
+        if (flag || c == 0) {
+            digits--;
+        } else {
+            *end = c + '0';
+            break;
+        }
+    }
+    if (flag) {
+        d->exp++;
+        d->sig.length = 1;
+        d->sig.text[0] = '1';
+        return;
+    }
+    if (digits == 0) {
+        goto zero;
+    }
+    d->sig.length = digits;
 }
 
 #pragma pop
@@ -1756,6 +1841,38 @@ u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext) {
     return prev;
 }
 
+#pragma push
+#pragma use_lmw_stmw on
+BOOL fn_800F2864(s32 chan, EXICallback extCallback) {
+    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
+    BOOL enabled;
+    BOOL rc;
+    u32 id;
+
+    if (__EXIProbe(chan) && exi->idTime == 0) {
+        EXIGetID(chan, 0, &id);
+    }
+    enabled = OSDisableInterrupts();
+    if (exi->idTime == 0) {
+        OSRestoreInterrupts(enabled);
+        return FALSE;
+    }
+    rc = OSDisableInterrupts();
+    if ((exi->state & 8) || __EXIProbe(chan) == FALSE) {
+        OSRestoreInterrupts(rc);
+        rc = FALSE;
+    } else {
+        EXIClearInterrupts(chan, TRUE, FALSE, FALSE);
+        exi->extCallback = extCallback;
+        __OSUnmaskInterrupts(0x100000U >> (chan * 3));
+        exi->state |= 8;
+        OSRestoreInterrupts(rc);
+        rc = TRUE;
+    }
+    OSRestoreInterrupts(enabled);
+    return rc;
+}
+#pragma pop
 BOOL __EXIProbe(s32 chan);
 BOOL EXIDeselect(s32 chan) {
     EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
