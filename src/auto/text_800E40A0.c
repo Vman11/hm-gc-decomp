@@ -1080,6 +1080,39 @@ int fwide(void *file, int mode) {
     return result;
 }
 
+double fn_800EE824(double x, double y) {
+    extern double lbl_80363540;
+    extern double lbl_80363548;
+    extern double lbl_80363550;
+    extern double lbl_80363558;
+    extern double lbl_80363560;
+    extern double lbl_80363568;
+    extern double lbl_80363570;
+    extern double lbl_80363578;
+    extern double lbl_80363580;
+    double a, hz, z, r, qx;
+    int ix;
+    ix = (*(int *)&x) & 0x7fffffff;
+    if (ix < 0x3e400000) {
+        if ((int)x == 0) return lbl_80363540;
+    }
+    z = x * x;
+    r = z * (lbl_80363548 + z * (lbl_80363550 + z * (lbl_80363558 + z * (lbl_80363560 + z * (lbl_80363568 + lbl_80363570 * z)))));
+    if (ix < 0x3FD33333)
+        return lbl_80363540 - (lbl_80363578 * z - (z * r - x * y));
+    else {
+        if (ix > 0x3fe90000) {
+            qx = lbl_80363580;
+        } else {
+            *(int *)&qx = ix - 0x00200000;
+            *((int *)&qx + 1) = 0;
+        }
+        hz = lbl_80363578 * z - qx;
+        a = lbl_80363540 - qx;
+        return a - (hz - (z * r - x * y));
+    }
+}
+
 double fn_800EF76C(double x, double y, int iy) {
     extern double lbl_803635C8;
     extern double lbl_803635D0;
