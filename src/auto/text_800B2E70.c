@@ -2468,6 +2468,10 @@ void TRKUARTInterruptHandler(void) {
 
 }
 
+void fn_800E18F0(void) {
+    gDBCommTable.initInterrupts();
+}
+
 void OSEnableScheduler(void);
 void TRKLoadContext(void *ctx, s32 v);
 u8 fn_800E1050(s32, s32, s32 *, s32);
@@ -2484,9 +2488,12 @@ s32 TRKTargetContinue(void) {
     return 0;
 }
 
+#pragma push
+#pragma dont_inline on
 u8 fn_800E1AC8(void) {
     return *lbl_80327F90;
 }
+#pragma pop
 
 extern u8 lbl_80327F90[];
 void fn_800E1AD8(u8 v) {
@@ -2500,6 +2507,30 @@ s32 fn_800E1AE4(s32 arg0) {
     }
     r = fn_800E1060(0xD3, arg0);
     switch (r) {
+    case 0:
+        return 0;
+    case 2:
+        return 2;
+    default:
+        return 1;
+    }
+}
+
+s32 fn_800E1B68(s32 arg0, s32 arg1, s32 *arg2) {
+    s32 tmp;
+    u8 r;
+    if (fn_800E1AC8() == 0) {
+        return 1;
+    }
+    if (fn_800DEA20() == 0) {
+        return 1;
+    }
+    tmp = *arg2;
+    r = fn_800E1050(0xD0, 1, &tmp, arg1);
+    *arg2 = tmp;
+    switch (r) {
+    case 1:
+        return 1;
     case 0:
         return 0;
     case 2:
