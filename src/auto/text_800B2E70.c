@@ -1781,6 +1781,46 @@ void usr_put_initialize(void) {
 
 }
 
+void fn_800DE8AC(TrkBuf* buf) {
+    s32 n;
+    fn_800DBAD0(buf, 1);
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x80;
+        buf->count++;
+    }
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = 0x10;
+        buf->count++;
+    }
+    n = 3;
+    do {
+        n--;
+        if (fn_800DAF24(buf) == 0) break;
+    } while (n > 0);
+}
+
+void fn_800DE95C(TrkBuf* buf, s8 a, s8 b) {
+    s32 n;
+    fn_800DBAD0(buf, 1);
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = a;
+        buf->count++;
+    }
+    if (buf->pos < 0x880) {
+        buf->data[buf->pos++] = b;
+        buf->count++;
+    }
+    n = 3;
+    do {
+        n--;
+        if (fn_800DAF24(buf) == 0) break;
+    } while (n > 0);
+}
+
+void fn_800DEA14(s32 arg0) {
+    lbl_803257D0 = arg0;
+}
+
 s32 fn_800DF2F0(void) {
     return 0;
 }
@@ -1802,9 +1842,12 @@ s32 fn_800DF874(void) {
     return 0;
 }
 
+#pragma push
+#pragma dont_inline on
 void TRKTargetSetStopped(s32 arg0) {
     M2C_FIELD(&gTRKState, s32 *, 0x98) = arg0;
 }
+#pragma pop
 
 s32 TRKTargetStopped(void) {
     return M2C_FIELD(&gTRKState, s32 *, 0x98);
