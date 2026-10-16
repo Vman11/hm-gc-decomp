@@ -5323,7 +5323,7 @@ void TRKNubWelcome(void) {
     TRK_board_display("MetroTRK for GAMECUBE v2.0");
 }
 
-static s32 TRK_InitializeEndian(void) {
+static inline s32 TRK_InitializeEndian(void) {
     extern s32 gTRKBigEndian[];
     u8 bendian[4];
     s32 result = 0;
@@ -5350,7 +5350,6 @@ s32 TRKTerminateNub(void) {
 }
 
 s32 TRKInitializeNub(void) {
-    extern s32 gTRKBigEndian[];
     extern u8 *gTRKInputPendingPtr[];
     extern void usr_put_initialize(void);
     extern s32 TRKInitializeMessageBuffers(void);
@@ -5360,22 +5359,10 @@ s32 TRKInitializeNub(void) {
     extern void TRKTargetSetInputPendingPtr(s32 arg0);
     extern s32 TRKInitializeSerialHandler(void);
     extern s32 TRKInitializeTarget(void);
-    s32 result = 0;
+    s32 result;
     s32 resultTemp;
-    u8 bendian[4];
 
-    gTRKBigEndian[0] = 1;
-    bendian[0] = 0x12;
-    bendian[1] = 0x34;
-    bendian[2] = 0x56;
-    bendian[3] = 0x78;
-    if (*(u32*)bendian == 0x12345678) {
-        gTRKBigEndian[0] = 1;
-    } else if (*(u32*)bendian == 0x78563412) {
-        gTRKBigEndian[0] = result;
-    } else {
-        result = 1;
-    }
+    result = TRK_InitializeEndian();
 
     if (result == 0) usr_put_initialize();
     if (result == 0) result = TRKInitializeEventQueue();
