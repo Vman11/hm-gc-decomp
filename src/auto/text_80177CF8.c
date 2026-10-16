@@ -24,15 +24,10 @@ void fn_80177D40(GXColor *__restrict arg0, GXColor *__restrict arg1) {
     arg1->a = arg0[1].a;
 }
 
-void fn_80177D64(GXColor *arg0, GXColor *arg1) {
-    u8 g, r, a, b;
-    r = arg0->r;
-    g = arg0->g;
-    arg1->r = r;
-    b = arg0->b;
-    arg1->g = g;
-    a = arg0->a;
-    arg1->b = b;
-    arg1->a = a;
+void fn_80177D64(GXColor *__restrict arg0, GXColor *__restrict arg1) {
+    arg1->r = arg0->r;
+    arg1->g = arg0->g;
+    arg1->b = arg0->b;
+    arg1->a = arg0->a;
 }
 
