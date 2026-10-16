@@ -1,8 +1,38 @@
 /* Functions from 0x80152BA4 to 0x80153420, found by decomp-toolkit. */
 #include "common.h"
 
+typedef struct { f32 m[4][4]; } MtxA_;
+typedef struct { f32 m[4][4]; } MtxB_;
+
 void fn_80152BA4(void) {
 
+}
+
+void fn_80153358(f32 *dst, f32 *src) {
+    f32 a = src[4];
+    f32 b = src[8];
+    f32 c = src[12];
+    f32 d = src[1];
+    f32 e = src[9];
+    f32 f = src[13];
+    f32 g = src[2];
+    f32 h = src[6];
+    f32 i = src[14];
+    f32 j = src[3];
+    f32 k = src[7];
+    f32 l = src[11];
+    dst[1] = a;
+    dst[2] = b;
+    dst[3] = c;
+    dst[4] = d;
+    dst[6] = e;
+    dst[7] = f;
+    dst[8] = g;
+    dst[9] = h;
+    dst[11] = i;
+    dst[12] = j;
+    dst[13] = k;
+    dst[14] = l;
 }
 
 void fn_801533BC(void *arg0) {
