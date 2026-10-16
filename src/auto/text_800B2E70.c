@@ -4682,7 +4682,7 @@ void TRKNubMainLoop(void) {
             TRKDestructEvent(&event);
             continue;
         }
-        if (isNewInput == 0 || *gTRKInputPendingPtr != 0) {
+        if (isNewInput == 0 || *gTRKInputPendingPtr[0] != 0) {
             isNewInput = 1;
             TRKGetInput();
             continue;
