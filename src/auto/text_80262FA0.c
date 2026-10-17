@@ -1,6 +1,13 @@
 /* Functions from 0x80262FA0 to 0x8026300C, found by decomp-toolkit. */
 #include "common.h"
 
+static inline void clear_row(f32 *p) {
+    extern f32 lbl_80366AE8;
+    p[0] = lbl_80366AE8;
+    p[1] = lbl_80366AE8;
+    p[2] = lbl_80366AE8;
+}
+
 void fn_80262FA0(void *arg0) {
     extern void *lbl_8035B754;
     extern f32 lbl_80366AE8;
