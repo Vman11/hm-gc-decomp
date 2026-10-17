@@ -536,6 +536,74 @@ int fn_800E63F8(const decimal *x, const decimal *y) {
     return 0;
 }
 
+void fn_800E7C88(decimal *result, const decimal *x, const decimal *y) {
+    unsigned long accumulator = 0;
+    unsigned char mantissa[2 * 36];
+    int i = x->sig.length + y->sig.length - 1;
+    unsigned char *ip = mantissa + i + 1;
+    unsigned char *ep = ip;
+
+    result->sign = 0;
+
+    for (; i > 0; --i) {
+        int k = y->sig.length - 1;
+        int j = i - k - 1;
+        int l;
+        int t;
+        const unsigned char *jp;
+        const unsigned char *kp;
+
+        if (j < 0) {
+            j = 0;
+            k = i - 1;
+        }
+
+        jp = x->sig.text + j;
+        kp = y->sig.text + k;
+        l = k + 1;
+        t = x->sig.length - j;
+
+        if (l > t) {
+            l = t;
+        }
+
+        for (; l > 0; --l, ++jp, --kp) {
+            accumulator += *jp * *kp;
+        }
+
+        *--ip = (unsigned char)(accumulator % 10);
+        accumulator /= 10;
+    }
+
+    result->exp = (short)(x->exp + y->exp);
+
+    if (accumulator > 0) {
+        *--ip = (unsigned char)accumulator;
+        result->exp++;
+    }
+
+    for (i = 0; i < 36 && ip < ep; ++i, ++ip) {
+        result->sig.text[i] = *ip;
+    }
+    result->sig.length = (unsigned char)i;
+
+    if (ip < ep && *ip >= 5) {
+        if (*ip == 5) {
+            unsigned char *jp = ip + 1;
+            for (; jp < ep; ++jp) {
+                if (*jp != 0) {
+                    goto round;
+                }
+            }
+            if ((*(ip - 1) & 1) == 0) {
+                return;
+            }
+        }
+    round:
+        __dorounddecup(result, result->sig.length);
+    }
+}
+
 #pragma pop
 
 s32 fn_800E7F00(s32 arg0) {
@@ -1869,10 +1937,9 @@ extern double lbl_80363320, lbl_80363328, lbl_80363330, lbl_80363338;
 extern double lbl_80363340, lbl_80363348;
 double fn_800ED3F4(double x) {
     double y, hi, lo, c, t;
-    double (*coeff)[2] = (double (*)[2])lbl_8029C538;
-    int k;
+    int k, xsb;
+    ExpCoefficients *coeff = (ExpCoefficients *)lbl_8029C538;
     unsigned hx;
-    int xsb;
     hx = ((unsigned *)&x)[0];
     xsb = (hx >> 31) & 1;
     hx &= 0x7fffffff;
@@ -1886,14 +1953,14 @@ double fn_800ED3F4(double x) {
     }
     if (hx > 0x3fd62e42) {
         if (hx < 0x3ff0a2b2) {
-            hi = x - coeff[1][xsb];
-            lo = coeff[2][xsb];
+            hi = x - *(coeff->hi + xsb);
+            lo = *(coeff->lo + xsb);
             k = 1 - xsb - xsb;
         } else {
-            k = lbl_80363300 * x + coeff[0][xsb];
+            k = lbl_80363300 * x + coeff->half[xsb];
             t = k;
-            hi = x - t * coeff[1][0];
-            lo = t * coeff[2][0];
+            hi = x - t * coeff->hi[0];
+            lo = t * coeff->lo[0];
         }
         x = hi - lo;
     } else if (hx < 0x3e300000) {
@@ -2371,9 +2438,9 @@ void fn_800F04BC(void) {
     fn_800ED618();
 }
 
-void fn_800ED954(void);
-void fn_800F04DC(void) {
-    fn_800ED954();
+double fn_800ED954(double);
+double fn_800F04DC(double x) {
+    return fn_800ED954(x);
 }
 
 double fn_800EDBD0(double);
