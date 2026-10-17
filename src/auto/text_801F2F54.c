@@ -11,4 +11,3 @@ void fn_801F2F54(void **arg0) {
     p[0] = lbl_802EE90C;
     p[0x261] = lbl_802EE90C;
 }
-#pragma scheduling reset
