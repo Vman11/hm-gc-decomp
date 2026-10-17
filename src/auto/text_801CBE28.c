@@ -4,10 +4,13 @@
 extern unsigned char lbl_80330828[];
 extern unsigned char lbl_80330828[];
 s32 fn_801CBE28(s32 arg0, s32 arg1) {
-    if (arg1 == 0 || arg1 == 0x11) {
+    switch (arg1) {
+    case 0:
+    case 0x11:
         return 1;
+    default:
+        return 0;
     }
-    return 0;
 }
 
 unsigned char *fn_801CBE50(void) {
