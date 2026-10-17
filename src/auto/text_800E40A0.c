@@ -2592,6 +2592,54 @@ double fn_800ED954(double x) {
     }
 }
 
+extern double lbl_803634E8, lbl_803634F0, lbl_803634F8, lbl_80363500, lbl_80363508, lbl_80363510, lbl_80363518, lbl_80363520, lbl_80363528, lbl_80363530;
+extern int lbl_8029C6B0[];
+extern int lbl_8029C5A8[];
+int fn_800EE918(double*, double*, int, int, int, const int*);
+int fn_800EE484(double x, double *y) {
+ double w,z,t,r,fn,tx[3];
+ int e0,i,j,n,nx,hx,ix;
+ hx = *(int*)&x; ix = hx & 0x7fffffff;
+ if(ix<=0x3fe921fb) { y[0]=x; y[1]=0.0; return 0; }
+ if(ix<0x4002d97c) {
+  if(hx>0) {
+   z=x-1.57079632673412561417e+00;
+   if(ix!=0x3ff921fb) { w=6.07710050650619224932e-11; y[0]=z-w; y[1]=(z-y[0])-w; }
+   else { z-=6.07710050630396597660e-11; w=2.02226624879595063154e-21; y[0]=z-w; y[1]=(z-y[0])-w; }
+   return 1;
+  } else {
+   z=1.57079632673412561417e+00+x;
+   if(ix!=0x3ff921fb) { w=6.07710050650619224932e-11; y[0]=w+z; y[1]=w+(z-y[0]); }
+   else { z+=6.07710050630396597660e-11; w=2.02226624879595063154e-21; y[0]=w+z; y[1]=w+(z-y[0]); }
+   return -1;
+  }
+ }
+ if(ix<=0x413921fb) {
+  t=__fabs(x); n=(int)(6.36619772367581382433e-01*t+0.5); fn=(double)n;
+  r=t-1.57079632673412561417e+00*fn; w=6.07710050650619224932e-11*fn;
+  if(n<32 && ix!=lbl_8029C6B0[n-1]) y[0]=r-w;
+  else {
+   j=ix>>20; y[0]=r-w; i=j-((*(int*)&y[0]>>20)&0x7ff);
+   if(i>16) {
+    t=r; w=6.07710050630396597660e-11*fn; r-=w; w=2.02226624879595063154e-21*fn-((t-r)-w); y[0]=r-w;
+    i=j-((*(int*)&y[0]>>20)&0x7ff);
+    if(i>49) { t=r; w=2.02226624871116645580e-21*fn; r-=w; w=8.47842766036889956997e-32*fn-((t-r)-w); y[0]=r-w; }
+   }
+  }
+  y[1]=(r-y[0])-w;
+  if(hx<0) { y[0]=-y[0]; y[1]=-y[1]; return -n; } else return n;
+ }
+ if(ix>=0x7ff00000) { y[0]=y[1]=x-x; return 0; }
+ *(int*)((char*)&z+4)=*(int*)((char*)&x+4);
+ e0=(ix>>20)-1046; *(int*)&z=ix-(e0<<20);
+ for(i=0;i<2;i++) { tx[i]=(double)(int)z; z=(z-tx[i])*16777216.0; }
+ tx[2]=z; nx=3;
+ while(tx[nx-1]==0.0) nx--;
+ n=fn_800EE918(tx,y,e0,nx,2,lbl_8029C5A8);
+ if(hx<0) { y[0]=-y[0]; y[1]=-y[1]; return -n; }
+ return n;
+}
+
 double fn_800EE824(double x, double y) {
     extern double lbl_80363540;
     extern double lbl_80363548;
@@ -3521,6 +3569,42 @@ BOOL EXIUnlock(s32 chan) {
         unlockedCallback(chan, 0);
     }
 
+    OSRestoreInterrupts(enabled);
+    return TRUE;
+}
+
+static inline BOOL __EXIAttach(s32 chan, EXICallback extCallback) {
+    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
+    BOOL enabled;
+
+    enabled = OSDisableInterrupts();
+    if ((exi->state & 8) || __EXIProbe(chan) == FALSE) {
+        OSRestoreInterrupts(enabled);
+        return FALSE;
+    }
+    EXIClearInterrupts(chan, TRUE, FALSE, FALSE);
+    exi->extCallback = extCallback;
+    __OSUnmaskInterrupts(0x100000U >> (chan * 3));
+    exi->state |= 8;
+    OSRestoreInterrupts(enabled);
+    return TRUE;
+}
+
+static inline BOOL __EXIDetach(s32 chan) {
+    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
+    BOOL enabled;
+
+    enabled = OSDisableInterrupts();
+    if (!(exi->state & 8)) {
+        OSRestoreInterrupts(enabled);
+        return TRUE;
+    }
+    if ((exi->state & 0x10) && exi->dev == 0) {
+        OSRestoreInterrupts(enabled);
+        return FALSE;
+    }
+    exi->state &= ~8;
+    __OSMaskInterrupts(0x500000U >> (chan * 3));
     OSRestoreInterrupts(enabled);
     return TRUE;
 }
