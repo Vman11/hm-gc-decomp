@@ -5700,6 +5700,114 @@ void fn_800D8774(u32 tmap, u32 tcoord) {
     gx->bpSentNot = 0;
 }
 
+void __GXSetTmemConfig(s32 arg0) {
+ switch(arg0) {
+case 2:
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8C0D8000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x900DC000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8D0D8800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x910DC800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8E0D9000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x920DD000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8F0D9800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x930DD800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAC0DA000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB00DC400;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAD0DA800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB10DCC00;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAE0DB000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB20DD400;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAF0DB800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB30DDC00;
+ break;
+case 1:
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8C0D8000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x900DC000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8D0D8800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x910DC800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8E0D9000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x920DD000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8F0D9800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x930DD800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAC0DA000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB00DE000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAD0DA800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB10DE800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAE0DB000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB20DF000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAF0DB800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB30DF800;
+ break;
+case 0:
+default:
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8C0D8000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x900DC000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8D0D8400;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x910DC400;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8E0D8800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x920DC800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x8F0D8C00;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0x930DCC00;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAC0D9000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB00DD000;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAD0D9400;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB10DD400;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAE0D9800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB20DD800;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xAF0D9C00;
+ GXWGFifo.u8 = 0x61;
+ GXWGFifo.u32 = 0xB30DDC00;
+ break;
+ }
+}
+
 void fn_800D8CE4(u32 tevStage, u32 indStage, u32 format, u32 biasSel, u32 mtxSel, u32 wrapS, u32 wrapT, u32 addPrev, u8 utcLod, u32 alphaSel) {
     extern GXDataHead *const __GXData;
     u32 reg = 0;
@@ -7080,6 +7188,7 @@ s32 fn_800DBDF0(void) {
     void fn_800DE95C(TrkBuf* buf, u8 a, u8 b);
     s32 err;
     s32 readErr;
+    s32 ok;
     s32 id;
     u8 c;
 
@@ -7106,10 +7215,32 @@ s32 fn_800DBDF0(void) {
             if ((s8)c == 0x7E) {
                 if (lbl_803257B4.isEscape) {
                     fn_800DE95C(lbl_803257B4.buffer, 0xFF, 4);
-                    TRKDiscardFrame();
+                    if (lbl_803257B4.msgBufID != -1) {
+                        fn_800DBB10(lbl_803257B4.msgBufID);
+                        lbl_803257B4.msgBufID = -1;
+                    }
+                    lbl_803257B4.buffer = NULL;
+                    lbl_803257B4.receiveState = 0;
                     break;
                 }
-                if (TRKFrameComplete()) {
+                {
+                    TrkBuf *buf = lbl_803257B4.buffer;
+                    if (buf->count < 2) {
+                        fn_800DE95C(buf, 0xFF, 2);
+                        if (lbl_803257B4.msgBufID != -1) {
+                            fn_800DBB10(lbl_803257B4.msgBufID);
+                            lbl_803257B4.msgBufID = -1;
+                        }
+                        ok = 0;
+                        lbl_803257B4.buffer = NULL;
+                        lbl_803257B4.receiveState = ok;
+                    } else {
+                        buf->pos = 0;
+                        buf->count--;
+                        ok = 1;
+                    }
+                }
+                if (ok) {
                     id = lbl_803257B4.msgBufID;
                     lbl_803257B4.buffer = NULL;
                     lbl_803257B4.msgBufID = -1;
@@ -7131,7 +7262,12 @@ s32 fn_800DBDF0(void) {
             break;
         case 3:
             if (c == 0x7E) {
-                TRKDiscardFrame();
+                if (lbl_803257B4.msgBufID != -1) {
+                    fn_800DBB10(lbl_803257B4.msgBufID);
+                    lbl_803257B4.msgBufID = -1;
+                }
+                lbl_803257B4.buffer = NULL;
+                lbl_803257B4.receiveState = 0;
             }
             break;
         }
@@ -7415,6 +7551,65 @@ void fn_800DCAF8(TrkBuf* buf) {
             n--;
         } while (ok != 0 && n > 0);
     }
+}
+
+s32 fn_800DFF6C(u8 *cpuType);
+void fn_800DDDB4(TrkBuf *buf) {
+u8 bytes[8];
+s32 n;
+s32 ok;
+if ((u32)buf->count != 1) {
+fn_800DBAD0(buf,1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 128; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; }
+n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+} else {
+fn_800DBAD0(buf,1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 128; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0; buf->count++; }
+ok=fn_800DFF6C(bytes);
+if(ok==0) {
+u8 value=bytes[0];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok==0) {
+u8 value=bytes[1];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok==0) {
+u8 value=bytes[2];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok==0) {
+u8 value=bytes[3];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok==0) {
+u8 value=bytes[4];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok==0) {
+u8 value=bytes[5];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok==0) {
+u8 value=bytes[6];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok!=0) {
+fn_800DBAD0(buf,1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 128; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 3; buf->count++; }
+n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+} else { n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); }
+}
 }
 
 s32 fn_800DFFCC(u8 *mask);
