@@ -233,6 +233,10 @@ static inline void __str2dec(decimal *d, const char *s, short exp) {
     }
 }
 
+static inline int __tolower_dec(int c) {
+    return (c == -1 ? -1 : lbl_802E06C8[c]);
+}
+
 static inline int __fpclassifyd_dec(double x) {
     switch (*(int *)&x & 0x7ff00000) {
     case 0x7ff00000:
@@ -644,6 +648,189 @@ void __close_all(void) {
     }
     __end_critical_region(2);
 }
+
+double fn_800EFD7C(double, double);
+double fn_800F04FC(double, double);
+double fn_800F004C(double, int);
+void fn_800E5EFC(decimal *result, const decimal *x, const decimal *y);
+int fn_800E63F8(const decimal *x, const decimal *y);
+extern float lbl_803596B4[];
+extern double lbl_803596C0[];
+extern double lbl_802E0460[];
+extern char lbl_8029C060[];
+#pragma push
+#pragma dont_inline off
+double fn_800E4924(const decimal *d) {
+    if (d->sig.length <= 0) {
+        return fn_800EFD7C(0.0, d->sign == 0 ? 1.0 : -1.0);
+    }
+
+    switch (d->sig.text[0]) {
+    case '0':
+        return fn_800EFD7C(0.0, d->sign == 0 ? 1.0 : -1.0);
+    case 'I':
+        return fn_800EFD7C(lbl_803596B4[0], d->sign == 0 ? 1.0 : -1.0);
+    case 'N': {
+        double result;
+        unsigned long long *ll = (unsigned long long *)&result;
+
+        *ll = 0x7FF0000000000000ULL;
+        if (d->sign) {
+            *ll |= 0x8000000000000000ULL;
+        }
+        if (d->sig.length == 1) {
+            *ll |= 0x0008000000000000ULL;
+        } else {
+            unsigned char *p = (unsigned char *)&result + 1;
+            int placed_non_zero = 0;
+            int low = 1;
+            int i;
+            int e = d->sig.length;
+            if (e > 14) {
+                e = 14;
+            }
+            for (i = 1; i < e; ++i) {
+                unsigned char c = d->sig.text[i];
+                if (lbl_802E05C8[c] & 0x10) {
+                    c -= '0';
+                } else {
+                    c = (unsigned char)((c == -1 ? -1 : lbl_802E06C8[c]) - 'a' + 10);
+                }
+                if (c != 0) {
+                    placed_non_zero = 1;
+                }
+                if (low) {
+                    *p++ |= c;
+                } else {
+                    *p = (unsigned char)(c << 4);
+                }
+                low = !low;
+            }
+            if (!placed_non_zero) {
+                *ll |= 0x0008000000000000ULL;
+            }
+        }
+        return result;
+    }
+    }
+
+    {
+        decimal dec = *d;
+        unsigned char *i = dec.sig.text;
+        unsigned char *e = i + dec.sig.length;
+        double first_guess;
+        int exponent;
+
+        for (; i < e; ++i) {
+            *i -= '0';
+        }
+        exponent = dec.exp += dec.sig.length - 1;
+
+        i = dec.sig.text;
+        first_guess = *i++;
+
+        while (i < e) {
+            unsigned long ival = 0;
+            int n = (e - i) % 8;
+            int j;
+            double scaled;
+            double next_guess;
+            if (n == 0) {
+                n = 8;
+            }
+            for (j = 0; j < n; ++j, ++i) {
+                ival = 10 * ival + *i;
+            }
+            scaled = first_guess * lbl_802E0460[n - 1];
+            next_guess = scaled + ival;
+            if (ival != 0 && scaled == next_guess) {
+                break;
+            }
+            first_guess = next_guess;
+            exponent -= n;
+        }
+
+        if (exponent < 0) {
+            first_guess /= fn_800F04FC(5.0, -exponent);
+        } else {
+            first_guess *= fn_800F04FC(5.0, exponent);
+        }
+        first_guess = fn_800F004C(first_guess, exponent);
+
+        if (__fpclassifyd_dec(first_guess) == 2) {
+            decimal max;
+            __str2dec(&max, lbl_8029C060, 308);
+            if (__less_dec(&max, &dec)) {
+                goto done;
+            }
+            first_guess = lbl_803596C0[0];
+        }
+        {
+            decimal feedback1;
+            fn_800E5B48(&feedback1, first_guess);
+            if (fn_800E63F8(&feedback1, &dec)) {
+                goto done;
+            }
+            if (__less_dec(&feedback1, &dec)) {
+                decimal feedback2, difflow, diffhigh;
+                double next_guess = first_guess;
+                unsigned long long *ull = (unsigned long long *)&next_guess;
+                ++*ull;
+                if (__fpclassifyd_dec(next_guess) == 2) {
+                    first_guess = next_guess;
+                    goto done;
+                }
+                fn_800E5B48(&feedback2, next_guess);
+                while (__less_dec(&feedback2, &dec)) {
+                    feedback1 = feedback2;
+                    first_guess = next_guess;
+                    ++*ull;
+                    if (__fpclassifyd_dec(next_guess) == 2) {
+                        first_guess = next_guess;
+                        goto done;
+                    }
+                    fn_800E5B48(&feedback2, next_guess);
+                }
+                fn_800E5EFC(&difflow, &dec, &feedback1);
+                fn_800E5EFC(&diffhigh, &feedback2, &dec);
+                if (fn_800E63F8(&difflow, &diffhigh)) {
+                    if (*(unsigned long long *)&first_guess & 1) {
+                        first_guess = next_guess;
+                    }
+                } else if (!__less_dec(&difflow, &diffhigh)) {
+                    first_guess = next_guess;
+                }
+            } else {
+                decimal feedback2, difflow, diffhigh;
+                double next_guess = first_guess;
+                unsigned long long *ull = (unsigned long long *)&next_guess;
+                --*ull;
+                fn_800E5B48(&feedback2, next_guess);
+                while (__less_dec(&dec, &feedback2)) {
+                    feedback1 = feedback2;
+                    first_guess = next_guess;
+                    --*ull;
+                    fn_800E5B48(&feedback2, next_guess);
+                }
+                fn_800E5EFC(&difflow, &dec, &feedback2);
+                fn_800E5EFC(&diffhigh, &feedback1, &dec);
+                if (fn_800E63F8(&difflow, &diffhigh)) {
+                    if (*(unsigned long long *)&first_guess & 1) {
+                        first_guess = next_guess;
+                    }
+                } else if (__less_dec(&difflow, &diffhigh)) {
+                    first_guess = next_guess;
+                }
+            }
+        }
+    done:
+        if (dec.sign) {
+            first_guess = -first_guess;
+        }
+        return first_guess;
+    }
+}
+#pragma pop
 
 #pragma push
 #pragma dont_inline off
@@ -2851,7 +3038,7 @@ double fn_800EB838(char *str) {
 
 double fn_800EB8C4(int max_width, int (*ReadProc)(void *, int, int), void *ReadProcArg, int *chars_scanned, int *overflow) {
     extern u8 lbl_802E07C8[];
-    extern struct { char *decimal_point; } lbl_802E08C8;
+    extern struct { char *decimal_point; char *thousands_sep; char *grouping; char *int_curr_symbol; } lbl_802E08C8;
     extern float lbl_803596B0[], lbl_803596B4[];
     extern double lbl_803596C8[], lbl_803596D0[], lbl_803596D8[];
     extern double lbl_803631E8, lbl_803631F0;
@@ -3761,16 +3948,16 @@ extern double lbl_80363430, lbl_80363438, lbl_80363440, lbl_80363448, lbl_803634
 extern double lbl_80363460, lbl_80363468, lbl_80363470, lbl_80363478, lbl_80363480, lbl_80363488, lbl_80363490;
 extern double lbl_80363498, lbl_803634A0, lbl_803634A8, lbl_803634B0, lbl_803634B8, lbl_803634C0, lbl_803634C8, lbl_803634D0, lbl_803634D8;
 double fn_800EDBD0(double x, double y) {
+    struct powtab { double bp[2], dp_h[2], dp_l[2]; };
     extern float lbl_803596B0[], lbl_803596B4[];
     extern double fn_800F004C(double, int);
+    struct powtab *tab = (struct powtab *)lbl_8029C578;
     double z,ax,z_h,z_l,p_h,p_l;
     double y1,t1,t2,r,s,t,u,v,w;
     int i,j,k,yisint,n;
     int hx,hy,ix,iy;
     unsigned lx,ly;
-    double *base;
 
-    base = lbl_8029C578;
     hx = *(int*)&x; lx = *(1+(unsigned*)&x);
     hy = *(int*)&y; ly = *(1+(unsigned*)&y);
     ix = hx&0x7fffffff; iy = hy&0x7fffffff;
@@ -3875,14 +4062,14 @@ double fn_800EDBD0(double x, double y) {
         else {k=0;n+=1;ix -= 0x00100000;}
         *(int*)&ax = ix;
 
-        u = ax-(base+0)[k];
-        v = lbl_803633D8/(ax+(base+0)[k]);
+        u = ax-tab->bp[k];
+        v = lbl_803633D8/(ax+tab->bp[k]);
         ss = u*v;
         s_h = ss;
         *(1+(int*)&s_h) = 0;
         t_h = lbl_803633E0;
         *(int*)&t_h = ((ix>>1)|0x20000000)+0x00080000+(k<<18);
-        t_l = ax - (t_h-(base+0)[k]);
+        t_l = ax - (t_h-tab->bp[k]);
         s_l = v*((u-s_h*t_h)-s_h*t_l);
         s2 = ss*ss;
         r = s2*s2*(lbl_80363430+s2*(lbl_80363438+s2*(lbl_80363440+s2*(lbl_80363448+s2*(lbl_80363450+s2*lbl_80363458)))));
@@ -3897,11 +4084,11 @@ double fn_800EDBD0(double x, double y) {
         *(1+(int*)&p_h) = 0;
         p_l = v-(p_h-u);
         z_h = lbl_80363460*p_h;
-        z_l = lbl_80363468*p_h+p_l*lbl_80363470+(base+4)[k];
+        z_l = lbl_80363468*p_h+p_l*lbl_80363470+tab->dp_l[k];
         t = (double)n;
-        t1 = (((z_h+z_l)+(base+2)[k])+t);
+        t1 = (((z_h+z_l)+tab->dp_h[k])+t);
         *(1+(int*)&t1) = 0;
-        t2 = z_l-(((t1-t)-(base+2)[k])-z_h);
+        t2 = z_l-(((t1-t)-tab->dp_h[k])-z_h);
     }
 
     s = lbl_803633D8;
