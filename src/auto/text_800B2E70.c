@@ -4555,9 +4555,9 @@ void fn_800D590C(s32 vtxfmt, s32 attr, s32 cnt, s32 type, u8 frac) {
     u32 *va;
     u32 *vb;
     u32 *vc;
-    va = (u32 *)((u8 *)__GXData + 0x1C) + vtxfmt;
-    vb = (u32 *)((u8 *)__GXData + 0x3C) + vtxfmt;
-    vc = (u32 *)((u8 *)__GXData + 0x5C) + vtxfmt;
+    va = (u32 *)((u8 *)__GXData + vtxfmt * 4 + 0x1C);
+    vb = (u32 *)((u8 *)__GXData + vtxfmt * 4 + 0x3C);
+    vc = (u32 *)((u8 *)__GXData + vtxfmt * 4 + 0x5C);
     switch (attr) {
     case 9:
         *va = __rlwimi(*va, cnt, 0, 31, 31);
@@ -7832,6 +7832,44 @@ s32 fn_800DF8AC(u8 unused, u32 start, u32 end) {
         return 0;
     }
     return 0x700;
+}
+
+s32 fn_800DF02C(u8, u32, u32 *, u8 *, s32, s32);
+s32 TRKTargetSupportRequest(void) {
+    s32 error;
+    u8 command;
+    u32 *length;
+    u8 event[0x10];
+    u32 position;
+    u8 result;
+    command = (u8)gTRKCPUState.gpr[3];
+    if (command != 0xD1 && command != 0xD0 && command != 0xD2 && command != 0xD3 && command != 0xD4) {
+        fn_800DAB9C(event, 4);
+        fn_800DABB4(event);
+        return 0;
+    }
+    if (command == 0xD2) {
+        error = fn_800DECE0((char *)gTRKCPUState.gpr[4], (u8)gTRKCPUState.gpr[5], (u32 *)gTRKCPUState.gpr[6], &result);
+        if (result == 0 && error != 0) result = 1;
+        gTRKCPUState.gpr[3] = result;
+    } else if (command == 0xD3) {
+        error = fn_800DEBC0(gTRKCPUState.gpr[4], &result);
+        if (result == 0 && error != 0) result = 1;
+        gTRKCPUState.gpr[3] = result;
+    } else if (command == 0xD4) {
+        position = *(u32 *)gTRKCPUState.gpr[5];
+        error = fn_800DEA30(gTRKCPUState.gpr[4], &position, (u8)gTRKCPUState.gpr[6], &result);
+        if (result == 0 && error != 0) result = 1;
+        gTRKCPUState.gpr[3] = result;
+        *(u32 *)gTRKCPUState.gpr[5] = position;
+    } else {
+        error = fn_800DF02C((u8)gTRKCPUState.gpr[4], gTRKCPUState.gpr[6], length = (u32 *)gTRKCPUState.gpr[5], &result, 1, command == 0xD1);
+        if (result == 0 && error != 0) result = 1;
+        gTRKCPUState.gpr[3] = result;
+        if (command == 0xD1) fn_800DF3E0(gTRKCPUState.gpr[6], *length);
+    }
+    gTRKCPUState.unk80 += 4;
+    return error;
 }
 
 s32 fn_800DFAF0(void) {
