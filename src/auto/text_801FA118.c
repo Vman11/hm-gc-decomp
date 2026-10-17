@@ -86,10 +86,10 @@ void fn_801FA1C0(s32 *arg0, s32 arg1) {
     *arg0 &= 0xFFFFFEFF;
 }
 
-void fn_801FA1EC(void *arg0, void *arg1) {
-    M2C_FIELD(arg0, f32 *, 0x68) = (f32) M2C_FIELD(arg1, f32 *, 0);
-    M2C_FIELD(arg0, f32 *, 0x6C) = (f32) M2C_FIELD(arg1, f32 *, 4);
-    M2C_FIELD(arg0, f32 *, 0x70) = (f32) M2C_FIELD(arg1, f32 *, 8);
+void fn_801FA1EC(u8 *__restrict arg0, f32 *__restrict arg1) {
+    ((f32 *)(arg0 + 0x68))[0] = arg1[0];
+    ((f32 *)(arg0 + 0x68))[1] = arg1[1];
+    ((f32 *)(arg0 + 0x68))[2] = arg1[2];
 }
 
 void fn_801FA208(void *arg0, void *arg1) {
