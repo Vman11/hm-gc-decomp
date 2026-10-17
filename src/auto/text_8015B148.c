@@ -24,20 +24,18 @@ void fn_8015B148(void* arg0) {
     *(u16*)((u8*)arg0 + 0x1A) &= ~0x1C;
 }
 
-void fn_8015B158(void* arg0, s32* arg1, s32* arg2, s32 arg3) {
-    u8* p = (u8*)arg0;
-    Unk8015B158* indexed = (Unk8015B158*)((u32)arg0 + *(u32*)(p + 0x64) * 4);
-    *arg1 = indexed->unk_0x50;
-    *arg2 = *(s32*)(p + 0x5C);
-    *(u16*)(p + 0x1A) |= lbl_803645C8;
+void fn_8015B158(Unk8015B158_2* arg0, s32* arg1, s32* arg2, s32 arg3) {
+    *arg1 = arg0->unk_0x50[arg0->unk_0x64];
+    *arg2 = arg0->unk_0x5C;
+    arg0->unk_0x1A |= lbl_803645C8;
     if (arg3 & 1) {
-        *(u16*)(p + 0x1A) |= lbl_803645CA;
+        arg0->unk_0x1A |= lbl_803645CA;
         return;
     }
     if (arg3 & 2) {
-        *(u16*)(p + 0x1A) |= lbl_803645CC;
+        arg0->unk_0x1A |= lbl_803645CC;
         return;
     }
-    *(u16*)(p + 0x1A) |= 0x18;
+    arg0->unk_0x1A |= 0x18;
 }
 
