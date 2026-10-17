@@ -8103,8 +8103,6 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
     return error;
 }
 #pragma pop
-#pragma push
-#pragma pop
 
 s32 fn_800DF2F0(void *mutex) {
     return 0;
