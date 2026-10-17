@@ -2,12 +2,12 @@
 #include "common.h"
 
 s32 fn_8022C558(u8 *arg0) {
-    u8 *temp_r3 = *(u8 **)(arg0 + 0x9C);
-    if (temp_r3 == NULL) {
+    u8 *ptr;
+    u8 valid;
+    u16 type;
+    ptr = *(u8 **)(arg0 + 0x9C);
+    if (ptr == NULL || (type = *(u16 *)(ptr + 4), valid = type >= 1U && type <= 0xDU, valid == 0)) {
         return 0;
     }
-    if (*(u16 *)(temp_r3 + 4) < 1 || *(u16 *)(temp_r3 + 4) > 0xD) {
-        return 0;
-    }
-    return (*(u32 *)temp_r3 >> 11) & 1;
+    return (*(u32 *)ptr >> 11) & 1;
 }
