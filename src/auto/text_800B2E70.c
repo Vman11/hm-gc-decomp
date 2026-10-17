@@ -7276,6 +7276,50 @@ n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
 }
 }
 
+s32 fn_800E0070(void *);
+void fn_800DE37C(TrkBuf *buf) {
+u8 bytes[4];
+s32 n;
+s32 ok;
+if ((u32)buf->count != 1) {
+fn_800DBAD0(buf,1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 128; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; }
+n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+} else {
+fn_800DBAD0(buf,1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 128; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0; buf->count++; }
+ok=fn_800E0070(bytes);
+if(ok==0) {
+u8 value=bytes[0];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok==0) {
+u8 value=bytes[1];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok==0) {
+u8 value=bytes[2];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok==0) {
+u8 value=bytes[3];
+if(buf->pos >= 0x880) ok=0x301;
+else { buf->data[buf->pos++]=value; buf->count++; ok=0; }
+}
+if(ok!=0) {
+fn_800DBAD0(buf,1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 128; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 3; buf->count++; }
+n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+} else { n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); }
+}
+}
+
 s32 fn_800DE654(TrkBuf* buf) {
     extern void fn_800053E0(void);
     s32 n;
@@ -8146,6 +8190,29 @@ s32 fn_800E0C4C(void *data, u32 start, u32 *length, s32 accessOptions, s32 read)
     }
 
     gTRKExceptionStatus_802E01A4 = tempExceptionStatus;
+    return error;
+}
+
+extern u32 lbl_8029BE18[][4];
+s32 fn_800E0D98(u32 address, u32 length, u8 access) {
+    u32 end;
+    s32 error;
+    u32 i;
+    end = (length + address) - 1;
+    error = 0x700;
+    if (end < address) return 0x700;
+    for (i = 0; i < 1; i++) {
+        if (address <= lbl_8029BE18[i][1] && end >= lbl_8029BE18[i][0]) {
+            if ((access == 0 && (s32)lbl_8029BE18[i][2] == 0) || (access == 1 && (s32)lbl_8029BE18[i][3] == 0)) {
+                error = 0x700;
+            } else {
+                error = 0;
+                if (address < lbl_8029BE18[i][0]) error = fn_800E0D98(address, lbl_8029BE18[i][0] - address, access);
+                if (error == 0 && end > lbl_8029BE18[i][1]) error = fn_800E0D98(lbl_8029BE18[i][1], end - lbl_8029BE18[i][1], access);
+            }
+            break;
+        }
+    }
     return error;
 }
 
