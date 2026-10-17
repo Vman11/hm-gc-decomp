@@ -444,9 +444,9 @@ void fn_800E4578(void *pool, void *ptr) {
     u32 *prev;
     u32 oldsize;
     u32 *p;
-    u32 *b;
     u32 *next;
     u32 size;
+    u32 *b;
     u32 *arena;
     u32 **head;
     u32 total;
@@ -1413,6 +1413,50 @@ void fn_800EA1DC(decimal *dec, int new_length) {
         goto return_zero;
 
     dec->sig.length = new_length;
+}
+
+static char *longlong2str_800EA640(long long num, char *buff, print_format format) {
+    unsigned long long unsigned_num, base;
+    char *p;
+    int n, digit;
+    int minus = 0;
+    unsigned_num = num;
+    minus = 0;
+    p = buff;
+    *--p = 0;
+    n = 0;
+    if (!num && !format.precision && !(format.alternate_form && format.conversion_char == 'o')) return p;
+    switch (format.conversion_char) {
+    case 'd': case 'i':
+        base = 10;
+        if (num < 0) { unsigned_num = -unsigned_num; minus = 1; }
+        break;
+    case 'o': base = 8; format.sign_options = 0; break;
+    case 'u': base = 10; format.sign_options = 0; break;
+    case 'x': case 'X': base = 16; format.sign_options = 0; break;
+    }
+    do {
+        digit = unsigned_num % base;
+        unsigned_num /= base;
+        if (digit < 10) digit += '0';
+        else if (format.conversion_char == 'x') digit += 'a' - 10;
+        else digit += 'A' - 10;
+        *--p = digit;
+        ++n;
+    } while (unsigned_num != 0);
+    if (base == 8 && format.alternate_form && *p != '0') { *--p = '0'; ++n; }
+    if (format.justification_options == 2) {
+        format.precision = format.field_width;
+        if (minus || format.sign_options != 0) --format.precision;
+        if (base == 16 && format.alternate_form) format.precision -= 2;
+    }
+    if (buff - p + format.precision > 509) return 0;
+    while (n < format.precision) { *--p = '0'; ++n; }
+    if (base == 16 && format.alternate_form) { *--p = format.conversion_char; *--p = '0'; }
+    if (minus) *--p = '-';
+    else if (format.sign_options == 1) *--p = '+';
+    else if (format.sign_options == 2) *--p = ' ';
+    return p;
 }
 
 static char *long2str_800EA91C(long num, char *buff, print_format format) {
