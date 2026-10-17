@@ -7073,6 +7073,107 @@ void TRKGetInput(void) {
         }
     }
 }
+
+s32 fn_800DBDF0(void) {
+    s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg);
+    s32 fn_800E16F8(u8 *c);
+    void fn_800DE95C(TrkBuf* buf, s8 a, s8 b);
+    s32 err;
+    s32 readErr;
+    s32 ok;
+    s32 id;
+    u8 c;
+
+    err = 0;
+    readErr = fn_800E16F8(&c);
+    while (readErr == 0 && err == 0) {
+        if (lbl_803257B4.receiveState != 2) {
+            lbl_803257B4.isEscape = 0;
+        }
+        switch (lbl_803257B4.receiveState) {
+        case 0:
+            if (c == 0x7E) {
+                err = fn_800DBBA0(&lbl_803257B4.msgBufID, &lbl_803257B4.buffer);
+                lbl_803257B4.fcs = 0;
+                lbl_803257B4.receiveState = 1;
+            }
+            break;
+        case 1:
+            if (c == 0x7E) {
+                break;
+            }
+            lbl_803257B4.receiveState = 2;
+        case 2:
+            if (c == 0x7E) {
+                if (lbl_803257B4.isEscape) {
+                    fn_800DE95C(lbl_803257B4.buffer, 0xFF, 4);
+                    if (lbl_803257B4.msgBufID != -1) {
+                        fn_800DBB10(lbl_803257B4.msgBufID);
+                        lbl_803257B4.msgBufID = -1;
+                    }
+                    lbl_803257B4.buffer = NULL;
+                    lbl_803257B4.receiveState = 0;
+                    break;
+                }
+                if (lbl_803257B4.buffer->count < 2) {
+                    fn_800DE95C(lbl_803257B4.buffer, 0xFF, 2);
+                    if (lbl_803257B4.msgBufID != -1) {
+                        fn_800DBB10(lbl_803257B4.msgBufID);
+                        lbl_803257B4.msgBufID = -1;
+                    }
+                    lbl_803257B4.buffer = NULL;
+                    lbl_803257B4.receiveState = 0;
+                    ok = 0;
+                } else {
+                    lbl_803257B4.buffer->pos = 0;
+                    lbl_803257B4.buffer->count--;
+                    ok = 1;
+                }
+                if (ok) {
+                    id = lbl_803257B4.msgBufID;
+                    lbl_803257B4.buffer = NULL;
+                    lbl_803257B4.msgBufID = -1;
+                    lbl_803257B4.receiveState = 0;
+                    return id;
+                }
+                lbl_803257B4.receiveState = 0;
+                break;
+            }
+            if (lbl_803257B4.isEscape) {
+                c ^= 0x20;
+                lbl_803257B4.isEscape = 0;
+            } else if (c == 0x7D) {
+                lbl_803257B4.isEscape = 1;
+                break;
+            }
+            {
+                TrkBuf *buf = lbl_803257B4.buffer;
+                if (buf->pos >= 0x880) {
+                    err = 0x301;
+                } else {
+                    buf->data[buf->pos++] = c;
+                    buf->count++;
+                    err = 0;
+                }
+            }
+            lbl_803257B4.fcs += c;
+            break;
+        case 3:
+            if (c == 0x7E) {
+                if (lbl_803257B4.msgBufID != -1) {
+                    fn_800DBB10(lbl_803257B4.msgBufID);
+                    lbl_803257B4.msgBufID = -1;
+                }
+                lbl_803257B4.buffer = NULL;
+                lbl_803257B4.receiveState = 0;
+            }
+            break;
+        }
+        readErr = fn_800E16F8(&c);
+    }
+    return -1;
+}
+
 #pragma pop
 void usr_put_initialize(void) {
 
@@ -7245,6 +7346,108 @@ void fn_800DC9A4(TrkBuf* buf) {
         if (ok == 0) {
             TRKTargetContinue();
         }
+    }
+}
+
+s32 fn_800DF8AC(u8 unused, u32 start, u32 end);
+void fn_800DCAF8(TrkBuf* buf) {
+    u8 cmd;
+    u8 opt;
+    u32 start;
+    u32 end;
+    s32 err;
+    s32 n;
+    s32 ok;
+    s8 b;
+
+    if ((u32)buf->count != 0xA) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x02;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        return;
+    }
+    fn_800DBAA0(buf, 0);
+    err = fn_800DB4F0(buf, &cmd);
+    if (err == 0) {
+        err = fn_800DB4F0(buf, &opt);
+    }
+    if (err == 0) {
+        err = fn_800DB370(buf, &start);
+    }
+    if (err == 0) {
+        err = fn_800DB370(buf, &end);
+    }
+    if (start > end) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x13;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        return;
+    }
+    if (err == 0) {
+        err = fn_800DF8AC(opt, start, end);
+    }
+    if (err == 0) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x00;
+            buf->count++;
+        }
+    }
+    if (err != 0) {
+        switch (err) {
+        case 0x703:
+            b = 0x12;
+            break;
+        default:
+            b = 3;
+            break;
+        }
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = b;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+    } else {
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
     }
 }
 
@@ -7660,7 +7863,7 @@ s32 fn_800DEE88(TrkBuf *msgBuf, s32 *bufferId, u32 p1, u32 p2, s32 p3) {
     return error;
 }
 
-s32 fn_800DF02C(u8 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s32 read) {
+s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s32 read) {
     s32 replyBufferId;
     s32 bufferId;
     TrkBuf *buffer;
@@ -7691,8 +7894,12 @@ s32 fn_800DF02C(u8 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s3
         error = fn_800DBBA0(&bufferId, &buffer);
 
         if (error == 0) {
-            TrkBuf *b = buffer;
-            u8 cmd = read ? 0xD1 : 0xD0;
+            TrkBuf *b;
+            u8 cmd = 0xD0;
+            if (read) {
+                cmd = 0xD1;
+            }
+            b = buffer;
             if (b->pos >= 0x880) {
                 err = 0x301;
             } else {
@@ -8303,10 +8510,9 @@ extern u32 lbl_8029BE18[][4];
 #pragma inline_depth(2)
 s32 fn_800E0D98(u32 address, u32 length, u8 access) {
     u32 end;
-    u32 i;
     s32 error;
-    end = length + address;
-    end--;
+    u32 i;
+    end = (length + address) - 1;
     error = 0x700;
     if (end < address) return 0x700;
     for (i = 0; i < 1; i++) {
