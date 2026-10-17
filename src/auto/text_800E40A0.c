@@ -1861,6 +1861,7 @@ int fwide(void *file, int mode) {
     return result;
 }
 
+typedef struct ExpCoefficients { double half[2]; double hi[2]; double lo[2]; } ExpCoefficients;
 extern double lbl_8029C538[];
 extern double lbl_803632E0, lbl_803632E8, lbl_803632F0, lbl_803632F8;
 extern double lbl_80363300, lbl_80363308, lbl_80363310, lbl_80363318;
@@ -1868,8 +1869,10 @@ extern double lbl_80363320, lbl_80363328, lbl_80363330, lbl_80363338;
 extern double lbl_80363340, lbl_80363348;
 double fn_800ED3F4(double x) {
     double y, hi, lo, c, t;
-    int k = 0;
-    unsigned hx, xsb;
+    double (*coeff)[2] = (double (*)[2])lbl_8029C538;
+    int k;
+    unsigned hx;
+    int xsb;
     hx = ((unsigned *)&x)[0];
     xsb = (hx >> 31) & 1;
     hx &= 0x7fffffff;
@@ -1883,14 +1886,14 @@ double fn_800ED3F4(double x) {
     }
     if (hx > 0x3fd62e42) {
         if (hx < 0x3ff0a2b2) {
-            hi = x - lbl_8029C538[2 + xsb];
-            lo = lbl_8029C538[4 + xsb];
+            hi = x - coeff[1][xsb];
+            lo = coeff[2][xsb];
             k = 1 - xsb - xsb;
         } else {
-            k = lbl_80363300 * x + lbl_8029C538[xsb];
+            k = lbl_80363300 * x + coeff[0][xsb];
             t = k;
-            hi = x - t * lbl_8029C538[2];
-            lo = t * lbl_8029C538[4];
+            hi = x - t * coeff[1][0];
+            lo = t * coeff[2][0];
         }
         x = hi - lo;
     } else if (hx < 0x3e300000) {
