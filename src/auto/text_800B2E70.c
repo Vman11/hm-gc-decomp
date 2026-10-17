@@ -7913,7 +7913,7 @@ s32 fn_800DF8AC(u8 unused, u32 start, u32 end) {
     return 0x700;
 }
 
-s32 fn_800DF02C(u8, u32, u32 *, u8 *, s32, s32);
+
 s32 TRKTargetSupportRequest(void) {
     s32 error;
     u8 command;
@@ -8301,12 +8301,12 @@ extern u32 lbl_8029BE18[][4];
 #pragma dont_inline off
 #pragma auto_inline on
 #pragma inline_depth(2)
-#pragma opt_propagation off
 s32 fn_800E0D98(u32 address, u32 length, u8 access) {
     u32 end;
     u32 i;
     s32 error;
-    end = (length + address) - 1;
+    end = length + address;
+    end--;
     error = 0x700;
     if (end < address) return 0x700;
     for (i = 0; i < 1; i++) {
