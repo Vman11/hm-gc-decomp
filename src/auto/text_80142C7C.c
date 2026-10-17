@@ -8,7 +8,7 @@ typedef struct Img {
     u8 r[4];
     u8 pad14[0x3c - 0x14];
     u32 rsh[3];
-    u8 pad48[4];
+    u32 alphaShift;
     u32 lsh[3];
     u8 pad58[0x7c - 0x58];
     u32 mask[3];
