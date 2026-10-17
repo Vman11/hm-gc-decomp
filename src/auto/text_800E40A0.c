@@ -970,6 +970,91 @@ int fn_800E63F8(const decimal *x, const decimal *y) {
     return 0;
 }
 
+void fn_800E7C88(decimal *result, const decimal *x, const decimal *y);
+#pragma push
+#pragma dont_inline off
+void fn_800E6504(decimal *result, long exp) {
+    switch (exp) {
+    case -64:
+        __str2dec(result, lbl_8029C060 + 0x25, -20);
+        return;
+    case -53:
+        __str2dec(result, lbl_8029C060 + 0x53, -16);
+        return;
+    case -32:
+        __str2dec(result, lbl_8029C060 + 0x7A, -10);
+        return;
+    case -16:
+        __str2dec(result, lbl_8029C060 + 0x92, -5);
+        return;
+    case -8:
+        __str2dec(result, lbl_8029C060 + 0x9F, -3);
+        return;
+    case -7:
+        __str2dec(result, lbl_8029C060 + 0xA6, -3);
+        return;
+    case -6:
+        __str2dec(result, lbl_8029C060 + 0xAC, -2);
+        return;
+    case -5:
+        __str2dec(result, lbl_8029C060 + 0xB2, -2);
+        return;
+    case -4:
+        __str2dec(result, lbl_8029C060 + 0xB7, -2);
+        return;
+    case -3:
+        __str2dec(result, lbl_8029C060 + 0xBB, -1);
+        return;
+    case -2:
+        __str2dec(result, lbl_8029C060 + 0xBF, -1);
+        return;
+    case -1:
+        __str2dec(result, lbl_8029C060 + 0xC2, -1);
+        return;
+    case 0:
+        __str2dec(result, lbl_8029C060 + 0xC4, 0);
+        return;
+    case 1:
+        __str2dec(result, lbl_8029C060 + 0xC6, 0);
+        return;
+    case 2:
+        __str2dec(result, lbl_8029C060 + 0xC8, 0);
+        return;
+    case 3:
+        __str2dec(result, lbl_8029C060 + 0xCA, 0);
+        return;
+    case 4:
+        __str2dec(result, lbl_8029C060 + 0xCC, 1);
+        return;
+    case 5:
+        __str2dec(result, lbl_8029C060 + 0xCF, 1);
+        return;
+    case 6:
+        __str2dec(result, lbl_8029C060 + 0xD2, 1);
+        return;
+    case 7:
+        __str2dec(result, lbl_8029C060 + 0xD5, 2);
+        return;
+    case 8:
+        __str2dec(result, lbl_8029C060 + 0xD9, 2);
+        return;
+    }
+    {
+        decimal x2, temp;
+        fn_800E6504(&x2, ((long)((0x80000000UL & exp) >> 31) + exp) >> 1);
+        fn_800E7C88(result, &x2, &x2);
+        if (exp & 1) {
+            temp = *result;
+            if (exp > 0) {
+                __str2dec(&x2, lbl_8029C060 + 0xC6, 0);
+            } else {
+                __str2dec(&x2, lbl_8029C060 + 0xC2, -1);
+            }
+            fn_800E7C88(result, &temp, &x2);
+        }
+    }
+}
+
 #pragma use_lmw_stmw on
 void fn_800E7C88(decimal *result, const decimal *x, const decimal *y) {
     unsigned char mantissa[80];
