@@ -7854,11 +7854,11 @@ if (buf->pos < 0x880) { buf->data[buf->pos++] = b; buf->count++; }
 
 void fn_800DD584(TrkBuf *buf) {
 u8 cmd; u8 opt; u16 length; u32 address; u32 size; u8 data[0x800];
-s32 ok; s32 err;
+s32 err; s32 n; s32 ok; s8 b;
 
 if ((u32)buf->count <= 8) { fn_800DBAD0(buf, 1);
 if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; } err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0); return; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; } n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); return; }
 fn_800DBAA0(buf, 0);
 err = fn_800DB4F0(buf, &cmd);
 if (err == 0) err = fn_800DB4F0(buf, &opt);
@@ -7866,10 +7866,10 @@ if (err == 0) err = fn_800DB438(buf, &length);
 if (err == 0) err = fn_800DB370(buf, &address);
 if (opt & 2) { fn_800DBAD0(buf, 1);
 if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x12; buf->count++; } err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0); return; }
-if ((u32)buf->count != length + 8 || length > 0x800) { fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x12; buf->count++; } n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); return; }
+if ((u32)buf->count != (u32)length + 8 || length > 0x800) { fn_800DBAD0(buf, 1);
 if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x11; buf->count++; } err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0); return; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x11; buf->count++; } n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); return; }
 if (err == 0) {
 size = length;
 err = fn_800DB970(buf, data, length);
@@ -7882,22 +7882,23 @@ if (buf->pos < 0x880) { buf->data[buf->pos++] = 0; buf->count++; } }
 if (err == 0) err = fn_800DB8A8(buf, length);
 if (err != 0) {
 switch (err) {
-case 0x701: err=0x13; break;
+case 0x701: b=0x13; break;
 case 0x700:
-case 0x702: err=0x15; break;
-case 0x704: err=0x21; break;
-case 0x705: err=0x22; break;
-case 0x706: err=0x20; break;
-default: err=3; break;
+case 0x702: b=0x15; break;
+case 0x704: b=0x21; break;
+case 0x705: b=0x22; break;
+case 0x706: b=0x20; break;
+default: b=3; break;
 }
 fn_800DBAD0(buf, 1);
 if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-if (buf->pos < 0x880) { buf->data[buf->pos++] = err; buf->count++; } err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0);
-} else { err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0); }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = b; buf->count++; } n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+} else { n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); }
 }
 
+#pragma push
+#pragma opt_propagation on
 void fn_800DD9A4(TrkBuf *buf) {
-    s32 err;
     u8 cmd;
     u8 opt;
     u16 length;
@@ -7905,6 +7906,7 @@ void fn_800DD9A4(TrkBuf *buf) {
     u32 address;
     u8 data[0x800];
     s32 ok;
+    s32 err;
     if ((u32)buf->count != 8) {
         fn_800DBAD0(buf, 1);
         if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
@@ -7939,7 +7941,7 @@ void fn_800DD9A4(TrkBuf *buf) {
         if (buf->pos < 0x880) { buf->data[buf->pos++] = 0; buf->count++; }
     if (err == 0) {
         count = length;
-        err = fn_800E0C4C(data, address, &count, (opt & 8) == 0, 1);
+        err = fn_800E0C4C(data, address, &count, (opt & 8) ? 0 : 1, 1);
         length = count;
         if (err == 0) err = fn_800DB8A8(buf, length);
         if (err == 0) err = fn_800DB9FC(buf, data, count);
@@ -7963,7 +7965,7 @@ void fn_800DD9A4(TrkBuf *buf) {
         do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0);
     }
 }
-
+#pragma pop
 s32 fn_800DFF6C(u8 *cpuType);
 void fn_800DDDB4(TrkBuf *buf) {
 u8 bytes[8];
@@ -8944,6 +8946,45 @@ s32 fn_800E0070(void *arg0) {
     M2C_FIELD(arg0, s8 *, 2) = 1;
     M2C_FIELD(arg0, s8 *, 3) = 0xA;
     return 0;
+}
+
+extern u8 lbl_80325D44[];
+
+static inline s32 TRKPPCAccessSpecialReg(void *value, u32 *access_func, BOOL read) {
+    typedef void (*asm_access_type)(void *, void *);
+    asm_access_type asm_access;
+
+    access_func[9] = 0x4E800020;
+    asm_access = (asm_access_type)access_func;
+    fn_800DF3E0((u32)access_func, sizeof(u32) * 10);
+    (*asm_access)(value, (void *)lbl_80325D44);
+    return 0;
+}
+
+static inline s32 TRKPPCAccessSPR(void *value, u32 spr_register_num, BOOL read) {
+    u32 access_func[10] = { 0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000,
+                            0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000 };
+
+    if (read) {
+        access_func[0] = 0x7C8002A6 | ((spr_register_num & 0x1F) << 16) | ((spr_register_num & 0x3E0) << 6);
+        access_func[1] = 0x90830000;
+    } else {
+        access_func[0] = 0x80830000;
+        access_func[1] = 0x7C8003A6 | ((spr_register_num & 0x1F) << 16) | ((spr_register_num & 0x3E0) << 6);
+    }
+    return TRKPPCAccessSpecialReg(value, access_func, read);
+}
+
+static inline s32 TRKPPCAccessPairedSingleRegister(void *srcDestPtr, u32 psr, BOOL read) {
+    u32 instructionData[10] = { 0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000,
+                                0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000 };
+
+    if (read) {
+        instructionData[0] = 0xF0030000 | (psr << 21);
+    } else {
+        instructionData[0] = 0xE0030000 | (psr << 21);
+    }
+    return TRKPPCAccessSpecialReg(srcDestPtr, instructionData, read);
 }
 
 s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
