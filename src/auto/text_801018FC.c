@@ -36,7 +36,7 @@ void fn_80101950(UnkStruct_801018FC *arg0) {
 }
 
 void fn_801019A4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2, u8 arg3, u8 arg4, u8 arg5, u8 arg6);
-void fn_80101970(UnkStruct_801018FC *arg0, UnkStruct_801018FC *arg1) {
+void fn_80101970(UnkStruct_801018FC *__restrict arg0, UnkStruct_801018FC *__restrict arg1) {
     arg0->unk0 = arg1->unk0;
     arg0->unk4 = arg1->unk4;
     arg0->unk8 = arg1->unk8;
