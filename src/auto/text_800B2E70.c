@@ -7670,6 +7670,140 @@ void fn_800DCAF8(TrkBuf* buf) {
     }
 }
 
+void fn_800DCDF0(TrkBuf* buf) {
+    u8 cmd;
+    u8 opt;
+    u16 start;
+    u16 end;
+    u32 size;
+    s32 err;
+    s32 n;
+    s32 ok;
+    s8 b;
+
+    if ((u32)buf->count <= 6) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x02;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        return;
+    }
+    fn_800DBAA0(buf, 0);
+    err = fn_800DB4F0(buf, &cmd);
+    if (err == 0) {
+        err = fn_800DB4F0(buf, &opt);
+    }
+    if (err == 0) {
+        err = fn_800DB438(buf, &start);
+    }
+    if (err == 0) {
+        err = fn_800DB438(buf, &end);
+    }
+    if (start > end) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x14;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        return;
+    }
+    switch (opt) {
+    case 0:
+        err = fn_800E0B0C(start, end, buf, &size, 0);
+        break;
+    case 1:
+        err = fn_800E0640(start, end, buf, &size, 0);
+        break;
+    case 2:
+        err = fn_800E04D0(start, end, buf, &size, 0);
+        break;
+    case 3:
+        err = fn_800E0098(start, end, buf, &size, 0);
+        break;
+    default:
+        err = 0x703;
+        break;
+    }
+    if (err == 0) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x00;
+            buf->count++;
+        }
+    }
+    if (err != 0) {
+        switch (err) {
+        case 0x703:
+            b = 0x12;
+            break;
+        case 0x701:
+            b = 0x14;
+            break;
+        case 0x302:
+            b = 0x2;
+            break;
+        case 0x702:
+            b = 0x15;
+            break;
+        case 0x704:
+            b = 0x21;
+            break;
+        case 0x705:
+            b = 0x22;
+            break;
+        case 0x706:
+            b = 0x20;
+            break;
+        default:
+            b = 3;
+            break;
+        }
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = b;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+    } else {
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+    }
+}
+
 s32 fn_800E04D0(u32, u32, TrkBuf *, u32 *, BOOL);
 s32 fn_800E0B0C(u32, u32, TrkBuf *, u32 *, BOOL);
 s32 fn_800E0098(u32, u32, TrkBuf *, u32 *, BOOL);
@@ -7718,9 +7852,9 @@ if (buf->pos < 0x880) { buf->data[buf->pos++] = b; buf->count++; }
 } else { n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); }
 }
 
-void fn_800DD584(register TrkBuf *buf) {
+void fn_800DD584(TrkBuf *buf) {
 u8 cmd; u8 opt; u16 length; u32 address; u32 size; u8 data[0x800];
-s32 err; s32 ok;
+s32 ok; s32 err;
 
 if ((u32)buf->count <= 8) { fn_800DBAD0(buf, 1);
 if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
@@ -7762,7 +7896,7 @@ if (buf->pos < 0x880) { buf->data[buf->pos++] = err; buf->count++; } err = 3; do
 } else { err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0); }
 }
 
-void fn_800DD9A4(TrkBuf *msg) {
+void fn_800DD9A4(TrkBuf *buf) {
     s32 err;
     u8 cmd;
     u8 opt;
@@ -7770,15 +7904,13 @@ void fn_800DD9A4(TrkBuf *msg) {
     u32 count;
     u32 address;
     u8 data[0x800];
-    s32 n;
     s32 ok;
-    TrkBuf *buf = msg;
     if ((u32)buf->count != 8) {
         fn_800DBAD0(buf, 1);
         if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
         if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; }
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        err = 3;
+        do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0);
         return;
     }
     fn_800DBAA0(buf, 0);
@@ -7790,16 +7922,16 @@ void fn_800DD9A4(TrkBuf *msg) {
         fn_800DBAD0(buf, 1);
         if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
         if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x12; buf->count++; }
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        err = 3;
+        do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0);
         return;
     }
     if (length > 0x800) {
         fn_800DBAD0(buf, 1);
         if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
         if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x11; buf->count++; }
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        err = 3;
+        do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0);
         return;
     }
     fn_800DBAD0(buf, 1);
@@ -7824,11 +7956,11 @@ void fn_800DD9A4(TrkBuf *msg) {
         fn_800DBAD0(buf, 1);
         if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
         if (buf->pos < 0x880) { buf->data[buf->pos++] = err; buf->count++; }
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        err = 3;
+        do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0);
     } else {
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        err = 3;
+        do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0);
     }
 }
 
