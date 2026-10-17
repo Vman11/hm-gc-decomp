@@ -2,9 +2,10 @@
 #include "common.h"
 
 void *fn_8020B850(u8 *arg0) {
-    u32 flags = *(u32 *)(arg0 + 8);
-    u8 result = 0;
-
+    u8 result;
+    u32 flags;
+    flags = *(u32 *)(arg0 + 8);
+    result = 0;
     if (!(flags & 8) && (flags & 0x20) && (flags & 2) && (flags & 4)) {
         result = 1;
     }
