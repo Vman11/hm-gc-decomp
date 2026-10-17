@@ -3233,6 +3233,7 @@ void fn_800C8C98(s16 *arg0) {
 typedef struct { u32 w[0x34]; } AXPBAll;
 typedef struct { u32 w[4]; } AXPBAddrCopy;
 typedef struct { u32 w[10]; } AXPBAdpcmCopy;
+extern u8 lbl_80310560[];
 
 extern s32 lbl_8035A8A8;
 s32 fn_800C8D2C(void) {
