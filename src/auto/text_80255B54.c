@@ -5,7 +5,9 @@ extern s32 lbl_8035B690;
 extern s32 lbl_8035B694;
 extern s32 lbl_8035B694;
 
+#pragma scheduling off
 void fn_80255B54(s32 arg0) {
     lbl_8035B690 = arg0;
-    (&lbl_8035B690)[1] = 0;
+    lbl_8035B694 = 0;
 }
+#pragma scheduling reset
