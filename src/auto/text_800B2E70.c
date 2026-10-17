@@ -7182,31 +7182,6 @@ void TRKGetInput(void) {
     }
 }
 
-#pragma pop
-#pragma push
-#pragma dont_inline off
-#pragma auto_inline off
-static inline void TRKDiscardFrame(void) {
-    if (lbl_803257B4.msgBufID != -1) {
-        fn_800DBB10(lbl_803257B4.msgBufID);
-        lbl_803257B4.msgBufID = -1;
-    }
-    lbl_803257B4.buffer = NULL;
-    lbl_803257B4.receiveState = 0;
-}
-
-static inline BOOL TRKFrameComplete(void) {
-    void fn_800DE95C(TrkBuf* buf, u8 a, u8 b);
-    if (lbl_803257B4.buffer->count < 2) {
-        fn_800DE95C(lbl_803257B4.buffer, 0xFF, 2);
-        TRKDiscardFrame();
-        return FALSE;
-    }
-    lbl_803257B4.buffer->pos = 0;
-    lbl_803257B4.buffer->count--;
-    return TRUE;
-}
-
 s32 fn_800DBDF0(void) {
     s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg);
     s32 fn_800E16F8(u8 *c);
