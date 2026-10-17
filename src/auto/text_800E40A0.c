@@ -1,5 +1,6 @@
 /* Functions from 0x800E40A0 to 0x800F5578, found by decomp-toolkit. */
 #include "common.h"
+double fn_800EFA20(double);
 
 extern unsigned char lbl_802E06C8[];
 extern double lbl_803636C0;
@@ -437,6 +438,93 @@ void fn_800E4420(void *pool, void *ptr, u32 size) {
     }
 }
 
+#pragma push
+#pragma inline_depth(0)
+void fn_800E4578(void *pool, void *ptr) {
+    u32 *p;
+    u32 oldsize;
+    u32 *b;
+    u32 *prev;
+    u32 *next;
+    u32 size;
+    u32 *arena;
+    u32 **head;
+    u32 total;
+    int empty;
+    u32 *link;
+    b = (u32 *)((char *)ptr - 8);
+    size = b[0] & ~7;
+    arena = (u32 *)(b[1] & ~1);
+    next = (u32 *)((char *)b + size);
+    b[0] &= ~2;
+    next[0] &= ~4;
+    next[-1] = size;
+    head = (u32 **)((char *)arena + (arena[3] & ~7) - 4);
+    if (*head) {
+        b[2] = (*head)[2];
+        ((u32 *)b[2])[3] = (u32)b;
+        b[3] = (u32)*head;
+        (*head)[2] = (u32)b;
+        *head = b;
+        p = *head;
+        if (!(p[0] & 4)) {
+            oldsize = p[-1];
+            if (oldsize & 2) {
+                prev = p;
+            } else {
+                prev = (u32 *)((char *)p - oldsize);
+                prev[0] &= 7;
+                prev[0] |= (oldsize + (p[0] & ~7)) & ~7;
+                if (!(prev[0] & 2)) {
+                    total = oldsize + (p[0] & ~7);
+                    *(u32 *)((char *)prev + total - 4) = total;
+                }
+                if (*head == p) *head = (u32 *)(*head)[3];
+                ((u32 *)p[3])[2] = p[2];
+                link = (u32 *)p[3];
+                ((u32 *)link[2])[3] = (u32)link;
+            }
+        } else prev = p;
+        *head = prev;
+        p = *head;
+        oldsize = p[0] & ~7;
+        next = (u32 *)((char *)p + oldsize);
+        total = next[0];
+        if (!(total & 2)) {
+            p[0] &= 7;
+            total = oldsize + (total & ~7);
+            p[0] |= total & ~7;
+            if (!(p[0] & 2)) *(u32 *)((char *)p + total - 4) = total;
+            if (!(p[0] & 2)) *(u32 *)((char *)p + total) &= ~4;
+            else *(u32 *)((char *)p + total) |= 4;
+            if (*head == next) *head = (u32 *)(*head)[3];
+            if (*head == next) *head = 0;
+            ((u32 *)next[3])[2] = next[2];
+            ((u32 *)next[2])[3] = next[3];
+        }
+    } else {
+        *head = b;
+        b[2] = (u32)b;
+        b[3] = (u32)b;
+    }
+    size = (*head)[0] & ~7;
+    if (arena[2] < size) arena[2] = size;
+    empty = 0;
+    if (!(arena[4] & 2) && (arena[4] & ~7) == (arena[3] & ~7) - 0x18) empty = 1;
+    if (empty) {
+        link = (u32 *)arena[1];
+        if (link == arena) link = 0;
+        if (*(u32 **)pool == arena) *(u32 **)pool = link;
+        if (link) {
+            link[0] = arena[0];
+            ((u32 *)link[0])[1] = (u32)link;
+        }
+        arena[1] = 0;
+        arena[0] = 0;
+        fn_800E4114((int)arena);
+    }
+}
+#pragma pop
 int fn_800E480C(void) {
     int result = 0;
     MslFile *file = (MslFile *)__files;
