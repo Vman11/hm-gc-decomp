@@ -20,17 +20,11 @@ void fn_80135ADC(void *arg0, f32 arg1) {
 extern f32 lbl_8032E4A8[3];
 extern f32 lbl_80364100;
 extern f32 lbl_80364104;
-void fn_80135AE4(u8 *arg0, u8 *arg1) {
-u32 b;
-u32 a;
-a = arg1[0];
-b = arg1[1];
-arg0[0x10] = a;
-a = arg1[2];
-arg0[0x11] = b;
-b = arg1[3];
-arg0[0x12] = a;
-arg0[0x13] = b;
+void fn_80135AE4(u8 *__restrict arg0, u8 *__restrict arg1) {
+    arg0[0x10] = arg1[0];
+    arg0[0x11] = arg1[1];
+    arg0[0x12] = arg1[2];
+    arg0[0x13] = arg1[3];
 }
 
 void fn_80135B08(u8 *arg0) {
