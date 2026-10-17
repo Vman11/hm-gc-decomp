@@ -1500,6 +1500,7 @@ void fn_800EA1DC(decimal *dec, int new_length) {
 
 static char *long2str_800EA91C(long, char *, print_format);
 char *fn_800EB764(char *, const char *);
+extern const char lbl_8029C148[];
 #pragma push
 #pragma pool_strings on
 char *double2hex(char *buff, print_format *format, double x) {
@@ -1508,8 +1509,9 @@ char *double2hex(char *buff, print_format *format, double x) {
     double bits;
     decform df;
     char *p;
-    int i;
     char digit;
+    int i;
+    unsigned char c;
     bits = x;
     if (format->precision > 509) return 0;
     df.style = 0;
@@ -1518,39 +1520,45 @@ char *double2hex(char *buff, print_format *format, double x) {
     if (d.sig.text[0] == 'I') {
         if ((*(short *)&bits) & 0x8000) {
             buff -= 5;
-            if (format->conversion_char == 'A') fn_800EB764(buff, "-INF");
-            else fn_800EB764(buff, "-inf");
+            if (format->conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 1);
+            else fn_800EB764(buff, lbl_8029C148 + 6);
         } else {
             buff -= 4;
-            if (format->conversion_char == 'A') fn_800EB764(buff, "INF");
-            else fn_800EB764(buff, "inf");
+            if (format->conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 11);
+            else fn_800EB764(buff, lbl_8029C148 + 15);
         }
         return buff;
     }
     if (d.sig.text[0] == 'N') {
         if (((unsigned char *)&x)[0] & 0x80) {
             buff -= 5;
-            if (format->conversion_char == 'A') fn_800EB764(buff, "-NAN");
-            else fn_800EB764(buff, "-nan");
+            if (format->conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 19);
+            else fn_800EB764(buff, lbl_8029C148 + 24);
         } else {
             buff -= 4;
-            if (format->conversion_char == 'A') fn_800EB764(buff, "NAN");
-            else fn_800EB764(buff, "nan");
+            if (format->conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 29);
+            else fn_800EB764(buff, lbl_8029C148 + 33);
         }
         return buff;
     }
-    exp_format = (print_format){1, 1, 0, 0, 0, 'd', 0, 1};
+    exp_format.justification_options = 1;
+    exp_format.sign_options = 1;
+    exp_format.precision_specified = 0;
+    exp_format.alternate_form = 0;
+    exp_format.argument_options = 0;
+    exp_format.conversion_char = 'd';
+    exp_format.field_width = 0;
+    exp_format.precision = 1;
     p = long2str_800EA91C((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exp_format);
     if (format->conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
     for (i = format->precision; i >= 1; --i) {
-        unsigned char c = ((unsigned char *)&x)[i / 2 + 1];
+        c = ((unsigned char *)&x)[i / 2 + 1];
         digit = (c >> 4) & 15;
         if (i % 2) digit = c & 15;
-        if (digit < 10) digit += '0';
-        else if (format->conversion_char == 'a') digit += 'a' - 10;
-        else digit += 'A' - 10;
-        *--p = digit;
+        if (digit < 10) *--p = digit + '0';
+        else if (format->conversion_char == 'a') *--p = digit + 'a' - 10;
+        else *--p = digit + 'A' - 10;
     }
     if (format->precision != 0 || format->alternate_form) *--p = '.';
     *--p = '1';
@@ -2997,9 +3005,9 @@ double fn_800F03E4(double x) {
     }
 }
 
-void fn_800ECE54(void);
-void fn_800F045C(void) {
-    fn_800ECE54();
+double fn_800ECE54(double);
+double fn_800F045C(double x) {
+    return fn_800ECE54(x);
 }
 
 double fn_800ED164(double, double);
