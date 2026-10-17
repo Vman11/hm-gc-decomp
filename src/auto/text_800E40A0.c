@@ -166,6 +166,85 @@ static void __dorounddecup(decimal *d, int digits) {
     }
 }
 
+static inline int __less_dec(const decimal *x, const decimal *y) {
+    if (x->sig.text[0] == 0) {
+        if (y->sig.text[0] != 0) {
+            return 1;
+        }
+        return 0;
+    }
+    if (y->sig.text[0] == 0) {
+        return 0;
+    }
+    if (x->exp == y->exp) {
+        int i;
+        int l = x->sig.length;
+        if (l > y->sig.length) {
+            l = y->sig.length;
+        }
+        for (i = 0; i < l; ++i) {
+            if (x->sig.text[i] < y->sig.text[i]) {
+                return 1;
+            }
+            if (y->sig.text[i] < x->sig.text[i]) {
+                return 0;
+            }
+        }
+        if (l == x->sig.length) {
+            for (; i < y->sig.length; ++i) {
+                if (y->sig.text[i] != 0) {
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+    return x->exp < y->exp;
+}
+
+static inline void __str2dec(decimal *d, const char *s, short exp) {
+    int i;
+    d->sign = 0;
+    d->exp = exp;
+    for (i = 0; i < 36 && *s;) {
+        d->sig.text[i++] = *s++ - '0';
+    }
+    d->sig.length = i;
+    if (*s != 0) {
+        if (*s < 5) {
+            return;
+        }
+        if (*s > 5) {
+            goto round;
+        }
+        {
+            const char *p = s + 1;
+            for (; *p != 0; ++p) {
+                if (*p != '0') {
+                    goto round;
+                }
+            }
+            if ((d->sig.text[i - 1] & 1) == 0) {
+                return;
+            }
+        }
+    round:
+        __dorounddecup(d, d->sig.length);
+    }
+}
+
+static inline int __fpclassifyd_dec(double x) {
+    switch (*(int *)&x & 0x7ff00000) {
+    case 0x7ff00000:
+        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 1;
+        return 2;
+    case 0:
+        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 5;
+        return 3;
+    }
+    return 4;
+}
+
 static void __rounddec(decimal *d, int digits) {
     if (digits > 0 && digits < d->sig.length) {
         int unkBool = __must_round(d, digits);
@@ -2770,6 +2849,442 @@ double fn_800EB838(char *str) {
     return value;
 }
 
+double fn_800EB8C4(int max_width, int (*ReadProc)(void *, int, int), void *ReadProcArg, int *chars_scanned, int *overflow) {
+    extern u8 lbl_802E07C8[];
+    extern struct { char *decimal_point; } lbl_802E08C8;
+    extern float lbl_803596B0[], lbl_803596B4[];
+    extern double lbl_803596C8[], lbl_803596D0[], lbl_803596D8[];
+    extern double lbl_803631E8, lbl_803631F0;
+    double fn_800E4924(decimal *);
+    int scan_state = 1;
+    int hex_scan_state = 0;
+    int count = 0;
+    int spaces = 0;
+    int c;
+    decimal d = { 0, 0, 0, { 0, "" } };
+    int sig_negative = 0;
+    int exp_negative = 0;
+    long exp_value = 0;
+    int exp_adjust = 0;
+    double result;
+    int sign_detected = 0;
+    int radix_marker = *(unsigned char *)lbl_802E08C8.decimal_point;
+    unsigned char *chptr = (unsigned char *)&result;
+    unsigned char uch, uch1;
+    int ui;
+    int NibbleIndex;
+    int expsign = 0;
+    int exp_digits = 0;
+    unsigned intdigits = 0;
+    short expvalue = 0;
+
+    *overflow = 0;
+    c = (count++, ReadProc(ReadProcArg, 0, 0));
+
+    while (count <= max_width && c != -1 && !(scan_state & 0x1800)) {
+        switch (scan_state) {
+        case 1:
+            if (lbl_802E05C8[(u8)c] & 6) {
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                count--;
+                spaces++;
+                break;
+            }
+            switch (c == -1 ? -1 : lbl_802E07C8[(u8)c]) {
+            case '-':
+                sig_negative = 1;
+            case '+':
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                sign_detected = 1;
+                break;
+            case 'I':
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                scan_state = 0x4000;
+                break;
+            case 'N':
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                scan_state = 0x2000;
+                break;
+            default:
+                scan_state = 2;
+                break;
+            }
+            break;
+        case 0x4000: {
+            int i = 1;
+            char model[] = "INFINITY";
+
+            while (i < 8 && (c == -1 ? -1 : lbl_802E07C8[(u8)c]) == model[i]) {
+                i++;
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+            }
+            if (i == 3 || i == 8) {
+                if (sig_negative) {
+                    result = -lbl_803596B4[0];
+                } else {
+                    result = lbl_803596B4[0];
+                }
+                *chars_scanned = spaces + i + sign_detected;
+                return result;
+            } else {
+                scan_state = 0x1000;
+            }
+            break;
+        }
+        case 0x2000: {
+            int i = 1, j = 0;
+            char model[] = "NAN(";
+
+            while (i < 4 && (c == -1 ? -1 : lbl_802E07C8[(u8)c]) == model[i]) {
+                i++;
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+            }
+            if (i == 3 || i == 4) {
+                if (i == 4) {
+                    while (j < 32 && ((lbl_802E05C8[(u8)c] & 0x10) || (lbl_802E05C8[(u8)c] & 0xC0))) {
+                        j++;
+                        c = (count++, ReadProc(ReadProcArg, 0, 0));
+                    }
+                    if (c != ')') {
+                        scan_state = 0x1000;
+                        break;
+                    } else {
+                        j++;
+                    }
+                }
+                if (sig_negative) {
+                    result = -lbl_803596B0[0];
+                } else {
+                    result = lbl_803596B0[0];
+                }
+                *chars_scanned = spaces + i + j + sign_detected;
+                return result;
+            } else {
+                scan_state = 0x1000;
+            }
+            break;
+        }
+        case 2:
+            if (c == radix_marker) {
+                scan_state = 0x10;
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                break;
+            }
+            if (!(lbl_802E05C8[(u8)c] & 0x10)) {
+                scan_state = 0x1000;
+                break;
+            }
+            if (c == '0') {
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                if ((c == -1 ? -1 : lbl_802E07C8[(u8)c]) == 'X') {
+                    scan_state = 0x8000;
+                    hex_scan_state = 1;
+                } else {
+                    scan_state = 4;
+                }
+                break;
+            }
+            scan_state = 8;
+            break;
+        case 4:
+            if (c == '0') {
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                break;
+            }
+            scan_state = 8;
+            break;
+        case 8:
+            if (!(lbl_802E05C8[(u8)c] & 0x10)) {
+                if (c == radix_marker) {
+                    scan_state = 0x20;
+                    c = (count++, ReadProc(ReadProcArg, 0, 0));
+                } else {
+                    scan_state = 0x40;
+                }
+                break;
+            }
+            if (d.sig.length < 20) {
+                d.sig.text[d.sig.length++] = c;
+            } else {
+                exp_adjust++;
+            }
+            c = (count++, ReadProc(ReadProcArg, 0, 0));
+            break;
+        case 0x10:
+            if (!(lbl_802E05C8[(u8)c] & 0x10)) {
+                scan_state = 0x1000;
+                break;
+            }
+            scan_state = 0x20;
+            break;
+        case 0x20:
+            if (!(lbl_802E05C8[(u8)c] & 0x10)) {
+                scan_state = 0x40;
+                break;
+            }
+            if (d.sig.length < 20) {
+                if (c != '0' || d.sig.length) {
+                    d.sig.text[d.sig.length++] = c;
+                }
+                exp_adjust--;
+            }
+            c = (count++, ReadProc(ReadProcArg, 0, 0));
+            break;
+        case 0x40:
+            if ((c == -1 ? -1 : lbl_802E07C8[(u8)c]) == 'E') {
+                scan_state = 0x80;
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                break;
+            }
+            scan_state = 0x800;
+            break;
+        case 0x80:
+            if (c == '+') {
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+            } else if (c == '-') {
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                exp_negative = 1;
+            }
+            scan_state = 0x100;
+            break;
+        case 0x100:
+            if (!(lbl_802E05C8[(u8)c] & 0x10)) {
+                scan_state = 0x1000;
+                break;
+            }
+            if (c == '0') {
+                scan_state = 0x200;
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                break;
+            }
+            scan_state = 0x400;
+            break;
+        case 0x200:
+            if (c == '0') {
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                break;
+            }
+            scan_state = 0x400;
+            break;
+        case 0x400:
+            if (!(lbl_802E05C8[(u8)c] & 0x10)) {
+                scan_state = 0x800;
+                break;
+            }
+            exp_value = exp_value * 10 + (c - '0');
+            if (exp_value > 0x7FFF) {
+                *overflow = 1;
+            }
+            c = (count++, ReadProc(ReadProcArg, 0, 0));
+            break;
+        case 0x8000:
+            switch (hex_scan_state) {
+            case 1:
+                chptr[0] = 0;
+                chptr[1] = 0;
+                chptr[2] = 0;
+                chptr[3] = 0;
+                chptr[4] = 0;
+                chptr[5] = 0;
+                chptr[6] = 0;
+                chptr[7] = 0;
+                NibbleIndex = 2;
+                hex_scan_state = 2;
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                break;
+            case 2:
+                if (c == '0') {
+                    c = (count++, ReadProc(ReadProcArg, 0, 0));
+                    break;
+                }
+                hex_scan_state = 4;
+                break;
+            case 4:
+                if (!(lbl_802E05C8[(u8)c] & 0x20)) {
+                    if (c == radix_marker) {
+                        hex_scan_state = 8;
+                        c = (count++, ReadProc(ReadProcArg, 0, 0));
+                    } else {
+                        hex_scan_state = 0x10;
+                    }
+                    break;
+                }
+                if (NibbleIndex < 17) {
+                    intdigits++;
+                    uch = chptr[NibbleIndex / 2];
+                    ui = (c == -1 ? -1 : lbl_802E07C8[(u8)c]);
+                    if (ui >= 'A') {
+                        ui = ui - 'A' + 10;
+                    } else {
+                        ui -= '0';
+                    }
+                    uch1 = ui;
+                    if ((NibbleIndex % 2) != 0) {
+                        uch |= uch1;
+                    } else {
+                        uch |= (uch1 << 4);
+                    }
+                    chptr[NibbleIndex++ / 2] = uch;
+                    c = (count++, ReadProc(ReadProcArg, 0, 0));
+                } else {
+                    c = (count++, ReadProc(ReadProcArg, 0, 0));
+                }
+                break;
+            case 8:
+                if (!(lbl_802E05C8[(u8)c] & 0x20)) {
+                    hex_scan_state = 0x10;
+                    break;
+                }
+                if (NibbleIndex < 17) {
+                    uch = chptr[NibbleIndex / 2];
+                    ui = (c == -1 ? -1 : lbl_802E07C8[(u8)c]);
+                    if (ui >= 'A') {
+                        ui = ui - 'A' + 10;
+                    } else {
+                        ui -= '0';
+                    }
+                    uch1 = ui;
+                    if ((NibbleIndex % 2) != 0) {
+                        uch |= uch1;
+                    } else {
+                        uch |= (uch1 << 4);
+                    }
+                    chptr[NibbleIndex++ / 2] = uch;
+                    c = (count++, ReadProc(ReadProcArg, 0, 0));
+                } else {
+                    c = (count++, ReadProc(ReadProcArg, 0, 0));
+                }
+                break;
+            case 0x10:
+                if ((c == -1 ? -1 : lbl_802E07C8[(u8)c]) == 'P') {
+                    hex_scan_state = 0x20;
+                    exp_digits++;
+                    c = (count++, ReadProc(ReadProcArg, 0, 0));
+                } else {
+                    scan_state = 0x800;
+                }
+                break;
+            case 0x20:
+                exp_digits++;
+                if (c == '-') {
+                    expsign = 1;
+                } else if (c != '+') {
+                    ReadProc(ReadProcArg, c, 1);
+                    exp_digits--;
+                }
+                hex_scan_state = 0x40;
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                break;
+            case 0x40:
+                if (!(lbl_802E05C8[(u8)c] & 0x10)) {
+                    scan_state = 0x1000;
+                    break;
+                }
+                if (c == '0') {
+                    hex_scan_state = 0x80;
+                    exp_digits++;
+                    c = (count++, ReadProc(ReadProcArg, 0, 0));
+                    break;
+                }
+                hex_scan_state = 0x100;
+                break;
+            case 0x100:
+                if (!(lbl_802E05C8[(u8)c] & 0x10)) {
+                    scan_state = 0x800;
+                    break;
+                }
+                expvalue = expvalue * 10 + (c - '0');
+                if (exp_value > 0x7FFF) {
+                    *overflow = 1;
+                }
+                exp_digits++;
+                c = (count++, ReadProc(ReadProcArg, 0, 0));
+                break;
+            }
+            break;
+        }
+    }
+
+    if (!(scan_state & 0xE2C)) {
+        count = 0;
+        *chars_scanned = 0;
+    } else {
+        count--;
+        *chars_scanned = count + spaces;
+    }
+    ReadProc(ReadProcArg, c, 1);
+
+    if (hex_scan_state == 0) {
+        if (exp_negative) {
+            exp_value = -exp_value;
+        }
+        {
+            int n = d.sig.length;
+            unsigned char *p = &d.sig.text[n];
+
+            while (n-- && *--p == '0') {
+                exp_adjust++;
+            }
+            d.sig.length = n + 1;
+            if (d.sig.length == 0) {
+                d.sig.text[d.sig.length++] = '0';
+            }
+        }
+        exp_value += exp_adjust;
+        if (exp_value < -0x8000 || exp_value > 0x7FFF) {
+            *overflow = 1;
+        }
+        if (*overflow) {
+            if (exp_negative) {
+                return lbl_803631E8;
+            } else {
+                return sig_negative ? -lbl_803596C8[0] : lbl_803596C8[0];
+            }
+        }
+        d.exp = exp_value;
+        result = fn_800E4924(&d);
+        if (result != lbl_803631E8 && result < lbl_803596D0[0]) {
+            *overflow = 1;
+        } else if (result > lbl_803596D8[0]) {
+            *overflow = 1;
+            result = lbl_803596C8[0];
+        }
+        if (sig_negative && (scan_state & 0xE2C)) {
+            result = -result;
+        }
+        return result;
+    } else {
+        unsigned long long *uptr = (unsigned long long *)&result;
+
+        if (result != lbl_803631F0) {
+            if (expsign) {
+                expvalue = -expvalue;
+            }
+            while ((*(short *)&result & 0x00F0) != 0x0010) {
+                *uptr >>= 1;
+                expvalue++;
+            }
+            expvalue += (intdigits - 1) * 4;
+            *(short *)&result &= 0x000F;
+            *(short *)&result |= ((expvalue + 1023) << 4);
+            *chars_scanned = spaces + sign_detected + NibbleIndex + 1 + exp_digits;
+            if (result != lbl_803631E8 && result < lbl_803596D0[0]) {
+                *overflow = 1;
+                result = lbl_803631E8;
+            } else if (result > lbl_803596D8[0]) {
+                *overflow = 1;
+                result = lbl_803596C8[0];
+            }
+            if (sig_negative) {
+                *(short *)&result |= 0x8000;
+            }
+        } else {
+            result = lbl_803631E8;
+        }
+        return result;
+    }
+}
+
 int fn_800EC8D0(char *str) {
     u32 fn_800EC990(int, int, int (*)(void *, int, int), void *, int *, int *, int *);
     extern s32 lbl_8035A978;
@@ -3237,6 +3752,209 @@ double fn_800ED954(double x) {
         if(k==0) return f-s*(f-R);
         return lbl_80363370*dk-((s*(f-R)-lbl_80363378*dk)-f);
     }
+}
+
+extern double lbl_8029C578[];
+extern double lbl_803633D8, lbl_803633E0, lbl_803633E8, lbl_803633F0, lbl_803633F8;
+extern double lbl_80363400, lbl_80363408, lbl_80363410, lbl_80363418, lbl_80363420, lbl_80363428;
+extern double lbl_80363430, lbl_80363438, lbl_80363440, lbl_80363448, lbl_80363450, lbl_80363458;
+extern double lbl_80363460, lbl_80363468, lbl_80363470, lbl_80363478, lbl_80363480, lbl_80363488, lbl_80363490;
+extern double lbl_80363498, lbl_803634A0, lbl_803634A8, lbl_803634B0, lbl_803634B8, lbl_803634C0, lbl_803634C8, lbl_803634D0, lbl_803634D8;
+double fn_800EDBD0(double x, double y) {
+    extern float lbl_803596B0[], lbl_803596B4[];
+    extern double fn_800F004C(double, int);
+    double z,ax,z_h,z_l,p_h,p_l;
+    double y1,t1,t2,r,s,t,u,v,w;
+    int i,j,k,yisint,n;
+    int hx,hy,ix,iy;
+    unsigned lx,ly;
+    double *base;
+
+    base = lbl_8029C578;
+    hx = *(int*)&x; lx = *(1+(unsigned*)&x);
+    hy = *(int*)&y; ly = *(1+(unsigned*)&y);
+    ix = hx&0x7fffffff; iy = hy&0x7fffffff;
+
+    if((iy|ly)==0) return lbl_803633D8;
+
+    if(ix > 0x7ff00000 || ((ix==0x7ff00000)&&(lx!=0)) ||
+       iy > 0x7ff00000 || ((iy==0x7ff00000)&&(ly!=0)))
+        return x+y;
+
+    yisint = 0;
+    if(hx<0) {
+        if(iy>=0x43400000) yisint = 2;
+        else if(iy>=0x3ff00000) {
+            k = (iy>>20)-0x3ff;
+            if(k>20) {
+                j = ly>>(52-k);
+                if((j<<(52-k))==ly) yisint = 2-(j&1);
+            } else if(ly==0) {
+                j = iy>>(20-k);
+                if((j<<(20-k))==iy) yisint = 2-(j&1);
+            }
+        }
+    }
+
+    if(ly==0) {
+        if (iy==0x7ff00000) {
+            if(((ix-0x3ff00000)|lx)==0)
+                return y - y;
+            else if (ix >= 0x3ff00000)
+                return (hy>=0)? y: lbl_803633E0;
+            else
+                return (hy<0)?-y: lbl_803633E0;
+        }
+        if(iy==0x3ff00000) {
+            if(hy<0) return lbl_803633D8/x; else return x;
+        }
+        if(hy==0x40000000) return x*x;
+        if(hy==0x3fe00000) {
+            if(hx>=0) {
+                double guess;
+                if (x > lbl_803633E0) {
+                    guess = __frsqrte(x);
+                    guess = lbl_803633E8 * guess * (lbl_803633F0 - x * (guess * guess));
+                    guess = lbl_803633E8 * guess * (lbl_803633F0 - x * (guess * guess));
+                    guess = lbl_803633E8 * guess * (lbl_803633F0 - x * (guess * guess));
+                    guess = lbl_803633E8 * guess * (lbl_803633F0 - x * (guess * guess));
+                    return x * guess;
+                } else if (x == lbl_803633E0) return lbl_803633E0;
+                else if (x != lbl_803633E0) return lbl_803596B0[0];
+                return lbl_803596B4[0];
+            }
+        }
+    }
+
+    ax = __fabs(x);
+    if(lx==0) {
+        if(ix==0x7ff00000||ix==0||ix==0x3ff00000){
+            z = ax;
+            if(hy<0) z = lbl_803633D8/z;
+            if(hx<0) {
+                if(((ix-0x3ff00000)|yisint)==0) {
+                    z = (z-z)/(z-z);
+                } else if(yisint==1)
+                    z = -z;
+            }
+            return z;
+        }
+    }
+
+    n = (hx>>31)+1;
+
+    if((n|yisint)==0) {
+        lbl_8035A978 = 33;
+        return lbl_803596B0[0];
+    }
+
+    if(iy>0x41e00000) {
+        if(iy>0x43f00000){
+            if(ix<=0x3fefffff) return (hy<0)? lbl_803633F8:lbl_803633E0;
+            if(ix>=0x3ff00000) return (hy>0)? lbl_803633F8:lbl_803633E0;
+        }
+        if(ix<0x3fefffff) return (hy<0)? lbl_803633F8:lbl_803633E0;
+        if(ix>0x3ff00000) return (hy>0)? lbl_803633F8:lbl_803633E0;
+        t = x-lbl_803633D8;
+        w = (t*t)*(lbl_803633E8-t*(lbl_80363400-t*lbl_80363408));
+        u = lbl_80363410*t;
+        v = t*lbl_80363418-w*lbl_80363420;
+        t1 = u+v;
+        *(1+(int*)&t1) = 0;
+        t2 = v-(t1-u);
+    } else {
+        double ss,s2,s_h,s_l,t_h,t_l;
+        n = 0;
+        if(ix<0x00100000)
+            {ax *= lbl_80363428; n -= 53; ix = *(int*)&ax; }
+        n += ((ix)>>20)-0x3ff;
+        j = ix&0x000fffff;
+        ix = j|0x3ff00000;
+        if(j<=0x3988E) k=0;
+        else if(j<0xBB67A) k=1;
+        else {k=0;n+=1;ix -= 0x00100000;}
+        *(int*)&ax = ix;
+
+        u = ax-(base+0)[k];
+        v = lbl_803633D8/(ax+(base+0)[k]);
+        ss = u*v;
+        s_h = ss;
+        *(1+(int*)&s_h) = 0;
+        t_h = lbl_803633E0;
+        *(int*)&t_h = ((ix>>1)|0x20000000)+0x00080000+(k<<18);
+        t_l = ax - (t_h-(base+0)[k]);
+        s_l = v*((u-s_h*t_h)-s_h*t_l);
+        s2 = ss*ss;
+        r = s2*s2*(lbl_80363430+s2*(lbl_80363438+s2*(lbl_80363440+s2*(lbl_80363448+s2*(lbl_80363450+s2*lbl_80363458)))));
+        r += s_l*(s_h+ss);
+        s2 = s_h*s_h;
+        t_h = lbl_803633F0+s2+r;
+        *(1+(int*)&t_h) = 0;
+        t_l = r-((t_h-lbl_803633F0)-s2);
+        u = s_h*t_h;
+        v = s_l*t_h+t_l*ss;
+        p_h = u+v;
+        *(1+(int*)&p_h) = 0;
+        p_l = v-(p_h-u);
+        z_h = lbl_80363460*p_h;
+        z_l = lbl_80363468*p_h+p_l*lbl_80363470+(base+4)[k];
+        t = (double)n;
+        t1 = (((z_h+z_l)+(base+2)[k])+t);
+        *(1+(int*)&t1) = 0;
+        t2 = z_l-(((t1-t)-(base+2)[k])-z_h);
+    }
+
+    s = lbl_803633D8;
+    if((n|(yisint-1))==0)
+        s = lbl_80363478;
+
+    y1 = y;
+    *(1+(int*)&y1) = 0;
+    p_l = (y-y1)*t1+y*t2;
+    p_h = y1*t1;
+    z = p_l+p_h;
+    j = *(int*)&z;
+    i = *(1+(int*)&z);
+    if (j>=0x40900000) {
+        if(((j-0x40900000)|i)!=0)
+            return s*lbl_80363480*lbl_80363480;
+        else {
+            if(p_l+lbl_80363488>z-p_h) return s*lbl_80363480*lbl_80363480;
+        }
+    } else if((j&0x7fffffff)>=0x4090cc00 ) {
+        if(((j-0xc090cc00)|i)!=0)
+            return s*lbl_80363490*lbl_80363490;
+        else {
+            if(p_l<=z-p_h) return s*lbl_80363490*lbl_80363490;
+        }
+    }
+    i = j&0x7fffffff;
+    k = (i>>20)-0x3ff;
+    n = 0;
+    if(i>0x3fe00000) {
+        n = j+(0x00100000>>(k+1));
+        k = ((n&0x7fffffff)>>20)-0x3ff;
+        t = lbl_803633E0;
+        *(int*)&t = (n&~(0x000fffff>>k));
+        n = ((n&0x000fffff)|0x00100000)>>(20-k);
+        if(j<0) n = -n;
+        p_h -= t;
+    }
+    t = p_l+p_h;
+    *(1+(int*)&t) = 0;
+    u = t*lbl_80363498;
+    v = (p_l-(t-p_h))*lbl_803634A0+t*lbl_803634A8;
+    z = u+v;
+    w = v-(z-u);
+    t = z*z;
+    t1 = z - t*(lbl_803634B0+t*(lbl_803634B8+t*(lbl_803634C0+t*(lbl_803634C8+t*lbl_803634D0))));
+    r = (z*t1)/(t1-lbl_803634D8)-(w+z*w);
+    z = lbl_803633D8-(r-z);
+    j = *(int*)&z;
+    j += (n<<20);
+    if((j>>20)<=0) z = fn_800F004C(z,-n);
+    else *(int*)&z += (n<<20);
+    return s*z;
 }
 
 extern double lbl_803634E8, lbl_803634F0, lbl_803634F8, lbl_80363500, lbl_80363508, lbl_80363510, lbl_80363518, lbl_80363520, lbl_80363528, lbl_80363530;
