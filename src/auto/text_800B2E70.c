@@ -3230,6 +3230,10 @@ void fn_800C8C98(s16 *arg0) {
     lbl_8035A898 += arg0[0x62 / 2];
 }
 
+typedef struct { u32 w[0x34]; } AXPBAll;
+typedef struct { u32 w[4]; } AXPBAddrCopy;
+typedef struct { u32 w[10]; } AXPBAdpcmCopy;
+
 extern s32 lbl_8035A8A8;
 s32 fn_800C8D2C(void) {
     return lbl_8035A8A8;
