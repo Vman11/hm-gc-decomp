@@ -21,7 +21,8 @@ s32 fn_80114ED8(void* arg0, void* arg1, void* arg2) {
     u8* base = hdr + M2C_FIELD(hdr, s32*, 0x10);
     s32 t = M2C_FIELD(arg1, s32*, 0x10);
     s32 v = *(s32*)(base + t + (M2C_FIELD(arg2, s32*, 0x4) + 3) * 4);
-    return *(s32*)(base + v + M2C_FIELD(arg2, s32*, 0x8) * 4);
+    v += M2C_FIELD(arg2, s32*, 0x8) * 4;
+    return *(s32*)(base + v);
 }
 
 u32 fn_80114F10(void* arg0, void* arg1) {
