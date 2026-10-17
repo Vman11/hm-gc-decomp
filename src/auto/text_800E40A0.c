@@ -1279,6 +1279,103 @@ void fn_800EA1DC(decimal *dec, int new_length) {
     dec->sig.length = new_length;
 }
 
+static char *long2str_800EA91C(long num, char *buff, print_format format) {
+    unsigned long unsigned_num, base;
+    char *p;
+    int n, digit;
+    int minus = 0;
+
+    unsigned_num = num;
+    minus = 0;
+
+    p = buff;
+
+    *--p = 0;
+
+    n = 0;
+
+    if (!num && !format.precision && !(format.alternate_form && format.conversion_char == 'o')) {
+        return p;
+    }
+
+    switch (format.conversion_char) {
+    case 'd':
+    case 'i':
+        base = 10;
+        if (num < 0) {
+            unsigned_num = -unsigned_num;
+            minus = 1;
+        }
+        break;
+    case 'o':
+        base = 8;
+        format.sign_options = 0;
+        break;
+    case 'u':
+        base = 10;
+        format.sign_options = 0;
+        break;
+    case 'x':
+    case 'X':
+        base = 16;
+        format.sign_options = 0;
+        break;
+    }
+
+    do {
+        digit = unsigned_num % base;
+        unsigned_num /= base;
+        if (digit < 10) {
+            digit += '0';
+        } else if (format.conversion_char == 'x') {
+            digit += 'a' - 10;
+        } else {
+            digit += 'A' - 10;
+        }
+        *--p = digit;
+        ++n;
+    } while (unsigned_num != 0);
+
+    if (base == 8 && format.alternate_form && *p != '0') {
+        *--p = '0';
+        ++n;
+    }
+
+    if (format.justification_options == 2) {
+        format.precision = format.field_width;
+        if (minus || format.sign_options != 0) {
+            --format.precision;
+        }
+        if (base == 16 && format.alternate_form) {
+            format.precision -= 2;
+        }
+    }
+
+    if (buff - p + format.precision > 509) {
+        return 0;
+    }
+
+    while (n < format.precision) {
+        *--p = '0';
+        ++n;
+    }
+
+    if (base == 16 && format.alternate_form) {
+        *--p = format.conversion_char;
+        *--p = '0';
+    }
+
+    if (minus) {
+        *--p = '-';
+    } else if (format.sign_options == 1) {
+        *--p = '+';
+    } else if (format.sign_options == 2) {
+        *--p = ' ';
+    }
+
+    return p;
+}
+
 #pragma push
 #pragma use_lmw_stmw on
 void fn_800EB040(void* table_base, u32 num_members, u32 member_size, int (*compare_members)(const void*, const void*)) {
@@ -1762,6 +1859,53 @@ int fwide(void *file, int mode) {
         break;
     }
     return result;
+}
+
+extern double lbl_8029C538[];
+extern double lbl_803632E0, lbl_803632E8, lbl_803632F0, lbl_803632F8;
+extern double lbl_80363300, lbl_80363308, lbl_80363310, lbl_80363318;
+extern double lbl_80363320, lbl_80363328, lbl_80363330, lbl_80363338;
+extern double lbl_80363340, lbl_80363348;
+double fn_800ED3F4(double x) {
+    double y, hi, lo, c, t;
+    int k = 0;
+    unsigned hx, xsb;
+    hx = ((unsigned *)&x)[0];
+    xsb = (hx >> 31) & 1;
+    hx &= 0x7fffffff;
+    if (hx >= 0x40862e42) {
+        if (hx >= 0x7ff00000) {
+            if (((hx & 0xfffff) | ((unsigned *)&x)[1]) != 0) return x + x;
+            return xsb == 0 ? x : lbl_803632E0;
+        }
+        if (x > lbl_803632E8) return lbl_803632F0;
+        if (x < lbl_803632F8) return lbl_803632E0;
+    }
+    if (hx > 0x3fd62e42) {
+        if (hx < 0x3ff0a2b2) {
+            hi = x - lbl_8029C538[2 + xsb];
+            lo = lbl_8029C538[4 + xsb];
+            k = 1 - xsb - xsb;
+        } else {
+            k = lbl_80363300 * x + lbl_8029C538[xsb];
+            t = k;
+            hi = x - t * lbl_8029C538[2];
+            lo = t * lbl_8029C538[4];
+        }
+        x = hi - lo;
+    } else if (hx < 0x3e300000) {
+        if (lbl_80363308 + x > lbl_80363310) return lbl_80363310 + x;
+    } else k = 0;
+    t = x * x;
+    c = x - t * (lbl_80363318 + t * (lbl_80363320 + t * (lbl_80363328 + t * (lbl_80363330 + t * lbl_80363338))));
+    if (k == 0) return lbl_80363310 - ((x * c) / (c - lbl_80363340) - x);
+    y = lbl_80363310 - ((lo - (x * c) / (lbl_80363340 - c)) - hi);
+    if (k >= -1021) {
+        ((int *)&y)[0] += k << 20;
+        return y;
+    }
+    ((int *)&y)[0] += (k + 1000) << 20;
+    return y * lbl_80363348;
 }
 
 double fn_800EE824(double x, double y) {
