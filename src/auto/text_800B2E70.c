@@ -7612,7 +7612,7 @@ void fn_800DE8AC(TrkBuf* buf) {
     } while (ok != 0 && n > 0);
 }
 
-void fn_800DE95C(TrkBuf* buf, s8 a, s8 b) {
+void fn_800DE95C(TrkBuf* buf, u8 a, u8 b) {
     s32 n;
     s32 ok;
     fn_800DBAD0(buf, 1);
@@ -7864,16 +7864,16 @@ s32 fn_800DEE88(TrkBuf *msgBuf, s32 *bufferId, u32 p1, u32 p2, s32 p3) {
 }
 
 s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s32 read) {
+    s32 error;
     s32 replyBufferId;
+    TrkBuf *replyBuffer;
     s32 bufferId;
     TrkBuf *buffer;
-    u16 replyLength;
-    u8 replyIOResult;
-    s32 error;
-    s32 exit;
-    u32 done;
-    TrkBuf *replyBuffer;
     u32 length;
+    u32 done;
+    u8 replyIOResult;
+    u16 replyLength;
+    s32 exit;
     s32 err;
 
     if (data == 0 || *count == 0) {
@@ -7894,18 +7894,16 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
         error = fn_800DBBA0(&bufferId, &buffer);
 
         if (error == 0) {
-            TrkBuf *b;
             u8 cmd = 0xD0;
             if (read) {
                 cmd = 0xD1;
             }
-            b = buffer;
-            if (b->pos >= 0x880) {
+            if (buffer->pos >= 0x880) {
                 err = 0x301;
             } else {
-                b->data[b->pos++] = cmd;
+                buffer->data[buffer->pos++] = cmd;
                 err = 0;
-                b->count++;
+                buffer->count++;
             }
             error = err;
         }
@@ -7921,10 +7919,15 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
 
         if (error == 0) {
             if (needReply) {
+                s32 isStdin;
                 replyLength = 0;
                 replyIOResult = 0;
 
-                error = fn_800DEE88(buffer, &replyBufferId, 5, 3, !(read && handle == 0));
+                isStdin = 0;
+                if (read && handle == 0) {
+                    isStdin = 1;
+                }
+                error = fn_800DEE88(buffer, &replyBufferId, 5, 3, !isStdin);
                 if (error == 0) {
                     replyBuffer = TRKGetBuffer(replyBufferId);
                     fn_800DBAA0(replyBuffer, 2);
