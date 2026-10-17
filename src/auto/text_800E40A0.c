@@ -694,7 +694,7 @@ double fn_800E4924(const decimal *d) {
                 if (lbl_802E05C8[c] & 0x10) {
                     c -= '0';
                 } else {
-                    c = (unsigned char)((c == -1 ? -1 : lbl_802E06C8[c]) - 'a' + 10);
+                    c = (unsigned char)((d->sig.text[i] == -1 ? -1 : lbl_802E06C8[d->sig.text[i]]) - 'a' + 10);
                 }
                 if (c != 0) {
                     placed_non_zero = 1;
@@ -3055,7 +3055,6 @@ double fn_800EB8C4(int max_width, int (*ReadProc)(void *, int, int), void *ReadP
     int exp_adjust = 0;
     double result;
     int sign_detected = 0;
-    int radix_marker = *(unsigned char *)lbl_802E08C8.decimal_point;
     unsigned char *chptr = (unsigned char *)&result;
     unsigned char uch, uch1;
     int ui;
@@ -3064,6 +3063,7 @@ double fn_800EB8C4(int max_width, int (*ReadProc)(void *, int, int), void *ReadP
     int exp_digits = 0;
     unsigned intdigits = 0;
     short expvalue = 0;
+    int radix_marker = *(unsigned char *)lbl_802E08C8.decimal_point;
 
     *overflow = 0;
     c = (count++, ReadProc(ReadProcArg, 0, 0));
@@ -3430,7 +3430,7 @@ double fn_800EB8C4(int max_width, int (*ReadProc)(void *, int, int), void *ReadP
         }
         d.exp = exp_value;
         result = fn_800E4924(&d);
-        if (result != lbl_803631E8 && result < lbl_803596D0[0]) {
+        if (lbl_803631E8 != result && result < lbl_803596D0[0]) {
             *overflow = 1;
         } else if (result > lbl_803596D8[0]) {
             *overflow = 1;
@@ -3455,9 +3455,9 @@ double fn_800EB8C4(int max_width, int (*ReadProc)(void *, int, int), void *ReadP
             *(short *)&result &= 0x000F;
             *(short *)&result |= ((expvalue + 1023) << 4);
             *chars_scanned = spaces + sign_detected + NibbleIndex + 1 + exp_digits;
-            if (result != lbl_803631E8 && result < lbl_803596D0[0]) {
+            if (0.0 != result && result < lbl_803596D0[0]) {
                 *overflow = 1;
-                result = lbl_803631E8;
+                result = 0.0;
             } else if (result > lbl_803596D8[0]) {
                 *overflow = 1;
                 result = lbl_803596C8[0];
