@@ -1,5 +1,6 @@
 /* Functions from 0x800E40A0 to 0x800F5578, found by decomp-toolkit. */
 #include "common.h"
+extern u8 lbl_802E05C8[];
 double fn_800EFA20(double);
 
 extern unsigned char lbl_802E06C8[];
@@ -585,6 +586,83 @@ void fn_800E59A4(const decform *f, double x, decimal *d) {
         d->sig.text[i] += '0';
     }
 }
+
+void fn_800E5EFC(decimal *result, const decimal *x, const decimal *y) {
+    unsigned char *b, *i;
+    const unsigned char *yb, *j, *end;
+    int offset, length, n;
+    *result = *x;
+    if (y->sig.text[0] == 0) return;
+    length = result->sig.length;
+    if (length < y->sig.length) length = y->sig.length;
+    offset = result->exp - y->exp;
+    length += offset;
+    if (length > 36) length = 36;
+    while (result->sig.length < length)
+        result->sig.text[result->sig.length++] = 0;
+    b = result->sig.text;
+    i = b + length;
+    n = y->sig.length + offset;
+    if (n < length) i = b + n;
+    yb = y->sig.text;
+    j = yb + (i - b - offset);
+    end = j;
+    while (i > b && j > yb) {
+        if (*--i < *--j) {
+            unsigned char *k = i - 1;
+            while (*k == 0) --k;
+            while (k != i) {
+                --*k;
+                *++k += 10;
+            }
+        }
+        *i -= *j;
+    }
+    n = end - yb;
+    if (n < y->sig.length) {
+        int round = 0;
+        if (*end < 5) round = 1;
+        else if (*end == 5) {
+            const unsigned char *e = y->sig.text + y->sig.length;
+            i = (unsigned char *)end + 1;
+            while (i < e) {
+                if (*i != 0) goto normalize;
+                ++i;
+            }
+            i = b + (n + offset - 1);
+            if (*i & 1) round = 1;
+        }
+        if (round) {
+            if (*i < 1) {
+                unsigned char *k = i - 1;
+                while (*k == 0) --k;
+                while (k != i) {
+                    --*k;
+                    *++k += 10;
+                }
+            }
+            --*i;
+        }
+    }
+normalize:
+    i = b;
+    while (*i == 0) ++i;
+    if (i > b) {
+        unsigned char count = i - b;
+        unsigned char *e;
+        result->exp -= count;
+        e = b + result->sig.length;
+        while (i < e) *b++ = *i++;
+        result->sig.length -= count;
+    }
+    b = result->sig.text;
+    i = b + result->sig.length;
+    while (i > b) {
+        if (*--i != 0) break;
+    }
+    result->sig.length = i - b + 1;
+}
+
 #pragma pop
 int fn_800E63F8(const decimal *x, const decimal *y) {
     int i;
@@ -2597,7 +2675,7 @@ extern int lbl_8029C6B0[];
 extern int lbl_8029C5A8[];
 int fn_800EE918(double*, double*, int, int, int, const int*);
 int fn_800EE484(double x, double *y) {
- double w,z,t,r,fn,tx[3];
+ double w,z,t,r,fn,tx[3], saved;
  int e0,i,j,n,nx,hx,ix;
  hx = *(int*)&x; ix = hx & 0x7fffffff;
  if(ix<=0x3fe921fb) { y[0]=x; y[1]=0.0; return 0; }
@@ -2621,7 +2699,7 @@ int fn_800EE484(double x, double *y) {
   else {
    j=ix>>20; y[0]=r-w; i=j-((*(int*)&y[0]>>20)&0x7ff);
    if(i>16) {
-    t=r; w=6.07710050630396597660e-11*fn; r-=w; w=2.02226624879595063154e-21*fn-((t-r)-w); y[0]=r-w;
+    saved=r; w=6.07710050630396597660e-11*fn; r-=w; w=2.02226624879595063154e-21*fn-((saved-r)-w); y[0]=r-w;
     i=j-((*(int*)&y[0]>>20)&0x7ff);
     if(i>49) { t=r; w=2.02226624871116645580e-21*fn; r-=w; w=8.47842766036889956997e-32*fn-((t-r)-w); y[0]=r-w; }
    }
@@ -3629,6 +3707,71 @@ void UnlockedHandler(void) {
 
     EXIGetID(0, &sp10);
 }
+
+extern u32 IDSerialPort1_8035A9B8;
+void UnlockedHandler(void);
+extern BOOL EXILock(s32 chan, u32 dev, EXICallback unlockedCallback);
+extern BOOL EXISelect(s32 chan, u32 dev, u32 freq);
+extern BOOL EXIImm(s32 chan, void *buf, s32 len, u32 type, EXICallback callback);
+extern BOOL EXISync(s32 chan);
+#pragma push
+#pragma use_lmw_stmw on
+s32 EXIGetID(s32 chan, u32 dev, u32 *id) {
+    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
+    BOOL err;
+    u32 cmd;
+    s32 startTime;
+    BOOL enabled;
+
+    if (chan == 0 && dev == 2 && IDSerialPort1_8035A9B8 != 0) {
+        *id = IDSerialPort1_8035A9B8;
+        return 1;
+    }
+
+    if (chan < 2 && dev == 0) {
+        if (!__EXIProbe(chan)) {
+            return 0;
+        }
+        if (exi->idTime == ((s32 *)0x800030C0)[chan]) {
+            *id = exi->id;
+            return exi->idTime;
+        }
+        if (!__EXIAttach(chan, NULL)) {
+            return 0;
+        }
+        startTime = ((s32 *)0x800030C0)[chan];
+    }
+
+    enabled = OSDisableInterrupts();
+    err = !EXILock(chan, dev, (chan < 2 && dev == 0) ? (EXICallback)UnlockedHandler : NULL);
+    if (!err) {
+        err = !EXISelect(chan, dev, 0);
+        if (!err) {
+            cmd = 0;
+            err |= !EXIImm(chan, &cmd, 2, 1, NULL);
+            err |= !EXISync(chan);
+            err |= !EXIImm(chan, id, 4, 0, NULL);
+            err |= !EXISync(chan);
+            err |= !EXIDeselect(chan);
+        }
+        EXIUnlock(chan);
+    }
+    OSRestoreInterrupts(enabled);
+
+    if (chan < 2 && dev == 0) {
+        __EXIDetach(chan);
+        enabled = OSDisableInterrupts();
+        err |= (startTime != ((s32 *)0x800030C0)[chan]);
+        if (!err) {
+            exi->id = *id;
+            exi->idTime = startTime;
+        }
+        OSRestoreInterrupts(enabled);
+        return err ? 0 : exi->idTime;
+    }
+    return err ? 0 : 1;
+}
+#pragma pop
 
 s32 fn_800F37AC(s32 chan, u32 dev, u32 *id) {
     s32 EXIDeselect(s32);
