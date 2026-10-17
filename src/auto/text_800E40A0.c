@@ -3896,13 +3896,13 @@ double fn_800F04DC(double x) {
     return fn_800ED954(x);
 }
 
-double fn_800EDBD0(double);
-double fn_800F04FC(double x) {
-    return fn_800EDBD0(x);
+double fn_800EDBD0(double, double);
+double fn_800F04FC(double x, double y) {
+    return fn_800EDBD0(x, y);
 }
 
-f32 fn_800F051C(f32 x) {
-    return fn_800F04FC(x);
+f32 fn_800F051C(f32 x, f32 y) {
+    return fn_800F04FC(x, y);
 }
 
 #pragma push
