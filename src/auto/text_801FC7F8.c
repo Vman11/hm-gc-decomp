@@ -22,9 +22,9 @@ void fn_801FC810(void *arg0, f32 farg0) {
     M2C_FIELD(arg0, f32 *, 0x30) = farg0;
 }
 
-void fn_801FC818(void *arg0, void *arg1) {
-    M2C_FIELD(arg0, f32 *, 0x34) = (f32) M2C_FIELD(arg1, f32 *, 0);
-    M2C_FIELD(arg0, f32 *, 0x38) = (f32) M2C_FIELD(arg1, f32 *, 4);
-    M2C_FIELD(arg0, f32 *, 0x3C) = (f32) M2C_FIELD(arg1, f32 *, 8);
+void fn_801FC818(u8 *__restrict arg0, f32 *__restrict arg1) {
+    ((f32 *)(arg0 + 0x34))[0] = arg1[0];
+    ((f32 *)(arg0 + 0x34))[1] = arg1[1];
+    ((f32 *)(arg0 + 0x34))[2] = arg1[2];
 }
 
