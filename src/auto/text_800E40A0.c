@@ -8,7 +8,6 @@ extern double lbl_803636C0;
 extern s32 lbl_8035A998;
 extern s32 lbl_8035A99C;
 extern u8 lbl_8035A9A4;
-double fn_800F04FC(double);
 double fn_800EF80C(double, double, int);
 int fn_800EE484(double, double*);
 int OSDisableInterrupts(void);
@@ -1543,13 +1542,13 @@ int __pformatter(void *(*WriteProc)(void *, const char *, u32), void *WriteProcA
     const char *format_ptr;
     const char *curr_format;
     print_format format;
-    long long_num;
     long long long_long_num;
     double long_double_num;
     char buff[512];
     char *buff_ptr;
     char *string_end;
     char fill_char = ' ';
+    long long_num;
 
     format_ptr = format_str;
     chars_written = 0;
