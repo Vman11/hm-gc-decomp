@@ -737,6 +737,17 @@ def generate_build_ninja(
     )
     n.newline()
 
+    # ProDG (SN Systems' GCC) build: files whose mw_version is ProDG/<version> (decomp.wtf)
+    prodg_implicit: List[Optional[Path]] = [compilers_implicit, wrapper_implicit, Path("tools/prodg.py")]
+    n.rule(
+        name="prodg",
+        command=f"$python tools/prodg.py {wrapper_cmd}{compilers / '$mw_version' / 'ngccc.exe'} $in $out $cflags",
+        description="PRODG $out",
+        depfile="$basefile.d",
+        deps="gcc",
+    )
+    n.newline()
+
     n.comment("MWCC build")
     n.rule(
         name="mwcc",
@@ -1003,6 +1014,29 @@ def generate_build_ninja(
             if obj.src_obj_path is None or obj.src_obj_path in source_added:
                 return obj.src_obj_path
             source_added.add(obj.src_obj_path)
+
+            if str(obj.options["mw_version"]).startswith("ProDG/"):  # SN Systems' GCC (decomp.wtf)
+                gcc_flags = ["-I " + f[3:] if f.startswith(("-i ", "-I ")) else f for f in obj.options["cflags"]
+                             if f.startswith(("-i ", "-I ", "-D"))]
+                extra = list(obj.options["extra_cflags"])
+                if not any(f.startswith("-O") for f in extra):
+                    extra.insert(0, "-O2")
+                n.comment(f"{obj.name}: {obj.options['lib']} (linked {obj.completed}, ProDG)")
+                n.build(
+                    outputs=obj.src_obj_path,
+                    rule="prodg",
+                    inputs=src_path,
+                    variables={"mw_version": Path(obj.options["mw_version"]),
+                               "cflags": make_flags_str(gcc_flags + extra),
+                               "basefile": obj.src_obj_path.with_suffix("")},
+                    implicit=prodg_implicit,
+                    order_only="pre-compile",
+                )
+                n.newline()
+                if obj.options["add_to_all"]:
+                    source_inputs.append(obj.src_obj_path)
+                return obj.src_obj_path
+
 
             cflags = obj.options["cflags"]
             extra_cflags = obj.options["extra_cflags"]

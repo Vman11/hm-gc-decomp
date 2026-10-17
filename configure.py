@@ -469,7 +469,7 @@ config.libs = [
             Object(Matching, "auto/text_800E1DF0.c"),
             Object(Matching, "auto/text_800E1E7C.c"),
             Object(NonMatching, "auto/text_800E222C.c"),
-            Object(NonMatching, "auto/text_800E24F0.c"),
+            Object(NonMatching, "auto/text_800E24F0.c", mw_version="ProDG/3.5"),
             Object(NonMatching, "runtime/arith.c", mw_version="GC/1.2.5n"),
             Object(NonMatching, "auto/text_800E2CDC.c"),
             Object(NonMatching, "auto/text_800E3A94.c"),
