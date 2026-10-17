@@ -1646,7 +1646,7 @@ char *float2str(double num, char *buff, print_format format) {
             return 0;
         }
         if (dec.sig.length < format.precision + 1) {
-            for (n = format.precision + 1 - dec.sig.length; n; --n) {
+            for (n = format.precision + 1 - dec.sig.length + 1; --n;) {
                 *--p = '0';
             }
         }
