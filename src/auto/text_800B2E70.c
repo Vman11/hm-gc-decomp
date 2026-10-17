@@ -7565,6 +7565,10 @@ void fn_800DC9A4(TrkBuf* buf) {
 }
 
 s32 fn_800DF8AC(u8 unused, u32 start, u32 end);
+s32 fn_800E04D0(u32, u32, TrkBuf *, u32 *, BOOL);
+s32 fn_800E0B0C(u32, u32, TrkBuf *, u32 *, BOOL);
+s32 fn_800E0098(u32, u32, TrkBuf *, u32 *, BOOL);
+s32 fn_800E0640(u32, u32, TrkBuf *, u32 *, BOOL);
 void fn_800DCAF8(TrkBuf* buf) {
     u8 cmd;
     u8 opt;
@@ -7712,6 +7716,120 @@ if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
 if (buf->pos < 0x880) { buf->data[buf->pos++] = b; buf->count++; }
  n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
 } else { n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); }
+}
+
+void fn_800DD584(register TrkBuf *buf) {
+u8 cmd; u8 opt; u16 length; u32 address; u32 size; u8 data[0x800];
+s32 err; s32 ok;
+
+if ((u32)buf->count <= 8) { fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; } err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0); return; }
+fn_800DBAA0(buf, 0);
+err = fn_800DB4F0(buf, &cmd);
+if (err == 0) err = fn_800DB4F0(buf, &opt);
+if (err == 0) err = fn_800DB438(buf, &length);
+if (err == 0) err = fn_800DB370(buf, &address);
+if (opt & 2) { fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x12; buf->count++; } err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0); return; }
+if ((u32)buf->count != length + 8 || length > 0x800) { fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x11; buf->count++; } err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0); return; }
+if (err == 0) {
+size = length;
+err = fn_800DB970(buf, data, length);
+if (err == 0) err = fn_800E0C4C(data, address, &size, !( (opt >> 3) & 1), 0);
+length = size;
+}
+if (err == 0) { fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0; buf->count++; } }
+if (err == 0) err = fn_800DB8A8(buf, length);
+if (err != 0) {
+switch (err) {
+case 0x701: err=0x13; break;
+case 0x700:
+case 0x702: err=0x15; break;
+case 0x704: err=0x21; break;
+case 0x705: err=0x22; break;
+case 0x706: err=0x20; break;
+default: err=3; break;
+}
+fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = err; buf->count++; } err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0);
+} else { err = 3; do { ok = fn_800DAF24(buf); err--; } while (ok != 0 && err > 0); }
+}
+
+void fn_800DD9A4(TrkBuf *msg) {
+    s32 err;
+    u8 cmd;
+    u8 opt;
+    u16 length;
+    u32 count;
+    u32 address;
+    u8 data[0x800];
+    s32 n;
+    s32 ok;
+    TrkBuf *buf = msg;
+    if ((u32)buf->count != 8) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; }
+        n = 3;
+        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        return;
+    }
+    fn_800DBAA0(buf, 0);
+    err = fn_800DB4F0(buf, &cmd);
+    if (err == 0) err = fn_800DB4F0(buf, &opt);
+    if (err == 0) err = fn_800DB438(buf, &length);
+    if (err == 0) err = fn_800DB370(buf, &address);
+    if (opt & 2) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x12; buf->count++; }
+        n = 3;
+        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        return;
+    }
+    if (length > 0x800) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x11; buf->count++; }
+        n = 3;
+        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        return;
+    }
+    fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0; buf->count++; }
+    if (err == 0) {
+        count = length;
+        err = fn_800E0C4C(data, address, &count, (opt & 8) == 0, 1);
+        length = count;
+        if (err == 0) err = fn_800DB8A8(buf, length);
+        if (err == 0) err = fn_800DB9FC(buf, data, count);
+    }
+    if (err != 0) {
+        switch (err) {
+        case 0x700: err = 0x15; break;
+        case 0x701: err = 0x13; break;
+        case 0x704: err = 0x21; break;
+        case 0x705: err = 0x22; break;
+        case 0x706: err = 0x20; break;
+        default: err = 3; break;
+        }
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+        if (buf->pos < 0x880) { buf->data[buf->pos++] = err; buf->count++; }
+        n = 3;
+        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+    } else {
+        n = 3;
+        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+    }
 }
 
 s32 fn_800DFF6C(u8 *cpuType);
