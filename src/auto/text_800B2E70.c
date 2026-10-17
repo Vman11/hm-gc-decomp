@@ -7074,10 +7074,34 @@ void TRKGetInput(void) {
     }
 }
 
+#pragma pop
+#pragma push
+#pragma dont_inline off
+static inline void TRKDiscardFrame(void) {
+    if (lbl_803257B4.msgBufID != -1) {
+        fn_800DBB10(lbl_803257B4.msgBufID);
+        lbl_803257B4.msgBufID = -1;
+    }
+    lbl_803257B4.buffer = NULL;
+    lbl_803257B4.receiveState = 0;
+}
+
+static inline BOOL TRKFrameComplete(void) {
+    void fn_800DE95C(TrkBuf* buf, u8 a, u8 b);
+    if (lbl_803257B4.buffer->count < 2) {
+        fn_800DE95C(lbl_803257B4.buffer, 0xFF, 2);
+        TRKDiscardFrame();
+        return FALSE;
+    }
+    lbl_803257B4.buffer->pos = 0;
+    lbl_803257B4.buffer->count--;
+    return TRUE;
+}
+
 s32 fn_800DBDF0(void) {
     s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg);
     s32 fn_800E16F8(u8 *c);
-    void fn_800DE95C(TrkBuf* buf, s8 a, s8 b);
+    void fn_800DE95C(TrkBuf* buf, u8 a, u8 b);
     s32 err;
     s32 readErr;
     s32 ok;
@@ -7104,7 +7128,7 @@ s32 fn_800DBDF0(void) {
             }
             lbl_803257B4.receiveState = 2;
         case 2:
-            if (c == 0x7E) {
+            if ((s8)c == 0x7E) {
                 if (lbl_803257B4.isEscape) {
                     fn_800DE95C(lbl_803257B4.buffer, 0xFF, 4);
                     if (lbl_803257B4.msgBufID != -1) {
@@ -7115,19 +7139,22 @@ s32 fn_800DBDF0(void) {
                     lbl_803257B4.receiveState = 0;
                     break;
                 }
-                if (lbl_803257B4.buffer->count < 2) {
-                    fn_800DE95C(lbl_803257B4.buffer, 0xFF, 2);
-                    if (lbl_803257B4.msgBufID != -1) {
-                        fn_800DBB10(lbl_803257B4.msgBufID);
-                        lbl_803257B4.msgBufID = -1;
+                {
+                    TrkBuf *buf = lbl_803257B4.buffer;
+                    if (buf->count < 2) {
+                        fn_800DE95C(buf, 0xFF, 2);
+                        if (lbl_803257B4.msgBufID != -1) {
+                            fn_800DBB10(lbl_803257B4.msgBufID);
+                            lbl_803257B4.msgBufID = -1;
+                        }
+                        lbl_803257B4.buffer = NULL;
+                        lbl_803257B4.receiveState = 0;
+                        ok = 0;
+                    } else {
+                        buf->pos = 0;
+                        buf->count--;
+                        ok = 1;
                     }
-                    lbl_803257B4.buffer = NULL;
-                    lbl_803257B4.receiveState = 0;
-                    ok = 0;
-                } else {
-                    lbl_803257B4.buffer->pos = 0;
-                    lbl_803257B4.buffer->count--;
-                    ok = 1;
                 }
                 if (ok) {
                     id = lbl_803257B4.msgBufID;
@@ -7142,7 +7169,7 @@ s32 fn_800DBDF0(void) {
             if (lbl_803257B4.isEscape) {
                 c ^= 0x20;
                 lbl_803257B4.isEscape = 0;
-            } else if (c == 0x7D) {
+            } else if ((s8)c == 0x7D) {
                 lbl_803257B4.isEscape = 1;
                 break;
             }
@@ -7874,7 +7901,6 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
     u8 replyIOResult;
     u16 replyLength;
     s32 exit;
-    s32 err;
 
     if (data == 0 || *count == 0) {
         return 2;
@@ -7894,16 +7920,20 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
         error = fn_800DBBA0(&bufferId, &buffer);
 
         if (error == 0) {
-            u8 cmd = 0xD0;
+            u8 cmd;
+            TrkBuf *b;
+            s32 err;
+            cmd = 0xD0;
             if (read) {
                 cmd = 0xD1;
             }
-            if (buffer->pos >= 0x880) {
+            b = buffer;
+            if (b->pos >= 0x880) {
                 err = 0x301;
             } else {
-                buffer->data[buffer->pos++] = cmd;
+                b->data[b->pos++] = cmd;
                 err = 0;
-                buffer->count++;
+                b->count++;
             }
             error = err;
         }
@@ -7919,15 +7949,10 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
 
         if (error == 0) {
             if (needReply) {
-                s32 isStdin;
                 replyLength = 0;
                 replyIOResult = 0;
 
-                isStdin = 0;
-                if (read && handle == 0) {
-                    isStdin = 1;
-                }
-                error = fn_800DEE88(buffer, &replyBufferId, 5, 3, !isStdin);
+                error = fn_800DEE88(buffer, &replyBufferId, read ? 5 : 5, 3, !(read && handle == 0));
                 if (error == 0) {
                     replyBuffer = TRKGetBuffer(replyBufferId);
                     fn_800DBAA0(replyBuffer, 2);
