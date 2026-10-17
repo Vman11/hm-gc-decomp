@@ -14,8 +14,7 @@ s32 fn_800801BC(void *arg0, s32 idx) {
     case 0: return 0;
     case 1: return 0;
     case 2: return 0;
-    case 3: return 1;
+    default: return 1;
     }
-    return 1;
 }
 
