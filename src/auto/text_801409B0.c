@@ -690,6 +690,49 @@ void fn_80141DEC(ImgPix *p) {
     } while (s < e);
 }
 
+void fn_80141EF4(ImgPix *p) {
+    u8 *s;
+    u8 *e;
+    s = p->src;
+    e = s + 0x80;
+    do {
+        u32 v;
+        v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
+        v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
+        v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
+        v |= ((u32)s[3] >> p->shr[3]) << p->shl[3];
+        p->out[0] = v;
+        p->out[1] = v >> 8;
+        p->out[2] = v >> 16;
+        p->out += 3;
+        v = ((u32)s[4] >> p->shr[0]) << p->shl[0];
+        v |= ((u32)s[5] >> p->shr[1]) << p->shl[1];
+        v |= ((u32)s[6] >> p->shr[2]) << p->shl[2];
+        v |= ((u32)s[7] >> p->shr[3]) << p->shl[3];
+        p->out[0] = v;
+        p->out[1] = v >> 8;
+        p->out[2] = v >> 16;
+        p->out += 3;
+        v = ((u32)s[8] >> p->shr[0]) << p->shl[0];
+        v |= ((u32)s[9] >> p->shr[1]) << p->shl[1];
+        v |= ((u32)s[10] >> p->shr[2]) << p->shl[2];
+        v |= ((u32)s[11] >> p->shr[3]) << p->shl[3];
+        p->out[0] = v;
+        p->out[1] = v >> 8;
+        p->out[2] = v >> 16;
+        p->out += 3;
+        v = ((u32)s[12] >> p->shr[0]) << p->shl[0];
+        v |= ((u32)s[13] >> p->shr[1]) << p->shl[1];
+        v |= ((u32)s[14] >> p->shr[2]) << p->shl[2];
+        v |= ((u32)s[15] >> p->shr[3]) << p->shl[3];
+        s += 16;
+        p->out[0] = v;
+        p->out[1] = v >> 8;
+        p->out[2] = v >> 16;
+        p->out += 3;
+    } while (s < e);
+}
+
 void fn_8014212C(ImgPix *p) {
     u8 *s = p->src;
     u8 *e = s + 0x80;
