@@ -17,7 +17,7 @@ typedef struct {
 extern f32 lbl_803644E0;
 extern f32 lbl_803644E4;
 
-void fn_8014CBA4(QuadXY *dst, QuadXY *src) {
+void fn_8014CBA4(QuadXY *__restrict dst, QuadXY *__restrict src) {
     dst->q.v[0] = src->q.v[0];
     dst->q.v[2] = src->q.v[2];
     dst->q.v[1] = src->q.v[1];
