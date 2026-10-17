@@ -2575,7 +2575,108 @@ void fn_800C3D64(s32 chan, u8 *status, u32 *data) {
     *(s8 *)(status + 5) -= 128;
 }
 
-#pragma inline_depth(0)
+#pragma push
+#pragma peephole off
+void fn_800C3ED8(s32 chan, void *status, void *data) {
+    extern u8 lbl_80308640[][0xC];
+    extern u32 lbl_803595BC;
+    u8 *s = status;
+    u32 *d = data;
+    u8 *origin;
+    *(u16 *)s = (d[0] >> 16) & 0x3FFF;
+    ((s8 *)s)[2] = (s8)(d[0] >> 8);
+    ((s8 *)s)[3] = (s8)d[0];
+    switch (lbl_803595BC & 0x700) {
+    case 0: case 0x500: case 0x600: case 0x700:
+        ((s8 *)s)[4] = (s8)(d[1] >> 24); ((s8 *)s)[5] = (s8)(d[1] >> 16);
+        s[6] = (d[1] >> 8) & 0xF0; s[7] = (d[1] >> 4) & 0xF0;
+        s[8] = d[1] & 0xF0; s[9] = (d[1] << 4) & 0xF0;
+        break;
+    case 0x100:
+        ((s8 *)s)[4] = (s8)((d[1] >> 24) & 0xF0); ((s8 *)s)[5] = (s8)((d[1] >> 20) & 0xF0);
+        s[6] = (d[1] >> 16) & 255; s[7] = (d[1] >> 8) & 255;
+        s[8] = d[1] & 0xF0; s[9] = (d[1] << 4) & 0xF0;
+        break;
+    case 0x200:
+        ((s8 *)s)[4] = (s8)((d[1] >> 24) & 0xF0); ((s8 *)s)[5] = (s8)((d[1] >> 20) & 0xF0);
+        s[6] = (d[1] >> 16) & 0xF0; s[7] = (d[1] >> 12) & 0xF0;
+        s[8] = (d[1] >> 8) & 255; s[9] = d[1] & 255;
+        break;
+    case 0x300:
+        ((s8 *)s)[4] = (s8)(d[1] >> 24); ((s8 *)s)[5] = (s8)(d[1] >> 16);
+        s[6] = (d[1] >> 8) & 255; s[7] = d[1] & 255; s[8] = 0; s[9] = 0;
+        break;
+    case 0x400:
+        ((s8 *)s)[4] = (s8)(d[1] >> 24); ((s8 *)s)[5] = (s8)(d[1] >> 16);
+        s[6] = 0; s[7] = 0; s[8] = (d[1] >> 8) & 255; s[9] = d[1] & 255;
+        break;
+    }
+#pragma peephole on
+    s[2] -= 128;
+    origin = lbl_80308640[chan];
+    s[3] -= 128; s[4] -= 128; s[5] -= 128;
+    {
+        u8 base = origin[2];
+        u8 value = s[2];
+        if ((s8)base > 0) {
+            s8 limit = (s8)base - 128;
+            if ((s8)value < limit) value = limit;
+        } else if ((s8)base < 0) {
+            s8 limit = (s8)base + 127;
+            if (limit < (s8)value) value = limit;
+        }
+        s[2] = value - base;
+    }
+    {
+        u8 base = origin[3];
+        u8 value = s[3];
+        if ((s8)base > 0) {
+            s8 limit = (s8)base - 128;
+            if ((s8)value < limit) value = limit;
+        } else if ((s8)base < 0) {
+            s8 limit = (s8)base + 127;
+            if (limit < (s8)value) value = limit;
+        }
+        s[3] = value - base;
+    }
+    {
+        u8 base = origin[4];
+        u8 value = s[4];
+        if ((s8)base > 0) {
+            s8 limit = (s8)base - 128;
+            if ((s8)value < limit) value = limit;
+        } else if ((s8)base < 0) {
+            s8 limit = (s8)base + 127;
+            if (limit < (s8)value) value = limit;
+        }
+        s[4] = value - base;
+    }
+    {
+        u8 base = origin[5];
+        u8 value = s[5];
+        if ((s8)base > 0) {
+            s8 limit = (s8)base - 128;
+            if ((s8)value < limit) value = limit;
+        } else if ((s8)base < 0) {
+            s8 limit = (s8)base + 127;
+            if (limit < (s8)value) value = limit;
+        }
+        s[5] = value - base;
+    }
+    {
+        u8 base = origin[6];
+        u8 value = s[6];
+        if (value < base) value = base;
+        s[6] = value - base;
+    }
+    {
+        u8 base = origin[7];
+        u8 value = s[7];
+        if (value < base) value = base;
+        s[7] = value - base;
+    }
+}
+#pragma pop
 void fn_800C4464(s32 interrupt, u8 *context) {
     extern void (*lbl_8035A754)(void);
     u8 current[0x2C8];
@@ -7182,12 +7283,16 @@ void TRKGetInput(void) {
     }
 }
 
+#pragma push
+#pragma dont_inline off
+#pragma auto_inline off
 s32 fn_800DBDF0(void) {
     s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg);
     s32 fn_800E16F8(u8 *c);
     void fn_800DE95C(TrkBuf* buf, u8 a, u8 b);
     s32 err;
     s32 readErr;
+    s32 ok;
     s32 id;
     u8 c;
 
@@ -7214,10 +7319,32 @@ s32 fn_800DBDF0(void) {
             if ((s8)c == 0x7E) {
                 if (lbl_803257B4.isEscape) {
                     fn_800DE95C(lbl_803257B4.buffer, 0xFF, 4);
-                    TRKDiscardFrame();
+                    if (lbl_803257B4.msgBufID != -1) {
+                        fn_800DBB10(lbl_803257B4.msgBufID);
+                        lbl_803257B4.msgBufID = -1;
+                    }
+                    lbl_803257B4.buffer = NULL;
+                    lbl_803257B4.receiveState = 0;
                     break;
                 }
-                if (TRKFrameComplete()) {
+                {
+                    TrkBuf *buf = lbl_803257B4.buffer;
+                    if (buf->count < 2) {
+                        fn_800DE95C(buf, 0xFF, 2);
+                        if (lbl_803257B4.msgBufID != -1) {
+                            fn_800DBB10(lbl_803257B4.msgBufID);
+                            lbl_803257B4.msgBufID = -1;
+                        }
+                        lbl_803257B4.buffer = NULL;
+                        lbl_803257B4.receiveState = 0;
+                        ok = 0;
+                    } else {
+                        buf->pos = 0;
+                        buf->count--;
+                        ok = 1;
+                    }
+                }
+                if (ok) {
                     id = lbl_803257B4.msgBufID;
                     lbl_803257B4.buffer = NULL;
                     lbl_803257B4.msgBufID = -1;
@@ -7234,12 +7361,26 @@ s32 fn_800DBDF0(void) {
                 lbl_803257B4.isEscape = 1;
                 break;
             }
-            err = TRKAppendBuffer1_ui8(lbl_803257B4.buffer, c);
+            {
+                TrkBuf *buf = lbl_803257B4.buffer;
+                if (buf->pos >= 0x880) {
+                    err = 0x301;
+                } else {
+                    buf->data[buf->pos++] = c;
+                    buf->count++;
+                    err = 0;
+                }
+            }
             lbl_803257B4.fcs += c;
             break;
         case 3:
             if (c == 0x7E) {
-                TRKDiscardFrame();
+                if (lbl_803257B4.msgBufID != -1) {
+                    fn_800DBB10(lbl_803257B4.msgBufID);
+                    lbl_803257B4.msgBufID = -1;
+                }
+                lbl_803257B4.buffer = NULL;
+                lbl_803257B4.receiveState = 0;
             }
             break;
         }
@@ -7247,7 +7388,6 @@ s32 fn_800DBDF0(void) {
     }
     return -1;
 }
-
 #pragma pop
 void usr_put_initialize(void) {
 
@@ -7523,6 +7663,54 @@ void fn_800DCAF8(TrkBuf* buf) {
             n--;
         } while (ok != 0 && n > 0);
     }
+}
+
+s32 fn_800E04D0(u32, u32, TrkBuf *, u32 *, BOOL);
+s32 fn_800E0B0C(u32, u32, TrkBuf *, u32 *, BOOL);
+s32 fn_800E0098(u32, u32, TrkBuf *, u32 *, BOOL);
+s32 fn_800E0640(u32, u32, TrkBuf *, u32 *, BOOL);
+void fn_800DD1B8(TrkBuf *buf) {
+u8 cmd; u8 opt; u16 start; u16 end; u32 length;
+s32 err; s32 n; s32 ok; s8 b;
+if ((u32)buf->count != 6) { fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; }
+ n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); return; }
+fn_800DBAA0(buf, 0);
+err = fn_800DB4F0(buf, &cmd);
+if (err == 0) err = fn_800DB4F0(buf, &opt);
+if (err == 0) err = fn_800DB438(buf, &start);
+if (err == 0) err = fn_800DB438(buf, &end);
+if (start > end) { fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x14; buf->count++; }
+ n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); return; }
+if (err == 0) { fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0; buf->count++; }
+ }
+switch (opt & 7) {
+case 0: err = fn_800E0B0C(start,end,buf,&length,1); break;
+case 1: err = fn_800E0640(start,end,buf,&length,1); break;
+case 2: err = fn_800E04D0(start,end,buf,&length,1); break;
+case 3: err = fn_800E0098(start,end,buf,&length,1); break;
+default: err = 0x703; break;
+}
+if (err != 0) {
+switch (err) {
+case 0x703: b=0x12; break;
+case 0x701: b=0x14; break;
+case 0x702: b=0x15; break;
+case 0x704: b=0x21; break;
+case 0x705: b=0x22; break;
+case 0x706: b=0x20; break;
+default: b=3; break;
+}
+fn_800DBAD0(buf, 1);
+if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
+if (buf->pos < 0x880) { buf->data[buf->pos++] = b; buf->count++; }
+ n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+} else { n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); }
 }
 
 s32 fn_800DFF6C(u8 *cpuType);
@@ -8029,11 +8217,12 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
 
         if (error == 0) {
             u8 cmd;
-            TrkBuf *b = buffer;
+            TrkBuf *b;
             cmd = 0xD0;
             if (read) {
                 cmd = 0xD1;
             }
+            b = buffer;
             if (b->pos >= 0x880) {
                 err = 0x301;
             } else {
