@@ -122,6 +122,7 @@ typedef struct decform {
 } decform;
 
 void fn_800E5B48(decimal *d, double x);
+void fn_800EA1DC(decimal *dec, int new_length);
 char *fn_800EB764(char *, const char *);
 extern const char lbl_8029C148[];
 
