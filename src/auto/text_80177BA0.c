@@ -9,7 +9,7 @@ typedef struct {
     f32 x, y, z, w;
 } Vec4f;
 
-extern Vec4f lbl_8032F718[];
+extern f32 lbl_8032F718[];
 extern f32 lbl_80364790;
 
 void fn_80177BA0(void *arg0, s32 arg1, Vec3f *arg2) {
