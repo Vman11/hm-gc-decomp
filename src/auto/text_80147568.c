@@ -47,6 +47,16 @@ void fn_80147568(s32 arg0) {
     lbl_8035AC98 = arg0;
 }
 
+u8 fn_80147570(PixelFormat_80147568 *a, PixelFormat_80147568 *b) {
+    s32 result = a->unk0 == b->unk0;
+    if ((u8)result) result = (u32)a->unk2 >= (u32)b->unk2;
+    if ((u8)result) result = (u32)MaskBits(a->rmask) >= (u32)MaskBits(b->rmask);
+    if ((u8)result) result = (u32)MaskBits(a->gmask) >= (u32)MaskBits(b->gmask);
+    if ((u8)result) result = (u32)MaskBits(a->bmask) >= (u32)MaskBits(b->bmask);
+    if ((u8)result) result = (u32)MaskBits(a->amask) >= (u32)MaskBits(b->amask);
+    return result;
+}
+
 u8 fn_80147800(PixelFormat_80147568 *a, PixelFormat_80147568 *b) {
     s32 result = a->unk0 == b->unk0;
     if ((u8)result) result = a->unk2 == b->unk2;
