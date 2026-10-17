@@ -34,16 +34,10 @@ void fn_8003723C(f32 *dst, f32 *a, f32 *b) {
     dst[2] = z;
 }
 
-void fn_8003727C(f32 *dst, f32 *src) {
-    f32 z;
-    f32 y;
-    f32 x;
-    x = src[0];
-    y = src[1];
-    z = src[2];
-    dst[0] = dst[0] + x;
-    dst[1] = dst[1] + y;
-    dst[2] = dst[2] + z;
+void fn_8003727C(f32 *__restrict dst, f32 *__restrict src) {
+    dst[0] += src[0];
+    dst[1] += src[1];
+    dst[2] += src[2];
 }
 
 void fn_800372B0(f32 *dst, f32 *src) {
