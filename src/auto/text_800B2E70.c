@@ -9165,9 +9165,6 @@ static inline s32 TRKPPCAccessFPRegister(void *srcDestPtr, u32 fpr, BOOL read) {
             *(u32 *)srcDestPtr = *((u32 *)srcDestPtr + 1);
         }
         error = TRKPPCAccessSPR(srcDestPtr, 1022, read);
-        if (read) {
-            *(u64 *)srcDestPtr = *(u32 *)srcDestPtr & 0xFFFFFFFFLL;
-        }
     }
     return error;
 }
@@ -9184,7 +9181,7 @@ s32 fn_800DB288(TrkBuf *buf, u64 *data);
 s32 fn_800DB6D4(TrkBuf *buf, u64 data);
 #pragma push
 #pragma dont_inline off
-#pragma auto_inline on
+#pragma auto_inline off
 #pragma inline_depth(4)
 s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerStorageSize, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
@@ -9209,17 +9206,6 @@ s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerSto
 
     *registerStorageSize = 0;
     err = 0;
-
-    for (i = firstRegister; (i <= lastRegister) && (err == 0); i++) {
-        if (read) {
-            TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
-            err = fn_800DB6D4(b, *(u64 *)value_buf);
-        } else {
-            fn_800DB288(b, (u64 *)value_buf);
-            err = TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
-        }
-        *registerStorageSize += sizeof(u64);
-    }
 
     if (gTRKExceptionStatus_802E01A4.exceptionDetected) {
         *registerStorageSize = 0;
@@ -9277,6 +9263,8 @@ s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
 }
 
 void fn_800DF4D8(u32 msr);
+#pragma push
+#pragma dont_inline off
 s32 fn_800E0640(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     u64 temp;
@@ -9315,7 +9303,7 @@ s32 fn_800E0640(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     gTRKExceptionStatus_802E01A4 = savedException;
     return error;
 }
-
+#pragma pop
 s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count);
 s32 fn_800E0B0C(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
