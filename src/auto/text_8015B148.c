@@ -10,6 +10,16 @@ typedef struct {
     s32 unk_0x50;
 } Unk8015B158;
 
+typedef struct {
+    u8 unk_0x0[0x1A];
+    u16 unk_0x1A;
+    u8 unk_0x1C[0x50 - 0x1C];
+    s32 unk_0x50[3];
+    s32 unk_0x5C;
+    u8 unk_0x60[4];
+    s32 unk_0x64;
+} Unk8015B158_2;
+
 void fn_8015B148(void* arg0) {
     *(u16*)((u8*)arg0 + 0x1A) &= ~0x1C;
 }
