@@ -109,7 +109,7 @@ typedef struct decimal {
     short exp;
     struct {
         unsigned char length;
-        unsigned char text[32];
+        unsigned char text[36];
         unsigned char unused;
     } sig;
 } decimal;
@@ -1505,7 +1505,6 @@ char *fn_800EB764(char *, const char *);
 char *double2hex(char *buff, print_format *format, double x) {
     decimal d;
     print_format exp_format;
-    print_format exponent;
     double bits;
     decform df;
     char *p;
@@ -1540,16 +1539,8 @@ char *double2hex(char *buff, print_format *format, double x) {
         }
         return buff;
     }
-    exp_format.justification_options = 1;
-    exp_format.sign_options = 1;
-    exp_format.precision_specified = 0;
-    exp_format.alternate_form = 0;
-    exp_format.argument_options = 0;
-    exp_format.conversion_char = 'd';
-    exp_format.field_width = 0;
-    exp_format.precision = 1;
-    exponent = exp_format;
-    p = long2str_800EA91C((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exponent);
+    exp_format = (print_format){1, 1, 0, 0, 0, 'd', 0, 1};
+    p = long2str_800EA91C((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exp_format);
     if (format->conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
     for (i = format->precision; i >= 1; --i) {
@@ -2165,10 +2156,10 @@ u32 fn_800EC990(int base_arg, int width_arg, int (*read_arg)(void *, int, int), 
     if (base < 0 || base == 1 || base > 36 || max_width < 1) {
         state = 64;
     } else {
-        n = 1;
         c = read(arg, 0, 0);
-        if (base) limit = 0xFFFFFFFF / base;
+        n = 1;
     }
+    if (base) limit = 0xFFFFFFFF / base;
     while (n <= max_width && c != -1 && !(state & 96)) {
         switch (state) {
         case 1:
