@@ -7997,7 +7997,6 @@ s32 fn_800DEE88(TrkBuf *msgBuf, s32 *bufferId, u32 p1, u32 p2, s32 p3) {
 }
 
 #pragma push
-#pragma dont_inline off
 s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s32 read) {
     s32 error;
     s32 replyBufferId;
