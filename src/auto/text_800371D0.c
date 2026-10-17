@@ -24,14 +24,10 @@ void fn_80037214(f32 *v) {
     v[2] = -v[2];
 }
 
-void fn_8003723C(f32 *dst, f32 *a, f32 *b) {
-    f32 x, y, z;
-    x = a[1] * b[2] - a[2] * b[1];
-    y = a[2] * b[0] - a[0] * b[2];
-    z = a[0] * b[1] - a[1] * b[0];
-    dst[0] = x;
-    dst[1] = y;
-    dst[2] = z;
+void fn_8003723C(f32 *__restrict dst, f32 *__restrict a, f32 *__restrict b) {
+    dst[0] = a[1] * b[2] - a[2] * b[1];
+    dst[1] = a[2] * b[0] - a[0] * b[2];
+    dst[2] = a[0] * b[1] - a[1] * b[0];
 }
 
 void fn_8003727C(f32 *__restrict dst, f32 *__restrict src) {
