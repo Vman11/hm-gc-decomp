@@ -1500,21 +1500,23 @@ void fn_800EA1DC(decimal *dec, int new_length) {
 
 static char *long2str_800EA91C(long, char *, print_format);
 char *fn_800EB764(char *, const char *);
+#pragma push
+#pragma pool_strings on
 char *double2hex(char *buff, print_format *format, double x) {
     decimal d;
-    print_format exp_format = {1, 1, 0, 0, 0, 'd', 0, 1};
-    union { double value; short words[4]; } bits;
+    print_format exp_format;
+    double bits;
     decform df;
     char *p;
     int i;
     char digit;
-    bits.value = x;
+    bits = x;
     if (format->precision > 509) return 0;
     df.style = 0;
     df.digits = 32;
     fn_800E59A4(&df, x, &d);
     if (d.sig.text[0] == 'I') {
-        if (bits.words[0] & 0x8000) {
+        if ((*(short *)&bits) & 0x8000) {
             buff -= 5;
             if (format->conversion_char == 'A') fn_800EB764(buff, "-INF");
             else fn_800EB764(buff, "-inf");
@@ -1537,7 +1539,15 @@ char *double2hex(char *buff, print_format *format, double x) {
         }
         return buff;
     }
-    p = long2str_800EA91C((short)((bits.words[0] >> 4) & 0x7ff) - 1023, buff, exp_format);
+    exp_format.justification_options = 1;
+    exp_format.sign_options = 1;
+    exp_format.precision_specified = 0;
+    exp_format.alternate_form = 0;
+    exp_format.argument_options = 0;
+    exp_format.conversion_char = 'd';
+    exp_format.field_width = 0;
+    exp_format.precision = 1;
+    p = long2str_800EA91C((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exp_format);
     if (format->conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
     for (i = format->precision; i >= 1; --i) {
@@ -1554,12 +1564,12 @@ char *double2hex(char *buff, print_format *format, double x) {
     if (format->conversion_char == 'a') *--p = 'x';
     else *--p = 'X';
     *--p = '0';
-    if (bits.words[0] & 0x8000) *--p = '-';
+    if ((*(short *)&bits) & 0x8000) *--p = '-';
     else if (format->sign_options == 1) *--p = '+';
     else if (format->sign_options == 2) *--p = ' ';
     return p;
 }
-
+#pragma pop
 static char *longlong2str_800EA640(long long num, char *buff, print_format format) {
     unsigned long long unsigned_num, base;
     char *p;
@@ -2130,6 +2140,94 @@ int fn_800EC8D0(char *str) {
         return value;
     }
     if (negative != 0) value = -value;
+    return value;
+}
+
+u32 fn_800EC990(int base, int max_width, int (*read)(void *, int, int), void *arg, int *count, int *negative, int *overflow) {
+    extern u8 lbl_802E05C8[];
+    extern u8 lbl_802E07C8[];
+    int state = 1;
+    int n = 0;
+    int spaces = 0;
+    u32 value = 0;
+    u32 limit = 0;
+    int c;
+    *overflow = *negative = 0;
+    if (base < 0 || base == 1 || base > 36 || max_width < 1) {
+        state = 64;
+    } else {
+        c = read(arg, 0, 0);
+        n = 1;
+        if (base) limit = 0xFFFFFFFF / base;
+    }
+    while (n <= max_width && c != -1 && !(state & 96)) {
+        switch (state) {
+        case 1:
+            if (lbl_802E05C8[(u8)c] & 6) {
+                c = read(arg, 0, 0);
+                spaces++;
+                break;
+            }
+            if (c == '+') {
+                n++;
+                c = read(arg, 0, 0);
+            } else if (c == '-') {
+                n++;
+                c = read(arg, 0, 0);
+                *negative = 1;
+            }
+            state = 2;
+            break;
+        case 2:
+            if ((base == 0 || base == 16) && c == '0') {
+                state = 4;
+                n++;
+                c = read(arg, 0, 0);
+            } else state = 8;
+            break;
+        case 4:
+            if (c == 'X' || c == 'x') {
+                base = 16;
+                state = 8;
+                n++;
+                c = read(arg, 0, 0);
+            } else {
+                if (!base) base = 8;
+                state = 16;
+            }
+            break;
+        case 8:
+        case 16:
+            if (!base) base = 10;
+            if (!limit) limit = 0xFFFFFFFF / base;
+            if (lbl_802E05C8[(u8)c] & 16) {
+                c -= '0';
+                if (c >= base) {
+                    state = state == 16 ? 32 : 64;
+                    c += '0';
+                    break;
+                }
+            } else if (!(lbl_802E05C8[(u8)c] & 192) ||
+                (c == -1 ? -1 : lbl_802E07C8[(u8)c]) - 55 >= base) {
+                if (state == 16) state = 32;
+                else state = 64;
+                break;
+            } else c = (c == -1 ? -1 : lbl_802E07C8[(u8)c]) - 55;
+            if (value > limit) *overflow = 1;
+            value *= base;
+            if ((u32)c > 0xFFFFFFFF - value) *overflow = 1;
+            value += c;
+            state = 16;
+            n++;
+            c = read(arg, 0, 0);
+            break;
+        }
+    }
+    if (!(state & 52)) {
+        *count = 0;
+        value = 0;
+    } else *count = n + spaces - 1;
+    read(arg, c, 1);
     return value;
 }
 
@@ -2801,9 +2899,9 @@ double fn_800F049C(double x) {
     return fn_800ED3F4(x);
 }
 
-void fn_800ED618(void);
-void fn_800F04BC(void) {
-    fn_800ED618();
+double fn_800ED618(double, double);
+double fn_800F04BC(double x, double y) {
+    return fn_800ED618(x, y);
 }
 
 double fn_800ED954(double);
