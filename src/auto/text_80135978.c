@@ -33,7 +33,7 @@ s32 fn_8013598C(void) {
     return 0;
 }
 
-void fn_80135994(f32 *arg0, s32 arg1, f32 *arg2) {
+void fn_80135994(f32 *__restrict arg0, s32 arg1, f32 *__restrict arg2) {
     f32 *dest = arg0 + arg1 * 4;
     dest[0x1128 / 4] = arg2[0];
     dest[0x112C / 4] = arg2[1];
