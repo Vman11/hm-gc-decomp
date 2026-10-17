@@ -2,10 +2,9 @@
 #include "common.h"
 
 void *fn_8014B86C(void *arg0) {
-    u32 count = (*(u8 *)((u8 *)arg0 + 0x551) + 7) >> 3;
-    u32 result = *(u32 *)((u8 *)arg0 + 0x38);
-    result = count * result;
-    result += *(u32 *)((u8 *)arg0 + 0x544);
+    u32 value = ((s32)(*(u8 *)((u8 *)arg0 + 0x551) + 7) >> 3) * ((u32 *)arg0)[0x38 / 4];
+    u32 result = ((u32 *)arg0)[0x544 / 4];
+    result = value + result;
     result += 0x15;
     return (void *)result;
 }
