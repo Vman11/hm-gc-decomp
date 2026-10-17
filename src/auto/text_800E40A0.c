@@ -1754,6 +1754,95 @@ double fn_800EF76C(double x, double y, int iy) {
     else return x - ((z * (lbl_803635F8 * y - v * r) - y) - lbl_803635F0 * v);
 }
 
+extern double lbl_8029C780[];
+extern double lbl_80363600, lbl_80363608, lbl_80363610, lbl_80363618, lbl_80363620, lbl_80363628;
+double fabs(double);
+double fn_800EF80C(double x, double y, int iy) {
+    double z,r,v,w,s;
+    int ix,hx;
+    hx = ((int *)&x)[0];
+    ix = hx & 0x7fffffff;
+    if(ix < 0x3e300000) {
+        if((int)x == 0) {
+            if((ix | ((int *)&x)[1] | (iy+1)) == 0)
+                { w = __fabs(x); return lbl_80363600 / w; }
+            else return (iy == 1) ? x : lbl_80363608 / x;
+        }
+    }
+    if(ix >= 0x3fe59428) {
+        if(hx < 0) { x = -x; y = -y; }
+        z = lbl_80363610 - x;
+        w = lbl_80363618 - y;
+        x = z + w;
+        y = lbl_80363620;
+    }
+    z = x*x;
+    w = z*z;
+    r = lbl_8029C780[1]+w*(lbl_8029C780[3]+w*(lbl_8029C780[5]+w*(lbl_8029C780[7]+w*(lbl_8029C780[9]+w*lbl_8029C780[11]))));
+    v = z*(lbl_8029C780[2]+w*(lbl_8029C780[4]+w*(lbl_8029C780[6]+w*(lbl_8029C780[8]+w*(lbl_8029C780[10]+w*lbl_8029C780[12])))));
+    s = z*x;
+    r = y+z*(s*(r+v)+y);
+    r += lbl_8029C780[0]*s;
+    w = x+r;
+    if(ix >= 0x3fe59428) {
+        v = (double)iy;
+        return (double)(1-((hx>>30)&2))*(v-lbl_80363628*(x-(w*w/(w+v)-r)));
+    }
+    if(iy == 1) return w;
+    else {
+        double a,t;
+        z = w;
+        ((int *)&z)[1] = 0;
+        v = r-(z-x);
+        t = a = lbl_80363608/w;
+        ((int *)&t)[1] = 0;
+        s = lbl_80363600+t*z;
+        return t+a*(s+t*v);
+    }
+}
+
+extern double lbl_8029C7E8[];
+extern double lbl_80363638, lbl_80363640, lbl_80363648, lbl_80363650, lbl_80363658;
+double fn_800EFA20(double x) {
+    double w,z,s1,s2;
+    int ix,hx,id;
+    double *atanhi = lbl_8029C7E8;
+    double *atanlo = lbl_8029C7E8 + 4;
+    double *aT = lbl_8029C7E8 + 8;
+    hx = ((int *)&x)[0];
+    ix = hx & 0x7fffffff;
+    if (ix >= 0x44100000) {
+        if (ix > 0x7ff00000 || (ix == 0x7ff00000 && ((unsigned int *)&x)[1] != 0)) return x+x;
+        if (hx > 0) return atanhi[3]+atanlo[3];
+        else return -atanhi[3]-atanlo[3];
+    }
+    if (ix < 0x3fdc0000) {
+        if (ix < 0x3e200000 && lbl_80363638+x > lbl_80363640) return x;
+        id = -1;
+    } else {
+        x = __fabs(x);
+        if (ix < 0x3ff30000) {
+            if (ix < 0x3fe60000) {
+                id=0; x=(lbl_80363648*x-lbl_80363640)/(lbl_80363648+x);
+            } else {
+                id=1; x=(x-lbl_80363640)/(lbl_80363640+x);
+            }
+        } else {
+            if (ix < 0x40038000) {
+                id=2; x=(x-lbl_80363650)/(lbl_80363640+lbl_80363650*x);
+            } else {
+                id=3; x=lbl_80363658/x;
+            }
+        }
+    }
+    z=x*x; w=z*z;
+    s1=z*(aT[0]+w*(aT[2]+w*(aT[4]+w*(aT[6]+w*(aT[8]+w*aT[10])))));
+    s2=w*(aT[1]+w*(aT[3]+w*(aT[5]+w*(aT[7]+w*aT[9]))));
+    if (id<0) return x-x*(s1+s2);
+    z=atanhi[id]-((x*(s1+s2)-atanlo[id])-x);
+    return hx<0 ? -z:z;
+}
+
 extern double lbl_80363660;
 extern double lbl_80363668;
 double fn_800EFC38(double x) {
@@ -2173,6 +2262,14 @@ void DBInitComm(u8 **inputFlagPtr, s32 mtrCallback) {
     OSRestoreInterrupts(enabled);
 }
 
+void fn_800F0B00(void) {
+    extern M2C_UNK (*lbl_8035A990)(M2C_UNK);
+    lbl_8035A9A4 = 1;
+    if (lbl_8035A990 != NULL) {
+        lbl_8035A990(0);
+    }
+}
+
 typedef struct EXI2Control {
     u8 unk0[0xC];
     volatile u32 state;
@@ -2470,6 +2567,43 @@ BOOL EXIDeselect(s32 chan) {
         return __EXIProbe(chan) ? TRUE : FALSE;
     }
     return TRUE;
+}
+
+extern void __OSMaskInterrupts(u32);
+extern void OSClearContext(void *);
+extern void OSSetCurrentContext(void *);
+void TCIntrruptHandler(s16 interrupt, void *context) {
+    u8 temporaryContext[0x2C8];
+    EXICallback callback;
+    s32 chan;
+    EXIControl *exi;
+    chan = (interrupt - 10) / 3;
+    exi = (EXIControl *)(Ecb_80328410 + chan * 64);
+    __OSMaskInterrupts(0x80000000U >> interrupt);
+    ((volatile u32 *)0xCC006800)[chan * 5] = (((volatile u32 *)0xCC006800)[chan * 5] & 0x7F5) | 8;
+    callback = exi->tcCallback;
+    if (callback) {
+        exi->tcCallback = 0;
+        if (exi->state & 3) {
+            if (exi->state & 2) {
+                int length = exi->immLen;
+                if (length) {
+                    int i;
+                    u8 *buffer = exi->immBuf;
+                    u32 data = ((volatile u32 *)0xCC006800)[chan * 5 + 4];
+                    for (i = 0; i < length; i++) {
+                        *buffer++ = data >> ((3 - i) * 8);
+                    }
+                }
+            }
+            exi->state &= ~3;
+        }
+        OSClearContext(temporaryContext);
+        OSSetCurrentContext(temporaryContext);
+        callback(chan, context);
+        OSClearContext(temporaryContext);
+        OSSetCurrentContext(context);
+    }
 }
 
 extern void SetExiInterruptMask(s32 chan, EXIControl *exi);
