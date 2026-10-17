@@ -1416,6 +1416,8 @@ extern void __close_all(void);
 extern void (*__stdio_exit)(void);
 extern int __pformatter();
 void *__va_arg(va_list, int);
+unsigned int strlen(const char *s);
+char *strchr(const char *str, int chr);
 void *fn_800E92B8(void *ctx, const void *buf, u32 len);
 void __stdio_atexit(void) { __stdio_exit = __close_all; }
 
