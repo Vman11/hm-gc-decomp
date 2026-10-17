@@ -1,8 +1,8 @@
 /* Functions from 0x801525DC to 0x801525F8, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801525DC(void *arg0, void *arg1) {
-    *(f32 *)((u8 *)arg0 + 0xC) = *(f32 *)((u8 *)arg1 + 0x0);
-    *(f32 *)((u8 *)arg0 + 0x1C) = *(f32 *)((u8 *)arg1 + 0x4);
-    *(f32 *)((u8 *)arg0 + 0x2C) = *(f32 *)((u8 *)arg1 + 0x8);
+void fn_801525DC(f32 (*__restrict m)[4], f32 *__restrict v) {
+    m[0][3] = v[0];
+    m[1][3] = v[1];
+    m[2][3] = v[2];
 }
