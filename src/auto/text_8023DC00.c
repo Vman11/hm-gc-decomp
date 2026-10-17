@@ -12,6 +12,7 @@ typedef struct {
 extern UnkStruct_8023DC00* lbl_8035B460;
 extern volatile s32 lbl_8035B464;
 
+#pragma scheduling off
 void fn_8023DC00(UnkStruct_8023DC00* arg0) {
     lbl_8035B460 = arg0;
     lbl_8035B464 = 0;
@@ -21,3 +22,4 @@ void fn_8023DC00(UnkStruct_8023DC00* arg0) {
     arg0->unkC = 0;
     arg0->unk10 = 0;
 }
+#pragma scheduling reset
