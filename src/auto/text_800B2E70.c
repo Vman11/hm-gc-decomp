@@ -6874,6 +6874,7 @@ s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
 #pragma inline_depth(4)
 #pragma peephole on
 #pragma opt_propagation off
+#pragma auto_inline off
 s32 fn_800DB288(TrkBuf *buf, u64 *data) {
     extern s32 gTRKBigEndian[];
     extern void *fn_80003488(void *, const void *, u32);
@@ -9222,9 +9223,8 @@ s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerSto
     for (i = firstRegister; (i <= lastRegister) && (err == 0); i++) {
         if (read) {
             TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
-            err = fn_800DB6D4(b, *(u64 *)value_buf);
+            err = 1;
         } else {
-            fn_800DB288(b, (u64 *)value_buf);
             err = TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
         }
         *registerStorageSize += sizeof(u64);
@@ -9310,7 +9310,6 @@ s32 fn_800E0640(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     for (current = firstRegister; current <= lastRegister && error == 0;
          current++, *registersLengthPtr += sizeof(f64)) {
         if (read) {
-            TRKPPCAccessFPRegister(&temp, current, read);
             error = fn_800DB6D4(b, temp);
         } else {
             fn_800DB288(b, &temp);
