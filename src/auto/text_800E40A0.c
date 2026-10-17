@@ -1505,6 +1505,7 @@ char *fn_800EB764(char *, const char *);
 char *double2hex(char *buff, print_format *format, double x) {
     decimal d;
     print_format exp_format;
+    print_format exponent;
     double bits;
     decform df;
     char *p;
@@ -1547,7 +1548,8 @@ char *double2hex(char *buff, print_format *format, double x) {
     exp_format.conversion_char = 'd';
     exp_format.field_width = 0;
     exp_format.precision = 1;
-    p = long2str_800EA91C((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exp_format);
+    exponent = exp_format;
+    p = long2str_800EA91C((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exponent);
     if (format->conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
     for (i = format->precision; i >= 1; --i) {
@@ -2143,21 +2145,28 @@ int fn_800EC8D0(char *str) {
     return value;
 }
 
-u32 fn_800EC990(int base, int max_width, int (*read)(void *, int, int), void *arg, int *count, int *negative, int *overflow) {
+u32 fn_800EC990(int base_arg, int width_arg, int (*read_arg)(void *, int, int), void *context, int *count_arg, int *negative_arg, int *overflow_arg) {
     extern u8 lbl_802E05C8[];
     extern u8 lbl_802E07C8[];
-    int state = 1;
     int n = 0;
-    int spaces = 0;
+    int (*read)(void *, int, int) = read_arg;
+    int base = base_arg;
+    void *arg = context;
     u32 value = 0;
     u32 limit = 0;
+    int state = 1;
+    int *overflow = overflow_arg;
+    int spaces = 0;
+    int max_width = width_arg;
+    int *negative = negative_arg;
+    int *count = count_arg;
     int c;
-    *overflow = *negative = 0;
+    *negative = *overflow = 0;
     if (base < 0 || base == 1 || base > 36 || max_width < 1) {
         state = 64;
     } else {
-        c = read(arg, 0, 0);
         n = 1;
+        c = read(arg, 0, 0);
         if (base) limit = 0xFFFFFFFF / base;
     }
     while (n <= max_width && c != -1 && !(state & 96)) {
@@ -2383,6 +2392,119 @@ double fn_800ED3F4(double x) {
     }
     ((int *)&y)[0] += (k + 1000) << 20;
     return y * lbl_80363348;
+}
+
+extern double lbl_8029C568[];
+double fn_800ED618(double x, double y) {
+    int n, hx, hy, hz, ix, iy, sx, i;
+    unsigned lx, ly, lz;
+
+    hx = *(int *)&x;
+    lx = *(1 + (unsigned *)&x);
+    hy = *(int *)&y;
+    ly = *(1 + (unsigned *)&y);
+    sx = hx & 0x80000000;
+    hx ^= sx;
+    hy &= 0x7fffffff;
+
+    if ((hy | ly) == 0 || (hx >= 0x7ff00000) || ((hy | ((ly | -ly) >> 31)) > 0x7ff00000))
+        return (x * y) / (x * y);
+    if (hx <= hy) {
+        if ((hx < hy) || (lx < ly)) return x;
+        if (lx == ly) return lbl_8029C568[(unsigned)sx >> 31];
+    }
+
+    if (hx < 0x00100000) {
+        if (hx == 0) {
+            for (ix = -1043, i = lx; i > 0; i <<= 1) ix -= 1;
+        } else {
+            for (ix = -1022, i = (hx << 11); i > 0; i <<= 1) ix -= 1;
+        }
+    } else ix = (hx >> 20) - 1023;
+
+    if (hy < 0x00100000) {
+        if (hy == 0) {
+            for (iy = -1043, i = ly; i > 0; i <<= 1) iy -= 1;
+        } else {
+            for (iy = -1022, i = (hy << 11); i > 0; i <<= 1) iy -= 1;
+        }
+    } else iy = (hy >> 20) - 1023;
+
+    if (ix >= -1022)
+        hx = 0x00100000 | (0x000fffff & hx);
+    else {
+        n = -1022 - ix;
+        if (n <= 31) {
+            hx = (hx << n) | (lx >> (32 - n));
+            lx <<= n;
+        } else {
+            hx = lx << (n - 32);
+            lx = 0;
+        }
+    }
+    if (iy >= -1022)
+        hy = 0x00100000 | (0x000fffff & hy);
+    else {
+        n = -1022 - iy;
+        if (n <= 31) {
+            hy = (hy << n) | (ly >> (32 - n));
+            ly <<= n;
+        } else {
+            hy = ly << (n - 32);
+            ly = 0;
+        }
+    }
+
+    n = ix - iy;
+    while (n--) {
+        hz = hx - hy;
+        lz = lx - ly;
+        if (lx < ly) hz -= 1;
+        if (hz < 0) {
+            hx = hx + hx + (lx >> 31);
+            lx = lx + lx;
+        } else {
+            if ((hz | lz) == 0)
+                return lbl_8029C568[(unsigned)sx >> 31];
+            hx = hz + hz + (lz >> 31);
+            lx = lz + lz;
+        }
+    }
+    hz = hx - hy;
+    lz = lx - ly;
+    if (lx < ly) hz -= 1;
+    if (hz >= 0) {
+        hx = hz;
+        lx = lz;
+    }
+
+    if ((hx | lx) == 0)
+        return lbl_8029C568[(unsigned)sx >> 31];
+    while (hx < 0x00100000) {
+        hx = hx + hx + (lx >> 31);
+        lx = lx + lx;
+        iy -= 1;
+    }
+    if (iy >= -1022) {
+        hx = ((hx - 0x00100000) | ((iy + 1023) << 20));
+        *(int *)&x = hx | sx;
+        *(1 + (unsigned *)&x) = lx;
+    } else {
+        n = -1022 - iy;
+        if (n <= 20) {
+            lx = (lx >> n) | ((unsigned)hx << (32 - n));
+            hx >>= n;
+        } else if (n <= 31) {
+            lx = (hx << (32 - n)) | (lx >> n);
+            hx = sx;
+        } else {
+            lx = hx >> (n - 32);
+            hx = sx;
+        }
+        *(int *)&x = hx | sx;
+        *(1 + (unsigned *)&x) = lx;
+    }
+    return x;
 }
 
 extern double lbl_8035A988, lbl_80363358, lbl_80363360, lbl_80363368;
