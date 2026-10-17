@@ -141,20 +141,21 @@ void fn_80142E0C(Img *p) {
 void fn_80142E60(Img *p) {
     s32 n = p->n;
     s32 m = p->m;
-    u8 *s = p->buf;
-    u8 *d = p->dst;
-    s32 e = n * 2 - m;
-    u8 *dend = d + m;
+    s32 e;
+    s32 n2 = n * 2;
+    s32 k;
+    u8 *s;
+    u8 *d;
+    u8 *dend;
+    e = n2 - m;
+    k = (n - m) * 2;
+    s = p->buf;
+    d = p->dst;
+    dend = d + m;
     do {
         *d = *s;
-        if (e <= 0) {
-            e += n * 2;
-            d++;
-        } else {
-            e += (n - m) * 2;
-            s++;
-            d++;
-        }
+        if (e <= 0) { e += n2; d++; }
+        else { e += k; s++; d++; }
     } while (d < dend);
 }
 
