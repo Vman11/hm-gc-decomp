@@ -32,9 +32,8 @@ void fn_8014D7A0(void *arg0, s32 arg1) {
 }
 
 #pragma peephole off
-void fn_8014D7CC(Unk8014D7A0 *arg0, s32 arg1, s32 arg2, f32 farg0) {
-    s32 offset = arg1 * 4;
-    ((Unk8014D7A0 *)((u8 *)arg0 + offset))->unk1C = farg0;
-    ((Unk8014D7A0Data *)((u8 *)arg0->unk0 + offset))->unk84 = arg2;
+void fn_8014D7CC(Unk8014D7CC *arg0, s32 arg1, s32 arg2, f32 farg0) {
+    arg0->unk1C[arg1] = farg0;
+    arg0->unk0->unk84[arg1] = arg2;
 }
 #pragma peephole reset
