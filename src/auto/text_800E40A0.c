@@ -536,76 +536,56 @@ int fn_800E63F8(const decimal *x, const decimal *y) {
     return 0;
 }
 
+#pragma use_lmw_stmw on
 void fn_800E7C88(decimal *result, const decimal *x, const decimal *y) {
+    unsigned char mantissa[80];
+    int ny = y->sig.length;
+    int nx = x->sig.length;
     unsigned long accumulator = 0;
-    unsigned char mantissa[2 * 36];
-    int i = x->sig.length + y->sig.length - 1;
+    int i = nx + ny - 1;
     unsigned char *ip = mantissa + i + 1;
     unsigned char *ep = ip;
-
     result->sign = 0;
-
     for (; i > 0; --i) {
-        int k = y->sig.length - 1;
+        int k = ny - 1;
         int j = i - k - 1;
         int l;
         int t;
         const unsigned char *jp;
         const unsigned char *kp;
-
-        if (j < 0) {
-            j = 0;
-            k = i - 1;
-        }
-
+        if (j < 0) { j = 0; k = i - 1; }
         jp = x->sig.text + j;
         kp = y->sig.text + k;
         l = k + 1;
-        t = x->sig.length - j;
-
-        if (l > t) {
-            l = t;
-        }
-
-        for (; l > 0; --l, ++jp, --kp) {
-            accumulator += *jp * *kp;
-        }
-
+        t = nx - j;
+        if (l > t) l = t;
+        for (; l > 0; --l, ++jp, --kp) accumulator += *jp * *kp;
         *--ip = (unsigned char)(accumulator % 10);
         accumulator /= 10;
     }
-
     result->exp = (short)(x->exp + y->exp);
-
-    if (accumulator > 0) {
-        *--ip = (unsigned char)accumulator;
-        result->exp++;
-    }
-
-    for (i = 0; i < 36 && ip < ep; ++i, ++ip) {
-        result->sig.text[i] = *ip;
-    }
+    if (accumulator > 0) { *--ip = (unsigned char)accumulator; result->exp++; }
+    for (i = 0; i < 36 && ip < ep; ++i, ++ip) result->sig.text[i] = *ip;
     result->sig.length = (unsigned char)i;
-
     if (ip < ep && *ip >= 5) {
         if (*ip == 5) {
             unsigned char *jp = ip + 1;
-            for (; jp < ep; ++jp) {
-                if (*jp != 0) {
-                    goto round;
-                }
-            }
-            if ((*(ip - 1) & 1) == 0) {
-                return;
-            }
+            for (; jp < ep; ++jp) if (*jp != 0) goto round;
+            if ((*(ip - 1) & 1) == 0) return;
         }
     round:
-        __dorounddecup(result, result->sig.length);
+        {
+            unsigned char *i;
+            unsigned char *b = result->sig.text;
+            i = b + result->sig.length - 1;
+            while (1) {
+                if (*i < 9) { (*i)++; break; }
+                if (i == b) { *i = 1; result->exp++; break; }
+                *i-- = 0;
+            }
+        }
     }
 }
-
-#pragma pop
-
 s32 fn_800E7F00(s32 arg0) {
     s32 temp_r4;
 
@@ -1978,6 +1958,65 @@ double fn_800ED3F4(double x) {
     return y * lbl_80363348;
 }
 
+extern double lbl_8035A988, lbl_80363358, lbl_80363360, lbl_80363368;
+extern double lbl_80363370, lbl_80363378, lbl_80363380, lbl_80363388, lbl_80363390;
+extern double lbl_80363398, lbl_803633A0, lbl_803633A8, lbl_803633B0;
+extern double lbl_803633B8, lbl_803633C0, lbl_803633C8;
+double fn_800ED954(double x) {
+    double hfsq,f,s,z,R,w,t1,t2,dk;
+    int k,hx,i,j;
+    unsigned int lx;
+    hx = ((int*)&x)[0];
+    lx = ((unsigned int*)&x)[1];
+    k = 0;
+    if (hx < 0x00100000) {
+        if (((hx & 0x7fffffff) | lx) == 0) return lbl_80363358 / lbl_8035A988;
+        if (hx < 0) {
+            lbl_8035A978 = 33;
+            return (x-x)/lbl_8035A988;
+        }
+        k -= 54;
+        x *= lbl_80363360;
+        hx = ((int*)&x)[0];
+    }
+    if (hx >= 0x7ff00000) return x+x;
+    k += (hx >> 20)-1023;
+    hx &= 0x000fffff;
+    i = (hx+0x95f64)&0x100000;
+    ((int*)&x)[0] = hx | (i^0x3ff00000);
+    k += i>>20;
+    f = x-lbl_80363368;
+    if ((0x000fffff&(2+hx)) < 3) {
+        if (f == lbl_8035A988) {
+            if (k==0) return lbl_8035A988;
+            dk=(double)k;
+            return lbl_80363370*dk+lbl_80363378*dk;
+        }
+        R = (lbl_80363380-lbl_80363388*f)*(f*f);
+        if (k==0) return f-R;
+        dk=(double)k;
+        return lbl_80363370*dk-((R-lbl_80363378*dk)-f);
+    }
+    s=f/(lbl_80363390+f);
+    dk=(double)k;
+    z=s*s;
+    i=hx-0x6147a;
+    w=z*z;
+    j=0x6b851-hx;
+    t1=w*(lbl_803633B8+w*(lbl_803633C0+lbl_803633C8*w));
+    t2=z*(lbl_80363398+w*(lbl_803633A0+w*(lbl_803633A8+lbl_803633B0*w)));
+    i |= j;
+    R=t2+t1;
+    if (i>0) {
+        hfsq=(lbl_80363380*f)*f;
+        if(k==0) return f-(hfsq-s*(hfsq+R));
+        return lbl_80363370*dk-((hfsq-(s*(hfsq+R)+lbl_80363378*dk))-f);
+    } else {
+        if(k==0) return f-s*(f-R);
+        return lbl_80363370*dk-((s*(f-R)-lbl_80363378*dk)-f);
+    }
+}
+
 double fn_800EE824(double x, double y) {
     extern double lbl_80363540;
     extern double lbl_80363548;
@@ -2423,9 +2462,9 @@ void fn_800F045C(void) {
     fn_800ECE54();
 }
 
-void fn_800ED164(void);
-void fn_800F047C(void) {
-    fn_800ED164();
+double fn_800ED164(double, double);
+double fn_800F047C(double y, double x) {
+    return fn_800ED164(y, x);
 }
 
 double fn_800ED3F4(double);
