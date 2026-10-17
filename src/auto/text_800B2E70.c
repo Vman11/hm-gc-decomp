@@ -7213,7 +7213,6 @@ s32 fn_800DBDF0(void) {
     void fn_800DE95C(TrkBuf* buf, u8 a, u8 b);
     s32 err;
     s32 readErr;
-    s32 ok;
     s32 id;
     u8 c;
 
@@ -7240,32 +7239,10 @@ s32 fn_800DBDF0(void) {
             if ((s8)c == 0x7E) {
                 if (lbl_803257B4.isEscape) {
                     fn_800DE95C(lbl_803257B4.buffer, 0xFF, 4);
-                    if (lbl_803257B4.msgBufID != -1) {
-                        fn_800DBB10(lbl_803257B4.msgBufID);
-                        lbl_803257B4.msgBufID = -1;
-                    }
-                    lbl_803257B4.buffer = NULL;
-                    lbl_803257B4.receiveState = 0;
+                    TRKDiscardFrame();
                     break;
                 }
-                {
-                    TrkBuf *buf = lbl_803257B4.buffer;
-                    if (buf->count < 2) {
-                        fn_800DE95C(buf, 0xFF, 2);
-                        if (lbl_803257B4.msgBufID != -1) {
-                            fn_800DBB10(lbl_803257B4.msgBufID);
-                            lbl_803257B4.msgBufID = -1;
-                        }
-                        ok = 0;
-                        lbl_803257B4.buffer = NULL;
-                        lbl_803257B4.receiveState = ok;
-                    } else {
-                        buf->pos = 0;
-                        buf->count--;
-                        ok = 1;
-                    }
-                }
-                if (ok) {
+                if (TRKFrameComplete()) {
                     id = lbl_803257B4.msgBufID;
                     lbl_803257B4.buffer = NULL;
                     lbl_803257B4.msgBufID = -1;
@@ -7287,12 +7264,7 @@ s32 fn_800DBDF0(void) {
             break;
         case 3:
             if (c == 0x7E) {
-                if (lbl_803257B4.msgBufID != -1) {
-                    fn_800DBB10(lbl_803257B4.msgBufID);
-                    lbl_803257B4.msgBufID = -1;
-                }
-                lbl_803257B4.buffer = NULL;
-                lbl_803257B4.receiveState = 0;
+                TRKDiscardFrame();
             }
             break;
         }
@@ -8157,6 +8129,9 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
     return error;
 }
 #pragma pop
+#pragma push
+#pragma pop
+
 s32 fn_800DF2F0(void *mutex) {
     return 0;
 }
