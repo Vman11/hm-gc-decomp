@@ -439,6 +439,64 @@ void fn_80143CA0(Img *p) {
     } while (d < e);
 }
 
+void fn_80143D8C(Img *p) {
+    u8 *d = p->px;
+    u8 *e = d + 0x80;
+    u32 c;
+    u32 v;
+    do {
+        c = p->src[0];
+        c |= p->src[1] << 8;
+        c |= p->src[2] << 16;
+        p->src += 3;
+        v = c >> p->rsh[0];
+        d[0] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = c >> p->rsh[1];
+        d[1] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = c >> p->rsh[2];
+        d[2] = (v << p->lsh[2]) | (v & p->mask[2]);
+        v = c >> p->alphaShift;
+        d[3] = (v << p->alphaLeftShift) | (v & p->mask[3]);
+        c = p->src[0];
+        c |= p->src[1] << 8;
+        c |= p->src[2] << 16;
+        p->src += 3;
+        v = c >> p->rsh[0];
+        d[4] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = c >> p->rsh[1];
+        d[5] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = c >> p->rsh[2];
+        d[6] = (v << p->lsh[2]) | (v & p->mask[2]);
+        v = c >> p->alphaShift;
+        d[7] = (v << p->alphaLeftShift) | (v & p->mask[3]);
+        c = p->src[0];
+        c |= p->src[1] << 8;
+        c |= p->src[2] << 16;
+        p->src += 3;
+        v = c >> p->rsh[0];
+        d[8] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = c >> p->rsh[1];
+        d[9] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = c >> p->rsh[2];
+        d[10] = (v << p->lsh[2]) | (v & p->mask[2]);
+        v = c >> p->alphaShift;
+        d[11] = (v << p->alphaLeftShift) | (v & p->mask[3]);
+        c = p->src[0];
+        c |= p->src[1] << 8;
+        c |= p->src[2] << 16;
+        p->src += 3;
+        v = c >> p->rsh[0];
+        d[12] = (v << p->lsh[0]) | (v & p->mask[0]);
+        v = c >> p->rsh[1];
+        d[13] = (v << p->lsh[1]) | (v & p->mask[1]);
+        v = c >> p->rsh[2];
+        d[14] = (v << p->lsh[2]) | (v & p->mask[2]);
+        v = c >> p->alphaShift;
+        d[15] = (v << p->alphaLeftShift) | (v & p->mask[3]);
+        d += 16;
+    } while (d < e);
+}
+
 void fn_80144044(Img *p) {
     u8 *d = p->px;
     u8 *e = d + 0x80;
