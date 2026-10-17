@@ -1,5 +1,6 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
+s32 fn_800E0C4C(void *, u32, u32 *, s32, s32);
 typedef struct OSResetFunctionInfo {
     s32 (*func)(s32);
     u32 priority;
