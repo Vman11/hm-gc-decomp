@@ -3705,17 +3705,6 @@ s32 fn_800CA098(void) {
     return lbl_8035A8C8;
 }
 
-static inline u16 __MIXGetVolume(s32 db) {
-    extern u8 lbl_802DE540[];
-    if (db <= -904) {
-        return 0;
-    }
-    if (db >= 60) {
-        return 0xFF64;
-    }
-    return ((u16 *)(lbl_802DE540 + 0x710))[db];
-}
-
 void fn_800CAF1C(char *arg0) {
     s32 *p = &lbl_80321D60[*(s32 *)(arg0 + 0x18)].unk0;
     *p = 0;
