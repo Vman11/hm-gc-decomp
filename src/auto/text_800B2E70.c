@@ -158,7 +158,7 @@ extern int lbl_8035A568;
 typedef struct TrkBuf {
     u32 mutex;
     s32 isInUse;
-    s32 count;
+    u32 count;
     u32 pos;
     u8 data[0x880];
 } TrkBuf;
