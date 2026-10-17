@@ -68,6 +68,74 @@ typedef struct GXDataHead {
     u16 vNum;
     u16 vLim;
 } GXDataHead;
+static inline void SETVAT(u32 *va, u32 *vb, u32 *vc, s32 attr, s32 cnt, s32 type, u8 frac) {
+    switch (attr) {
+    case 9:
+        *va = __rlwimi(*va, cnt, 0, 31, 31);
+        *va = __rlwimi(*va, type, 1, 28, 30);
+        *va = __rlwimi(*va, frac, 4, 23, 27);
+        break;
+    case 10:
+    case 25:
+        *va = __rlwimi(*va, type, 10, 19, 21);
+        if (cnt == 2) {
+            *va = __rlwimi(*va, 1, 9, 22, 22);
+            *va = __rlwimi(*va, 1, 31, 0, 0);
+        } else {
+            *va = __rlwimi(*va, cnt, 9, 22, 22);
+            *va = __rlwimi(*va, 0, 31, 0, 0);
+        }
+        break;
+    case 11:
+        *va = __rlwimi(*va, cnt, 13, 18, 18);
+        *va = __rlwimi(*va, type, 14, 15, 17);
+        break;
+    case 12:
+        *va = __rlwimi(*va, cnt, 17, 14, 14);
+        *va = __rlwimi(*va, type, 18, 11, 13);
+        break;
+    case 13:
+        *va = __rlwimi(*va, cnt, 21, 10, 10);
+        *va = __rlwimi(*va, type, 22, 7, 9);
+        *va = __rlwimi(*va, frac, 25, 2, 6);
+        break;
+    case 14:
+        *vb = __rlwimi(*vb, cnt, 0, 31, 31);
+        *vb = __rlwimi(*vb, type, 1, 28, 30);
+        *vb = __rlwimi(*vb, frac, 4, 23, 27);
+        break;
+    case 15:
+        *vb = __rlwimi(*vb, cnt, 9, 22, 22);
+        *vb = __rlwimi(*vb, type, 10, 19, 21);
+        *vb = __rlwimi(*vb, frac, 13, 14, 18);
+        break;
+    case 16:
+        *vb = __rlwimi(*vb, cnt, 18, 13, 13);
+        *vb = __rlwimi(*vb, type, 19, 10, 12);
+        *vb = __rlwimi(*vb, frac, 22, 5, 9);
+        break;
+    case 17:
+        *vb = __rlwimi(*vb, cnt, 27, 4, 4);
+        *vb = __rlwimi(*vb, type, 28, 1, 3);
+        *vc = __rlwimi(*vc, frac, 0, 27, 31);
+        break;
+    case 18:
+        *vc = __rlwimi(*vc, cnt, 5, 26, 26);
+        *vc = __rlwimi(*vc, type, 6, 23, 25);
+        *vc = __rlwimi(*vc, frac, 9, 18, 22);
+        break;
+    case 19:
+        *vc = __rlwimi(*vc, cnt, 14, 17, 17);
+        *vc = __rlwimi(*vc, type, 15, 14, 16);
+        *vc = __rlwimi(*vc, frac, 18, 9, 13);
+        break;
+    case 20:
+        *vc = __rlwimi(*vc, cnt, 23, 8, 8);
+        *vc = __rlwimi(*vc, type, 24, 5, 7);
+        *vc = __rlwimi(*vc, frac, 27, 0, 4);
+        break;
+    }
+}
 #define SETF(reg, size, shift, v) \
     ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | (((u32)(v) << (shift)) & (((1 << (size)) - 1) << (shift))))
 typedef struct __va_list_struct {
@@ -4339,6 +4407,44 @@ void *fn_800D51E0(void *ptr) {
     return (void *)0xCC008000;
 }
 
+void fn_800D5488(u32 attr, s32 type) {
+extern GXDataHead *const __GXData;
+switch(attr) {
+case 0: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 0, 31, 31); break;
+case 1: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 1, 30, 30); break;
+case 2: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 2, 29, 29); break;
+case 3: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 3, 28, 28); break;
+case 4: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 4, 27, 27); break;
+case 5: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 5, 26, 26); break;
+case 6: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 6, 25, 25); break;
+case 7: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 7, 24, 24); break;
+case 8: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 8, 23, 23); break;
+case 9: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 9, 21, 22); break;
+case 10:
+if(type) { M2C_FIELD(__GXData, u8 *, 0x4D4)=1; M2C_FIELD(__GXData, u8 *, 0x4D5)=0; M2C_FIELD(__GXData, s32 *, 0x4D0)=type; }
+else M2C_FIELD(__GXData, u8 *, 0x4D4)=0;
+break;
+case 25:
+if(type) { M2C_FIELD(__GXData, u8 *, 0x4D5)=1; M2C_FIELD(__GXData, u8 *, 0x4D4)=0; M2C_FIELD(__GXData, s32 *, 0x4D0)=type; }
+else M2C_FIELD(__GXData, u8 *, 0x4D5)=0;
+break;
+case 11: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 13, 17, 18); break;
+case 12: M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), type, 15, 15, 16); break;
+case 13: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x18), type, 0, 30, 31); break;
+case 14: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x18), type, 2, 28, 29); break;
+case 15: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x18), type, 4, 26, 27); break;
+case 16: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x18), type, 6, 24, 25); break;
+case 17: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x18), type, 8, 22, 23); break;
+case 18: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x18), type, 10, 20, 21); break;
+case 19: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x18), type, 12, 18, 19); break;
+case 20: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x18), type, 14, 16, 17); break;
+}
+if(M2C_FIELD(__GXData, u8 *, 0x4D4) || M2C_FIELD(__GXData, u8 *, 0x4D5)) {
+M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), M2C_FIELD(__GXData, s32 *, 0x4D0), 11, 19, 20);
+} else { M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), 0, 11, 19, 20); }
+M2C_FIELD(__GXData, u32 *, 0x5AC) |= 8;
+}
+
 static inline void __GXXfVtxSpecs(void) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
@@ -4442,6 +4548,84 @@ void fn_800D58D4(void) {
     M2C_FIELD(__GXData, u8 *, 0x4D4) = 0;
     M2C_FIELD(__GXData, u8 *, 0x4D5) = 0;
     M2C_FIELD(__GXData, u32 *, 0x5AC) |= 8;
+}
+
+void fn_800D590C(s32 vtxfmt, s32 attr, s32 cnt, s32 type, u8 frac) {
+    extern GXDataHead *__GXData;
+    u32 *va;
+    u32 *vb;
+    u32 *vc;
+    va = (u32 *)((u8 *)__GXData + 0x1C) + vtxfmt;
+    vb = (u32 *)((u8 *)__GXData + 0x3C) + vtxfmt;
+    vc = (u32 *)((u8 *)__GXData + 0x5C) + vtxfmt;
+    switch (attr) {
+    case 9:
+        *va = __rlwimi(*va, cnt, 0, 31, 31);
+        *va = __rlwimi(*va, type, 1, 28, 30);
+        *va = __rlwimi(*va, frac, 4, 23, 27);
+        break;
+    case 10:
+    case 25:
+        *va = __rlwimi(*va, type, 10, 19, 21);
+        if (cnt == 2) {
+            *va = __rlwimi(*va, 1, 9, 22, 22);
+            *va = __rlwimi(*va, 1, 31, 0, 0);
+        } else {
+            *va = __rlwimi(*va, cnt, 9, 22, 22);
+            *va = __rlwimi(*va, 0, 31, 0, 0);
+        }
+        break;
+    case 11:
+        *va = __rlwimi(*va, cnt, 13, 18, 18);
+        *va = __rlwimi(*va, type, 14, 15, 17);
+        break;
+    case 12:
+        *va = __rlwimi(*va, cnt, 17, 14, 14);
+        *va = __rlwimi(*va, type, 18, 11, 13);
+        break;
+    case 13:
+        *va = __rlwimi(*va, cnt, 21, 10, 10);
+        *va = __rlwimi(*va, type, 22, 7, 9);
+        *va = __rlwimi(*va, frac, 25, 2, 6);
+        break;
+    case 14:
+        *vb = __rlwimi(*vb, cnt, 0, 31, 31);
+        *vb = __rlwimi(*vb, type, 1, 28, 30);
+        *vb = __rlwimi(*vb, frac, 4, 23, 27);
+        break;
+    case 15:
+        *vb = __rlwimi(*vb, cnt, 9, 22, 22);
+        *vb = __rlwimi(*vb, type, 10, 19, 21);
+        *vb = __rlwimi(*vb, frac, 13, 14, 18);
+        break;
+    case 16:
+        *vb = __rlwimi(*vb, cnt, 18, 13, 13);
+        *vb = __rlwimi(*vb, type, 19, 10, 12);
+        *vb = __rlwimi(*vb, frac, 22, 5, 9);
+        break;
+    case 17:
+        *vb = __rlwimi(*vb, cnt, 27, 4, 4);
+        *vb = __rlwimi(*vb, type, 28, 1, 3);
+        *vc = __rlwimi(*vc, frac, 0, 27, 31);
+        break;
+    case 18:
+        *vc = __rlwimi(*vc, cnt, 5, 26, 26);
+        *vc = __rlwimi(*vc, type, 6, 23, 25);
+        *vc = __rlwimi(*vc, frac, 9, 18, 22);
+        break;
+    case 19:
+        *vc = __rlwimi(*vc, cnt, 14, 17, 17);
+        *vc = __rlwimi(*vc, type, 15, 14, 16);
+        *vc = __rlwimi(*vc, frac, 18, 9, 13);
+        break;
+    case 20:
+        *vc = __rlwimi(*vc, cnt, 23, 8, 8);
+        *vc = __rlwimi(*vc, type, 24, 5, 7);
+        *vc = __rlwimi(*vc, frac, 27, 0, 4);
+        break;
+    }
+    M2C_FIELD(__GXData, u32 *, 0x5AC) |= 0x10;
+    M2C_FIELD(__GXData, u8 *, 0x5AB) |= (u8)(1 << (u8)vtxfmt);
 }
 
 void fn_800D5DE8(void) {
@@ -5336,6 +5520,58 @@ void fn_800D7D5C(int fmt, u16 wd, u16 ht, u32* rowTiles, u32* colTiles, u32* cmp
     *rowTiles = (wd + (1 << texRowShift) - 1) >> texRowShift;
     *colTiles = (ht + (1 << texColShift) - 1) >> texColShift;
     *cmpTiles = (fmt == 0x6 || fmt == 0x16) ? 2 : 1;
+}
+
+void fn_800D7E24(u32* t, u32 image_ptr, u16 width, u16 height, u32 format, u32 wrap_s, u32 wrap_t, u8 mipmap)
+{
+    extern f32 lbl_80363128;
+    u16 maxLOD;
+    u16 rowT, colT;
+    u32 rowC, colC;
+
+    memset(t, 0, 0x20);
+    t[0] = __rlwimi(t[0], wrap_s, 0, 30, 31);
+    t[0] = __rlwimi(t[0], wrap_t, 2, 28, 29);
+    t[0] = __rlwimi(t[0], 1, 4, 27, 27);
+    if (mipmap) {
+        ((u8*)t)[0x1f] |= 1;
+        if (format - 8 <= 2) {
+            t[0] = __rlwimi(t[0], 5, 5, 24, 26);
+        } else {
+            t[0] = __rlwimi(t[0], 6, 5, 24, 26);
+        }
+        if (width > height) {
+            maxLOD = 31 - __cntlzw(width);
+        } else {
+            maxLOD = 31 - __cntlzw(height);
+        }
+        t[1] = __rlwimi(t[1], (u8)(lbl_80363128 * (f32)maxLOD), 8, 16, 23);
+    } else {
+        t[0] = __rlwimi(t[0], 4, 5, 24, 26);
+    }
+    t[5] = format;
+    t[2] = __rlwimi(t[2], width - 1, 0, 22, 31);
+    t[2] = __rlwimi(t[2], height - 1, 10, 12, 21);
+    t[2] = __rlwimi(t[2], format, 20, 8, 11);
+    t[3] = __rlwimi(t[3], image_ptr, 27, 11, 31);
+    switch (format & 0xF) {
+    case 0: case 8:
+        ((u8*)t)[0x1e] = 1; rowT = 3; colT = 3; break;
+    case 1: case 2: case 9:
+        ((u8*)t)[0x1e] = 2; rowT = 3; colT = 2; break;
+    case 3: case 4: case 5: case 10:
+        ((u8*)t)[0x1e] = 2; rowT = 2; colT = 2; break;
+    case 6:
+        ((u8*)t)[0x1e] = 3; rowT = 2; colT = 2; break;
+    case 14:
+        ((u8*)t)[0x1e] = 0; rowT = 3; colT = 3; break;
+    default:
+        ((u8*)t)[0x1e] = 2; rowT = 2; colT = 2; break;
+    }
+    rowC = (width + (1 << rowT) - 1) >> rowT;
+    colC = (height + (1 << colT) - 1) >> colT;
+    *(u16*)((u8*)t + 0x1c) = (rowC * colC) & 0x7FFF;
+    ((u8*)t)[0x1f] |= 2;
 }
 
 void fn_800D80B8(u32 *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias, u8 bias_clamp, u8 do_edge_lod, s32 max_aniso) {
