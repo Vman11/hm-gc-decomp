@@ -745,6 +745,89 @@ int fn_800E8014(int c) {
     return lbl_802E06C8[(u8)c];
 }
 
+u32 __fwrite(const void *ptr, u32 size, u32 count, void *arg) {
+    int fwide(void *, int);
+    int fseek(MslFile *, int, int);
+    void __stdio_atexit(void);
+    void __prep_buffer(void *);
+    int __flush_buffer(MslFile *, u32 *);
+    void *__memrchr(const void *, int, u32);
+    void *memcpy(void *, const void *, u32);
+    int buffered;
+    const u8 *src;
+    u32 bytes;
+    s32 written;
+    u8 *newline;
+    u32 amount;
+    int binary_buffer;
+    MslFile *file = arg;
+
+    if (!fwide(file, 0)) fwide(file, -1);
+    bytes = size * count;
+    if (!bytes || file->state.error || !file->mode.file_kind) return 0;
+    if (file->mode.file_kind == 2) __stdio_atexit();
+    buffered = 1;
+    binary_buffer = !file->mode.binary_io || file->mode.buffer_mode == 2;
+    if (!binary_buffer && file->mode.buffer_mode != 1)
+        buffered = 0;
+    if (file->state.io_state == 0 && (file->mode.io_mode & 2)) {
+        if ((file->mode.io_mode & 4) && fseek(file, 0, 2)) return 0;
+        file->state.io_state = 1;
+        __prep_buffer(file);
+    }
+    if (file->state.io_state != 1) {
+        file->state.error = 1;
+        file->buffer_len = 0;
+        return 0;
+    }
+    src = ptr;
+    written = 0;
+    if (bytes && (file->buffer_ptr != file->buffer || buffered)) {
+        file->buffer_len = file->buffer_size - (file->buffer_ptr - file->buffer);
+        do {
+            amount = file->buffer_len;
+            newline = 0;
+            if (amount > bytes) amount = bytes;
+            if (file->mode.buffer_mode == 1 && amount) {
+                newline = __memrchr(src, 10, amount);
+                if (newline) amount = newline + 1 - src;
+            }
+            if (amount) {
+                memcpy(file->buffer_ptr, src, amount);
+                src += amount;
+                written += amount;
+                bytes -= amount;
+                file->buffer_ptr += amount;
+                file->buffer_len -= amount;
+            }
+            if ((!file->buffer_len || newline || !file->mode.buffer_mode) && __flush_buffer(file, 0)) {
+                file->state.error = 1;
+                file->buffer_len = 0;
+                bytes = 0;
+                break;
+            }
+        } while (bytes && buffered);
+    }
+    if (bytes && !buffered) {
+        u8 *saved_buffer = file->buffer;
+        u32 saved_size = file->buffer_size;
+        file->buffer = (u8 *)src;
+        file->buffer_size = bytes;
+        file->buffer_ptr = (u8 *)src + bytes;
+        if (__flush_buffer(file, &amount)) {
+            file->state.error = 1;
+            file->buffer_len = 0;
+        }
+        written += amount;
+        file->buffer = saved_buffer;
+        file->buffer_size = saved_size;
+        __prep_buffer(file);
+        file->buffer_len = 0;
+    }
+    if (file->mode.buffer_mode != 2) file->buffer_len = 0;
+    return (written + size - 1) / size;
+}
+
 #pragma push
 #pragma dont_inline on
 u32 fwrite(const void *ptr, u32 size, u32 count, void *file) {
@@ -1413,6 +1496,68 @@ void fn_800EA1DC(decimal *dec, int new_length) {
         goto return_zero;
 
     dec->sig.length = new_length;
+}
+
+static char *long2str_800EA91C(long, char *, print_format);
+char *fn_800EB764(char *, const char *);
+char *double2hex(char *buff, print_format *format, double x) {
+    decimal d;
+    print_format exp_format = {1, 1, 0, 0, 0, 'd', 0, 1};
+    union { double value; short words[4]; } bits;
+    decform df;
+    char *p;
+    int i;
+    char digit;
+    bits.value = x;
+    if (format->precision > 509) return 0;
+    df.style = 0;
+    df.digits = 32;
+    fn_800E59A4(&df, x, &d);
+    if (d.sig.text[0] == 'I') {
+        if (bits.words[0] & 0x8000) {
+            buff -= 5;
+            if (format->conversion_char == 'A') fn_800EB764(buff, "-INF");
+            else fn_800EB764(buff, "-inf");
+        } else {
+            buff -= 4;
+            if (format->conversion_char == 'A') fn_800EB764(buff, "INF");
+            else fn_800EB764(buff, "inf");
+        }
+        return buff;
+    }
+    if (d.sig.text[0] == 'N') {
+        if (((unsigned char *)&x)[0] & 0x80) {
+            buff -= 5;
+            if (format->conversion_char == 'A') fn_800EB764(buff, "-NAN");
+            else fn_800EB764(buff, "-nan");
+        } else {
+            buff -= 4;
+            if (format->conversion_char == 'A') fn_800EB764(buff, "NAN");
+            else fn_800EB764(buff, "nan");
+        }
+        return buff;
+    }
+    p = long2str_800EA91C((short)((bits.words[0] >> 4) & 0x7ff) - 1023, buff, exp_format);
+    if (format->conversion_char == 'a') *--p = 'p';
+    else *--p = 'P';
+    for (i = format->precision; i >= 1; --i) {
+        unsigned char c = ((unsigned char *)&x)[i / 2 + 1];
+        digit = (c >> 4) & 15;
+        if (i % 2) digit = c & 15;
+        if (digit < 10) digit += '0';
+        else if (format->conversion_char == 'a') digit += 'a' - 10;
+        else digit += 'A' - 10;
+        *--p = digit;
+    }
+    if (format->precision != 0 || format->alternate_form) *--p = '.';
+    *--p = '1';
+    if (format->conversion_char == 'a') *--p = 'x';
+    else *--p = 'X';
+    *--p = '0';
+    if (bits.words[0] & 0x8000) *--p = '-';
+    else if (format->sign_options == 1) *--p = '+';
+    else if (format->sign_options == 2) *--p = ' ';
+    return p;
 }
 
 static char *longlong2str_800EA640(long long num, char *buff, print_format format) {
