@@ -47,6 +47,16 @@ void fn_80147568(s32 arg0) {
     lbl_8035AC98 = arg0;
 }
 
+u8 fn_80147800(PixelFormat_80147568 *a, PixelFormat_80147568 *b) {
+    s32 result = a->unk0 == b->unk0;
+    if ((u8)result) result = a->unk2 == b->unk2;
+    if ((u8)result) result = MaskBits(a->rmask) == MaskBits(b->rmask);
+    if ((u8)result) result = MaskBits(a->gmask) == MaskBits(b->gmask);
+    if ((u8)result) result = MaskBits(a->bmask) == MaskBits(b->bmask);
+    if ((u8)result) result = MaskBits(a->amask) == MaskBits(b->amask);
+    return result;
+}
+
 u8 fn_80147A68(u8 *arg0, u8 *arg1) {
     s32 result = 0;
     if (*(u16 *)(arg0 + 0) == *(u16 *)(arg1 + 0) && *(u16 *)(arg0 + 2) == *(u16 *)(arg1 + 2) &&
@@ -57,14 +67,14 @@ u8 fn_80147A68(u8 *arg0, u8 *arg1) {
     return result;
 }
 
-void fn_80147AD8(u32 *arg0, u32 arg1, u8 *arg2) {
-    u32 r = (arg1 & arg0[1]) >> MaskShift(arg0[1]);
-    u32 g = (arg1 & arg0[2]) >> MaskShift(arg0[2]);
-    u32 b = (arg1 & arg0[3]) >> MaskShift(arg0[3]);
-    u32 a = (arg1 & arg0[4]) >> MaskShift(arg0[4]);
-    arg2[0] = r << (8 - MaskBits(arg0[1]));
-    arg2[1] = g << (8 - MaskBits(arg0[2]));
-    arg2[2] = b << (8 - MaskBits(arg0[3]));
-    arg2[3] = a << (8 - MaskBits(arg0[4]));
+void fn_80147AD8(u8 *arg0, u32 arg1, u8 *arg2) {
+    u32 r = (arg1 & *(u32 *)(arg0 + 4)) >> MaskShift(*(u32 *)(arg0 + 4));
+    u32 g = (arg1 & *(u32 *)(arg0 + 8)) >> MaskShift(*(u32 *)(arg0 + 8));
+    u32 b = (arg1 & *(u32 *)(arg0 + 0xC)) >> MaskShift(*(u32 *)(arg0 + 0xC));
+    u32 a = (arg1 & *(u32 *)(arg0 + 0x10)) >> MaskShift(*(u32 *)(arg0 + 0x10));
+    arg2[0] = r << (8 - MaskBits(*(u32 *)(arg0 + 4)));
+    arg2[1] = g << (8 - MaskBits(*(u32 *)(arg0 + 8)));
+    arg2[2] = b << (8 - MaskBits(*(u32 *)(arg0 + 0xC)));
+    arg2[3] = a << (8 - MaskBits(*(u32 *)(arg0 + 0x10)));
 }
 
