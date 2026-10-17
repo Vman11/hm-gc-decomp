@@ -9142,11 +9142,7 @@ static inline s32 TRKPPCAccessPairedSingleRegister(void *srcDestPtr, u32 psr, BO
     u32 instructionData[10] = { 0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000,
                                 0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000 };
 
-    if (read) {
-        instructionData[0] = 0xF0030000 | (psr << 21);
-    } else {
-        instructionData[0] = 0xE0030000 | (psr << 21);
-    }
+    instructionData[0] = read ? (0xF0030000 | (psr << 21)) : (0xE0030000 | (psr << 21));
     return TRKPPCAccessSpecialReg(srcDestPtr, instructionData, read);
 }
 
@@ -9277,6 +9273,46 @@ s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     }
 
     gTRKExceptionStatus_802E01A4 = tempExceptionStatus;
+    return error;
+}
+
+void fn_800DF4D8(u32 msr);
+s32 fn_800E0640(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
+    extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
+    u64 temp;
+    s32 error;
+    TRKExceptionStatus savedException;
+    u32 current;
+
+    if (lastRegister > 0x21) {
+        return 0x701;
+    }
+
+    savedException = gTRKExceptionStatus_802E01A4;
+    gTRKExceptionStatus_802E01A4.exceptionDetected = FALSE;
+
+    fn_800DF4D8(fn_800DF4D0() | 0x2000);
+
+    *registersLengthPtr = 0;
+    error = 0;
+
+    for (current = firstRegister; current <= lastRegister && error == 0;
+         current++, *registersLengthPtr += sizeof(f64)) {
+        if (read) {
+            TRKPPCAccessFPRegister(&temp, current, read);
+            error = fn_800DB6D4(b, temp);
+        } else {
+            fn_800DB288(b, &temp);
+            error = TRKPPCAccessFPRegister(&temp, current, read);
+        }
+    }
+
+    if (gTRKExceptionStatus_802E01A4.exceptionDetected) {
+        *registersLengthPtr = 0;
+        error = 0x702;
+    }
+
+    gTRKExceptionStatus_802E01A4 = savedException;
     return error;
 }
 
