@@ -9164,7 +9164,21 @@ static inline s32 TRKPPCAccessFPRegister(void *srcDestPtr, u32 fpr, BOOL read) {
         if (!read) {
             *(u32 *)srcDestPtr = *((u32 *)srcDestPtr + 1);
         }
-        error = TRKPPCAccessSPR(srcDestPtr, 1022, read);
+        {
+            u32 access_func[10] = { 0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000,
+                                    0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000 };
+            if (read) {
+                access_func[0] = 0x7C9EFAA6;
+                access_func[1] = 0x90830000;
+            } else {
+                access_func[0] = 0x80830000;
+                access_func[1] = 0x7C9EFBA6;
+            }
+            error = TRKPPCAccessSpecialReg(srcDestPtr, access_func, read);
+        }
+        if (read) {
+            *(u64 *)srcDestPtr = *(u32 *)srcDestPtr & 0xFFFFFFFFLL;
+        }
     }
     return error;
 }
@@ -9181,8 +9195,6 @@ s32 fn_800DB288(TrkBuf *buf, u64 *data);
 s32 fn_800DB6D4(TrkBuf *buf, u64 data);
 #pragma push
 #pragma dont_inline off
-#pragma auto_inline off
-#pragma inline_depth(4)
 s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerStorageSize, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     TRKExceptionStatus savedException;
@@ -9206,6 +9218,17 @@ s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerSto
 
     *registerStorageSize = 0;
     err = 0;
+
+    for (i = firstRegister; (i <= lastRegister) && (err == 0); i++) {
+        if (read) {
+            TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
+            err = fn_800DB6D4(b, *(u64 *)value_buf);
+        } else {
+            fn_800DB288(b, (u64 *)value_buf);
+            err = TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
+        }
+        *registerStorageSize += sizeof(u64);
+    }
 
     if (gTRKExceptionStatus_802E01A4.exceptionDetected) {
         *registerStorageSize = 0;
