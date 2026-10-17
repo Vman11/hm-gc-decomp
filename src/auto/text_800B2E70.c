@@ -7525,6 +7525,172 @@ void fn_800DC374(TrkBuf* buf) {
     } while (ok != 0 && n > 0);
 }
 
+s32 fn_800DFAF0(void);
+s32 fn_800DFB00(u32 rangeStart, u32 rangeEnd, s32 stepOver);
+s32 fn_800DFB7C(u32 count, s32 stepOver);
+void fn_800DC474(TrkBuf* buf) {
+    u8 cmd;
+    u8 opt;
+    u8 count;
+    u32 start;
+    u32 end;
+    u32 pc;
+    s32 err;
+    s32 n;
+    s32 ok;
+
+    if ((u32)buf->count < 3) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x02;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        return;
+    }
+    fn_800DBAA0(buf, 0);
+    err = fn_800DB4F0(buf, &cmd);
+    if (err == 0) {
+        err = fn_800DB4F0(buf, &opt);
+    }
+    switch (opt) {
+    case 0:
+    case 0x10:
+        if (err == 0) {
+            fn_800DB4F0(buf, &count);
+        }
+        if (count >= 1) {
+            break;
+        }
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x11;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        return;
+    case 1:
+    case 0x11:
+        if ((u32)buf->count != 0xA) {
+            fn_800DBAD0(buf, 1);
+            if (buf->pos < 0x880) {
+                buf->data[buf->pos++] = 0x80;
+                buf->count++;
+            }
+            if (buf->pos < 0x880) {
+                buf->data[buf->pos++] = 0x02;
+                buf->count++;
+            }
+            n = 3;
+            do {
+                ok = fn_800DAF24(buf);
+                n--;
+            } while (ok != 0 && n > 0);
+            return;
+        }
+        if (err == 0) {
+            err = fn_800DB370(buf, &start);
+        }
+        if (err == 0) {
+            fn_800DB370(buf, &end);
+        }
+        pc = fn_800DFAF0();
+        if (pc >= start && pc <= end) {
+            break;
+        }
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x11;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        return;
+    default:
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x12;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        return;
+    }
+    if (TRKTargetStopped() == 0) {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x16;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+    } else {
+        fn_800DBAD0(buf, 1);
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x80;
+            buf->count++;
+        }
+        if (buf->pos < 0x880) {
+            buf->data[buf->pos++] = 0x00;
+            buf->count++;
+        }
+        n = 3;
+        do {
+            ok = fn_800DAF24(buf);
+            n--;
+        } while (ok != 0 && n > 0);
+        if (ok == 0) {
+            switch (opt) {
+            case 0:
+            case 0x10:
+                fn_800DFB7C(count, opt == 0x10);
+                break;
+            case 1:
+            case 0x11:
+                fn_800DFB00(start, end, opt == 0x11);
+                break;
+            }
+        }
+    }
+}
+
 void fn_800DC9A4(TrkBuf* buf) {
     s32 n;
     s32 ok;
@@ -9020,6 +9186,10 @@ s32 fn_800E0070(void *arg0) {
 
 s32 fn_800DB288(TrkBuf *buf, u64 *data);
 s32 fn_800DB6D4(TrkBuf *buf, u64 data);
+#pragma push
+#pragma dont_inline off
+#pragma auto_inline on
+#pragma inline_depth(4)
 s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerStorageSize, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     TRKExceptionStatus savedException;
@@ -9063,7 +9233,7 @@ s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerSto
     gTRKExceptionStatus_802E01A4 = savedException;
     return err;
 }
-
+#pragma pop
 s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     extern struct { u8 TBR; u8 DEC; u8 linker_padding[7]; } gTRKRestoreFlags;
