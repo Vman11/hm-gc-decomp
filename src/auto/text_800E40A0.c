@@ -1054,6 +1054,7 @@ void fn_800E6504(decimal *result, long exp) {
         }
     }
 }
+#pragma pop
 
 #pragma use_lmw_stmw on
 void fn_800E7C88(decimal *result, const decimal *x, const decimal *y) {
