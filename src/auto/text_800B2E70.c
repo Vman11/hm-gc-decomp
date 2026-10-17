@@ -1,6 +1,26 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
 s32 fn_800E0C4C(void *, u32, u32 *, s32, s32);
+#define __DSPRegs ((volatile u16 *)0xCC005000)
+#define __ARDMA(mmem, aram, len, dir)                                                    \
+    {                                                                                    \
+        __DSPRegs[16] = (u16)((__DSPRegs[16] & ~0x03ff) | (u16)((mmem) >> 16));          \
+        __DSPRegs[17] = (u16)((__DSPRegs[17] & ~0xffe0) | (u16)(0xffff & (mmem)));       \
+        __DSPRegs[18] = (u16)((__DSPRegs[18] & ~0x03ff) | (u16)((aram) >> 16));          \
+        __DSPRegs[19] = (u16)((__DSPRegs[19] & ~0xffe0) | (u16)(0xffff & (aram)));       \
+        if (dir) {                                                                       \
+            __DSPRegs[20] = (u16)(__DSPRegs[20] | 0x8000);                               \
+        } else {                                                                         \
+            __DSPRegs[20] = (u16)(__DSPRegs[20] & ~0x8000);                              \
+        }                                                                                \
+        __DSPRegs[20] = (u16)((__DSPRegs[20] & ~0x03ff) | (u16)((len) >> 16));           \
+        __DSPRegs[21] = (u16)((__DSPRegs[21] & ~0xffe0) | (u16)(0xffff & (len)));        \
+        while (__DSPRegs[5] & 0x0200) {                                                  \
+        }                                                                                \
+        __DSPRegs[5] = (u16)((__DSPRegs[5] & ~(0x80 | 0x08)) | 0x20);                    \
+    }
+#define __ARReadDMA(mmem, aram, len) __ARDMA(mmem, aram, len, 1)
+#define __ARWriteDMA(mmem, aram, len) __ARDMA(mmem, aram, len, 0)
 typedef struct OSResetFunctionInfo {
     s32 (*func)(s32);
     u32 priority;
@@ -3713,6 +3733,128 @@ void fn_800CA090(s32 arg0) {
 extern s32 lbl_8035A8C8;
 s32 fn_800CA098(void) {
     return lbl_8035A8C8;
+}
+
+void fn_800CA0A0(u8 *arg0, u32 mode, s32 input, s32 auxA, s32 auxB, s32 pan, s32 span, s32 fader) {
+    void fn_800C9F0C(void *);
+    s32 old;
+    UnkVoice80321D60 *c;
+    u16 mixerCtrl;
+    u16 *p;
+
+    c = &lbl_80321D60[*(s32 *)(arg0 + 0x18)];
+    c->unk0 = (s32)arg0;
+    c->unk4 = mode & 7;
+    c->unk8 = input;
+    c->unkC = auxA;
+    c->unk10 = auxB;
+    c->unk14 = pan;
+    c->unk18 = span;
+    c->unk1C = fader;
+
+    fn_800C9F0C(c);
+
+    if (c->unk4 & 4) {
+        c->unk38 = 0;
+    } else {
+        c->unk38 = __MIXGetVolume(input);
+    }
+
+    mixerCtrl = 0;
+
+    switch (lbl_8035A8C8) {
+    case 0:
+        c->unk3C = __MIXGetVolume(c->unk1C + c->unk28);
+        c->unk40 = __MIXGetVolume(c->unk1C + c->unk28);
+        c->unk44 = __MIXGetVolume(c->unk1C + (c->unk2C - 30));
+        if (c->unk4 & 1) {
+            c->unk48 = __MIXGetVolume(c->unkC + c->unk28);
+            c->unk4C = __MIXGetVolume(c->unkC + c->unk28);
+            c->unk50 = __MIXGetVolume(c->unkC + (c->unk2C - 30));
+        } else {
+            c->unk48 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk28));
+            c->unk4C = __MIXGetVolume(c->unk1C + (c->unkC + c->unk28));
+            c->unk50 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk2C - 30));
+        }
+        if (c->unk4 & 2) {
+            c->unk54 = __MIXGetVolume(c->unk10 + c->unk28);
+            c->unk58 = __MIXGetVolume(c->unk10 + c->unk28);
+            c->unk5C = __MIXGetVolume(c->unk10 + (c->unk2C - 30));
+        } else {
+            c->unk54 = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk28));
+            c->unk58 = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk28));
+            c->unk5C = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk2C - 30));
+        }
+        break;
+    case 1:
+    case 2:
+        c->unk3C = __MIXGetVolume(c->unk1C + (c->unk20 + c->unk28));
+        c->unk40 = __MIXGetVolume(c->unk1C + (c->unk24 + c->unk28));
+        c->unk44 = __MIXGetVolume(c->unk1C + (c->unk2C - 30));
+        if (c->unk4 & 1) {
+            c->unk48 = __MIXGetVolume(c->unkC + (c->unk20 + c->unk28));
+            c->unk4C = __MIXGetVolume(c->unkC + (c->unk24 + c->unk28));
+            c->unk50 = __MIXGetVolume(c->unkC + (c->unk2C - 30));
+        } else {
+            c->unk48 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk20 + c->unk28));
+            c->unk4C = __MIXGetVolume(c->unk1C + (c->unkC + c->unk24 + c->unk28));
+            c->unk50 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk2C - 30));
+        }
+        if (c->unk4 & 2) {
+            c->unk54 = __MIXGetVolume(c->unk10 + (c->unk20 + c->unk28));
+            c->unk58 = __MIXGetVolume(c->unk10 + (c->unk24 + c->unk28));
+            c->unk5C = __MIXGetVolume(c->unk10 + (c->unk2C - 30));
+        } else {
+            c->unk54 = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk20 + c->unk28));
+            c->unk58 = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk24 + c->unk28));
+            c->unk5C = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk2C - 30));
+        }
+        break;
+    case 3:
+        c->unk3C = __MIXGetVolume(c->unk1C + (c->unk20 + c->unk28));
+        c->unk40 = __MIXGetVolume(c->unk1C + (c->unk24 + c->unk28));
+        c->unk54 = __MIXGetVolume(c->unk1C + (c->unk30 + c->unk2C));
+        c->unk58 = __MIXGetVolume(c->unk1C + (c->unk34 + c->unk2C));
+        if (c->unk4 & 1) {
+            c->unk48 = __MIXGetVolume(c->unkC + (c->unk20 + c->unk28));
+            c->unk4C = __MIXGetVolume(c->unkC + (c->unk24 + c->unk28));
+            c->unk50 = __MIXGetVolume(c->unkC + (c->unk30 + c->unk2C));
+            c->unk5C = __MIXGetVolume(c->unkC + (c->unk34 + c->unk2C));
+        } else {
+            c->unk48 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk20 + c->unk28));
+            c->unk4C = __MIXGetVolume(c->unk1C + (c->unkC + c->unk24 + c->unk28));
+            c->unk50 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk30 + c->unk2C));
+            c->unk5C = __MIXGetVolume(c->unk1C + (c->unkC + c->unk34 + c->unk2C));
+        }
+        mixerCtrl = 0x4000;
+        break;
+    }
+
+    old = OSDisableInterrupts();
+    *(u16 *)(arg0 + 0x19C) = c->unk38;
+    *(u16 *)(arg0 + 0x19E) = 0;
+    p = (u16 *)(arg0 + 0x14A);
+    if ((*p++ = c->unk3C)) mixerCtrl |= 0x1;
+    *p++ = 0;
+    if ((*p++ = c->unk40)) mixerCtrl |= 0x2;
+    *p++ = 0;
+    if ((*p++ = c->unk48)) mixerCtrl |= 0x10;
+    *p++ = 0;
+    if ((*p++ = c->unk4C)) mixerCtrl |= 0x20;
+    *p++ = 0;
+    if ((*p++ = c->unk54)) mixerCtrl |= 0x200;
+    *p++ = 0;
+    if ((*p++ = c->unk58)) mixerCtrl |= 0x400;
+    *p++ = 0;
+    if ((*p++ = c->unk5C)) mixerCtrl |= 0x1000;
+    *p++ = 0;
+    if ((*p++ = c->unk44)) mixerCtrl |= 0x4;
+    *p++ = 0;
+    if ((*p++ = c->unk50)) mixerCtrl |= 0x80;
+    *p++ = 0;
+    *(u16 *)(arg0 + 0x144) = mixerCtrl;
+    *(u32 *)(arg0 + 0x1C) |= 0x212;
+    OSRestoreInterrupts(old);
 }
 
 void fn_800CAF1C(char *arg0) {
