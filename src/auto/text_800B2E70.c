@@ -167,6 +167,7 @@ typedef struct TRKFramingState {
     TrkBuf *buffer;
     u8 receiveState;
     s32 isEscape;
+    u8 fcs;
 } TRKFramingState;
 extern TRKFramingState lbl_803257B4;
 extern TrkBuf lbl_80323E00[3];
@@ -7659,6 +7660,108 @@ s32 fn_800DEE88(TrkBuf *msgBuf, s32 *bufferId, u32 p1, u32 p2, s32 p3) {
     return error;
 }
 
+s32 fn_800DF02C(u8 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s32 read) {
+    s32 replyBufferId;
+    s32 bufferId;
+    TrkBuf *buffer;
+    u16 replyLength;
+    u8 replyIOResult;
+    s32 error;
+    s32 exit;
+    u32 done;
+    TrkBuf *replyBuffer;
+    u32 length;
+    s32 err;
+
+    if (data == 0 || *count == 0) {
+        return 2;
+    }
+
+    exit = 0;
+    *ioResult = 0;
+    done = 0;
+    error = 0;
+    while (!exit && done < *count && error == 0 && *ioResult == 0) {
+        if (*count - done > 0x800) {
+            length = 0x800;
+        } else {
+            length = *count - done;
+        }
+
+        error = fn_800DBBA0(&bufferId, &buffer);
+
+        if (error == 0) {
+            TrkBuf *b = buffer;
+            u8 cmd = read ? 0xD1 : 0xD0;
+            if (b->pos >= 0x880) {
+                err = 0x301;
+            } else {
+                b->data[b->pos++] = cmd;
+                err = 0;
+                b->count++;
+            }
+            error = err;
+        }
+
+        if (error == 0)
+            error = fn_800DB7D0(buffer, handle);
+
+        if (error == 0)
+            error = fn_800DB8A8(buffer, length);
+
+        if (!read && error == 0)
+            error = fn_800DB66C(buffer, (u8 *)(data + done), length);
+
+        if (error == 0) {
+            if (needReply) {
+                replyLength = 0;
+                replyIOResult = 0;
+
+                error = fn_800DEE88(buffer, &replyBufferId, 5, 3, !(read && handle == 0));
+                if (error == 0) {
+                    replyBuffer = TRKGetBuffer(replyBufferId);
+                    fn_800DBAA0(replyBuffer, 2);
+                }
+
+                if (error == 0)
+                    error = fn_800DB4F0(replyBuffer, &replyIOResult);
+
+                if (error == 0)
+                    error = fn_800DB438(replyBuffer, &replyLength);
+
+                if (read && error == 0) {
+                    if (replyBuffer->count != replyLength + 5) {
+                        replyLength = replyBuffer->count - 5;
+                        if (replyIOResult == 0)
+                            replyIOResult = 1;
+                    }
+
+                    if (replyLength <= length)
+                        error = fn_800DB1F0(replyBuffer, (u8 *)(data + done), replyLength);
+                }
+
+                if (replyLength != length) {
+                    if ((!read || replyLength >= length) && replyIOResult == 0)
+                        replyIOResult = 1;
+                    length = replyLength;
+                    exit = 1;
+                }
+
+                *ioResult = replyIOResult;
+                fn_800DBB10(replyBufferId);
+            } else {
+                error = fn_800DAF24(buffer);
+            }
+        }
+
+        fn_800DBB10(bufferId);
+        done += length;
+    }
+
+    *count = done;
+    return error;
+}
+
 s32 fn_800DF2F0(void *mutex) {
     return 0;
 }
@@ -8194,10 +8297,15 @@ s32 fn_800E0C4C(void *data, u32 start, u32 *length, s32 accessOptions, s32 read)
 }
 
 extern u32 lbl_8029BE18[][4];
+#pragma push
+#pragma dont_inline off
+#pragma auto_inline on
+#pragma inline_depth(2)
+#pragma opt_propagation off
 s32 fn_800E0D98(u32 address, u32 length, u8 access) {
     u32 end;
-    s32 error;
     u32 i;
+    s32 error;
     end = (length + address) - 1;
     error = 0x700;
     if (end < address) return 0x700;
@@ -8215,7 +8323,7 @@ s32 fn_800E0D98(u32 address, u32 length, u8 access) {
     }
     return error;
 }
-
+#pragma pop
 s32 TRKInitializeTarget(void) {
     gTRKState.unk98 = 1;
     gTRKState.unk8C = fn_800DF4D0(&gTRKState);
