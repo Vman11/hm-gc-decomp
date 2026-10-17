@@ -1,5 +1,19 @@
 /* Functions from 0x800E40A0 to 0x800F5578, found by decomp-toolkit. */
 #include "common.h"
+static inline double acos_sqrt(double x) {
+extern double lbl_803631F8, lbl_80363270, lbl_80363278;
+extern float lbl_803596B0[], lbl_803596B4[];
+if (x > lbl_803631F8) {
+double guess=__frsqrte(x);
+guess=lbl_80363270*guess*(lbl_80363278-x*guess*guess);
+guess=lbl_80363270*guess*(lbl_80363278-x*guess*guess);
+guess=lbl_80363270*guess*(lbl_80363278-x*guess*guess);
+guess=lbl_80363270*guess*(lbl_80363278-x*guess*guess);
+return x*guess;
+} else if(x==lbl_803631F8) return x;
+else if(x!=x) return lbl_803596B0[0];
+return lbl_803596B4[0];
+}
 double fn_800EFA20(double);
 
 extern unsigned char lbl_802E06C8[];
@@ -1509,9 +1523,8 @@ char *double2hex(char *buff, print_format *format, double x) {
     double bits;
     decform df;
     char *p;
-    char digit;
     int i;
-    unsigned char c;
+    char digit;
     bits = x;
     if (format->precision > 509) return 0;
     df.style = 0;
@@ -1553,12 +1566,13 @@ char *double2hex(char *buff, print_format *format, double x) {
     if (format->conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
     for (i = format->precision; i >= 1; --i) {
-        c = ((unsigned char *)&x)[i / 2 + 1];
+        unsigned char c = ((unsigned char *)&x)[i / 2 + 1];
         digit = (c >> 4) & 15;
         if (i % 2) digit = c & 15;
-        if (digit < 10) *--p = digit + '0';
-        else if (format->conversion_char == 'a') *--p = digit + 'a' - 10;
-        else *--p = digit + 'A' - 10;
+        if (digit < 10) digit += '0';
+        else if (format->conversion_char == 'a') digit += 'a' - 10;
+        else digit += 'A' - 10;
+        *--p = digit;
     }
     if (format->precision != 0 || format->alternate_form) *--p = '.';
     *--p = '1';
@@ -2290,6 +2304,33 @@ int fwide(void *file, int mode) {
         break;
     }
     return result;
+}
+
+double fn_800ECE54(double x) {
+extern float lbl_803596B0[], lbl_803596B4[];
+extern double lbl_803631F8, lbl_80363200, lbl_80363208, lbl_80363210, lbl_80363218, lbl_80363220, lbl_80363228, lbl_80363230, lbl_80363238, lbl_80363240, lbl_80363248, lbl_80363250, lbl_80363258, lbl_80363260, lbl_80363268, lbl_80363270, lbl_80363278, lbl_80363280;
+double z,p,q,r,w,s,c,df;
+int hx,ix;
+hx=*(int*)&x; ix=hx&0x7fffffff;
+if(ix>=0x3ff00000) {
+if(((ix-0x3ff00000)|*((int*)&x+1))==0) { if(hx>0) return lbl_803631F8; else return lbl_80363200; }
+return lbl_803596B0[0];
+}
+if(ix<0x3fe00000) {
+if(ix<=0x3c600000) return lbl_80363208;
+z=x*x; p = z*(lbl_80363218+z*(lbl_80363220+z*(lbl_80363228+z*(lbl_80363230+z*(lbl_80363238+lbl_80363240*z))))); q = lbl_80363248+z*(lbl_80363250+z*(lbl_80363258+z*(lbl_80363260+lbl_80363268*z)));
+r=p/q; return lbl_80363208-(x-(lbl_80363210-x*r));
+} else if(hx<0) {
+z=(lbl_80363248+x)*lbl_80363270; p = z*(lbl_80363218+z*(lbl_80363220+z*(lbl_80363228+z*(lbl_80363230+z*(lbl_80363238+lbl_80363240*z))))); q = lbl_80363248+z*(lbl_80363250+z*(lbl_80363258+z*(lbl_80363260+lbl_80363268*z)));
+{ double guess; s = lbl_803631F8; if (z > s) { guess = __frsqrte(z); guess = lbl_80363270 * guess * (lbl_80363278 - z * (guess * guess)); guess = lbl_80363270 * guess * (lbl_80363278 - z * (guess * guess)); guess = lbl_80363270 * guess * (lbl_80363278 - z * (guess * guess)); guess = lbl_80363270 * guess * (lbl_80363278 - z * (guess * guess)); s = z * guess; } else if (s == z) {} else if (z != s) s = lbl_803596B0[0]; else s = lbl_803596B4[0]; }
+r=p/q; w=r*s-lbl_80363210; return lbl_80363200-lbl_80363280*(s+w);
+} else {
+z=(lbl_80363248-x)*lbl_80363270;
+{ double guess; s = lbl_803631F8; if (z > s) { guess = __frsqrte(z); guess = lbl_80363270 * guess * (lbl_80363278 - z * (guess * guess)); guess = lbl_80363270 * guess * (lbl_80363278 - z * (guess * guess)); guess = lbl_80363270 * guess * (lbl_80363278 - z * (guess * guess)); guess = lbl_80363270 * guess * (lbl_80363278 - z * (guess * guess)); s = z * guess; } else if (s == z) {} else if (z != s) s = lbl_803596B0[0]; else s = lbl_803596B4[0]; }
+df=s; *((int*)&df+1)=0;
+p = z*(lbl_80363218+z*(lbl_80363220+z*(lbl_80363228+z*(lbl_80363230+z*(lbl_80363238+lbl_80363240*z))))); q = lbl_80363248+z*(lbl_80363250+z*(lbl_80363258+z*(lbl_80363260+lbl_80363268*z)));
+c=(z-df*df)/(s+df); r=p/q; w=r*s+c; return lbl_80363280*(df+w);
+}
 }
 
 extern double lbl_80363288, lbl_80363290, lbl_80363298, lbl_803632A0;
