@@ -9165,18 +9165,7 @@ static inline s32 TRKPPCAccessFPRegister(void *srcDestPtr, u32 fpr, BOOL read) {
         if (!read) {
             *(u32 *)srcDestPtr = *((u32 *)srcDestPtr + 1);
         }
-        {
-            u32 access_func[10] = { 0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000,
-                                    0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000 };
-            if (read) {
-                access_func[0] = 0x7C9EFAA6;
-                access_func[1] = 0x90830000;
-            } else {
-                access_func[0] = 0x80830000;
-                access_func[1] = 0x7C9EFBA6;
-            }
-            error = TRKPPCAccessSpecialReg(srcDestPtr, access_func, read);
-        }
+        error = TRKPPCAccessSPR(srcDestPtr, 1022, read);
         if (read) {
             *(u64 *)srcDestPtr = *(u32 *)srcDestPtr & 0xFFFFFFFFLL;
         }
