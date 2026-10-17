@@ -204,8 +204,8 @@ static inline int __less_dec(const decimal *x, const decimal *y) {
 
 static inline void __str2dec(decimal *d, const char *s, short exp) {
     int i;
-    d->sign = 0;
     d->exp = exp;
+    d->sign = 0;
     for (i = 0; i < 36 && *s;) {
         d->sig.text[i++] = *s++ - '0';
     }
