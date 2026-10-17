@@ -96,24 +96,21 @@ void fn_80142D28(Img *p) {
 void fn_80142D98(Img *p) {
     s32 n = p->n;
     s32 m = p->m;
+    s32 e;
     s32 n2 = n * 2;
-    u8 *d = *(u8 **)((u8 *)p + 0x178);
-    u8 *s = p->px;
-    s32 e = n2 - m;
-    u8 *dend = d + m * 4;
+    s32 k;
+    u8 *s;
+    u8 *d;
+    u8 *dend;
+    e = n2 - m;
+    k = (n - m) * 2;
+    s = p->px;
+    d = *(u8 **)((u8 *)p + 0x178);
+    dend = d + m * 4;
     do {
-        d[0] = s[0];
-        d[1] = s[1];
-        d[2] = s[2];
-        d[3] = s[3];
-        if (e <= 0) {
-            e += n2;
-            d += 4;
-        } else {
-            e += (n - m) * 2;
-            s += 4;
-            d += 4;
-        }
+        d[0] = s[0]; d[1] = s[1]; d[2] = s[2]; d[3] = s[3];
+        if (e <= 0) { e += n2; d += 4; }
+        else { e += k; s += 4; d += 4; }
     } while (d < dend);
 }
 
