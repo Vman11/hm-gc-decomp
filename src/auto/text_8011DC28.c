@@ -12,16 +12,8 @@ static inline u32 fn_8011DC28_find(u8 *obj, s32 id) {
 }
 
 void *fn_8011DC28(u8 *obj, s32 id) {
-    u32 n = *(u32 *)(obj + 0xA8);
-    u32 i;
-    for (i = 0; i < n; i++) {
-        if (((s32 *)*(u8 **)(obj + 0x4C))[i * 2] == id) {
-            goto found;
-        }
-    }
-    i = -1;
-found:
-    if (i < n) {
+    u32 i = fn_8011DC28_find(obj, id);
+    if (i < *(u32 *)(obj + 0xA8)) {
         return (*(void ***)(obj + 0x78))[i];
     }
     return 0;
