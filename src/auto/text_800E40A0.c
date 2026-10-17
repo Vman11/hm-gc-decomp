@@ -13,6 +13,17 @@ int OSDisableInterrupts(void);
 int OSRestoreInterrupts(int);
 s32 fn_800F0CC4(u32, void*, s32);
 
+typedef struct {
+    unsigned char justification_options;
+    unsigned char sign_options;
+    unsigned char precision_specified;
+    unsigned char alternate_form;
+    unsigned char argument_options;
+    unsigned char conversion_char;
+    int field_width;
+    int precision;
+} print_format;
+
 static int unicode_to_UTF8(char *s, u16 wchar) {
     int number_of_bytes;
     u16 wide_char;
