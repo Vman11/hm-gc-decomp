@@ -1,5 +1,6 @@
 /* Functions from 0x800E40A0 to 0x800F5578, found by decomp-toolkit. */
 #include "common.h"
+extern u32 IDSerialPort1_8035A9B8;
 extern u8 lbl_802E05C8[];
 double fn_800EFA20(double);
 
@@ -974,6 +975,8 @@ void fn_800E7C88(decimal *result, const decimal *x, const decimal *y);
 #pragma push
 #pragma dont_inline off
 void fn_800E6504(decimal *result, long exp) {
+    decimal x2, temp;
+
     switch (exp) {
     case -64:
         __str2dec(result, lbl_8029C060 + 0x25, -20);
@@ -1039,19 +1042,16 @@ void fn_800E6504(decimal *result, long exp) {
         __str2dec(result, lbl_8029C060 + 0xD9, 2);
         return;
     }
-    {
-        decimal x2, temp;
-        fn_800E6504(&x2, ((long)((0x80000000UL & exp) >> 31) + exp) >> 1);
-        fn_800E7C88(result, &x2, &x2);
-        if (exp & 1) {
-            temp = *result;
-            if (exp > 0) {
-                __str2dec(&x2, lbl_8029C060 + 0xC6, 0);
-            } else {
-                __str2dec(&x2, lbl_8029C060 + 0xC2, -1);
-            }
-            fn_800E7C88(result, &temp, &x2);
+    fn_800E6504(&x2, ((long)((0x80000000UL & exp) >> 31) + exp) >> 1);
+    fn_800E7C88(result, &x2, &x2);
+    if (exp & 1) {
+        temp = *result;
+        if (exp > 0) {
+            __str2dec(&x2, lbl_8029C060 + 0xC6, 0);
+        } else {
+            __str2dec(&x2, lbl_8029C060 + 0xC2, -1);
         }
+        fn_800E7C88(result, &temp, &x2);
     }
 }
 #pragma pop
@@ -5643,13 +5643,14 @@ BOOL fn_800F3DA0(s32 chan) {
 #define SIREGS ((vu32_t *)0xCC006400)
 
 void fn_800F49B0(s32 chan, u32 val) {
-    SIREGS[chan * 3] = val;
+    ((volatile u32 (*)[3])0xCC006400)[chan][0] = val;
 }
 
+#pragma scheduling off
 void fn_800F49C4(void) {
     SIREGS[14] = 0x80000000;
 }
-
+#pragma scheduling reset
 u32 SISetXY(u32 x, u32 y) {
     u32 poll;
     int enabled;
