@@ -9213,8 +9213,9 @@ s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerSto
     for (i = firstRegister; (i <= lastRegister) && (err == 0); i++) {
         if (read) {
             TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
-            err = 1;
+            err = fn_800DB6D4(b, *(u64 *)value_buf);
         } else {
+            fn_800DB288(b, (u64 *)value_buf);
             err = TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
         }
         *registerStorageSize += sizeof(u64);
