@@ -4,6 +4,10 @@
 extern unsigned char lbl_802EE900[];
 extern unsigned char lbl_802EE90C[];
 
+static inline void fn_801F2F54_init(void **p) {
+    p[0] = lbl_802EE90C;
+}
+
 void fn_801F2F54(void **arg0) {
     void **p;
     arg0[0] = lbl_802EE900;
