@@ -1528,6 +1528,197 @@ void *__FileWrite(void *file, const void *buf, u32 len) {
     return (fwrite(buf, 1, len, file) == len) ? file : 0;
 }
 
+char *float2str(double num, char *buff, print_format format) {
+    decimal dec;
+    decform form;
+    char *p;
+    char *q;
+    int n, digits, sign;
+    int int_digits, frac_digits;
+
+    if (format.precision > 509) {
+        return 0;
+    }
+
+    form.style = 0;
+    form.digits = 32;
+
+    fn_800E59A4(&form, num, &dec);
+
+    p = (char *)dec.sig.text + dec.sig.length;
+
+    while (dec.sig.length > 1 && *--p == '0') {
+        --dec.sig.length;
+        ++dec.exp;
+    }
+
+    switch (*dec.sig.text) {
+    case '0':
+        dec.exp = 0;
+        break;
+    case 'I':
+        if (num < 0) {
+            buff -= 5;
+            if (lbl_802E05C8[format.conversion_char] & 0x80) {
+                fn_800EB764(buff, lbl_8029C148 + 1);
+            } else {
+                fn_800EB764(buff, lbl_8029C148 + 6);
+            }
+        } else {
+            buff -= 4;
+            if (lbl_802E05C8[format.conversion_char] & 0x80) {
+                fn_800EB764(buff, lbl_8029C148 + 11);
+            } else {
+                fn_800EB764(buff, lbl_8029C148 + 15);
+            }
+        }
+        return buff;
+    case 'N':
+        if (dec.sign) {
+            buff -= 5;
+            if (lbl_802E05C8[format.conversion_char] & 0x80) {
+                fn_800EB764(buff, lbl_8029C148 + 19);
+            } else {
+                fn_800EB764(buff, lbl_8029C148 + 24);
+            }
+        } else {
+            buff -= 4;
+            if (lbl_802E05C8[format.conversion_char] & 0x80) {
+                fn_800EB764(buff, lbl_8029C148 + 29);
+            } else {
+                fn_800EB764(buff, lbl_8029C148 + 33);
+            }
+        }
+        return buff;
+    }
+
+    dec.exp += dec.sig.length - 1;
+    p = buff;
+    *--p = 0;
+
+    switch (format.conversion_char) {
+    case 'g':
+    case 'G':
+        if (dec.sig.length > format.precision) {
+            fn_800EA1DC(&dec, format.precision);
+        }
+        if (dec.exp < -4 || dec.exp >= format.precision) {
+            if (format.alternate_form) {
+                --format.precision;
+            } else {
+                format.precision = dec.sig.length - 1;
+            }
+            if (format.conversion_char == 'g') {
+                format.conversion_char = 'e';
+            } else {
+                format.conversion_char = 'E';
+            }
+            goto e_format;
+        }
+        if (format.alternate_form) {
+            format.precision -= dec.exp + 1;
+        } else {
+            if ((format.precision = dec.sig.length - (dec.exp + 1)) < 0) {
+                format.precision = 0;
+            }
+        }
+        goto f_format;
+
+    case 'e':
+    case 'E':
+    e_format:
+        if (dec.sig.length > format.precision + 1) {
+            fn_800EA1DC(&dec, format.precision + 1);
+        }
+        n = dec.exp;
+        sign = '+';
+        if (n < 0) {
+            n = -n;
+            sign = '-';
+        }
+        for (digits = 0; n || digits < 2; ++digits) {
+            *--p = n % 10 + '0';
+            n /= 10;
+        }
+        *--p = sign;
+        *--p = format.conversion_char;
+        if (buff - p + format.precision > 509) {
+            return 0;
+        }
+        if (dec.sig.length < format.precision + 1) {
+            for (n = format.precision + 1 - dec.sig.length; n; --n) {
+                *--p = '0';
+            }
+        }
+        for (n = dec.sig.length, q = (char *)dec.sig.text + dec.sig.length; --n;) {
+            *--p = *--q;
+        }
+        if (format.precision || format.alternate_form) {
+            *--p = '.';
+        }
+        *--p = *dec.sig.text;
+        if (dec.sign) {
+            *--p = '-';
+        } else if (format.sign_options == 1) {
+            *--p = '+';
+        } else if (format.sign_options == 2) {
+            *--p = ' ';
+        }
+        break;
+
+    case 'f':
+    case 'F':
+    f_format:
+        if ((frac_digits = -dec.exp + dec.sig.length - 1) < 0) {
+            frac_digits = 0;
+        }
+        if (frac_digits > format.precision) {
+            fn_800EA1DC(&dec, dec.sig.length - (frac_digits - format.precision));
+            if ((frac_digits = -dec.exp + dec.sig.length - 1) < 0) {
+                frac_digits = 0;
+            }
+        }
+        if ((int_digits = dec.exp + 1) < 0) {
+            int_digits = 0;
+        }
+        if (int_digits + frac_digits > 509) {
+            return 0;
+        }
+        q = (char *)dec.sig.text + dec.sig.length;
+        for (digits = 0; digits < (format.precision - frac_digits); ++digits) {
+            *--p = '0';
+        }
+        for (digits = 0; digits < frac_digits && digits < dec.sig.length; ++digits) {
+            *--p = *--q;
+        }
+        for (; digits < frac_digits; ++digits) {
+            *--p = '0';
+        }
+        if (format.precision || format.alternate_form) {
+            *--p = '.';
+        }
+        if (int_digits) {
+            for (digits = 0; digits < int_digits - dec.sig.length; ++digits) {
+                *--p = '0';
+            }
+            for (; digits < int_digits; ++digits) {
+                *--p = *--q;
+            }
+        } else {
+            *--p = '0';
+        }
+        if (dec.sign) {
+            *--p = '-';
+        } else if (format.sign_options == 1) {
+            *--p = '+';
+        } else if (format.sign_options == 2) {
+            *--p = ' ';
+        }
+        break;
+    }
+    return p;
+}
+
 void fn_800EA1DC(decimal *dec, int new_length) {
     char c;
     char *p;
@@ -1584,7 +1775,7 @@ char *fn_800EB764(char *, const char *);
 extern const char lbl_8029C148[];
 #pragma push
 #pragma pool_strings on
-char *double2hex(char *buff, print_format *format, double x) {
+char *double2hex(char *buff, print_format format, double x) {
     decimal d;
     print_format exp_format;
     double bits;
@@ -1593,18 +1784,18 @@ char *double2hex(char *buff, print_format *format, double x) {
     int i;
     char digit;
     bits = x;
-    if (format->precision > 509) return 0;
+    if (format.precision > 509) return 0;
     df.style = 0;
     df.digits = 32;
     fn_800E59A4(&df, x, &d);
     if (d.sig.text[0] == 'I') {
         if ((*(short *)&bits) & 0x8000) {
             buff -= 5;
-            if (format->conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 1);
+            if (format.conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 1);
             else fn_800EB764(buff, lbl_8029C148 + 6);
         } else {
             buff -= 4;
-            if (format->conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 11);
+            if (format.conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 11);
             else fn_800EB764(buff, lbl_8029C148 + 15);
         }
         return buff;
@@ -1612,11 +1803,11 @@ char *double2hex(char *buff, print_format *format, double x) {
     if (d.sig.text[0] == 'N') {
         if (((unsigned char *)&x)[0] & 0x80) {
             buff -= 5;
-            if (format->conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 19);
+            if (format.conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 19);
             else fn_800EB764(buff, lbl_8029C148 + 24);
         } else {
             buff -= 4;
-            if (format->conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 29);
+            if (format.conversion_char == 'A') fn_800EB764(buff, lbl_8029C148 + 29);
             else fn_800EB764(buff, lbl_8029C148 + 33);
         }
         return buff;
@@ -1630,25 +1821,25 @@ char *double2hex(char *buff, print_format *format, double x) {
     exp_format.field_width = 0;
     exp_format.precision = 1;
     p = long2str_800EA91C((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exp_format);
-    if (format->conversion_char == 'a') *--p = 'p';
+    if (format.conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
-    for (i = format->precision; i >= 1; --i) {
+    for (i = format.precision; i >= 1; --i) {
         unsigned char c = ((unsigned char *)&x)[i / 2 + 1];
         digit = (c >> 4) & 15;
         if (i % 2) digit = c & 15;
         if (digit < 10) digit += '0';
-        else if (format->conversion_char == 'a') digit += 'a' - 10;
+        else if (format.conversion_char == 'a') digit += 'a' - 10;
         else digit += 'A' - 10;
         *--p = digit;
     }
-    if (format->precision != 0 || format->alternate_form) *--p = '.';
+    if (format.precision != 0 || format.alternate_form) *--p = '.';
     *--p = '1';
-    if (format->conversion_char == 'a') *--p = 'x';
+    if (format.conversion_char == 'a') *--p = 'x';
     else *--p = 'X';
     *--p = '0';
     if ((*(short *)&bits) & 0x8000) *--p = '-';
-    else if (format->sign_options == 1) *--p = '+';
-    else if (format->sign_options == 2) *--p = ' ';
+    else if (format.sign_options == 1) *--p = '+';
+    else if (format.sign_options == 2) *--p = ' ';
     return p;
 }
 #pragma pop
