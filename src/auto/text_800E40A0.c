@@ -122,6 +122,8 @@ typedef struct decform {
 } decform;
 
 void fn_800E5B48(decimal *d, double x);
+char *fn_800EB764(char *, const char *);
+extern const char lbl_8029C148[];
 
 static int __must_round(const decimal *d, int digits) {
     const unsigned char *i = d->sig.text + digits;
@@ -1790,8 +1792,109 @@ static char *long2str_800EA91C(long num, char *buff, print_format format) {
     return p;
 }
 
+void *__va_arg(va_list, int);
 #pragma push
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
+char *parse_format_800EAB3C(char *format, va_list args, print_format *out) {
+print_format f;
+int c = *(format + 1);
+int flag;
+char *p = format + 1;
+f.sign_options = 0;
+f.justification_options = 1;
+f.precision_specified = 0;
+f.alternate_form = 0;
+f.argument_options = 0;
+f.field_width = 0;
+f.precision = 0;
+if (c == '%') { f.conversion_char = c; *out = f; return p + 1; }
+for (;;) {
+flag = 1;
+switch (c) {
+case '-': f.justification_options = 0; break;
+case '+': f.sign_options = 1; break;
+case ' ': if (f.sign_options != 1) f.sign_options = 2; break;
+case '#': f.alternate_form = 1; break;
+case '0': if (f.justification_options != 0) f.justification_options = 2; break;
+default: flag = 0; break;
+}
+if (flag) c = *++p;
+else break;
+}
+if (c == '*') {
+f.field_width = *(int *)__va_arg(args, 1);
+if (f.field_width < 0) { f.justification_options = 0; f.field_width = -f.field_width; }
+c = *++p;
+} else {
+while (lbl_802E05C8[(u8)c] & 16) {
+f.field_width = f.field_width * 10 + (c - '0');
+c = *++p;
+}
+}
+if (f.field_width > 509) { f.conversion_char = 0xFF; *out = f; return p + 1; }
+if (c == '.') {
+c = *++p;
+f.precision_specified = 1;
+if (c == '*') {
+f.precision = *(int *)__va_arg(args, 1);
+if (f.precision < 0) f.precision_specified = 0;
+c = *++p;
+} else {
+while (lbl_802E05C8[(u8)c] & 16) {
+f.precision = f.precision * 10 + (c - '0');
+c = *++p;
+}
+}
+}
+flag = 1;
+switch (c) {
+case 'h': f.argument_options = 2; if (p[1] == 'h') { f.argument_options = 1; c = *++p; } break;
+case 'l': f.argument_options = 3; if (p[1] == 'l') { f.argument_options = 4; c = *++p; } break;
+case 'L': f.argument_options = 5; break;
+default: flag = 0; break;
+}
+if (flag) c = *++p;
+f.conversion_char = c;
+switch (c) {
+case 'd': case 'i': case 'o': case 'u': case 'x': case 'X':
+if (f.argument_options == 5) f.conversion_char = 0xFF;
+else if (!f.precision_specified) f.precision = 1;
+else if (f.justification_options == 2) f.justification_options = 1;
+break;
+case 'f': case 'F':
+if (f.argument_options == 2 || f.argument_options == 4) f.conversion_char = 0xFF;
+else if (!f.precision_specified) f.precision = 6;
+break;
+case 'a': case 'A':
+if (!f.precision_specified) f.precision = 13;
+if (f.argument_options == 2 || f.argument_options == 4 || f.argument_options == 1) f.conversion_char = 0xFF;
+break;
+case 'g': case 'G':
+if (f.precision == 0) f.precision = 1;
+case 'e': case 'E':
+if (f.argument_options == 2 || f.argument_options == 4 || f.argument_options == 1) f.conversion_char = 0xFF;
+else if (!f.precision_specified) f.precision = 6;
+break;
+case 'p':
+f.conversion_char = 'x'; f.alternate_form = 1; f.argument_options = 3; f.precision = 8;
+break;
+case 'c':
+if (f.argument_options == 3) f.argument_options = 6;
+else if (f.precision_specified || f.argument_options != 0) f.conversion_char = 0xFF;
+break;
+case 's':
+if (f.argument_options == 3) f.argument_options = 6;
+else if (f.argument_options != 0) f.conversion_char = 0xFF;
+break;
+case 'n':
+if (f.argument_options == 5) f.conversion_char = 0xFF;
+break;
+default: f.conversion_char = 0xFF; break;
+}
+*out = f;
+return p + 1;
+}
+#pragma pop
 void fn_800EB040(void* table_base, u32 num_members, u32 member_size, int (*compare_members)(const void*, const void*)) {
     u32 l, r, j;
     char* lp;
@@ -3379,6 +3482,32 @@ s32 fn_800F0DA0(u32 *data) {
     }
     exi[10] &= 0x405;
     return !err;
+}
+
+s32 fn_800F0E4C(void *buf, s32 len, s32 mode) {
+    u32 data;
+    s32 i;
+    u8 *p;
+
+    if ((u32)mode != 0) {
+        data = 0;
+        p = buf;
+        for (i = 0; i < len; i++) {
+            data |= *p++ << ((3 - i) * 8);
+        }
+        ((volatile u32 *)0xCC006800)[14] = data;
+    }
+    ((volatile u32 *)0xCC006800)[13] = (mode << 2) | 1 | ((len - 1) << 4);
+    while (((volatile u32 *)0xCC006800)[13] & 1) {
+    }
+    if ((u32)mode == 0) {
+        data = ((volatile u32 *)0xCC006800)[14];
+        p = buf;
+        for (i = 0; i < len; i++) {
+            *p++ = data >> ((3 - i) * 8);
+        }
+    }
+    return 1;
 }
 
 s32 fn_800F1328(void) {
