@@ -7443,7 +7443,10 @@ auto/text_800E24D0.c:
 	.text       start:0x800E24D0 end:0x800E24F0
 
 auto/text_800E24F0.c:
-	.text       start:0x800E24F0 end:0x800E2C68
+	.text       start:0x800E24F0 end:0x800E25E0
+
+runtime/arith.c:
+	.text       start:0x800E25E0 end:0x800E2C68
 
 auto/text_800E2CDC.c:
 	.text       start:0x800E2CDC end:0x800E2F24

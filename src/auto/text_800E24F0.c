@@ -20,14 +20,6 @@ unsigned fn_800E2584(double d) {
     return (int)d;
 }
 
-s32 fn_800E2B24(s32 arg0, u32 arg1, s32 arg2) {
-    return (arg0 << arg2) | (arg1 >> (0x20 - arg2)) | (arg1 << (arg2 - 0x20));
-}
-
-unsigned long long fn_800E2B48(unsigned long long x, int n) { return x >> n; }
-
-long long fn_800E2B6C(long long x, int n) { return x >> n; }
-
 int GetR2__Fv_800E2C60(int r2) {
 return r2;
 }
