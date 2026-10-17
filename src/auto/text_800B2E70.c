@@ -115,6 +115,16 @@ typedef struct UnkVoice80321D60 {
     u16 unk5E;
 } UnkVoice80321D60;
 extern UnkVoice80321D60 lbl_80321D60[];
+extern u8 lbl_802DE540[];
+static inline u16 __MIXGetVolume(s32 db) {
+    if (db <= -904) {
+        return 0;
+    }
+    if (db >= 60) {
+        return 0xFF64;
+    }
+    return ((u16 *)(lbl_802DE540 + 0x710))[db];
+}
 typedef __va_list va_list;
 extern int vprintf(const char* fmt, va_list args);
 extern u16 lbl_80359550;
