@@ -8984,12 +8984,84 @@ static inline s32 TRKPPCAccessPairedSingleRegister(void *srcDestPtr, u32 psr, BO
     return TRKPPCAccessSpecialReg(srcDestPtr, instructionData, read);
 }
 
+static inline s32 TRKPPCAccessFPRegister(void *srcDestPtr, u32 fpr, BOOL read) {
+    s32 error = 0;
+    u32 instructionData1[10] = { 0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000,
+                                 0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000 };
+
+    if (fpr < 0x20) {
+        if (read) {
+            instructionData1[0] = 0xD8030000 | (fpr << 21);
+        } else {
+            instructionData1[0] = 0xC8030000 | (fpr << 21);
+        }
+        error = TRKPPCAccessSpecialReg(srcDestPtr, instructionData1, read);
+    } else if (fpr == 0x20) {
+        *(u64 *)srcDestPtr &= 0xFFFFFFFF;
+    } else if (fpr == 0x21) {
+        if (!read) {
+            *(u32 *)srcDestPtr = *((u32 *)srcDestPtr + 1);
+        }
+        error = TRKPPCAccessSPR(srcDestPtr, 1022, read);
+        if (read) {
+            *(u64 *)srcDestPtr = *(u32 *)srcDestPtr & 0xFFFFFFFFLL;
+        }
+    }
+    return error;
+}
+
 s32 fn_800E0070(void *arg0) {
     M2C_FIELD(arg0, s8 *, 0) = 2;
     M2C_FIELD(arg0, s8 *, 1) = 0;
     M2C_FIELD(arg0, s8 *, 2) = 1;
     M2C_FIELD(arg0, s8 *, 3) = 0xA;
     return 0;
+}
+
+s32 fn_800DB288(TrkBuf *buf, u64 *data);
+s32 fn_800DB6D4(TrkBuf *buf, u64 data);
+s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerStorageSize, BOOL read) {
+    extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
+    TRKExceptionStatus savedException;
+    u32 i;
+    u32 value_buf0[1];
+    u32 value_buf[2];
+    s32 err;
+
+    if (lastRegister > 0x1F) {
+        return 0x701;
+    }
+
+    savedException = gTRKExceptionStatus_802E01A4;
+    gTRKExceptionStatus_802E01A4.exceptionDetected = FALSE;
+
+    TRKPPCAccessSPR(value_buf0, 920, TRUE);
+    value_buf0[0] |= 0xA0000000;
+    TRKPPCAccessSPR(value_buf0, 920, FALSE);
+    value_buf0[0] = 0;
+    TRKPPCAccessSPR(value_buf0, 912, FALSE);
+
+    *registerStorageSize = 0;
+    err = 0;
+
+    for (i = firstRegister; (i <= lastRegister) && (err == 0); i++) {
+        if (read) {
+            TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
+            err = fn_800DB6D4(b, *(u64 *)value_buf);
+        } else {
+            fn_800DB288(b, (u64 *)value_buf);
+            err = TRKPPCAccessPairedSingleRegister((u64 *)value_buf, i, read);
+        }
+        *registerStorageSize += sizeof(u64);
+    }
+
+    if (gTRKExceptionStatus_802E01A4.exceptionDetected) {
+        *registerStorageSize = 0;
+        err = 0x702;
+    }
+
+    gTRKExceptionStatus_802E01A4 = savedException;
+    return err;
 }
 
 s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
