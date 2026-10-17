@@ -1,7 +1,7 @@
 /* Functions from 0x80052028 to 0x800520A4, found by decomp-toolkit. */
 #include "common.h"
 
-static s32 sTbl[] = {1, 1, 1, 1, 1, 1, 1};
+
 
 s32 fn_80052028(void *arg0, s32 idx) {
     void *ptr = *(void **)((u8 *)arg0 + 0x98);
