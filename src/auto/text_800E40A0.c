@@ -725,6 +725,60 @@ int fseek(void *file, s32 offset, int mode) {
     __end_critical_region(2);
     return result;
 }
+
+int fn_800E8720(void *arg0, long offset, int whence) {
+    MslFile *file = (MslFile *)arg0;
+    u32 position;
+    if (file->mode.file_kind != 1 || file->state.error) {
+        lbl_8035A978 = 0x28;
+        return -1;
+    }
+    if (file->state.io_state == 1 && __flush_buffer(file, 0)) {
+        file->state.error = 1;
+        file->buffer_len = 0;
+        lbl_8035A978 = 0x28;
+        return -1;
+    }
+    if (whence == 1) {
+        whence = 0;
+        if ((file->mode.file_kind != 1 && file->mode.file_kind != 2) || file->state.error) {
+            lbl_8035A978 = 0x28;
+            position = -1;
+        } else if (file->state.io_state == 0) {
+            position = file->position;
+        } else {
+            position = file->buffer_position + (file->buffer_ptr - file->buffer);
+            if (file->state.io_state >= 3)
+                position -= file->state.io_state - 2;
+        }
+        offset += position;
+    }
+    if (whence != 2 && file->mode.io_mode != 3 &&
+        (file->state.io_state == 2 || file->state.io_state == 3)) {
+        if (offset >= file->position || offset < file->buffer_position) {
+            file->state.io_state = 0;
+        } else {
+            file->buffer_ptr = file->buffer + (offset - file->buffer_position);
+            file->buffer_len = file->position - offset;
+            file->state.io_state = 2;
+        }
+    } else {
+        file->state.io_state = 0;
+    }
+    if (file->state.io_state == 0) {
+        if (file->position_proc && ((int (*)(u32,long *,int,void *))file->position_proc)(file->handle, &offset, whence, file->ref_con)) {
+            file->state.error = 1;
+            file->buffer_len = 0;
+            lbl_8035A978 = 0x28;
+            return -1;
+        }
+        file->state.eof = 0;
+        file->position = offset;
+        file->buffer_len = 0;
+    }
+    return 0;
+}
+
 #pragma push
 #pragma dont_inline on
 s32 fn_800E895C(void *file) {
