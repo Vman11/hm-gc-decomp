@@ -71,15 +71,18 @@ void fn_80142D28(Img *p) {
     s32 m = p->m;
     s32 n = p->n;
     s32 m2 = m * 2;
-    u8 *s = p->px;
-    u8 *d = *(u8 **)((u8 *)p + 0x178);
     s32 e = m2 - n;
-    u8 *send = s + n * 4;
+    s32 k = (m - n) * 2;
+    u8 *d;
+    u8 *s;
+    u8 *send;
+    s = p->px;
+    d = *(u8 **)((u8 *)p + 0x178);
+    send = s + n * 4;
     do {
-        if (e <= 0) {
-            e += m2;
-        } else {
-            e += (m - n) * 2;
+        if (e <= 0) { e += m2; }
+        else {
+            e += k;
             d[0] = s[0];
             d[1] = s[1];
             d[2] = s[2];
