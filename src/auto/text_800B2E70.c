@@ -6997,6 +6997,7 @@ s32 fn_800DB66C(TrkBuf *buf, u8 *data, s32 count) {
     return err;
 }
 
+#pragma auto_inline off
 s32 fn_800DB6D4(TrkBuf *buf, u64 data) {
     extern s32 gTRKBigEndian[];
     extern void *fn_80003488(void *, const void *, u32);
@@ -9277,6 +9278,7 @@ s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
 void fn_800DF4D8(u32 msr);
 #pragma push
 #pragma dont_inline off
+#pragma auto_inline off
 s32 fn_800E0640(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     u64 temp;
@@ -9299,6 +9301,7 @@ s32 fn_800E0640(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     for (current = firstRegister; current <= lastRegister && error == 0;
          current++, *registersLengthPtr += sizeof(f64)) {
         if (read) {
+            TRKPPCAccessFPRegister(&temp, current, read);
             error = fn_800DB6D4(b, temp);
         } else {
             fn_800DB288(b, &temp);
