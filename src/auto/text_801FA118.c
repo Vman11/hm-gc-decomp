@@ -92,9 +92,9 @@ void fn_801FA1EC(u8 *__restrict arg0, f32 *__restrict arg1) {
     ((f32 *)(arg0 + 0x68))[2] = arg1[2];
 }
 
-void fn_801FA208(void *arg0, void *arg1) {
-    M2C_FIELD(arg0, f32 *, 0x5C) = (f32) M2C_FIELD(arg1, f32 *, 0);
-    M2C_FIELD(arg0, f32 *, 0x60) = (f32) M2C_FIELD(arg1, f32 *, 4);
-    M2C_FIELD(arg0, f32 *, 0x64) = (f32) M2C_FIELD(arg1, f32 *, 8);
+void fn_801FA208(u8 *__restrict arg0, f32 *__restrict arg1) {
+    ((f32 *)(arg0 + 0x5C))[0] = arg1[0];
+    ((f32 *)(arg0 + 0x5C))[1] = arg1[1];
+    ((f32 *)(arg0 + 0x5C))[2] = arg1[2];
 }
 
