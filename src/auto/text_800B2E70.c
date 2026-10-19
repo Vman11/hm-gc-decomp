@@ -10104,10 +10104,10 @@ u8 fn_800E1AC8(void) {
 #pragma dont_inline on
     return *lbl_80327F90;
 }
-#pragma pop
 
 extern u8 lbl_80327F90[];
 void fn_800E1AD8(u8 v) {
+#pragma pop
     lbl_80327F90[0] = v;
 }
 
