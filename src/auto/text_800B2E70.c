@@ -8772,7 +8772,6 @@ n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
 }
 }
 
-s32 fn_800E0070(void *);
 void fn_800DE37C(TrkBuf *buf) {
 u8 bytes[4];
 s32 n;
