@@ -6455,11 +6455,10 @@ void fn_800D8F00(void) {
 }
 
 void __GXFlushTextureState(void) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
+    extern GXDataHead *const __GXData;
     GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = M2C_FIELD(gx, u32 *, 0x124);
-    gx->bpSentNot = 0;
+    GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x124);
+    __GXData->bpSentNot = 0;
 }
 
 void fn_800D8F28(s32 arg0, s32 arg1) {
