@@ -6420,9 +6420,12 @@ void fn_800D90A4(s32 stage, s32 op, s32 bias, s32 scale, u8 clamp, s32 out_reg) 
 void fn_800D910C(s32 id, u8 *color) {
  extern GXDataHead *const __GXData;
  u32 lo=0, hi=0;
- SETF(lo,11,0,color[0]); SETF(lo,11,12,color[3]);
- SETF(hi,11,0,color[2]); SETF(hi,11,12,color[1]);
- SETF(lo,8,24,id*2+0xE0); SETF(hi,8,24,id*2+0xE1);
+ lo=__rlwimi(lo,color[0],0,21,31);
+ lo=__rlwimi(lo,color[3],12,9,19);
+ hi=__rlwimi(hi,color[2],0,21,31);
+ hi=__rlwimi(hi,color[1],12,9,19);
+ lo=__rlwimi(lo,id*2+0xE0,24,0,7);
+ hi=__rlwimi(hi,id*2+0xE1,24,0,7);
  GXWGFifo.u8=0x61; GXWGFifo.u32=lo;
  GXWGFifo.u8=0x61; GXWGFifo.u32=hi;
  GXWGFifo.u8=0x61; GXWGFifo.u32=hi;
