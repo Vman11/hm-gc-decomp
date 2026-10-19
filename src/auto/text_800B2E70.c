@@ -2493,18 +2493,12 @@ void fn_800C3BF0(s32 chan, u8* status, u32* data) {
 }
 
 void fn_800C3D64(s32 chan, u8 *status, u32 *data) {
-    u16 b;
     *(u16 *)status = 0;
-    if (data[0] & 0x800000) b = 0x100; else b = 0;
-    *(u16 *)status |= b;
-    if (data[0] & 0x1000000) b = 0x200; else b = 0;
-    *(u16 *)status |= b;
-    if (data[0] & 0x200000) b = 0x400; else b = 0;
-    *(u16 *)status |= b;
-    if (data[0] & 0x100000) b = 0x800; else b = 0;
-    *(u16 *)status |= b;
-    if (data[0] & 0x2000000) b = 0x1000; else b = 0;
-    *(u16 *)status |= b;
+    *(u16 *)status |= ((data[0] >> 16) & 0x80) ? 0x100 : 0;
+    *(u16 *)status |= ((data[0] >> 16) & 0x100) ? 0x200 : 0;
+    *(u16 *)status |= ((data[0] >> 16) & 0x20) ? 0x400 : 0;
+    *(u16 *)status |= ((data[0] >> 16) & 0x10) ? 0x800 : 0;
+    *(u16 *)status |= ((data[0] >> 16) & 0x200) ? 0x1000 : 0;
     *(s8 *)(status + 2) = (s8)(data[1] >> 16);
     *(s8 *)(status + 3) = (s8)(data[1] >> 24);
     *(s8 *)(status + 4) = (s8)(data[1]);
