@@ -2996,14 +2996,10 @@ void fn_800C8464(s32);
 void fn_800C6EEC(s32);
 void fn_800C6FF8(void) {
     u32 i;
-    s32 *head;
-    s32 *tail;
     lbl_8035A7E8 = 0;
-    head = lbl_80308700;
-    tail = lbl_80308680;
     for (i = 0; i < 32; i++) {
-        *head++ = 0;
-        *tail++ = 0;
+        lbl_80308700[i] = 0;
+        lbl_80308680[i] = 0;
     }
 }
 
