@@ -20,7 +20,7 @@ void fn_80164DC8(s32 param_1) {
     *(u32 *)(param_1 + 0x19ac) = 2;
     if ((*(u32 *)(param_1 + 0xc) & 2) != 0) {
         iVar1 = *(s32 *)(param_1 + 0x1938);
-        if (((*(u8 *)(iVar1 + 0x46d) != '\0') || (*(u8 *)(iVar1 + 0x46e) != 0)) ||
+        if (((*(u8 *)(iVar1 + 0x46d) != 0) || (*(u8 *)(iVar1 + 0x46e) != 0)) ||
               (*(u8 *)(iVar1 + 0x46f) != 0)) {
             *(u8 *)(iVar1 + 0x46d) = 0;
             *(u8 *)(iVar1 + 0x46e) = 0;
