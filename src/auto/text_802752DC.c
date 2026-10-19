@@ -4216,21 +4216,14 @@ void fn_8028F720(f32 *a) {
 }
 
 void fn_8028F7A4(f32 *a) {
-    f32 x2, x0, x1, x3;
-    f32 sum0, diff0, sum1, diff1;
+    f32 x0r, x0i;
 
-    x2 = a[2];
-    x0 = a[0];
-    x1 = a[1];
-    x3 = a[3];
-    sum0 = x0 + x2;
-    diff0 = x0 - x2;
-    sum1 = x1 + x3;
-    diff1 = x1 - x3;
-    a[0] = sum0;
-    a[2] = diff0;
-    a[1] = sum1;
-    a[3] = diff1;
+    x0r = a[0] - a[2];
+    x0i = a[1] - a[3];
+    a[0] += a[2];
+    a[1] += a[3];
+    a[2] = x0r;
+    a[3] = x0i;
 }
 
 void fn_8028F7D8(s32 n, f32 *a, s32 nc, f32 *c) {
