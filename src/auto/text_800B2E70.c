@@ -8611,9 +8611,9 @@ if (buf->pos < 0x880) { buf->data[buf->pos++] = b; buf->count++; } n = 3; do { o
 } else { n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); }
 }
 
+void fn_800DD9A4(void *arg) {
 #pragma push
 #pragma opt_propagation on
-void fn_800DD9A4(void *arg) {
     TrkBuf *buf = arg;
     u8 cmd;
     u8 opt;
