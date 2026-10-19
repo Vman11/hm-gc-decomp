@@ -7996,7 +7996,6 @@ s32 TRKInitializeDispatcher(void) {
     return 0;
 }
 
-void fn_800E1AD8(u8 useSerial);
 void fn_800DC1D0(TrkBuf* buf) {
     u8 opt;
     u8 kind;
