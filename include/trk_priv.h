@@ -142,4 +142,29 @@ s32 TRKTerminateNub(void);
 void TRKLoadContext(void *ctx, s32 v);
 u8 fn_800E1050(s32, s32, s32 *, s32);
 
+extern u8 lbl_80327F90[];
+extern u8 lbl_80325D44[];
+extern u32 lbl_8029BE18[][4];
+extern s32 TRK_mainError_80325D60[];
+void fn_800DF3E0(u32 addr, s32 length);
+void PPCMtmsr(u32 msr);
+s32 PPCMfmsr();
+void OSEnableScheduler(void);
+s32 Hu_IsStub(void);
+s32 AMC_IsStub(void);
+void DBInitComm();
+void DBInitInterrupts();
+void DBQueryData();
+void DBRead();
+void DBWrite();
+void DBOpen();
+void DBClose();
+void EXI2_Init();
+void EXI2_EnableInterrupts();
+void EXI2_Poll();
+void EXI2_ReadN();
+void EXI2_WriteN();
+void EXI2_Reserve();
+void EXI2_Unreserve();
+
 #endif
