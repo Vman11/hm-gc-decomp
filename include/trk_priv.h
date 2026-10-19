@@ -113,5 +113,9 @@ s32 TRKTargetContinue(void);
 s32 TRKTargetInterrupt(void *event);
 s32 TRKTargetSupportRequest(void);
 extern u8 *gTRKInputPendingPtr[];
+s32 fn_800E04D0(u32, u32, TrkBuf *, u32 *, BOOL);
+s32 fn_800E0B0C(u32, u32, TrkBuf *, u32 *, BOOL);
+s32 fn_800E0098(u32, u32, TrkBuf *, u32 *, BOOL);
+s32 fn_800E0640(u32, u32, TrkBuf *, u32 *, BOOL);
 
 #endif
