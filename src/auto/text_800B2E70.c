@@ -9712,8 +9712,8 @@ s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerSto
     gTRKExceptionStatus_802E01A4 = savedException;
     return err;
 }
-#pragma pop
 s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
+#pragma pop
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     extern struct { u8 TBR; u8 DEC; u8 linker_padding[7]; } gTRKRestoreFlags;
     u32 *data;
