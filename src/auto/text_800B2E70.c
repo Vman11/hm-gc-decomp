@@ -7478,7 +7478,6 @@ s32 fn_800DB288(TrkBuf *buf, u64 *data) {
 #pragma use_lmw_stmw on
 #pragma inline_depth(4)
 #pragma peephole on
-s32 fn_800DB970(TrkBuf *buf, void *data, u32 length);
 #pragma push
 #pragma use_lmw_stmw on
 #pragma inline_depth(4)
