@@ -7406,12 +7406,12 @@ s32 fn_800DB100(TrkBuf *buf, u32 *data, s32 count) {
     }
     return result;
 }
-#pragma pop
 
+s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
+#pragma pop
 #pragma push
 #pragma use_lmw_stmw on
 #pragma peephole off
-s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
  s32 result;
  extern void *fn_80003488(void *,const void *,u32);
  register unsigned int n;
