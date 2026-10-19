@@ -166,5 +166,6 @@ void EXI2_ReadN();
 void EXI2_WriteN();
 void EXI2_Reserve();
 void EXI2_Unreserve();
+void PPCHalt(void);
 
 #endif
