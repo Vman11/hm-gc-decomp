@@ -2656,6 +2656,16 @@ void fn_800C4464(s32 interrupt, u8 *context) {
         OSSetCurrentContext(context);
     }
 }
+
+extern unsigned int lbl_8035A764;
+unsigned int fn_800C4594(unsigned int arg0) {
+    unsigned int old = lbl_8035A764;
+    int enabled = OSDisableInterrupts();
+    lbl_8035A764 = arg0;
+    OSRestoreInterrupts(enabled);
+    return old;
+}
+
 #pragma inline_depth()
 void fn_800C4660(void) {
     u16 *p = (u16 *)0xCC005000;
