@@ -3003,6 +3003,15 @@ void fn_800C6FF8(void) {
     }
 }
 
+void fn_800C70AC(void) {
+    u32 i;
+    lbl_8035A7E8 = 0;
+    for (i = 0; i < 32; i++) {
+        lbl_80308700[i] = 0;
+        lbl_80308680[i] = 0;
+    }
+}
+
 #pragma scheduling on
 void fn_800C7160(void* arg0) {
     s32* p = lbl_80308680;
