@@ -1034,12 +1034,11 @@ u32 __OSMaskInterrupts(u32 global) {
     enabled = OSDisableInterrupts();
     prev = *(u32 *)0x800000C4;
     local = *(u32 *)0x800000C8;
-    mask = global & ~(prev | local);
+    mask = ~(prev | local) & global;
     global |= prev;
     *(u32 *)0x800000C4 = global;
-    global |= local;
     while (mask) {
-        mask = fn_800B7318(mask, global);
+        mask = fn_800B7318(mask, global | local);
     }
     OSRestoreInterrupts(enabled);
     return prev;
