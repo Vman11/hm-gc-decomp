@@ -8052,7 +8052,8 @@ void fn_800DC374(TrkBuf* buf) {
     s8 b;
     s32 n;
     s32 ok;
-    switch (fn_800DF874()) {
+    s32 err = fn_800DF874();
+    switch (err) {
     case 0:
         b = 0;
         break;
