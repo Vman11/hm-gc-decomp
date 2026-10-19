@@ -5461,7 +5461,7 @@ void fn_800D6D64(s32 coord, u8 line_enable, u8 point_enable) {
 }
 
 void fn_800D6DAC(s32 arg0) {
-    extern GXDataHead *const __GXData;
+    extern GXData8 *const __GXData;
     switch (arg0) {
     case 1:
         arg0 = 2;
@@ -5470,8 +5470,8 @@ void fn_800D6DAC(s32 arg0) {
         arg0 = 1;
         break;
     }
-    SETF(M2C_FIELD(__GXData, u32 *, 0x204), 2, 14, arg0);
-    M2C_FIELD(__GXData, u32 *, 0x5AC) |= 4;
+    __GXData->r204 = __rlwimi(__GXData->r204, arg0, 14, 16, 17);
+    __GXData->dirty |= 4;
 }
 
 void fn_800D6DF0(u8 arg0) {
