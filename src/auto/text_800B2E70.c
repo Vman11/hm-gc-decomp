@@ -7808,9 +7808,9 @@ s32 TRKInitializeSerialHandler(void) {
     return 0;
 }
 
+void fn_800DBD08(s32 bufferIdx) {
 #pragma push
 #pragma dont_inline on
-void fn_800DBD08(s32 bufferIdx) {
     void fn_800DABB4(void *);
     u8 event[0xC];
 
