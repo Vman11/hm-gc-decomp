@@ -1351,8 +1351,8 @@ void fn_800B9CD8(void) {
     OSRestoreInterrupts(enabled);
 }
 
-void OSClearStack(u32 arg0) {
-    u32 value = ((arg0 & 255) << 16) | (arg0 << 24) | ((arg0 << 8) & 0xFF00) | (arg0 & 255);
+void OSClearStack(u8 val) {
+    u32 value = ((u32)val << 24) | ((u32)val << 16) | ((u32)val << 8) | val;
     u32 end = fn_800B50D0();
     u32 *p = (u32*)(*(u32*)(*(u32*)0x800000E4 + 0x308) + 4);
     while ((u32)p < end) *p++ = value;
@@ -6512,9 +6512,13 @@ void fn_800D8FB4(s32 stage, s32 a, s32 b, s32 c, s32 d) {
 }
 
 void fn_800D8FF8(s32 stage, s32 a, s32 b, s32 c, s32 d) {
-    extern GXDataHead *const __GXData;
-    u32 *pTevReg = &M2C_FIELD(__GXData, u32 *, 0x170 + stage * 4);
-    u32 reg = *pTevReg;
+    extern GXDataHead *__GXData;
+    u32 *pTevReg;
+    u32 reg;
+    GXDataHead *gx;
+    gx = __GXData;
+    pTevReg = &((u32 *)((u8 *)gx + 0x170))[stage];
+    reg = *pTevReg;
     reg = __rlwimi(reg, a, 13, 16, 18);
     reg = __rlwimi(reg, b, 10, 19, 21);
     reg = __rlwimi(reg, c, 7, 22, 24);
@@ -6522,7 +6526,7 @@ void fn_800D8FF8(s32 stage, s32 a, s32 b, s32 c, s32 d) {
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = reg;
     *pTevReg = reg;
-    __GXData->bpSentNot = 0;
+    gx->bpSentNot = 0;
 }
 
 void fn_800D903C(s32 stage, s32 op, s32 bias, s32 scale, u8 clamp, s32 out_reg) {
