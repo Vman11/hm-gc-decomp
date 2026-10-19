@@ -9988,7 +9988,6 @@ u32 fn_800E1150(u32 addr) {
     return (addr & 0x3FFFFFFF) | 0x80000000;
 }
 
-void fn_800E18F0(void);
 s32 PPCMfmsr();
 void EnableMetroTRKInterrupts(void) {
     fn_800E18F0();
