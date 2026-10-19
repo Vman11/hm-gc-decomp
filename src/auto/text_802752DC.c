@@ -352,6 +352,7 @@ void fn_802756B8(void *arg0, int arg1, int arg2, int arg3) {
 void fn_802757D0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 *p = arg0;
     u8 *sub = p + 0x14A;
+    memset(sub, 0, 0x24);
     *(s16 *)(p + 0x14A) = arg2;
     *(s16 *)(sub + 4) = arg3;
     *(s16 *)(p + 0x19C) = arg1;
@@ -688,7 +689,7 @@ void fn_80276E80(u8 *arg0, s32 arg1) {
     }
     if (*(s32 *)(arg0 + 0x108) != 0) {
         offsets = *(u32 **)(arg0 + 0x10C);
-        *(s32 *)(arg0 + 0x104) = *(s32 *)(arg0 + 0x108) + ((offsets[arg1] & ~1) - (offsets[0] & ~1));
+        *(s32 *)(arg0 + 0x104) = *(s32 *)(arg0 + 0x108) + ((*(u32 *)((arg1 << 2) + (u8 *)offsets) & ~1) - (offsets[0] & ~1));
     } else {
         offsets = *(u32 **)(arg0 + 0x10C);
         (*(void (**)(u8 *, s32, u32, s32, u32))(arg0 + 0x114))(arg0 + 0x110, arg1, offsets[arg1] & ~1, *(s32 *)(arg0 + 0x104), (offsets[arg1 + 1] & ~1) - (offsets[arg1] & ~1));
@@ -1494,18 +1495,12 @@ void fn_8027DA74(s32 x, s32 count) {
     extern s32 lbl_803008C0[];
     extern u32 *lbl_802F7AE0[];
     s32 n;
-    s32 *t2;
-    s32 *t1;
-    s32 *t3;
-    u32 **ytab;
-    s32 *t0;
     n = count - 1;
     if (count != 0) {
-        t2 = lbl_803008C0 + 512;
-        t1 = lbl_803008C0 + 256;
-        t3 = lbl_803008C0 + 768;
-        ytab = lbl_802F7AE0;
-        t0 = lbl_803008C0;
+        s32 *t0 = lbl_803008C0;
+        s32 *t2 = t0 + 512;
+        s32 *t1 = t0 + 256;
+        s32 *t3 = t0 + 768;
         do {
             u8 *u;
             u32 *dst;
@@ -1521,12 +1516,12 @@ void fn_8027DA74(s32 x, s32 count) {
             y = lbl_80300860[2];
             r = t0[*u];
             lbl_80300860[9] = (u8 *)r;
-            g = t2[*u] + t1[*v];
+            g = *(s32 *)((u8 *)t2 + (*u << 2)) + *(s32 *)((u8 *)t1 + (*v << 2));
             lbl_80300860[8] = (u8 *)g;
             b = t3[*v];
             lbl_80300860[10] = (u8 *)b;
-            tbl = ytab[*y];
-            lbl_80300860[2] = y + 1;
+            tbl = lbl_802F7AE0[*y++];
+            lbl_80300860[2] = y;
             c = tbl[r] | (tbl[g] << 8) | (tbl[b] << 16);
             dst[0] = c;
             ((u32 *)lbl_80300860[0])[1] = c;
@@ -1588,19 +1583,13 @@ s32 fn_8027DB94(s32 count, s32 x) {
 void fn_8027DD10(s32 x, s32 count) {
     extern s32 lbl_803008C0[];
     extern u32 *lbl_802F7AE0[];
-    s32 n;
-    s32 *t2;
-    s32 *t1;
-    s32 *t3;
-    u32 **ytab;
-    s32 *t0;
+    u32 n;
     n = count - 1;
     if (count != 0) {
-        t2 = lbl_803008C0 + 512;
-        t1 = lbl_803008C0 + 256;
-        t3 = lbl_803008C0 + 768;
-        ytab = lbl_802F7AE0;
-        t0 = lbl_803008C0;
+        s32 *t0 = lbl_803008C0;
+        s32 *t2 = t0 + 512;
+        s32 *t1 = t0 + 256;
+        s32 *t3 = t0 + 768;
         do {
             u8 *u;
             u32 *dst;
@@ -1616,12 +1605,12 @@ void fn_8027DD10(s32 x, s32 count) {
             y = lbl_80300860[2];
             r = t0[*u];
             lbl_80300860[9] = (u8 *)r;
-            g = t2[*u] + t1[*v];
+            g = *(s32 *)((u8 *)t2 + (*u << 2)) + *(s32 *)((u8 *)t1 + (*v << 2));
             lbl_80300860[8] = (u8 *)g;
             b = t3[*v];
             lbl_80300860[10] = (u8 *)b;
-            tbl = ytab[*y];
-            lbl_80300860[2] = y + 1;
+            tbl = lbl_802F7AE0[*y++];
+            lbl_80300860[2] = y;
             c = tbl[r] | (tbl[g] << 8) | (tbl[b] << 16);
             *dst = c;
             *(u32 *)(lbl_80300860[0] + (s32)lbl_80300860[17]) = c;
