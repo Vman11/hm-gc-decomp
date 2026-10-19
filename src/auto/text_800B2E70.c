@@ -4676,6 +4676,13 @@ void fn_800D31A4(u8* arg0, u8* arg1) {
     *(u32*)(arg1 + 0x68) = offset;
 }
 
+s32 fn_800D34B0(s32 chan, void *buf, s32 len, void *cb);
+s32 fn_800D3624(s32 chan, void *buf, s32 len) {
+    s32 result = fn_800D34B0(chan, buf, len, fn_800CCC7C);
+    if (result < 0) return result;
+    return fn_800CDEF8(chan);
+}
+
 s32 fn_800D8318(void *);
 u8 fn_800D8320(void *);
 void *fn_800D3730(void *obj, s32 id)
