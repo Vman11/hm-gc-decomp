@@ -6713,9 +6713,9 @@ void fn_800D9B6C(u8 enable, u8 alpha) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
     u32 reg = M2C_FIELD(gx, u32 *, 0x1D4);
-    reg = (reg & ~0xFF) | ((u32)alpha & 0xFF);
+    reg = __rlwimi(reg, alpha, 0, 24, 31);
+    reg = __rlwimi(reg, enable, 8, 23, 23);
     GXWGFifo.u8 = 0x61;
-    reg = (reg & ~0x100) | (((u32)enable << 8) & 0x100);
     GXWGFifo.u32 = reg;
     M2C_FIELD(gx, u32 *, 0x1D4) = reg;
     gx->bpSentNot = 0;
