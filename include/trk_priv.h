@@ -1,3 +1,4 @@
+/* MetroTRK private declarations shared by the SDK and TRK source files. */
 #ifndef TRK_PRIV_H
 #define TRK_PRIV_H
 
@@ -117,5 +118,28 @@ s32 fn_800E04D0(u32, u32, TrkBuf *, u32 *, BOOL);
 s32 fn_800E0B0C(u32, u32, TrkBuf *, u32 *, BOOL);
 s32 fn_800E0098(u32, u32, TrkBuf *, u32 *, BOOL);
 s32 fn_800E0640(u32, u32, TrkBuf *, u32 *, BOOL);
+
+s32 fn_800DB970(TrkBuf *buf, void *data, u32 length);
+void fn_800E1AD8(u8 useSerial);
+s32 fn_800DF874(void);
+s32 fn_800DFAF0(void);
+s32 fn_800DFB00(u32 rangeStart, u32 rangeEnd, s32 stepOver);
+s32 fn_800DFB7C(u32 count, s32 stepOver);
+s32 fn_800DF8AC(u8 unused, u32 start, u32 end);
+s32 fn_800DFF6C(u8 *cpuType);
+s32 fn_800DFFCC(u8 *mask);
+s32 fn_800E0070(void *);
+s32 fn_800DBDF0();
+s32 fn_800DB288(TrkBuf *buf, u64 *data);
+s32 fn_800DB6D4(TrkBuf *buf, u64 data);
+s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count);
+u32 fn_800E1150(u32 addr);
+void fn_800E18F0(void);
+s32 TRKInitializeNub(void);
+void TRKNubWelcome(void);
+void TRKNubMainLoop(void);
+s32 TRKTerminateNub(void);
+void TRKLoadContext(void *ctx, s32 v);
+u8 fn_800E1050(s32, s32, s32 *, s32);
 
 #endif
