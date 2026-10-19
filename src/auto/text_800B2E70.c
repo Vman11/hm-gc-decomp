@@ -5269,6 +5269,7 @@ u16 fn_800D665C(void) {
 void fn_800D6668(void) {
     extern u8 lbl_8035A948;
     BOOL enabled;
+    u32 pad[2];
     enabled = OSDisableInterrupts();
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = 0x45000002;
