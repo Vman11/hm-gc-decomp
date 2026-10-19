@@ -1,0 +1,74 @@
+[
+ {
+  "unit": "auto/text_80135CB4",
+  "fn": "fn_80135CB4",
+  "code": "extern \"C\" {\nvoid fn_80135CB4(void) {\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_80199A98",
+  "fn": "fn_80199A98",
+  "code": "extern \"C\" {\nvoid fn_80199A98(void) {\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_801C8BA4",
+  "fn": "fn_801C8BA4",
+  "code": "extern \"C\" {\ns32 fn_801DA82C(void);\n\ns32 fn_801C8BA4(void) {\n    return fn_801DA82C() == 1;\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_801043B0",
+  "fn": "fn_801043B0",
+  "code": "extern \"C\" {\nextern u8 lbl_803286D0[];\n\nvoid fn_801043B0(void *a, void *b, void *c) {\n    (*(void (**)(void *, void *, void *))(lbl_803286D0 + 0x16C))(a, b, c);\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_8020FF74",
+  "fn": "fn_8020FF74",
+  "code": "extern \"C\" {\ns32 fn_80210648(void *, void *, s32, s32);\n\ns32 fn_8020FF74(void *a, void *b) {\n    return fn_80210648(a, b, 0, 0) == 0;\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_8021A9F4",
+  "fn": "fn_8021A9F4",
+  "code": "extern \"C\" {\ns32 fn_8021B0C8(void *, void *, s32, s32);\n\ns32 fn_8021A9F4(void *a, void *b) {\n    return fn_8021B0C8(a, b, 0, 0) == 0;\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_8003F700",
+  "fn": "fn_8003F700",
+  "code": "extern \"C\" {\nstruct VC_8003F700 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void p10(); virtual void p11(); virtual s32 m(void *); };\nextern u8 lbl_80294ED4[];\n\ns32 fn_8003F700(VC_8003F700 *obj) {\n    return obj->m(lbl_80294ED4);\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_8003F734",
+  "fn": "fn_8003F734",
+  "code": "extern \"C\" {\nstruct VC_8003F734 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void p10(); virtual s32 m(void *); };\nextern u8 lbl_80294ED4[];\n\ns32 fn_8003F734(VC_8003F734 *obj) {\n    return obj->m(lbl_80294ED4);\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_80115398",
+  "fn": "fn_80115398",
+  "code": "extern \"C\" {\nextern f64 lbl_80363A38;\n\nu32 fn_80115398(void *a, void *b, s32 *c) {\n    f32 v = (f32)c[1];\n    return *(u32 *)&v;\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_80163364",
+  "fn": "fn_80163364",
+  "code": "extern \"C\" {\nextern u8 lbl_8035AD18[4];\nextern u8 lbl_8035AD1C[4];\n\nvoid fn_80163364(void) {\n    lbl_8035AD18[0] = 0;\n    lbl_8035AD18[1] = 0;\n    lbl_8035AD18[2] = 0;\n    lbl_8035AD18[3] = 0;\n    lbl_8035AD1C[0] = 0xFF;\n    lbl_8035AD1C[1] = 0xFF;\n    lbl_8035AD1C[2] = 0xFF;\n    lbl_8035AD1C[3] = 0xFF;\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_8007D9C0",
+  "fn": "fn_8007D9C0",
+  "code": "extern \"C\" {\nextern void *lbl_8035B65C;\nextern u8 lbl_802987B4[];\nvoid __ct__9C80253F24Fiiii(void *, void *, s32, s32, s32);\n\nvoid fn_8007D9C0(void) {\n    __ct__9C80253F24Fiiii(lbl_8035B65C, lbl_802987B4, 0, 0, 0);\n}\n}\n",
+  "cpp": true
+ },
+ {
+  "unit": "auto/text_8020F3B4",
+  "fn": "fn_8020F3B4",
+  "code": "extern \"C\" {\nvoid fn_8020F3B4(u8 *obj, s32 a, s32 b) {\n    u8 *p = *(u8 **)(*(u8 **)(*(u8 **)(obj + 0x14) + 0x1C) + 0x6E4);\n    (*(void (**)(void *, s32, s32))(*(u8 **)(p + 0x10) + 0x2C))(p, a, b);\n}\n}\n",
+  "cpp": true
+ }
+]

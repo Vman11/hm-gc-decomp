@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+extern "C" {
+
 extern char lbl_802A231C[];
 void fn_80060568(void *, s32, s32, s32);
 
@@ -11,3 +13,5 @@ u8 fn_801957EC(u8 *p) {
     }
     return *(u16 *)(p + 4) == 9;
 }
+
+} /* extern "C" */

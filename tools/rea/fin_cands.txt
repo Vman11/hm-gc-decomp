@@ -1,1 +1,15 @@
-auto/text_801F7B04
+auto/text_800433A0
+auto/text_80104004
+auto/text_8010A714
+auto/text_801130E0
+auto/text_80177F8C
+auto/text_80177FEC
+auto/text_80195744
+auto/text_80195798
+auto/text_801957EC
+auto/text_801DDE00
+auto/text_801E0C74
+auto/text_801E5A80
+auto/text_801F0934
+auto/text_8021A468
+auto/text_802222D0
