@@ -7975,8 +7975,8 @@ void fn_800DC0AC(const char *s) {
         done = TRKPutsDone();
     }
 }
-#pragma pop
 s32 TRKDispatchMessage(TrkBuf *buf) {
+#pragma pop
     s32 fn_800DB4F0(TrkBuf *, u8 *);
     s32 err;
     u8 cmd;
