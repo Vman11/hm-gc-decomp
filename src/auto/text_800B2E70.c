@@ -4560,10 +4560,10 @@ s32 fn_800D1D78(void *arg0, char *name) {
         if (a != b) return 0;
         if (b == 0) return 1;
     }
-    if (*name == 0) goto equal;
+    if (*name == 0) {
+        return 1;
+    }
     return 0;
-equal:
-    return 1;
 }
 
 s32 fn_800D1DE0(void *arg0, u8 *arg1) {
