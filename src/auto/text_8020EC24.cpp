@@ -18,31 +18,27 @@ u32 strlen(int);
 
 void fn_8020EC24(u32 *param_1, u32 param_2, s8 *param_3) {
     u32 sVar1;
-    u32 uVar2;
-    u32 iVar3;
 
     if (param_2 >= (u32)param_1[2]) {
-        fn_80060568((int)(lbl_802A6D48), (int)(0), (int)(0), (int)(0)); /* "AtIoDirectoryListing::vSetFileName:  offset out of boudns!\n" */
+        fn_80060568((int)(lbl_802A6D48), 0, 0, 0);
     }
     if (param_3 == (s8 *)0x0) {
-        fn_80060568((int)(lbl_802A6D84), (int)(0), (int)(0), (int)(0)); /* "AtIoDirectoryListing::vSetFileName:  invalid name supplied!\n" */
+        fn_80060568((int)(lbl_802A6D84), 0, 0, 0);
     }
-    iVar3 = param_2 * 0x1c;
-    if (*(u32 *)(*param_1 + iVar3) != 0) {
-        __dla__FPv((int)(*(u32 *)(*param_1 + iVar3)));
+    if (*(u32 *)(*param_1 + param_2 * 0x1c) != 0) {
+        __dla__FPv((int)(*(u32 *)(*param_1 + param_2 * 0x1c)));
     }
     sVar1 = strlen((int)(param_3));
     if (lbl_8035A9F4 == 0) {
-        fn_800604C4((int)(0xfffffffe), (int)(0), (int)(0), (int)(0));
+        fn_800604C4(0xfffffffe, 0, 0, 0);
     }
     fn_800F7EC0((int)(lbl_8035A9F4));
-    uVar2 = __nwa__FUl((int)(sVar1 + 1));
-    *(u32 *)(*param_1 + iVar3) = uVar2;
+    *(u32 *)(*param_1 + param_2 * 0x1c) = __nwa__FUl(sVar1 + 1);
     fn_800F7E98();
-    if (*(u32 *)(*param_1 + iVar3) == 0) {
-        fn_800604C4((int)(0xfffffffc), (int)(0), (int)(0), (int)(0));
+    if (*(u32 *)(*param_1 + param_2 * 0x1c) == 0) {
+        fn_800604C4(0xfffffffc, 0, 0, 0);
     }
-    fn_800EB764((int)(*(u32 *)(*param_1 + iVar3)), (int)(param_3));
+    fn_800EB764((int)(*(u32 *)(*param_1 + param_2 * 0x1c)), (int)(param_3));
 }
 
 } /* extern "C" */
