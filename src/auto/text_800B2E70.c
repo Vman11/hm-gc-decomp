@@ -7784,8 +7784,8 @@ s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg) {
     }
     return error;
 }
-#pragma pop
 s32 TRKInitializeMessageBuffers(void) {
+#pragma pop
     s32 i;
 
     for (i = 0; i < 3; i++) {
