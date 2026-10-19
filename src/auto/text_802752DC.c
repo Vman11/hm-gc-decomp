@@ -2280,6 +2280,11 @@ void fn_802814E0(s32 x, s32 count) {
     }
 }
 
+void fn_80281DAC(s32 a0,s32 a1,s32 a2,s32 a3,s32 a4,s32 a5,s32 a6,s32 a7,s32 a8,s32 a9,s32 a10,s32 a11,s32 a12) {
+extern u8 lbl_80301AA0[];
+fn_8027BFB8(a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a12,a11,lbl_80301AA0);
+}
+
 void fn_80281E08(s32 arg0, s32 count) {
     count -= 2;
     if (count >= 0) do {
