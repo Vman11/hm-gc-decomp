@@ -7431,13 +7431,13 @@ s32 fn_800DB1F0(TrkBuf *buf, u8 *data, s32 length) {
  return error;
 }
 
+s32 fn_800DB288(TrkBuf *buf, u64 *data) {
 #pragma push
 #pragma use_lmw_stmw on
 #pragma inline_depth(4)
 #pragma peephole on
 #pragma opt_propagation off
 #pragma auto_inline off
-s32 fn_800DB288(TrkBuf *buf, u64 *data) {
     extern s32 gTRKBigEndian[];
     extern void *fn_80003488(void *, const void *, u32);
     s32 err;
