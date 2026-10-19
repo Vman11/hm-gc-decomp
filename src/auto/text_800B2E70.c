@@ -7819,9 +7819,9 @@ void fn_800DBD08(s32 bufferIdx) {
     M2C_FIELD(event, s32 *, 8) = bufferIdx;
     fn_800DABB4(event);
 }
+void TRKGetInput(void) {
 #pragma push
 #pragma dont_inline on
-void TRKGetInput(void) {
     s32 fn_800DBDF0(void);
     TrkBuf *TRKGetBuffer(s32);
     s32 fn_800DB4F0(TrkBuf *, u8 *);
