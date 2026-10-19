@@ -1354,8 +1354,8 @@ void fn_8027B7EC(u32 size) {
 void fn_8027B86C(void) {
     if (lbl_803018FC[0] != 0) {
         fn_8027B790(lbl_803018FC[0]);
-        lbl_803018F8[0] = 0;
         lbl_803018FC[0] = 0;
+        lbl_803018F8[0] = 0;
     }
 }
 
