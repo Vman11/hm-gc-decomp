@@ -9997,10 +9997,6 @@ s32 fn_800E1538(void) {
     return 0x54;
 }
 
-s32 TRKInitializeNub(void);
-void TRKNubWelcome(void);
-void TRKNubMainLoop(void);
-s32 TRKTerminateNub(void);
 extern s32 TRK_mainError_80325D60[];
 void TRK_main(void) {
     s32 result = TRKInitializeNub();
