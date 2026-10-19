@@ -1670,8 +1670,7 @@ void fn_800BBC8C(Anim *a) {
         a->prev = a->cur;
         a->cur = a->data[a->idx];
     }
-    d = a->prev - a->cur;
-    d = a->t * d;
+    d = a->t * (a->prev - a->cur);
     a->out = a->prev - d;
 }
 
