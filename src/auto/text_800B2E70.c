@@ -7671,8 +7671,8 @@ s32 fn_800DB8A8(TrkBuf *buf, u16 data) {
     return error;
 }
 
-#pragma pop
 s32 fn_800DB970(TrkBuf *buf, void *data, u32 length) {
+#pragma pop
     extern void *fn_80003488(void *, const void *, u32);
     s32 error = 0;
     u32 bytesLeft;
