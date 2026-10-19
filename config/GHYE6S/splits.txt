@@ -877,7 +877,7 @@ auto/text_8003AF34.c:
 	extabindex  start:0x80018230 end:0x8001823C
 	.text       start:0x8003AF34 end:0x8003B06C
 
-auto/text_8003B06C.c:
+auto/text_8003B06C.cpp:
 	extab       start:0x80005DBC end:0x80005DD4
 	extabindex  start:0x8001823C end:0x80018248
 	.text       start:0x8003B06C end:0x8003B198
@@ -27807,7 +27807,7 @@ auto/text_802007C4.cpp:
 auto/text_80200818.c:
 	.text       start:0x80200818 end:0x80200820
 
-auto/text_80200820.c:
+auto/text_80200820.cpp:
 	extab       start:0x8001351C end:0x80013524
 	extabindex  start:0x8002609C end:0x800260A8
 	.text       start:0x80200820 end:0x80200878
