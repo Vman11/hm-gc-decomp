@@ -4520,25 +4520,13 @@ void fn_800D1440(s32 chan, s32 arg1) {
 
 s32 fn_800D14DC(s32 chan) {
     s32 result;
-    u8 *p;
-    int enabled;
     u8 buf[4];
 
     result = fn_800CDBD8(chan, buf);
     if (result < 0) {
         return result;
     }
-    p = lbl_80323560 + chan * 0x110;
-    enabled = OSDisableInterrupts();
-    if (*(s32 *)(p + 0x0) != 0) {
-        fn_800F2540(chan, 0);
-        fn_800F2970(chan);
-        fn_800B3EF8(p + 0xE0);
-        *(s32 *)(p + 0x0) = 0;
-        *(s32 *)(p + 0x4) = -3;
-        *(s32 *)(p + 0x24) = 0;
-    }
-    OSRestoreInterrupts(enabled);
+    fn_800D1440(chan, -3);
     return 0;
 }
 
