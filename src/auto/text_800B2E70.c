@@ -6617,16 +6617,16 @@ void fn_800D9834(u8 enable, u16 center, u16 *table) {
     __GXData->bpSentNot = 0;
 }
 
-void fn_800D9958(u32 type, u32 src_factor, u32 dst_factor, u32 op) {
+void fn_800D9958(s32 type, s32 src_factor, s32 dst_factor, s32 op) {
     extern GXDataHead *__GXData;
     GXDataHead *gx = __GXData;
     u32 reg = M2C_FIELD(gx, u32 *, 0x1D0);
-    SETF(reg, 1, 11, (type == 3));
-    SETF(reg, 1, 0, type);
-    SETF(reg, 1, 1, (type == 2));
-    SETF(reg, 4, 12, op);
-    SETF(reg, 3, 8, src_factor);
-    SETF(reg, 3, 5, dst_factor);
+    reg = __rlwimi(reg, (type == 3), 11, 20, 20);
+    reg = __rlwimi(reg, type, 0, 31, 31);
+    reg = __rlwimi(reg, (type == 2), 1, 30, 30);
+    reg = __rlwimi(reg, op, 12, 16, 19);
+    reg = __rlwimi(reg, src_factor, 8, 21, 23);
+    reg = __rlwimi(reg, dst_factor, 5, 24, 26);
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = reg;
     M2C_FIELD(gx, u32 *, 0x1D0) = reg;
