@@ -1,0 +1,130 @@
+/* Declarations shared by the audio/codec code (0x802752DC-) and the file it was split from. */
+#ifndef MUSYX_PRIV_H
+#define MUSYX_PRIV_H
+
+#ifdef __MWERKS__
+#define MUSYX_DATA __declspec(section ".data")
+#else
+#define MUSYX_DATA
+#endif
+
+s64 OSGetTime(void);
+extern s64 lbl_802F3840;
+void fn_800C9A0C(s32, int);
+void fn_800C9B74(void *, s16 *);
+void fn_802757D0(void *, s32, s32, s32);
+s32 fn_8027569C(void *);
+s32 fn_80275DD8(void *, u32, void *);
+void fn_80275F18(void *);
+void fn_80275F08(void *);
+s32 fn_80287804();
+void fn_80287810(s32);
+f32 fn_800F051C(f32, f32);
+void fn_80275844(void *);
+void *memcpy();
+void fn_80275FC0(void *);
+void fn_80275D6C(s16 *, u8 *, u8 *, u32);
+void fn_80275C64(void);
+s32 fn_802753F0(void);
+void fn_80276B84(void* arg0);
+void fn_80275F98();
+void fn_80276058(void *);
+void fn_8027564C(void *, int);
+void fn_802756B8(void *, int, int, int);
+extern unsigned int lbl_802F3848[2];
+s32 fn_802767E0();
+extern void fn_80275C64(void);
+extern s32 fn_8027569C(void *);
+extern s32 fn_802753F0(void);
+extern s32 fn_80275DD8(void *, u32, void *);
+extern void fn_80275F18(void *);
+extern void fn_802760B4();
+extern void fn_80276488();
+extern void fn_80276554();
+extern void fn_802765E8();
+extern s32 fn_802758B4(void *, s32, s32, s32);
+extern u8 lbl_80357FC0[];
+void fn_800EB764(void *, s32);
+extern s32 lbl_802F3864[];
+extern s32 lbl_803580C0[];
+extern s32 lbl_802F3868[];
+extern u32 lbl_802F3870;
+extern u32 lbl_802F3874[];
+extern s32 lbl_802F385C;
+void fn_80283E90(s32, void *);
+void fn_80283D04(void *);
+void fn_800B9CD8(void);
+s32 fn_80283C94(void *);
+void fn_800B3EF8(void *);
+void fn_8027B790(void *);
+extern u8 lbl_802F3898[];
+void fn_80283750(Fn80283750Struct *arg0, s16 **arg1, s32 *arg2, s32 arg3, s32 *arg4);
+u32 fn_80276AB8(u8 *);
+void fn_80283F38(s32, void *);
+extern s32 lbl_802F3860;
+s32 fn_800BD810(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
+void *memcpy(void *, const void *, u32);
+void fn_8027AE40(s32 arg0, void *arg1);
+void fn_8027B168(void *);
+void fn_800BD474(void *);
+int OSDisableInterrupts();
+int OSRestoreInterrupts();
+extern void (*lbl_803590CC)(void *);
+extern u32 lbl_803018F8[];
+extern u8 *lbl_803018FC[];
+u8 *fn_8027B6D4(u32);
+extern u8 *lbl_80301900[];
+void fn_800B443C(void *, void *);
+extern void *lbl_80359530[];
+extern u8 lbl_80301920[];
+void fn_8027BFB8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, void *);
+extern u32 lbl_80300460[];
+extern u8 *lbl_80300860[6];
+extern void fn_8027C408();
+extern void fn_8027C408(void);
+extern f64 lbl_802AAB60;
+extern f64 lbl_80301C18[];
+extern u8 lbl_803019A0[];
+s32 fn_802830B4(s32, f32, s32, s32, s32, s32, s16 *, s32, s32, s32);
+void fn_80283FE4(u8 *arg0);
+s32 fn_80283DFC(s32, void *);
+extern void fn_80283D04(void *);
+MUSYX_DATA extern s32 lbl_80301D30;
+MUSYX_DATA extern u32 lbl_80301D20;
+MUSYX_DATA extern s32 lbl_80301D24;
+MUSYX_DATA extern u8 **lbl_80301D28;
+MUSYX_DATA extern u32 *lbl_80301D2C;
+void fn_8028BA78(s32 nw, s32 *ip, f32 *w);
+void fn_8028BCC0(s32 arg0, void *arg1, f32 *arg2);
+void fn_8028BDF4(s32 n, f32 *a, s32 *ip, s32 nw, f32 *w);
+void fn_8028BF5C(s32 n, f32 *a, s32 *ip, s32 nw, f32 *w);
+void fn_8028F7D8(s32 n, f32 *a, s32 nc, f32 *c);
+void fn_8028F890(s32 n, f32 *a, s32 nc, f32 *c);
+extern f32 lbl_802AB240;
+extern float fn_800F0588(float);
+extern float lbl_802AB264;
+extern float lbl_802AB270;
+extern double lbl_802AB278;
+void fn_8028C0C4(s32 n, s32 *ip, f32 *a);
+void fn_8028C71C(f32 *a);
+void fn_8028C954(f32 *a);
+void fn_8028CA0C(s32 n, f32 *a, f32 *w);
+void fn_8028D8C8(s32 n, f32 *a, s32 nw, f32 *w);
+void fn_8028D990(s32 n, f32 *a, s32 nw, f32 *w);
+void fn_8028DA54(s32 n, f32 *a, s32 nw, f32 *w);
+void fn_8028E6FC(s32 n, f32 *a, s32 nw, f32 *w);
+void fn_8028E868(f32 *a, f32 *w);
+void fn_8028F2AC(f32 *a, f32 *w);
+void fn_8028F69C(f32 *a);
+void fn_8028F7A4(f32 *a);
+void fn_8028DEFC(s32 n, f32 *a, f32 *w);
+void fn_8028E290(s32 n, f32 *a, f32 *w);
+void fn_8028DC94(s32 n, f32 *a, s32 nw, f32 *w);
+extern f32 lbl_802AB290;
+extern f32 lbl_802AB294;
+extern f32 lbl_802AD300[][64];
+void fn_8028F9D8(s32 n, f32 *a, s32 nc, f32 *c);
+void fn_8028ED28(f32 *, f32 *);
+void fn_8028F484(f32 *, f32 *);
+
+#endif
