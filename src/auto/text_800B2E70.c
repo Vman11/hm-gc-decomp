@@ -4225,78 +4225,27 @@ s32 fn_800CDF90(s32 arg0) {
     return 1;
 }
 
-s32 fn_800CDFE0(u32 arg0) {
-    s32 var_ctr;
-    s32 var_r10;
-    s32 var_r7;
-    s32 var_r7_2;
-    s32 var_r7_3;
-    s32 var_r7_4;
-    s32 var_r9;
-    u32 temp_r6;
-    u32 temp_r8;
-    u32 temp_r8_2;
-    u32 temp_r8_3;
-    u32 var_r8;
+u32 fn_800CDFE0(u32 data) {
+    u32 wk;
+    u32 i;
+    u32 k = 0;
+    u32 j = 1;
 
-    var_ctr = 8;
-    temp_r6 = arg0 >> 0x1FU;
-    var_r9 = 0;
-    var_r10 = 1;
-    var_r7 = 0;
-    var_r8 = 0;
-    do {
-        if (var_r8 > 0xFU) {
-            if (var_r8 == 0x1F) {
-                var_r7_2 = var_r7 | temp_r6;
+    wk = 0;
+    for (i = 0; i < 32; i++) {
+        if (i > 15) {
+            if (i == 31) {
+                wk |= (((data & (0x01 << 31)) >> 31) & 0x01);
             } else {
-                var_r7_2 = var_r7 | ((u32) (arg0 & (1 << var_r8)) >> var_r10);
-                var_r10 += 2;
+                wk |= ((data & (0x01 << i)) >> j);
+                j += 2;
             }
         } else {
-            var_r7_2 = var_r7 | ((arg0 & (1 << var_r8)) << ((0x1F - var_r8) - var_r9));
-            var_r9 += 1;
+            wk |= ((data & (0x01 << i)) << (31 - i - k));
+            k++;
         }
-        temp_r8 = var_r8 + 1;
-        if (temp_r8 > 0xFU) {
-            if (temp_r8 == 0x1F) {
-                var_r7_3 = var_r7_2 | temp_r6;
-            } else {
-                var_r7_3 = var_r7_2 | ((u32) (arg0 & (1 << temp_r8)) >> var_r10);
-                var_r10 += 2;
-            }
-        } else {
-            var_r7_3 = var_r7_2 | ((arg0 & (1 << temp_r8)) << ((0x1F - temp_r8) - var_r9));
-            var_r9 += 1;
-        }
-        temp_r8_2 = temp_r8 + 1;
-        if (temp_r8_2 > 0xFU) {
-            if (temp_r8_2 == 0x1F) {
-                var_r7_4 = var_r7_3 | temp_r6;
-            } else {
-                var_r7_4 = var_r7_3 | ((u32) (arg0 & (1 << temp_r8_2)) >> var_r10);
-                var_r10 += 2;
-            }
-        } else {
-            var_r7_4 = var_r7_3 | ((arg0 & (1 << temp_r8_2)) << ((0x1F - temp_r8_2) - var_r9));
-            var_r9 += 1;
-        }
-        temp_r8_3 = temp_r8_2 + 1;
-        if (temp_r8_3 > 0xFU) {
-            if (temp_r8_3 == 0x1F) {
-                var_r7 = var_r7_4 | temp_r6;
-            } else {
-                var_r7 = var_r7_4 | ((u32) (arg0 & (1 << temp_r8_3)) >> var_r10);
-                var_r10 += 2;
-            }
-        } else {
-            var_r7 = var_r7_4 | ((arg0 & (1 << temp_r8_3)) << ((0x1F - temp_r8_3) - var_r9));
-            var_r9 += 1;
-        }
-        var_r8 = temp_r8_3 + 1;
-        var_ctr -= 1;
-    } while (var_ctr != 0);
-    return var_r7;
+    }
+    return wk;
 }
 
 void fn_800CEEAC(void *arg0) {
