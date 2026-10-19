@@ -9860,7 +9860,6 @@ s32 fn_800E0640(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     return error;
 }
 #pragma pop
-s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count);
 s32 fn_800E0B0C(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     u32 error;
