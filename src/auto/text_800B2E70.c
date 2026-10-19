@@ -8685,8 +8685,8 @@ void fn_800DD9A4(void *arg) {
         do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
     }
 }
-#pragma pop
 void fn_800DDDB4(TrkBuf *buf) {
+#pragma pop
 u8 bytes[8];
 s32 n;
 s32 ok;
