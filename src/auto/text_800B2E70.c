@@ -9887,11 +9887,11 @@ s32 fn_800E0C4C(void *data, u32 start, u32 *length, s32 accessOptions, s32 read)
 }
 
 extern u32 lbl_8029BE18[][4];
+s32 fn_800E0D98(u32 address, u32 length, u8 access) {
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline on
 #pragma inline_depth(2)
-s32 fn_800E0D98(u32 address, u32 length, u8 access) {
     u32 end;
     s32 error;
     u32 i;
