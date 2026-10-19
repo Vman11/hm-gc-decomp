@@ -7539,9 +7539,9 @@ s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
     return TRKReadBuffer_inline(buf, data, 1);
 }
 
+s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
 #pragma opt_propagation on
 #pragma peephole on
-s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
     s32 err, i;
 
     for (i = 0, err = 0; err == 0 && i < count; i++) {
