@@ -7363,12 +7363,12 @@ end:
 }
 #pragma pop
 
-s32 fn_800DB100(TrkBuf *buf, u32 *data, s32 count) {
 #pragma push
 #pragma use_lmw_stmw on
 #pragma inline_depth(4)
 #pragma peephole on
 #pragma opt_propagation off
+s32 fn_800DB100(TrkBuf *buf, u32 *data, s32 count) {
     extern s32 gTRKBigEndian[];
     extern void *fn_80003488(void *, const void *, u32);
     s32 result;
