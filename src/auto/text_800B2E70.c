@@ -9399,9 +9399,9 @@ void TRKTargetSetStopped(s32 arg0) {
 #pragma dont_inline on
     M2C_FIELD(&gTRKState, s32 *, 0x98) = arg0;
 }
-#pragma pop
 
 s32 TRKTargetStopped(void) {
+#pragma pop
     return M2C_FIELD(&gTRKState, s32 *, 0x98);
 }
 
