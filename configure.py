@@ -6093,7 +6093,7 @@ config.libs = [
             Object(Matching, "auto/text_80273D98.c"),
             Object(NonMatching, "auto/text_80273DD8.c"),
             Object(NonMatching, "auto/text_80273E10.c"),
-            Object(NonMatching, "auto/text_802752DC.c"),
+            Object(NonMatching, "auto/text_802752DC.c", mw_version="ProDG/3.5"),
         ],
     },
 ]
