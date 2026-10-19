@@ -749,6 +749,8 @@ void fn_80277114(u8 *arg0) {
     fn_80283E90(lbl_802F385C, arg0 + 0xFC);
 }
 
+void fn_80277198(void) { fn_8028405C(); }
+
 u32 fn_802771B8(u32* arg0, u32 arg1) {
     u32 v = arg0[-1];
     if (v == arg1) {
