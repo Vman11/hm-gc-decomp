@@ -6520,7 +6520,6 @@ void fn_800D937C(s32 comp0, u8 ref0, s32 op, s32 comp1, u8 ref1) {
 
 void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
     extern GXDataHead *__GXData;
-    GXDataHead *gx;
     u32 zenv0;
     u32 zenv1;
     u32 type;
@@ -6542,7 +6541,6 @@ void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
         type = 2;
         break;
     }
-    gx = __GXData;
     zenv1 = __rlwimi(zenv1, type, 0, 30, 31);
     zenv1 = __rlwimi(zenv1, op, 2, 28, 29);
     zenv1 = __rlwimi(zenv1, 0xF5, 24, 0, 7);
@@ -6550,7 +6548,7 @@ void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
     GXWGFifo.u32 = zenv0;
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = zenv1;
-    gx->bpSentNot = 0;
+    __GXData->bpSentNot = 0;
 }
 
 void fn_800D944C(s32 stage, s32 coord, u32 map, s32 color) {
