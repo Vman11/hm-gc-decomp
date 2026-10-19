@@ -7535,7 +7535,6 @@ s32 fn_800DB438(TrkBuf *buf, u16 *data) {
     return err;
 }
 s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
-#pragma peephole off
     return TRKReadBuffer_inline(buf, data, 1);
 }
 
