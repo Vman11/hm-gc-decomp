@@ -617,7 +617,6 @@ void *fn_800B4340(int heap, u32 size) {
     HeapCell *cell;
     HeapCell *newCell;
     u32 leftoverSize;
-    HeapCell *list;
 
     hd = &((HeapDesc *)lbl_8035A568)[heap];
     size = (size + 0x20 + 0x20 - 1) & ~(0x20 - 1);
@@ -634,16 +633,7 @@ void *fn_800B4340(int heap, u32 size) {
 
     leftoverSize = cell->size - size;
     if (leftoverSize < 0x40) {
-        list = hd->free;
-        if (cell->next) {
-            cell->next->prev = cell->prev;
-        }
-        if (cell->prev == NULL) {
-            list = cell->next;
-        } else {
-            cell->prev->next = cell->next;
-        }
-        hd->free = list;
+        hd->free = DLExtract(hd->free, cell);
     } else {
         cell->size = size;
         newCell = (HeapCell *)((char *)cell + size);
@@ -660,13 +650,7 @@ void *fn_800B4340(int heap, u32 size) {
         }
     }
 
-    list = hd->allocated;
-    cell->next = list;
-    cell->prev = NULL;
-    if (list) {
-        list->prev = cell;
-    }
-    hd->allocated = cell;
+    hd->allocated = DLAddFront(hd->allocated, cell);
     return (char *)cell + 0x20;
 }
 
