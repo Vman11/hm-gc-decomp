@@ -5420,28 +5420,25 @@ void fn_800D70C8(u32 clamp) {
 
 void fn_800D71EC(GXColor clear_clr, u32 clear_z) {
     extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
     u32 reg;
-    u32 reg2;
-    u32 reg3;
     reg = 0;
     reg = __rlwimi(reg, clear_clr.r, 0, 24, 31);
     reg = __rlwimi(reg, clear_clr.a, 8, 16, 23);
     reg = __rlwimi(reg, 0x4F, 24, 0, 7);
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = reg;
-    reg2 = 0;
-    reg2 = __rlwimi(reg2, clear_clr.b, 0, 24, 31);
-    reg2 = __rlwimi(reg2, clear_clr.g, 8, 16, 23);
-    reg2 = __rlwimi(reg2, 0x50, 24, 0, 7);
+    reg = 0;
+    reg = __rlwimi(reg, clear_clr.b, 0, 24, 31);
+    reg = __rlwimi(reg, clear_clr.g, 8, 16, 23);
+    reg = __rlwimi(reg, 0x50, 24, 0, 7);
     GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = reg2;
-    reg3 = 0;
-    reg3 = __rlwimi(reg3, clear_z, 0, 8, 31);
-    reg3 = __rlwimi(reg3, 0x51, 24, 0, 7);
+    GXWGFifo.u32 = reg;
+    reg = 0;
+    reg = __rlwimi(reg, clear_z, 0, 8, 31);
+    reg = __rlwimi(reg, 0x51, 24, 0, 7);
     GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = reg3;
-    gx->bpSentNot = 0;
+    GXWGFifo.u32 = reg;
+    __GXData->bpSentNot = 0;
 }
 
 void fn_800D7264(u8 aa, u8 sample_pattern[12][2], u8 vf, u8 vfilter[7]) {
