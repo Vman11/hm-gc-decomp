@@ -6480,7 +6480,7 @@ void fn_800D9258(s32 arg0, s32 arg1) {
 
 void fn_800D92B4(s32 arg0, s32 arg1, s32 arg2) {
     extern GXDataHead *const __GXData;
-    u32 *reg = (u32 *)((u32)__GXData + (arg0 * 4 + 0x170));
+    u32 *reg = (u32 *)((u8 *)__GXData + arg0 * 4 + 0x170);
     *reg = __rlwimi(*reg, arg1, 0, 30, 31);
     *reg = __rlwimi(*reg, arg2, 2, 28, 29);
     GXWGFifo.u8 = 0x61;
