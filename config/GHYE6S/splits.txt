@@ -36446,4 +36446,7 @@ auto/text_80273DD8.c:
 	.ctors      start:0x802943C4 end:0x802943C8
 
 auto/text_80273E10.c:
-	.text       start:0x80273E10 end:0x80293ED8
+	.text       start:0x80273E10 end:0x802752DC
+
+auto/text_802752DC.c:
+	.text       start:0x802752DC end:0x80293ED8
