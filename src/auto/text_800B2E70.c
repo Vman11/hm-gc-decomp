@@ -1,5 +1,8 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
+extern void (*lbl_8035A940)();
+extern void (*lbl_8035A7A0)();
+extern void (*lbl_8035A69C)();
 s32 fn_800E0C4C(void *, u32, u32 *, s32, s32);
 #define __DSPRegs ((volatile u16 *)0xCC005000)
 #define __ARDMA(mmem, aram, len, dir)                                                    \
@@ -150,7 +153,6 @@ extern int vprintf(const char* fmt, va_list args);
 extern u16 lbl_80359550;
 extern u32 lbl_8035A7A8;
 extern u32 lbl_8035A7AC;
-extern void (*lbl_8035A7A0)(void);
 void fn_800C69D8();
 void OSClearContext(u8 *ctx);
 void OSSetCurrentContext(u8 *ctx);
@@ -214,116 +216,7 @@ typedef struct HeapDesc {
     HeapCell *allocated;
 } HeapDesc;
 extern int lbl_8035A568;
-typedef struct TrkBuf {
-    u32 mutex;
-    s32 isInUse;
-    u32 count;
-    u32 pos;
-    u8 data[0x880];
-} TrkBuf;
-typedef struct TRKFramingState {
-    s32 msgBufID;
-    TrkBuf *buffer;
-    u8 receiveState;
-    s32 isEscape;
-    u8 fcs;
-} TRKFramingState;
-extern TRKFramingState lbl_803257B4;
-extern TrkBuf lbl_80323E00[3];
-static inline s32 TRKAppendBuffer1_ui8(TrkBuf *buf, u8 data) {
-    if (buf->pos >= 0x880) {
-        return 0x301;
-    }
-    buf->data[buf->pos++] = data;
-    buf->count++;
-    return 0;
-}
-static inline s32 TRKReadBuffer_inline(TrkBuf *buf, void *data, u32 length) {
-    extern void *fn_80003488(void *, const void *, u32);
-    s32 error = 0;
-    u32 bytesLeft;
-    if (length == 0) {
-        return 0;
-    }
-    bytesLeft = buf->count - buf->pos;
-    if (length > bytesLeft) {
-        error = 0x302;
-        length = bytesLeft;
-    }
-    fn_80003488(data, buf->data + buf->pos, length);
-    buf->pos += length;
-    return error;
-}
-static inline s32 TRKAppendBuffer_inline(TrkBuf *buf, const void *data, u32 length) {
-    extern void *fn_80003488(void *, const void *, u32);
-    s32 error = 0;
-    u32 bytesLeft;
-    bytesLeft = 0x880 - buf->pos;
-    if (bytesLeft < length) {
-        error = 0x301;
-        length = bytesLeft;
-    }
-    if (length == 1) {
-        buf->data[buf->pos] = *(u8 *)data;
-    } else {
-        fn_80003488(buf->data + buf->pos, data, length);
-    }
-    buf->pos += length;
-    buf->count = buf->pos;
-    return error;
-}
-static inline s32 TRKAppendBuffer1_ui32(TrkBuf *buf, u32 data) {
-    extern s32 gTRKBigEndian[];
-    u8 *bigEndianData;
-    u8 *byteData;
-    u8 swapBuffer[4];
-    if (gTRKBigEndian[0]) {
-        bigEndianData = (u8 *)&data;
-    } else {
-        byteData = (u8 *)&data;
-        bigEndianData = swapBuffer;
-        bigEndianData[0] = byteData[3];
-        bigEndianData[1] = byteData[2];
-        bigEndianData[2] = byteData[1];
-        bigEndianData[3] = byteData[0];
-    }
-    return TRKAppendBuffer_inline(buf, bigEndianData, 4);
-}
-s32 fn_800DF2F0(void *mutex);
-s32 fn_800DF2F8(void *mutex);
-s32 fn_800DF300(void *mutex);
-extern s32 lbl_803257D0[];
-extern u32 lbl_803257C8[];
-void fn_800DEA14(s32 arg0);
-typedef s32 (*TrkDispatchFunc)(TrkBuf *);
-extern TrkDispatchFunc lbl_802E00D8[];
-extern void fn_800DBAD0(TrkBuf*, s32);
-extern s32 fn_800DAF24(TrkBuf*);
-s32 fn_800E17E8(s8 arg0);
-s32 fn_800E1810(void);
-s32 fn_800DEA20(void);
-s32 fn_800DF4D0();
-typedef struct DBCommTable {
-    s32 (*initialize)(void *, void *);
-    void (*initInterrupts)(void);
-    s32 (*peek)(void);
-    s32 (*read)(void *, s32);
-    s32 (*write)(const void *, s32);
-    s32 (*open)(void);
-    s32 (*close)(void);
-} DBCommTable;
-extern DBCommTable gDBCommTable;
-void TRKEXICallBack(s16 chan, void *ctx);
-s32 TRKGetNextEvent(void *event);
-void TRKDestructEvent(void *event);
-TrkBuf *TRKGetBuffer(s32 idx);
-s32 TRKDispatchMessage(TrkBuf *buf);
-void TRKGetInput(void);
-s32 TRKTargetStopped(void);
-s32 TRKTargetContinue(void);
-s32 TRKTargetInterrupt(void *event);
-s32 TRKTargetSupportRequest(void);
-extern u8 *gTRKInputPendingPtr[];
+#include "trk_priv.h"
 extern u8 lbl_80323560[];
 extern u16 lbl_8035A8F0;
 s32 fn_800CDBD8(s32 chan, void *out);
@@ -1088,7 +981,6 @@ void *__OSSetInterruptHandler(short type, void *handler) {
     return old;
 }
 
-extern void ExternalInterruptHandler(void);
 extern void *memset(void *, int, unsigned long);
 extern u32 __OSMaskInterrupts(u32);
 void *fn_800B7290(s16 type) {
@@ -1509,8 +1401,6 @@ void InitMetroTRK_BBA(void) {
 
 }
 
-typedef void (*voidfunctionptr)(void);
-extern voidfunctionptr _ctors[];
 void __init_user(void) { __init_cpp(); }
 
 void fn_800BAA78(UnkHeader_800BAA78 *hdr, u32 x, u32 y) {
@@ -1921,7 +1811,7 @@ BOOL fn_800BD9C0(DVDDir* dir, DVDDirEntry* dirent) {
 }
 
 int fn_800BDA64(void) {
-return 1;
+    return 1;
 }
 
 void fn_800BDA6C(void) {
@@ -1932,7 +1822,6 @@ extern u8 DummyCommandBlock_80308400[];
 extern s32 FatalErrorFlag_8035A690;
 extern void *executing_8035A678;
 extern u32 lbl_8035A698;
-extern void (*lbl_8035A69C)(s32, void *);
 extern u32 lbl_8035A6A8;
 extern s32 lbl_8035A6AC;
 void fn_800BDD08(void);
@@ -2005,7 +1894,6 @@ s32 fn_800BDD64(u32 error) {
 
 extern u8 BB2_803083C0[];
 extern u8 *bootInfo_8035A680;
-extern void (*lbl_8035A6BC)(void);
 extern char lbl_802D9FFC[];
 extern char lbl_8035957C[];
 void __DVDFSInit(void);
@@ -2091,7 +1979,7 @@ void fn_800BFF28(void) {
 }
 
 int fn_800BFF4C(void) {
-return (int)0x80000000;
+    return (int)0x80000000;
 }
 
 void __DVDClearWaitingQueue(void) {
@@ -2861,6 +2749,177 @@ void fn_800C51B4(void) {
 
 s32 fn_800C51D4(void) {
     return *(u16 *)0xCC00500A & 0x20;
+}
+
+void fn_800C51E4(void) {
+    extern u32 lbl_8035A7A4;
+    extern void DCFlushRange(void *, u32);
+    extern void DCInvalidateRange(void *, u32);
+    extern void *memset(void *, int, unsigned long);
+    extern void fn_800B2EA8(void);
+    u8 test_data_pad[0x20 + 31];
+    u8 dummy_data_pad[0x20 + 31];
+    u8 buffer_pad[0x20 + 31];
+    u8 save_pad_1[0x20 + 31];
+    u8 save_pad_2[0x20 + 31];
+    u8 save_pad_3[0x20 + 31];
+    u8 save_pad_4[0x20 + 31];
+    u8 save_pad_5[0x20 + 31];
+    u32 *test_data;
+    u32 *dummy_data;
+    u32 *buffer;
+    u32 *save1;
+    u32 *save2;
+    u32 *save3;
+    u32 *save4;
+    u32 *save5;
+    u16 ARAM_mode = 0;
+    u32 ARAM_size = 0;
+    u32 i;
+
+    while (!(__DSPRegs[11] & 1)) {
+    }
+
+    ARAM_mode = 3;
+    ARAM_size = lbl_8035A7A8 = 0x1000000;
+    __DSPRegs[9] = (u16)((__DSPRegs[9] & ~(0x00000007 | 0x00000038)) | 0x20 | 2 | 1);
+
+    test_data = (u32 *)(((u32)test_data_pad + 31) & ~31);
+    dummy_data = (u32 *)(((u32)dummy_data_pad + 31) & ~31);
+    buffer = (u32 *)(((u32)buffer_pad + 31) & ~31);
+    save1 = (u32 *)(((u32)save_pad_1 + 31) & ~31);
+    save2 = (u32 *)(((u32)save_pad_2 + 31) & ~31);
+    save3 = (u32 *)(((u32)save_pad_3 + 31) & ~31);
+    save4 = (u32 *)(((u32)save_pad_4 + 31) & ~31);
+    save5 = (u32 *)(((u32)save_pad_5 + 31) & ~31);
+
+    for (i = 0; i < 8; i++) {
+        *(test_data + i) = 0xdeadbeef;
+        *(dummy_data + i) = 0xbad0bad0;
+    }
+
+    DCFlushRange((void *)test_data, 0x20);
+    DCFlushRange((void *)dummy_data, 0x20);
+
+    lbl_8035A7AC = 0;
+
+    DCInvalidateRange((void *)save1, 0x20);
+    __ARReadDMA((u32)save1, ARAM_size + 0, 0x20);
+    fn_800B2EA8();
+
+    __ARWriteDMA((u32)test_data, ARAM_size + 0x0000000, 0x20);
+
+    memset((void *)buffer, 0, 0x20);
+    DCFlushRange((void *)buffer, 0x20);
+
+    __ARReadDMA((u32)buffer, ARAM_size + 0x0000000, 0x20);
+    fn_800B2EA8();
+
+    if (buffer[0] == test_data[0]) {
+        DCInvalidateRange((void *)save2, 0x20);
+        __ARReadDMA((u32)save2, ARAM_size + 0x0200000, 0x20);
+        fn_800B2EA8();
+
+        DCInvalidateRange((void *)save3, 0x20);
+        __ARReadDMA((u32)save3, ARAM_size + 0x1000000, 0x20);
+        fn_800B2EA8();
+
+        DCInvalidateRange((void *)save4, 0x20);
+        __ARReadDMA((u32)save4, ARAM_size + 0x0000200, 0x20);
+        fn_800B2EA8();
+
+        DCInvalidateRange((void *)save5, 0x20);
+        __ARReadDMA((u32)save5, ARAM_size + 0x0400000, 0x20);
+        fn_800B2EA8();
+
+        __ARWriteDMA((u32)dummy_data, ARAM_size + 0x0200000, 0x20);
+        __ARWriteDMA((u32)test_data, ARAM_size + 0x0000000, 0x20);
+
+        memset((void *)buffer, 0, 0x20);
+        DCFlushRange((void *)buffer, 0x20);
+
+        __ARReadDMA((u32)buffer, ARAM_size + 0x0200000, 0x20);
+        fn_800B2EA8();
+
+        if (buffer[0] == test_data[0]) {
+            __ARWriteDMA((u32)save1, ARAM_size + 0x0000000, 0x20);
+
+            ARAM_mode |= 0 << 1;
+            ARAM_size += 0x0200000;
+            lbl_8035A7AC = 0x0200000;
+        } else {
+            __ARWriteDMA((u32)dummy_data, ARAM_size + 0x1000000, 0x20);
+            __ARWriteDMA((u32)test_data, ARAM_size + 0x0000000, 0x20);
+
+            memset((void *)buffer, 0, 0x20);
+            DCFlushRange((void *)buffer, 0x20);
+
+            __ARReadDMA((u32)buffer, ARAM_size + 0x1000000, 0x20);
+            fn_800B2EA8();
+
+            if (buffer[0] == test_data[0]) {
+                __ARWriteDMA((u32)save1, ARAM_size + 0x0000000, 0x20);
+                __ARWriteDMA((u32)save2, ARAM_size + 0x0200000, 0x20);
+
+                ARAM_mode |= 4 << 1;
+                ARAM_size += 0x0400000;
+                lbl_8035A7AC = 0x0400000;
+            } else {
+                __ARWriteDMA((u32)dummy_data, ARAM_size + 0x0000200, 0x20);
+                __ARWriteDMA((u32)test_data, ARAM_size + 0x0000000, 0x20);
+
+                memset((void *)buffer, 0, 0x20);
+                DCFlushRange((void *)buffer, 0x20);
+
+                __ARReadDMA((u32)buffer, ARAM_size + 0x0000200, 0x20);
+                fn_800B2EA8();
+
+                if (buffer[0] == test_data[0]) {
+                    __ARWriteDMA((u32)save1, ARAM_size + 0x0000000, 0x20);
+                    __ARWriteDMA((u32)save2, ARAM_size + 0x0200000, 0x20);
+                    __ARWriteDMA((u32)save3, ARAM_size + 0x1000000, 0x20);
+
+                    ARAM_mode |= 8 << 1;
+                    ARAM_size += 0x0800000;
+                    lbl_8035A7AC = 0x0800000;
+                } else {
+                    __ARWriteDMA((u32)dummy_data, ARAM_size + 0x0400000, 0x20);
+                    __ARWriteDMA((u32)test_data, ARAM_size + 0x0000000, 0x20);
+
+                    memset((void *)buffer, 0, 0x20);
+                    DCFlushRange((void *)buffer, 0x20);
+
+                    __ARReadDMA((u32)buffer, ARAM_size + 0x0400000, 0x20);
+                    fn_800B2EA8();
+
+                    if (buffer[0] == test_data[0]) {
+                        __ARWriteDMA((u32)save1, ARAM_size + 0x0000000, 0x20);
+                        __ARWriteDMA((u32)save2, ARAM_size + 0x0200000, 0x20);
+                        __ARWriteDMA((u32)save3, ARAM_size + 0x1000000, 0x20);
+                        __ARWriteDMA((u32)save4, ARAM_size + 0x0000200, 0x20);
+
+                        ARAM_mode |= 12 << 1;
+                        ARAM_size += 0x1000000;
+                        lbl_8035A7AC = 0x1000000;
+                    } else {
+                        __ARWriteDMA((u32)save1, ARAM_size + 0x0000000, 0x20);
+                        __ARWriteDMA((u32)save2, ARAM_size + 0x0200000, 0x20);
+                        __ARWriteDMA((u32)save3, ARAM_size + 0x1000000, 0x20);
+                        __ARWriteDMA((u32)save4, ARAM_size + 0x0000200, 0x20);
+                        __ARWriteDMA((u32)save5, ARAM_size + 0x0400000, 0x20);
+
+                        ARAM_mode |= 16 << 1;
+                        ARAM_size += 0x2000000;
+                        lbl_8035A7AC = 0x2000000;
+                    }
+                }
+            }
+        }
+        __DSPRegs[9] = (u16)((__DSPRegs[9] & ~(0x07 | 0x38)) | ARAM_mode);
+    }
+
+    *(u32 *)0xC00000D0 = ARAM_size;
+    lbl_8035A7A4 = ARAM_size;
 }
 
 void fn_800C6C2C(void) {
@@ -4859,7 +4918,7 @@ case 19: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 
 case 20: M2C_FIELD(__GXData, u32 *, 0x18) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x18), type, 14, 16, 17); break;
 }
 if(M2C_FIELD(__GXData, u8 *, 0x4D4) || M2C_FIELD(__GXData, u8 *, 0x4D5)) {
-M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), M2C_FIELD(__GXData, s32 *, 0x4D0), 11, 19, 20);
+    M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), M2C_FIELD(__GXData, s32 *, 0x4D0), 11, 19, 20);
 } else { M2C_FIELD(__GXData, u32 *, 0x14) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x14), 0, 11, 19, 20); }
 M2C_FIELD(__GXData, u32 *, 0x5AC) |= 8;
 }
@@ -5276,7 +5335,6 @@ void fn_800D68E8(u32 x, u32 y, u32 z) {
     *(u32 *)addr = z;
 }
 
-extern void (*lbl_8035A940)(u16);
 void fn_800D694C(s16 interrupt, u8 *context) {
     u8 exceptionContext[0x2C8];
     u16 token = __peReg[7];
@@ -6050,8 +6108,8 @@ void fn_800D8240(u32 *arg0, s32 arg1, s32 arg2) {
 }
 
 void fn_800D8278(void *arg0, f32 farg0) {
-    extern f32 lbl_80363128;
     extern f32 lbl_80363148;
+    extern f32 lbl_80363128;
     extern f32 lbl_8036314C;
     f32 var_f1;
 
@@ -9779,7 +9837,7 @@ s32 fn_800E04D0(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     return error;
 }
 
-void fn_800DF4D8(u32 msr);
+void PPCMtmsr(u32 msr);
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
@@ -9797,7 +9855,7 @@ s32 fn_800E0640(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     savedException = gTRKExceptionStatus_802E01A4;
     gTRKExceptionStatus_802E01A4.exceptionDetected = FALSE;
 
-    fn_800DF4D8(fn_800DF4D0() | 0x2000);
+    PPCMtmsr(PPCMfmsr() | 0x2000);
 
     *registersLengthPtr = 0;
     error = 0;
@@ -9886,7 +9944,7 @@ s32 fn_800E0C4C(void *data, u32 start, u32 *length, s32 accessOptions, s32 read)
     if (error != 0) {
         *length = 0;
     } else {
-        target_msr = fn_800DF4D0();
+        target_msr = PPCMfmsr();
         user_msr = target_msr | (M2C_FIELD(&gTRKCPUState, u32 *, 0x1F8) & 0x10);
         if (read) {
             fn_800DF4E0(data, (void *)trans_ptr, *length, target_msr, user_msr);
@@ -9953,7 +10011,7 @@ u32 fn_800E1150(u32 addr) {
 }
 
 void fn_800E18F0(void);
-s32 fn_800DF4D0();
+s32 PPCMfmsr();
 void EnableMetroTRKInterrupts(void) {
     fn_800E18F0();
 }
