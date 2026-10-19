@@ -9906,7 +9906,6 @@ s32 fn_800E0C00(void *data, u32 start) {
     return error;
 }
 
-u32 fn_800E1150(u32 addr);
 s32 fn_800E0C4C(void *data, u32 start, u32 *length, s32 accessOptions, s32 read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     s32 fn_800E0D98(u32, u32, s32);
