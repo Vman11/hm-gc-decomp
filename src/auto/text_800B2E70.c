@@ -5359,9 +5359,9 @@ void fn_800D6DF0(u8 arg0) {
 }
 
 void fn_800D6E24(void) {
-    extern GXDataHead *const __GXData;
-    (*(volatile PPCWGPipe *)0xCC008000).u8 = 0x61;
-    (*(volatile PPCWGPipe *)0xCC008000).u32 = M2C_FIELD(__GXData, u32 *, 0x204);
+    extern GXDataHead *__GXData;
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x204);
     __GXData->bpSentNot = 0;
 }
 
