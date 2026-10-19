@@ -3762,8 +3762,8 @@ void fn_800C9D28(void *p, u16 *src) {
 
 void fn_800C9DC0(u8 *arg0, f32 value) {
  extern f32 lbl_803630C0;
- s32 enabled;
  u32 ratio;
+ s32 enabled;
  enabled = OSDisableInterrupts();
  value = lbl_803630C0 * value;
  ratio = (u32)value;
