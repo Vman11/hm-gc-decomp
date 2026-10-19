@@ -8686,7 +8686,6 @@ void fn_800DD9A4(void *arg) {
     }
 }
 #pragma pop
-s32 fn_800DFF6C(u8 *cpuType);
 void fn_800DDDB4(TrkBuf *buf) {
 u8 bytes[8];
 s32 n;
