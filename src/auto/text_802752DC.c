@@ -2631,9 +2631,9 @@ void fn_802829C4(s32 a0,s32 a1,s32 a2,s32 a3,s32 a4,s32 a5,s32 a6,s32 a7,s32 a8,
 }
 
 void fn_80282A30(s32 a,s32 b,s32 c,s32 d,s32 e,s32 f,s32 g,s32 h,s32 i,s32 j,s32 k,s32 l,s32 m,s32 n,s32 o) {
- extern void fn_8027C408();
+ extern void fn_8027C408(void);
  extern u8 lbl_803019A0[];
- fn_8027C408(a,b,c,d,e,f,g,h,i,j,k,l,m,o,n,lbl_803019A0);
+ ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,s32,s32,s32,s32,s32,s32,void *))fn_8027C408)(a,b,c,d,e,f,g,h,i,j,k,l,m,o,n,lbl_803019A0);
 }
 
 f32 fn_80282BE0(s32 arg0) {
