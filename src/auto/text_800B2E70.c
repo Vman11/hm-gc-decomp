@@ -3056,9 +3056,9 @@ void* fn_800C7190(void) {
 }
 
 void fn_800C71AC(void* arg0) {
-    s32 offs = *(s32*)((u8*)arg0 + 0xC) * 4;
-    void** head = (void**)((u8*)lbl_80308680 + offs);
-    void** tail = (void**)((u8*)lbl_80308700 + offs);
+    s32 idx = *(s32*)((u8*)arg0 + 0xC);
+    void** head = &((void**)lbl_80308680)[idx];
+    void** tail = &((void**)lbl_80308700)[idx];
 
     if (*head == *tail) {
         *tail = NULL;
