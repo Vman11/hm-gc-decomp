@@ -6163,7 +6163,7 @@ s32 fn_800D8318(void *arg0) {
 }
 
 u8 fn_800D8320(void *arg0) {
-    return (u8) (((M2C_FIELD(arg0, u8 *, 0x1F) & 1) - 1) == 0);
+    return (u32)__cntlzw((M2C_FIELD(arg0, u8 *, 0x1F) & 1) - 1) >> 5;
 }
 
 void fn_800D8508(void *tlut_obj, u32 lut, s32 fmt, u16 n_entries) {
