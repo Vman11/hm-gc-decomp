@@ -6884,12 +6884,11 @@ void fn_800D9BA8(s32 odd_mask, u8 even_mask) {
 }
 
 void fn_800D9BE0(u8 field_mode, u8 half_aspect_ratio) {
-    extern GXDataHead *__GXData;
+    extern struct { u8 pad[0x7C]; u32 lpSize; } *const __GXData;
     extern void __GXFlushTextureState(void);
-    GXDataHead *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x7C) = __rlwimi(M2C_FIELD(gx, u32 *, 0x7C), half_aspect_ratio, 22, 9, 9);
+    __GXData->lpSize = __rlwimi(__GXData->lpSize, half_aspect_ratio, 22, 9, 9);
     GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = M2C_FIELD(gx, u32 *, 0x7C);
+    GXWGFifo.u32 = __GXData->lpSize;
     __GXFlushTextureState();
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = 0x68000000 | field_mode;
