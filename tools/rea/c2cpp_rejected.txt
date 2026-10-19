@@ -297,8 +297,10 @@ auto/text_801EEA74
 auto/text_801EFF2C
 auto/text_801F01BC
 auto/text_801F0934
+auto/text_801F6814
 auto/text_801F6B40
 auto/text_801F6BFC
+auto/text_801F6E1C
 auto/text_801F7378
 auto/text_801FA0D4
 auto/text_801FA614
