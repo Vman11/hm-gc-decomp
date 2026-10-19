@@ -5527,10 +5527,10 @@ void fn_800D6F40(u16 wd, u16 ht) {
 }
 
 void fn_800D70A4(u32 frame2field) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x1EC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1EC), frame2field, 12, 18, 19);
-    M2C_FIELD(gx, u32 *, 0x1FC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1FC), 0, 12, 18, 19);
+    extern GXData7 *__GXData;
+    GXData7 *gx = __GXData;
+    gx->r1EC = __rlwimi(gx->r1EC, frame2field, 12, 18, 19);
+    gx->r1FC = __rlwimi(gx->r1FC, 0, 12, 18, 19);
 }
 
 void fn_800D70C8(u32 clamp) {
