@@ -8050,7 +8050,6 @@ void fn_800DC1D0(TrkBuf* buf) {
     } while (ok != 0 && n > 0);
 }
 
-s32 fn_800DF874(void);
 void fn_800DC374(TrkBuf* buf) {
     s8 b;
     s32 n;
