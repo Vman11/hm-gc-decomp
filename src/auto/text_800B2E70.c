@@ -2438,8 +2438,12 @@ void fn_800C3AEC(s32 chan, u32 command) {
     extern u32 lbl_803595BC;
     extern u32 lbl_803595C0;
     extern u32 lbl_8035A73C;
-    s32 enabled = OSDisableInterrupts();
-    if ((lbl_8035A73C & (0x80000000U >> chan)) && !(SIGetType(chan) & 0x20000000)) {
+    BOOL enabled;
+    u32 chanBit;
+
+    enabled = OSDisableInterrupts();
+    chanBit = 0x80000000U >> chan;
+    if ((lbl_8035A73C & chanBit) && !(SIGetType(chan) & 0x20000000)) {
         if (lbl_803595C0 < 2 && command == 2) {
             command = 0;
         }
