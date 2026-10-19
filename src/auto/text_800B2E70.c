@@ -2479,18 +2479,12 @@ void fn_800C3B90(s32 spec) {
 }
 
 void fn_800C3BF0(s32 chan, u8* status, u32* data) {
-    u16 b;
     *(u16*)status = 0;
-    if ((data[0] >> 16) & 0x0008) b = 0x0100; else b = 0;
-    *(u16*)status |= b;
-    if ((data[0] >> 16) & 0x0020) b = 0x0200; else b = 0;
-    *(u16*)status |= b;
-    if ((data[0] >> 16) & 0x0100) b = 0x0400; else b = 0;
-    *(u16*)status |= b;
-    if ((data[0] >> 16) & 0x0001) b = 0x0800; else b = 0;
-    *(u16*)status |= b;
-    if ((data[0] >> 16) & 0x0010) b = 0x1000; else b = 0;
-    *(u16*)status |= b;
+    *(u16*)status |= ((data[0] >> 16) & 0x0008) ? 0x0100 : 0;
+    *(u16*)status |= ((data[0] >> 16) & 0x0020) ? 0x0200 : 0;
+    *(u16*)status |= ((data[0] >> 16) & 0x0100) ? 0x0400 : 0;
+    *(u16*)status |= ((data[0] >> 16) & 0x0001) ? 0x0800 : 0;
+    *(u16*)status |= ((data[0] >> 16) & 0x0010) ? 0x1000 : 0;
 
     *(s8*)(status + 2) = (s8)(data[1] >> 16);
     *(s8*)(status + 3) = (s8)(data[1] >> 24);
