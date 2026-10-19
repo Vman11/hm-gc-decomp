@@ -9912,8 +9912,8 @@ s32 fn_800E0D98(u32 address, u32 length, u8 access) {
     }
     return error;
 }
-#pragma pop
 s32 TRKInitializeTarget(void) {
+#pragma pop
     gTRKState.unk98 = 1;
     gTRKState.unk8C = fn_800DF4D0(&gTRKState);
     lbl_80325D58[0] = 0xE0000000;
