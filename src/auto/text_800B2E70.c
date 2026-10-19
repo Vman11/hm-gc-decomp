@@ -4135,8 +4135,7 @@ s32 fn_800CCFCC(s32 chan, s32 enable) {
     u32 cmd;
     s32 err;
     if (!EXISelect(chan, 0, 4)) return -3;
-    if (enable) cmd = 0x81010000;
-    else cmd = 0x81000000;
+    cmd = enable ? 0x81010000 : 0x81000000;
     err = !EXIImm(chan, &cmd, 2, 1, 0);
     err |= !EXISync(chan);
     err |= !EXIDeselect(chan);
