@@ -186,6 +186,7 @@ void DCFlushRangeNoSync(void *, u32);
 void fn_800B2EA8(void);
 void fn_800C6D6C(void *req, u32 owner, u32 type, u32 prio, u32 src, u32 dst, u32 len, void *cb);
 
+#include "musyx_priv.h"
 extern s32 lbl_8035B854;
 void fn_80273E10(u32 arg0, s32 arg1, s32 arg2) {
     int level;
