@@ -1392,17 +1392,18 @@ void fn_8027D75C(s32 unused, s32 n) {
 
 s32 fn_8027D7BC(s32 count,s32 offset) {
 extern u32 lbl_80300460[];
+u32 *tbl = lbl_80300460;
 u32 n=count;
 do {
 u8 index=*lbl_80300860[2];
 u32 v;
 lbl_80300860[2]++;
-v=lbl_80300460[index];
+v=tbl[index];
 ((u32 *)lbl_80300860[0])[0]=v;
 ((u32 *)lbl_80300860[0])[1]=v;
 index=*lbl_80300860[3];
 lbl_80300860[3]++;
-v=lbl_80300460[index];
+v=tbl[index];
 ((u32 *)lbl_80300860[1])[0]=v;
 ((u32 *)lbl_80300860[1])[1]=v;
 lbl_80300860[0]+=8;
