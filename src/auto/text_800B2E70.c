@@ -1300,29 +1300,29 @@ s32 OSDisableScheduler(void) {
     return previous;
 }
 
-void fn_800B981C(void *arg0) {
+void fn_800B981C(Thread5 *thread) {
     extern s32 RunQueueBits_8035A5E8;
-    void *temp_r4;
-    void *temp_r5;
-    void *temp_r6;
+    Thread5 *next;
+    ThreadQ5 *queue;
+    Thread5 *prev;
 
-    temp_r4 = M2C_FIELD(arg0, void **, 0x2E0);
-    temp_r5 = M2C_FIELD(arg0, void **, 0x2DC);
-    temp_r6 = M2C_FIELD(arg0, void **, 0x2E4);
-    if (temp_r4 == NULL) {
-        M2C_FIELD(temp_r5, void **, 4) = temp_r6;
+    next = thread->next;
+    queue = thread->queue;
+    prev = thread->prev;
+    if (next == NULL) {
+        queue->tail = prev;
     } else {
-        M2C_FIELD(temp_r4, void **, 0x2E4) = temp_r6;
+        next->prev = prev;
     }
-    if (temp_r6 == NULL) {
-        M2C_FIELD(temp_r5, void **, 0) = temp_r4;
+    if (prev == NULL) {
+        queue->head = next;
     } else {
-        M2C_FIELD(temp_r6, void **, 0x2E0) = temp_r4;
+        prev->next = next;
     }
-    if ((void *) M2C_FIELD(temp_r5, void **, 0) == NULL) {
-        RunQueueBits_8035A5E8 &= ~(1 << (0x1F - M2C_FIELD(arg0, s32 *, 0x2D0)));
+    if (queue->head == NULL) {
+        RunQueueBits_8035A5E8 &= ~(1 << (0x1F - thread->priority));
     }
-    M2C_FIELD(arg0, void **, 0x2DC) = NULL;
+    thread->queue = NULL;
 }
 
 s32 fn_800B9884(void *arg0) {
