@@ -6852,11 +6852,10 @@ void fn_800DA13C(s32 x_off, s32 y_off) {
 
 void fn_800DA17C(u32 arg0) {
     extern GXDataHead *const __GXData;
-    GXDataHead *gx = __GXData;
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x1005;
     GXWGFifo.u32 = arg0;
-    gx->bpSentNot = 1;
+    __GXData->bpSentNot = 1;
 }
 
 void fn_800DA1A4(s32 attr) {
