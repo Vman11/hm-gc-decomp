@@ -6724,10 +6724,9 @@ void fn_800D944C(s32 stage, s32 coord, u32 map, s32 color) {
 }
 
 void fn_800D95E8(u8 nStages) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x204) = __rlwimi(M2C_FIELD(gx, u32 *, 0x204), nStages - 1, 10, 18, 21);
-    M2C_FIELD(gx, u32 *, 0x5AC) |= 4;
+    extern GXData8 *const __GXData;
+    __GXData->r204 = __rlwimi(__GXData->r204, nStages - 1, 10, 18, 21);
+    __GXData->dirty |= 4;
 }
 
 void fn_800D9834(u8 enable, u16 center, u16 *table) {
