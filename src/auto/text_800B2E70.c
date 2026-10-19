@@ -5143,8 +5143,11 @@ void fn_800D590C(s32 vtxfmt, s32 attr, s32 cnt, s32 type, u8 frac) {
         *vc = __rlwimi(*vc, frac, 27, 0, 4);
         break;
     }
-    M2C_FIELD(__GXData, u32 *, 0x5AC) |= 0x10;
-    M2C_FIELD(__GXData, u8 *, 0x5AB) |= (u8)(1 << (u8)vtxfmt);
+    {
+        u8 *gx = (u8 *)__GXData;
+        *(u32 *)(gx + 0x5AC) |= 0x10;
+        *(gx + 0x5AB) |= (u8)(1 << (u8)vtxfmt);
+    }
 }
 
 void fn_800D5DE8(void) {
