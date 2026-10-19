@@ -5188,13 +5188,12 @@ void fn_800D5F10(void) {
 }
 
 void fn_800D61A0(u8 nTexGens) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x204) = __rlwimi(M2C_FIELD(gx, u32 *, 0x204), nTexGens, 0, 28, 31);
+    extern GXData8 *const __GXData;
+    __GXData->r204 = __rlwimi(__GXData->r204, nTexGens, 0, 28, 31);
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x103F;
     GXWGFifo.u32 = nTexGens;
-    M2C_FIELD(gx, u32 *, 0x5AC) |= 4;
+    __GXData->dirty |= 4;
 }
 
 void GXSetMisc(s32 token, u32 val) {
