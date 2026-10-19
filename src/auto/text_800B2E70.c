@@ -2,6 +2,26 @@
 #include "common.h"
 #include "trk_priv.h"
 #include "trk_ppc_inline.h"
+/* Typed views used so the same C matches with GC/1.2.5n (the SDK's compiler) and GC/1.3.2. */
+typedef struct GXDataCP { u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim; u32 cpEnable; u32 cpStatus; u32 cpClr; } GXDataCP;
+typedef struct GXData7 { u8 pad[0x1EC]; u32 r1EC; u8 pad1F0[0xC]; u32 r1FC; } GXData7;
+typedef struct GXData8 { u8 pad[0x204]; u32 r204; u8 pad208[0x5AC - 0x208]; u32 dirty; } GXData8;
+typedef struct ThreadQ5 { struct Thread5 *head; struct Thread5 *tail; } ThreadQ5;
+typedef struct Thread5 {
+    u8 pad[0x2D0];
+    s32 priority;
+    u8 pad2D4[8];
+    ThreadQ5 *queue;
+    struct Thread5 *next;
+    struct Thread5 *prev;
+} Thread5;
+typedef struct Alarm6 {
+    u32 pad0;
+    u32 fire;
+    u8 pad8[0x30];
+    struct Alarm6 *next;
+    struct Alarm6 *prev;
+} Alarm6;
 extern void (*lbl_8035A940)();
 extern void (*lbl_8035A7A0)();
 extern void (*lbl_8035A69C)();
