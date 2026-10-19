@@ -9801,8 +9801,8 @@ s32 fn_800E0640(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLe
     gTRKExceptionStatus_802E01A4 = savedException;
     return error;
 }
-#pragma pop
 s32 fn_800E0B0C(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registersLengthPtr, BOOL read) {
+#pragma pop
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     u32 error;
     u32 count;
