@@ -5160,7 +5160,7 @@ void fn_800D6780(u32 a, u32 b) {
 }
 
 void fn_800D6794(u32 a) {
-    u16 v = 0;
+    u32 v = 0;
     v = __rlwimi(v, a, 0, 30, 31);
     v = __rlwimi(v, 1, 2, 29, 29);
     __peReg[4] = v;
