@@ -4477,10 +4477,10 @@ s32 fn_800D0A90(u32 id) {
     if (sectorSize == 0) {
         return 0;
     }
-    if ((size * 1024 * 1024 / 8) / sectorSize >= 8) {
-        return 1;
+    if ((size * 1024 * 1024 / 8) / sectorSize < 8) {
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 extern u8 lbl_80323560[];
