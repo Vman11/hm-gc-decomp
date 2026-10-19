@@ -4269,79 +4269,21 @@ s32 fn_800CF8C4(void *arg0) {
     return M2C_FIELD(arg0, s32 *, 0x84);
 }
 
-void fn_800CFB28(u16 *arg0, s32 arg1, u16 *arg2, u16 *arg3) {
-    s32 temp_r0;
-    s32 var_ctr;
-    s32 var_ctr_2;
-    s32 var_r4;
-    u16 *var_r3;
-    u16 temp_r0_10;
-    u16 temp_r0_2;
-    u16 temp_r0_3;
-    u16 temp_r0_4;
-    u16 temp_r0_5;
-    u16 temp_r0_6;
-    u16 temp_r0_7;
-    u16 temp_r0_8;
-    u16 temp_r0_9;
+void fn_800CFB28(void *ptr, int length, u16 *checksum, u16 *checksumInv) {
+    u16 *p;
+    int i;
 
-    var_r3 = arg0;
-    *arg3 = 0;
-    var_r4 = arg1 / 2;
-    *arg2 = 0;
-    if (var_r4 > 0) {
-        temp_r0 = arg1 / 16;
-        var_ctr = temp_r0;
-        if (temp_r0 != 0) {
-            do {
-                *arg2 += M2C_FIELD(var_r3, u16 *, 0);
-                temp_r0_2 = M2C_FIELD(var_r3, u16 *, 0);
-                *arg3 += ~(temp_r0_2 | temp_r0_2);
-                *arg2 += M2C_FIELD(var_r3, u16 *, 2);
-                temp_r0_3 = M2C_FIELD(var_r3, u16 *, 2);
-                *arg3 += ~(temp_r0_3 | temp_r0_3);
-                *arg2 += M2C_FIELD(var_r3, u16 *, 4);
-                temp_r0_4 = M2C_FIELD(var_r3, u16 *, 4);
-                *arg3 += ~(temp_r0_4 | temp_r0_4);
-                *arg2 += M2C_FIELD(var_r3, u16 *, 6);
-                temp_r0_5 = M2C_FIELD(var_r3, u16 *, 6);
-                *arg3 += ~(temp_r0_5 | temp_r0_5);
-                *arg2 += M2C_FIELD(var_r3, u16 *, 8);
-                temp_r0_6 = M2C_FIELD(var_r3, u16 *, 8);
-                *arg3 += ~(temp_r0_6 | temp_r0_6);
-                *arg2 += M2C_FIELD(var_r3, u16 *, 0xA);
-                temp_r0_7 = M2C_FIELD(var_r3, u16 *, 0xA);
-                *arg3 += ~(temp_r0_7 | temp_r0_7);
-                *arg2 += M2C_FIELD(var_r3, u16 *, 0xC);
-                temp_r0_8 = M2C_FIELD(var_r3, u16 *, 0xC);
-                *arg3 += ~(temp_r0_8 | temp_r0_8);
-                *arg2 += M2C_FIELD(var_r3, u16 *, 0xE);
-                temp_r0_9 = M2C_FIELD(var_r3, u16 *, 0xE);
-                var_r3 += 0x10;
-                *arg3 += ~(temp_r0_9 | temp_r0_9);
-                var_ctr -= 1;
-            } while (var_ctr != 0);
-            var_r4 &= 7;
-            if (var_r4 != 0) {
-                goto block_4;
-            }
-        } else {
-block_4:
-            var_ctr_2 = var_r4;
-            do {
-                *arg2 += *var_r3;
-                temp_r0_10 = *var_r3;
-                var_r3 += 2;
-                *arg3 += ~(temp_r0_10 | temp_r0_10);
-                var_ctr_2 -= 1;
-            } while (var_ctr_2 != 0);
-        }
+    length /= sizeof(u16);
+    *checksum = *checksumInv = 0;
+    for (i = 0, p = ptr; i < length; i++, p++) {
+        *checksum += *p;
+        *checksumInv += ~*p;
     }
-    if ((u16) *arg2 == -1U) {
-        *arg2 = 0;
+    if (*checksum == 0xFFFF) {
+        *checksum = 0;
     }
-    if ((u16) *arg3 == -1U) {
-        *arg3 = 0;
+    if (*checksumInv == 0xFFFF) {
+        *checksumInv = 0;
     }
 }
 
