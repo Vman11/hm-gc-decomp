@@ -6467,7 +6467,7 @@ void fn_800D91FC(s32 arg0, s32 arg1) {
 
 void fn_800D9258(s32 arg0, s32 arg1) {
     extern GXDataHead *__GXData;
-    u32 *reg = (u32 *)((u32)__GXData + ((arg0 >> 1) * 4 + 0x1B0));
+    u32 *reg = (u32 *)((u8 *)__GXData + (arg0 >> 1) * 4 + 0x1B0);
     if (arg0 & 1) {
         *reg = __rlwimi(*reg, arg1, 19, 8, 12);
     } else {
