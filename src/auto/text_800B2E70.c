@@ -9312,8 +9312,8 @@ s32 fn_800DF308(u8 cmd) {
     }
     return result;
 }
-#pragma pop
 void fn_800DF3E0(u32 addr, s32 length) {
+#pragma pop
     u32 p = addr & 0xFFFFFFF1;
     length += addr - p;
     do {
