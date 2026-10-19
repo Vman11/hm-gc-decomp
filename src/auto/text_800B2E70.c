@@ -3178,8 +3178,7 @@ extern u8 lbl_8030B480[];
 extern u32 lbl_8035A828;
 extern u8 *lbl_8035A82C;
 u8 *fn_800C796C(void) {
-    u32 old = lbl_8035A828++;
-    u8 *ret = lbl_8030B480 + old * 0x300;
+    u8 *ret = lbl_8030B480 + lbl_8035A828++ * 0x300;
     lbl_8035A828 &= 1;
     lbl_8035A82C = lbl_8030B480 + lbl_8035A828 * 0x300;
     return ret;
