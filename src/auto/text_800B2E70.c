@@ -6507,16 +6507,15 @@ void fn_800D92FC(s32 id, s32 red, s32 green, s32 blue, s32 alpha) {
 
 void fn_800D937C(s32 comp0, u8 ref0, s32 op, s32 comp1, u8 ref1) {
     extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
     u32 reg = 0xF3000000;
-    reg = (reg & ~0xFF) | ((u32)ref0 & 0xFF);
-    reg = (reg & ~0xFF00) | (((u32)ref1 << 8) & 0xFF00);
+    reg = __rlwimi(reg, ref0, 0, 24, 31);
+    reg = __rlwimi(reg, ref1, 8, 16, 23);
     reg = __rlwimi(reg, comp0, 16, 13, 15);
     reg = __rlwimi(reg, comp1, 19, 10, 12);
     reg = __rlwimi(reg, op, 22, 8, 9);
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = reg;
-    gx->bpSentNot = 0;
+    __GXData->bpSentNot = 0;
 }
 
 void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
