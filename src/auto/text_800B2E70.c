@@ -5647,8 +5647,8 @@ void fn_800D7264(u8 aa, u8 sample_pattern[12][2], u8 vf, u8 vfilter[7]) {
 }
 
 void fn_800D746C(s32 arg0) {
-    extern void *__GXData;
-    M2C_FIELD(__GXData, s32 *, 0x1EC) = (s32) ((M2C_FIELD(__GXData, s32 *, 0x1EC) & ~0x180) | ((arg0 << 7) & 0x180));
+    extern GXData7 *const __GXData;
+    __GXData->r1EC = __rlwimi(__GXData->r1EC, arg0, 7, 23, 24);
 }
 
 void fn_800D75E8(void *dest, u8 clear) {
