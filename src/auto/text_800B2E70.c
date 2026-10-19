@@ -9725,8 +9725,6 @@ s32 fn_800E0070(void *arg0) {
     return 0;
 }
 
-s32 fn_800DB288(TrkBuf *buf, u64 *data);
-s32 fn_800DB6D4(TrkBuf *buf, u64 data);
 #pragma push
 #pragma dont_inline off
 s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerStorageSize, BOOL read) {
