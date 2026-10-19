@@ -10099,9 +10099,9 @@ s32 TRKTargetContinue(void) {
     return 0;
 }
 
+u8 fn_800E1AC8(void) {
 #pragma push
 #pragma dont_inline on
-u8 fn_800E1AC8(void) {
     return *lbl_80327F90;
 }
 #pragma pop
