@@ -3635,7 +3635,7 @@ void fn_800B9CD8(void);
 s32 fn_80283DFC(s32, void *);
 void fn_80283E90(s32 a, void *b) {
     if (a && b && ((s32 *)b)[6] && ((s32 *)b)[5]) {
-        while (fn_80283DFC(a, b) == 0) {
+        for (; fn_80283DFC(a, b) == 0;) {
             fn_800B9CD8();
         }
     }
