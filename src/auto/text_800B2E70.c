@@ -4654,16 +4654,16 @@ void fn_800D31A4(u8* arg0, u8* arg1) {
     for (i = 0; i < 8; i++) {
         switch ((*(u16*)(arg0 + 0x30) >> (i * 2)) & 3) {
         case 1:
-            ((u32*)(arg1 + 0x44))[i] = offset;
+            *(u32*)(arg1 + i * 4 + 0x44) = offset;
             flag = 1;
             offset += 0x400;
             break;
         case 2:
-            ((u32*)(arg1 + 0x44))[i] = offset;
+            *(u32*)(arg1 + i * 4 + 0x44) = offset;
             offset += 0x800;
             break;
         default:
-            ((u32*)(arg1 + 0x44))[i] = 0xFFFFFFFF;
+            *(u32*)(arg1 + i * 4 + 0x44) = 0xFFFFFFFF;
             break;
         }
     }
