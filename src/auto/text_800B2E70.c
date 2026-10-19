@@ -6117,8 +6117,8 @@ void fn_800D80B8(u32 *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max_lod,
 
 extern u8 lbl_80359668[8];
 void fn_800D821C(u32 *arg0, u32 arg1, u32 arg2) {
-    *arg0 = (arg1 & 3) | (*arg0 & ~3);
-    SETF(*arg0, 2, 2, arg2);
+    *arg0 = __rlwimi(*arg0, arg1, 0, 30, 31);
+    *arg0 = __rlwimi(*arg0, arg2, 2, 28, 29);
 }
 
 void fn_800D8238(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
