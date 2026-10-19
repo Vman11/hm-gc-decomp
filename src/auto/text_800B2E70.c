@@ -696,23 +696,24 @@ int fn_800B44C8(int arg0, int arg1, int arg2) {
 }
 
 int fn_800B4538(int arg0, int arg1) {
-    int *entry = (int *)lbl_8035A568;
-    int aligned = (arg0 + 31) & ~31;
-    int end = arg1 & ~31;
-    int count = lbl_8035A56C;
-    int i = 0;
-    while (count-- > 0) {
-        if (entry[0] < 0) {
-            entry[0] = end - aligned;
-            ((int *)aligned)[0] = 0;
-            ((int *)aligned)[1] = 0;
-            ((int *)aligned)[2] = entry[0];
-            entry[1] = aligned;
-            entry[2] = 0;
-            return i;
+    int heap;
+    HeapDesc *hd;
+    HeapCell *cell;
+    u8 *start = (u8 *)((arg0 + 31) & ~31);
+    u8 *end = (u8 *)(arg1 & ~31);
+
+    for (heap = 0; heap < lbl_8035A56C; heap++) {
+        hd = &((HeapDesc *)lbl_8035A568)[heap];
+        if (hd->size < 0) {
+            hd->size = end - start;
+            cell = (HeapCell *)start;
+            cell->prev = NULL;
+            cell->next = NULL;
+            cell->size = hd->size;
+            hd->free = cell;
+            hd->allocated = NULL;
+            return heap;
         }
-        entry += 3;
-        i++;
     }
     return -1;
 }
