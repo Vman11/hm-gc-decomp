@@ -1,6 +1,7 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
 #include "trk_priv.h"
+#include "trk_ppc_inline.h"
 extern void (*lbl_8035A940)();
 extern void (*lbl_8035A7A0)();
 extern void (*lbl_8035A69C)();
