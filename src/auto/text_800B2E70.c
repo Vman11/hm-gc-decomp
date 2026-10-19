@@ -8294,10 +8294,6 @@ void fn_800DC9A4(TrkBuf* buf) {
 }
 
 s32 fn_800DF8AC(u8 unused, u32 start, u32 end);
-s32 fn_800E04D0(u32, u32, TrkBuf *, u32 *, BOOL);
-s32 fn_800E0B0C(u32, u32, TrkBuf *, u32 *, BOOL);
-s32 fn_800E0098(u32, u32, TrkBuf *, u32 *, BOOL);
-s32 fn_800E0640(u32, u32, TrkBuf *, u32 *, BOOL);
 void fn_800DCAF8(TrkBuf* buf) {
     u8 cmd;
     u8 opt;
