@@ -5307,13 +5307,12 @@ void fn_800D6C5C(void) {
 }
 
 void fn_800D6CE4(u8 width, s32 texOffsets) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    SETF(M2C_FIELD(gx, u32 *, 0x7C), 8, 0, width);
-    SETF(M2C_FIELD(gx, u32 *, 0x7C), 3, 16, texOffsets);
-    (*(volatile PPCWGPipe *)0xCC008000).u8 = 0x61;
-    (*(volatile PPCWGPipe *)0xCC008000).u32 = M2C_FIELD(gx, u32 *, 0x7C);
-    gx->bpSentNot = 0;
+    extern GXDataHead *const __GXData;
+    M2C_FIELD(__GXData, u32 *, 0x7C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x7C), width, 0, 24, 31);
+    M2C_FIELD(__GXData, u32 *, 0x7C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x7C), texOffsets, 16, 13, 15);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x7C);
+    __GXData->bpSentNot = 0;
 }
 
 void fn_800D6D24(u8 pointSize, s32 texOffsets) {
