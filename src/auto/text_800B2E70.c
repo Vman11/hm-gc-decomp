@@ -9274,10 +9274,10 @@ s32 fn_800DF300(void *mutex) {
     return 0;
 }
 
+s32 fn_800DF308(u8 cmd) {
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
-s32 fn_800DF308(u8 cmd) {
     s32 fn_800DFC6C(void *);
     s32 fn_800DFBE8(void *);
     s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
