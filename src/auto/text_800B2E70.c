@@ -6655,17 +6655,17 @@ void fn_800D99D8(u8 update_enable) {
     gx->bpSentNot = 0;
 }
 
-void fn_800D9A04(u32 compare_enable, u32 func, u32 update_enable) {
+void fn_800D9A04(u8 compare_enable, s32 func, u8 update_enable) {
     extern GXDataHead *__GXData;
-    u32 reg;
-    reg = M2C_FIELD(__GXData, u32 *, 0x1D8);
-    SETF(reg, 1, 0, compare_enable);
-    SETF(reg, 3, 1, func);
-    SETF(reg, 1, 4, update_enable);
+    GXDataHead *gx = __GXData;
+    u32 reg = M2C_FIELD(gx, u32 *, 0x1D8);
+    reg = __rlwimi(reg, compare_enable, 0, 31, 31);
+    reg = __rlwimi(reg, func, 1, 28, 30);
+    reg = __rlwimi(reg, update_enable, 4, 27, 27);
     GXWGFifo.u8 = 0x61;
     GXWGFifo.u32 = reg;
-    M2C_FIELD(__GXData, u32 *, 0x1D8) = reg;
-    __GXData->bpSentNot = 0;
+    M2C_FIELD(gx, u32 *, 0x1D8) = reg;
+    gx->bpSentNot = 0;
 }
 
 void fn_800D9A38(u8 before_tex) {
