@@ -1,0 +1,16 @@
+/* Functions from 0x80112F08 to 0x80112F20, found by decomp-toolkit. */
+#include "common.h"
+
+extern "C" {
+
+extern s32 lbl_8035AAE8;
+
+void fn_80112F08(s32 arg0) {
+    lbl_8035AAE8 = arg0;
+}
+
+s32 fn_80112F10(u8 *arg0, s32 arg1) {
+    return (*(s32 **)(arg0 + 0xC))[arg1];
+}
+
+} /* extern "C" */

@@ -11,7 +11,7 @@ extern u8 lbl_802AFC68[];
 extern u8 lbl_802AFEC0[];
 extern f32 lbl_8035C020;
 
-void fn_800390F8(u8 *arg0) {
+void __ct__9C800390F8Fv(u8 *arg0) {
     *(void **)(arg0 + 0x0) = lbl_802AFC68;
     *(void **)(arg0 + 0x0) = lbl_802AFC48;
     *(void **)(arg0 + 0x0) = lbl_802AFEC0;

@@ -7,4 +7,11 @@ s32 fn_800E2B24(s32 arg0, u32 arg1, s32 arg2) {
 
 unsigned long long fn_800E2B48(unsigned long long x, int n) { return x >> n; }
 
-long long fn_800E2B6C(long long x, int n) { return x >> n; }
+unsigned fn_800E2B6C(int hi, unsigned lo, int n) {
+int left = 32-n;
+int excess = n-32;
+unsigned result = (lo >> n) | ((unsigned)hi << left);
+int upper = hi >> excess;
+if (excess > 0) result |= upper;
+return result;
+}

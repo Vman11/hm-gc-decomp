@@ -50,28 +50,38 @@ typedef struct {
     u32 stride1;
 } Unk80139604C;
 
-void fn_80139604(Unk80139604A *arg0, s32 idx, Unk80139604B *__restrict src, Unk80139604C *dst) {
+void fn_80139604(Unk80139604A *arg0, s32 idx, Unk80139604B *src, Unk80139604C *dst) {
     f32 *out;
     u32 i;
     u32 n;
     u32 max;
     u32 cnt;
+    f32 x, y, z, w;
 
     if ((arg0->flags & 0x40) && (src->flags & 0x40)) {
+        x = src->v[0];
+        y = src->v[1];
         out = (f32 *)(dst->data0 + idx * dst->stride0);
-        out[0] = src->v[0];
-        out[1] = src->v[1];
+        out[0] = x;
+        out[1] = y;
     } else if ((arg0->flags & 0x80) && (src->flags & 0x80)) {
+        x = src->v[0];
+        y = src->v[1];
+        z = src->v[2];
         out = (f32 *)(dst->data0 + idx * dst->stride0);
-        out[0] = src->v[0];
-        out[1] = src->v[1];
-        out[2] = src->v[2];
+        out[0] = x;
+        out[1] = y;
+        out[2] = z;
     } else if ((arg0->flags & 0x100) && (src->flags & 0x100)) {
+        x = src->v[0];
+        y = src->v[1];
+        z = src->v[2];
+        w = src->v[3];
         out = (f32 *)(dst->data0 + idx * dst->stride0);
-        out[0] = src->v[0];
-        out[1] = src->v[1];
-        out[2] = src->v[2];
-        out[3] = src->v[3];
+        out[0] = x;
+        out[1] = y;
+        out[2] = z;
+        out[3] = w;
     }
     if ((arg0->flags & 0x200) && (src->flags & 0x200)) {
         max = arg0->count;
@@ -86,9 +96,12 @@ void fn_80139604(Unk80139604A *arg0, s32 idx, Unk80139604B *__restrict src, Unk8
         }
     }
     if ((arg0->flags & 0x800) && (src->flags & 0x800)) {
+        x = src->w[4];
+        y = src->w[5];
+        z = src->w[6];
         out = (f32 *)(dst->data0 + idx * dst->stride0);
-        out[0] = src->w[4];
-        out[1] = src->w[5];
-        out[2] = src->w[6];
+        out[0] = x;
+        out[1] = y;
+        out[2] = z;
     }
 }

@@ -26,15 +26,14 @@ extern s32 lbl_8035B0C0;
 static inline void fn_801EFA90_base(Obj_801EFA90 *arg0) {
     arg0->vtbl = lbl_802E2558;
 }
-void fn_801EFA90(Obj_801EFA90 *arg0) {
-    Vec3i_801EFA90 *src;
-    arg0->vtbl = lbl_802E2558;
+void __ct__9C801EFA90Fv(Obj_801EFA90 *arg0) {
+    void *vt = lbl_802E2558;
+    arg0->vtbl = vt;
     arg0->vtbl = lbl_802EE7A8;
-    src = &lbl_8029BF10;
     arg0->unkC = 0;
     arg0->unk8 = 0;
     arg0->unk1C = 0;
-    arg0->unk10 = *src;
+    arg0->unk10 = lbl_8029BF10;
     arg0->unk20 = 0;
     arg0->unk24 = 0;
 }

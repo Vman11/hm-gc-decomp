@@ -1,0 +1,30 @@
+/* Functions from 0x80226F20 to 0x8022705C, found by decomp-toolkit. */
+#include "common.h"
+
+extern "C" {
+
+typedef struct {
+    char unk_0x0[0x254];
+    s32 *unk_0x254[10];
+} Unk80226F20;
+
+extern s32 lbl_80365C40;
+void fn_80226F20(Unk80226F20 *arg0) {
+    s32 *p;
+    s32 i;
+    for (i = 0; i < 10; i++) {
+        p = arg0->unk_0x254[i];
+        if (p) p[2] |= lbl_80365C40;
+    }
+}
+
+void fn_80226FC8(Unk80226F20 *arg0) {
+    s32 *p;
+    s32 i;
+    for (i = 0; i < 10; i++) {
+        p = arg0->unk_0x254[i];
+        if (p) p[2] &= ~2;
+    }
+}
+
+} /* extern "C" */

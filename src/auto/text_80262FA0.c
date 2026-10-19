@@ -8,7 +8,7 @@ static inline void clear_row(f32 *p) {
     p[2] = lbl_80366AE8;
 }
 
-void fn_80262FA0(void *arg0) {
+void __ct__9C80262FA0Fv(void *arg0) {
     extern void *lbl_8035B754;
     extern f32 lbl_80366AE8;
     extern f32 lbl_80366AEC;

@@ -10,7 +10,7 @@ extern f32 lbl_80364FD8;
 extern f32 lbl_80364FDC;
 extern f32 lbl_80364FE4;
 
-void fn_801C3FD0(void *arg0) {
+void __ct__9C801C3FD0Fv(void *arg0) {
     *(void **)((char *)arg0 + 0x70) = &lbl_802EBD10;
     *(s32 *)((char *)arg0 + 0x0) = 0;
     *(s32 *)((char *)arg0 + 0x64) = 0;

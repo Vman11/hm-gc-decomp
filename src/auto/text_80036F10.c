@@ -42,14 +42,16 @@ void fn_80036FF8(f32 *arg0, f32 *arg1, f32 arg2) {
 }
 
 void fn_8003702C(f32 *arg0, f32 *arg1, f32 *arg2) {
-    f32 x1 = arg1[0];
-    f32 x2 = arg2[0];
-    f32 y1 = arg1[1];
-    f32 y2 = arg2[1];
-    f32 z1 = arg1[2];
-    f32 z2 = arg2[2];
-    arg0[0] = x1 - x2;
-    arg0[1] = y1 - y2;
-    arg0[2] = z1 - z2;
+    f32 x0 = arg1[0];
+    f32 x1 = arg2[0];
+    f32 y0 = arg1[1];
+    f32 x = x0 - x1;
+    f32 y1 = arg2[1];
+    f32 z0 = arg1[2];
+    f32 z1 = arg2[2];
+    f32 y = y0 - y1;
+    arg0[0] = x;
+    arg0[1] = y;
+    arg0[2] = z0 - z1;
 }
 

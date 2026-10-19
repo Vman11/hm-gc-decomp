@@ -3,7 +3,7 @@
 
 extern u8 lbl_802E8F78[];
 
-void fn_8018E2AC(s32* arg0) {
+void __ct__9C8018E2ACFv(s32* arg0) {
     arg0[3] = (s32)lbl_802E8F78;
     arg0[1] = -1;
     arg0[2] = 0;

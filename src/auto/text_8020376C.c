@@ -3,7 +3,7 @@
 
 extern s32 lbl_8035B178;
 
-void fn_8020376C(u32 *arg0) {
+void __ct__9C8020376CFv(u32 *arg0) {
     arg0[0] = 0;
     arg0[1] = 0;
     arg0[2] = 0;

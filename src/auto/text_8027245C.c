@@ -11,7 +11,7 @@ typedef struct {
     s32 unk1E8;
 } UnkStruct8027245C;
 
-void fn_8027245C(UnkStruct8027245C* arg0) {
+void __ct__9C8027245CFv(UnkStruct8027245C* arg0) {
     u32 i;
 
     for (i = 0; i < 60; i++) {

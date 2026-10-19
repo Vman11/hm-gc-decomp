@@ -3,7 +3,7 @@
 
 extern void *lbl_8035B818;
 
-void fn_80272E68(s32 *arg0) {
+void __ct__9C80272E68Fv(s32 *arg0) {
     lbl_8035B818 = arg0;
     arg0[0] = 0;
     arg0[1] = 0;

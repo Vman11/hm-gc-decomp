@@ -69,35 +69,19 @@ u32 fn_8014EB54(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out) 
     return code | (((0x3F800000 - z) >> 30) & 2);
 }
 
-u32 fn_8014EC90(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out, f32 *__restrict proj) {
+u32 fn_8014EC90(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out, f32 *ndc) {
     extern u32 lbl_80364538;
     extern f32 lbl_8036453C;
     u32 x, y, z, w;
     u32 code;
     f32 inv;
 
-    out[0] = v[0] * m[0][0];
-    out[1] = v[0] * m[1][0];
-    out[2] = v[0] * m[2][0];
-    out[3] = v[0] * m[3][0];
-    out[0] = v[1] * m[0][1] + out[0];
-    out[1] = v[1] * m[1][1] + out[1];
-    out[2] = v[1] * m[2][1] + out[2];
-    out[3] = v[1] * m[3][1] + out[3];
-    out[0] = v[2] * m[0][2] + out[0];
-    out[1] = v[2] * m[1][2] + out[1];
-    out[2] = v[2] * m[2][2] + out[2];
-    out[3] = v[2] * m[3][2] + out[3];
-    out[0] = out[0] + m[0][3];
-    out[1] = out[1] + m[1][3];
-    out[2] = out[2] + m[2][3];
-    out[3] = out[3] + m[3][3];
-
+    MtxMultVec4(m, v, out);
+    inv = lbl_8036453C / out[3];
     x = ((u32 *)out)[0];
     y = ((u32 *)out)[1];
     z = ((u32 *)out)[2];
     w = ((u32 *)out)[3];
-    inv = lbl_8036453C / out[3];
     if (w & 0x80000000) {
         x ^= 0x80000000;
         y ^= 0x80000000;
@@ -119,9 +103,9 @@ u32 fn_8014EC90(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out, 
     } else {
         code |= ((w - z) >> 30) & 2;
     }
-    proj[0] = out[0] * inv;
-    proj[1] = out[1] * inv;
-    proj[2] = out[2] * inv;
+    ndc[0] = out[0] * inv;
+    ndc[1] = out[1] * inv;
+    ndc[2] = out[2] * inv;
     return code;
 }
 

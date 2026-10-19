@@ -1,7 +1,7 @@
 /* Functions from 0x80038D2C to 0x80038DA4, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80038D2C(void **arg0) {
+void __ct__9C80038D2CFv(void **arg0) {
     extern u8 lbl_802AFC68[];
     extern u8 lbl_802AFC48[];
     extern u8 lbl_802AFE78[];

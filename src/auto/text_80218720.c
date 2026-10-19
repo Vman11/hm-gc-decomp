@@ -2,7 +2,7 @@
 #include "common.h"
 
 extern s32 lbl_8035B228;
-void fn_80218720(void *arg0) {
+void __ct__9C80218720Fv(void *arg0) {
     M2C_FIELD(arg0, s32 *, 0x190) = 0;
     M2C_FIELD(arg0, s32 *, 0x194) = 0;
     M2C_FIELD(arg0, s32 *, 0x198) = 0;

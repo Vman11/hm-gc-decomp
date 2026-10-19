@@ -1,0 +1,32 @@
+// auto/text_80070B70 fn_80070B70 98.6047
+extern u8 lbl_802C1E1C[];
+extern u8 lbl_802C2418[];
+extern s32 lbl_8035B530;
+void __ct__9C8024262CFv();
+s32 __nw__FUl();
+void fn_800604C4();
+void fn_80070490();
+void fn_800F7E98();
+void fn_800F7EC0();
+
+u32 * fn_80070B70(void) {
+    u32 *puVar1;
+
+    if (lbl_8035B530 == 0) {
+        fn_800604C4(0xfffffffe,0,0,0);
+    }
+    fn_800F7EC0(lbl_8035B530);
+    puVar1 = (u32 *)__nw__FUl(0x29c);
+    if (puVar1 != (u32 *)0x0) {
+        __ct__9C8024262CFv();
+        *puVar1 = (u32)lbl_802C2418;
+        puVar1[0x4f] = 0;
+        *puVar1 = (u32)lbl_802C1E1C;
+        fn_80070490(puVar1);
+    }
+    fn_800F7E98();
+    if (puVar1 == (u32 *)0x0) {
+        fn_800604C4(0xfffffffc,0,0,0);
+    }
+    return puVar1;
+}

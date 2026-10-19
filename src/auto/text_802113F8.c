@@ -3,7 +3,7 @@
 
 extern u8 lbl_802EFE20[];
 
-void fn_802113F8(void *arg0) {
+void __ct__9C802113F8Fv(void *arg0) {
     *(void **)((char *)arg0 + 0x10) = lbl_802EFE20;
     *(s32 *)((char *)arg0 + 0x0) = 0;
     *(s32 *)((char *)arg0 + 0x4) = 0;

@@ -5,7 +5,7 @@ extern u8 lbl_802AFC68[];
 extern u8 lbl_802AFC48[];
 extern u8 lbl_802AFC28[];
 
-void fn_80037904(void **arg0) {
+void __ct__9C80037904Fv(void **arg0) {
     arg0[0] = lbl_802AFC68;
     arg0[0] = lbl_802AFC48;
     arg0[0] = lbl_802AFC28;

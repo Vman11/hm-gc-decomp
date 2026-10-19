@@ -3,7 +3,7 @@
 
 extern s32* lbl_8035B64C;
 
-void fn_802539B4(s32* arg0) {
+void __ct__9C802539B4Fv(s32* arg0) {
     lbl_8035B64C = arg0;
     *arg0 = 0;
 }

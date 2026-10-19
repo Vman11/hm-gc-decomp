@@ -7,7 +7,7 @@ extern s32 lbl_8035AC80;
 
 extern s32 lbl_8035AC80;
 
-void fn_8013ECE4(s32 *arg0) {
+void __ct__9C8013ECE4Fv(s32 *arg0) {
     arg0[0] = 0;
     arg0[1] = 0;
 }

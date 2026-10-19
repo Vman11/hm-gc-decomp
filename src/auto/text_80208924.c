@@ -1,23 +1,21 @@
 /* Functions from 0x80208924 to 0x802089D4, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80208924(void **arg0) {
+#pragma scheduling off
+void __ct__9C80208924Fv(volatile u32 *arg0) {
     extern u8 lbl_802EF934[];
     extern u8 lbl_802EFC40[];
     extern u8 lbl_802EF920[];
-    void *c = lbl_802EF920;
-    void *b = lbl_802EFC40;
-    void *a = lbl_802EF934;
-    arg0[0] = a;
-    arg0[0] = b;
-    arg0[0] = c;
+    arg0[0] = (u32)lbl_802EF934;
+    arg0[0] = (u32)lbl_802EFC40;
+    arg0[0] = (u32)lbl_802EF920;
     arg0[1] = 0;
     arg0[2] = 0;
     arg0[3] = 0;
     arg0[4] = 0;
     arg0[5] = 0;
 }
-
+#pragma scheduling reset
 u32 fn_80208964(u32 **arg0, u32 arg1, s32 arg2) {
     u8 var_r6;
     u8 var_r3;

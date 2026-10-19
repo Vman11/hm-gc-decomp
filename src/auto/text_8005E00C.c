@@ -19,3 +19,30 @@ typedef struct Unk5E00C {
 extern Unk5E00C *lbl_8035A1A8;
 extern f32 lbl_8035E4A8;
 extern f32 lbl_8035E4CC;
+
+void fn_8005E00C(Unk5E00C *arg0, f32 delta) {
+    if (arg0->flags & 1) {
+        arg0->value -= delta * ((short)lbl_8035E4CC / *arg0->duration);
+        if (arg0->value < lbl_8035E4A8) arg0->value = lbl_8035E4A8;
+        if (arg0 == lbl_8035A1A8) {
+            register Unk5E00CObject *object = arg0->object;
+            if (object) {
+                f32 value = arg0->value;
+                if (value > lbl_8035E4A8) {
+                    register Unk5E00CColor *color = arg0->settings->color;
+                    Unk5E00CMaterial *material = object->link->material;
+                    f32 x = value * color->x;
+                    f32 y = value * color->y;
+                    register f32 z = value * color->z;
+                    material->x = x;
+                    material->y = y;
+                    material->z = z;
+                    material->a = lbl_8035E4CC;
+                    return;
+                }
+                object->flags &= ~0x800;
+                lbl_8035A1A8 = 0;
+            }
+        }
+    }
+}

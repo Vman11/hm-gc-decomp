@@ -81,9 +81,7 @@ typedef struct EXIControl {
 } EXIControl;
 extern char Ecb_80328410[];
 s32 EXIGetID(s32, u32, u32 *);
-BOOL __EXIProbe(s32 chan);
 void __OSUnmaskInterrupts(u32);
-u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext);
 
 typedef struct FragmentInfo {
     void *eti_info;
@@ -5286,7 +5284,6 @@ BOOL fn_800F2864(s32 chan, EXICallback extCallback) {
     return rc;
 }
 #pragma pop
-BOOL __EXIProbe(s32 chan);
 BOOL EXIDeselect(s32 chan) {
     EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
     BOOL enabled;

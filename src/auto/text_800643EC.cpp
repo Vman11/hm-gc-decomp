@@ -1,0 +1,21 @@
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+#include "common.h"
+
+extern "C" {
+
+extern u8 lbl_802EA140[];
+void __ct__9C80064430Fv(void);
+
+} /* extern "C" */
+
+extern "C" {
+void fn_801A38C4(int);
+}
+struct C80064430 { char pad[0x4]; C80064430(void); ~C80064430(); };
+struct C800643EC : C80064430 {  C800643EC(void); };
+
+C800643EC::C800643EC() : C80064430() {
+    *(u8 **)((char *)this + 0x2a0) = lbl_802EA140;
+    fn_801A38C4((int)((char *)this + 0x33ac));
+}

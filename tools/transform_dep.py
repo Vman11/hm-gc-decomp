@@ -12,6 +12,7 @@
 ###
 
 import argparse
+import sys
 import os
 from platform import uname
 
@@ -82,3 +83,37 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def patch_data_align(d_file: str) -> None:
+    """// dtk: data-align 4  in the unit's source -> .data sh_addralign = 4 in its object (ELF32 big-endian)."""
+    import struct
+    obj = d_file[:-2] + ".o"
+    src = None
+    try:
+        with open(d_file) as f:
+            first = f.readline()
+        src = first.split(":", 1)[1].split()[0] if ":" in first else None
+    except Exception:
+        return
+    if not src or not os.path.exists(src) or "// dtk: data-align 4" not in open(src, errors="replace").read():
+        return
+    with open(obj, "rb") as f:
+        e = bytearray(f.read())
+    shoff, shentsize, shnum, shstrndx = struct.unpack(">I", e[32:36])[0], struct.unpack(">H", e[46:48])[0], struct.unpack(">H", e[48:50])[0], struct.unpack(">H", e[50:52])[0]
+    names_off = struct.unpack(">I", e[shoff + shstrndx * shentsize + 16:shoff + shstrndx * shentsize + 20])[0]
+    for i in range(shnum):
+        h = shoff + i * shentsize
+        name_idx = struct.unpack(">I", e[h:h + 4])[0]
+        name = e[names_off + name_idx:e.index(b"\0", names_off + name_idx)].decode()
+        if name == ".data":
+            e[h + 32:h + 36] = struct.pack(">I", 4)
+    with open(obj, "wb") as f:
+        f.write(e)
+
+
+if __name__ == "__main__":
+    try:
+        patch_data_align(sys.argv[1] if len(sys.argv) > 1 else "")
+    except Exception:
+        pass

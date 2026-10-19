@@ -10,14 +10,17 @@ void *fn_800F7E70(void) {
     return NULL;
 }
 
+#pragma optimization_level 2
 void fn_800F7E98(void) {
-    SetTop(NULL);
+    lbl_802E1F60[lbl_80359710] = NULL;
     lbl_80359710--;
 }
-
+#pragma optimization_level reset
 void fn_800F7EC0(void *arg0) {
-    if (++lbl_80359710 < 0x10) {
-        SetTop(arg0);
+    lbl_80359710++;
+    if (lbl_80359710 < 0x10) {
+        void **p = lbl_802E1F60;
+        p[lbl_80359710] = arg0;
     }
 }
-
+#pragma opt_propagation reset

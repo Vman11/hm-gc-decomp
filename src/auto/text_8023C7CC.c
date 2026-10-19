@@ -1,7 +1,7 @@
 /* Functions from 0x8023C7CC to 0x8023C7EC, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8023C7CC(u32 *arg0) {
+void __ct__9C8023C7CCFv(u32 *arg0) {
     arg0[0] = 0;
     arg0[1] = 0;
     arg0[2] = 0;

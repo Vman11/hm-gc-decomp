@@ -1,7 +1,7 @@
 /* Functions from 0x802538C0 to 0x80253900, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_802538C0(void **arg0) {
+void __ct__9C802538C0Fv(void **arg0) {
     extern u8 lbl_802AFC68[];
     extern u8 lbl_802F236C[];
     arg0[0] = lbl_802AFC68;

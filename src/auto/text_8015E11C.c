@@ -16,9 +16,13 @@ static inline void **fn_8015E11C_mid(void **arg0) {
     return arg0;
 }
 
-void fn_8015E11C(void **arg0) {
-    fn_8015E11C_mid(arg0);
-    arg0[0] = lbl_802E6F28;
+void __ct__9C8015E11CFv(void **arg0) {
+    void *a = lbl_802E21D0;
+    void *b = lbl_802E6F00;
+    void *c = lbl_802E6F28;
+    arg0[0] = a;
+    arg0[0] = b;
+    arg0[0] = c;
     arg0[1] = 0;
     arg0[2] = 0;
 }

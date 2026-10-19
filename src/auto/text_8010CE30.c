@@ -3,7 +3,7 @@
 
 extern s32 lbl_8035AAC0;
 
-void fn_8010CE30(void *arg0) {
+void __ct__9C8010CE30Fv(void *arg0) {
     extern u8 lbl_802E28D8[];
     *(void **)((char *)arg0 + 0x18) = lbl_802E28D8;
     *(s32 *)((char *)arg0 + 0x0) = 0;

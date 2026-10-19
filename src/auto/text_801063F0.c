@@ -17,7 +17,7 @@ extern f32 lbl_803638A8;
 extern f32 lbl_803638AC;
 extern f32 lbl_803638C0;
 
-void fn_801063F0(Unk801063F0* arg0) {
+void __ct__9C801063F0Fv(Unk801063F0* arg0) {
     arg0->unk0 = 0;
     arg0->unk4 = 0;
     arg0->unk8 = 0;

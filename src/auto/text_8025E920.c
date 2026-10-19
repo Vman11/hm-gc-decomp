@@ -2,7 +2,7 @@
 #include "common.h"
 extern s32 lbl_8035B708;
 
-void fn_8025E920(s32* arg0) {
+void __ct__9C8025E920Fv(s32* arg0) {
     arg0[3] = 0;
     arg0[1] = 0;
     arg0[2] = 0;

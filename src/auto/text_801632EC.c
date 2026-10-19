@@ -1,7 +1,7 @@
 /* Functions from 0x801632EC to 0x80163364, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801632EC(void *arg0) {
+void __ct__9C801632ECFv(void *arg0) {
     u8 *p = (u8 *)arg0;
     *(u32 *)(p + 0x00) = 0;
     *(u32 *)(p + 0x04) = 8;

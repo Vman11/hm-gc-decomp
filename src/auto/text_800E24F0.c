@@ -13,13 +13,21 @@ int fn_800E2520(int *a, int *b) {
     return 0;
 }
 
+extern const double lbl_8029BF20[];
 unsigned fn_800E2584(double d) {
-    if (d < 0.0) return 0;
-    if (d >= 4294967296.0) return 0xFFFFFFFF;
-    if (d >= 2147483648.0) return (int)(d - 2147483648.0) + 0x80000000;
-    return (int)d;
+unsigned result = 0;
+if (!(d < 0.0)) {
+result--;
+if (d < 4294967296.0) {
+double value = d;
+if (!(d < 2147483648.0)) value -= 2147483648.0;
+result = (int)value;
+if (!(d < 2147483648.0)) result += 0x80000000;
+}
+}
+return result;
 }
 
 int GetR2__Fv_800E2C60(int r2) {
-return r2;
+    return r2;
 }

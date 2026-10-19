@@ -1,7 +1,7 @@
 /* Functions from 0x8023D2AC to 0x8023D2D8, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8023D2AC(void **arg0) {
+void __ct__9C8023D2ACFv(void **arg0) {
     extern u8 lbl_802E2558[];
     extern u8 lbl_802F19D4[];
     arg0[0] = lbl_802E2558;

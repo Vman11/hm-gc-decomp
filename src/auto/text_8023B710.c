@@ -4,7 +4,7 @@
 extern s32 lbl_8035B3E8;
 extern s32 lbl_802F1958[];
 
-void fn_8023B710(s32* arg0) {
+void __ct__9C8023B710Fv(s32* arg0) {
     arg0[3] = (s32)lbl_802F1958;
     arg0[2] = 0;
     arg0[0] = 0;

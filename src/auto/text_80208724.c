@@ -1,7 +1,7 @@
 /* Functions from 0x80208724 to 0x80208744, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80208724(s32* arg0) {
+void __ct__9C80208724Fv(s32* arg0) {
     arg0[0] = 0;
     arg0[1] = 0;
     arg0[2] = 0;

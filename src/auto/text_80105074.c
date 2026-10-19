@@ -1,7 +1,7 @@
 /* Functions from 0x80105074 to 0x801050B0, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80105074(void *arg0) {
+void __ct__9C80105074Fv(void *arg0) {
     extern u8 lbl_802E23D8[];
     *(void **)((char *)arg0 + 0x24) = lbl_802E23D8;
     *(s32 *)((char *)arg0 + 0x0) = 0;

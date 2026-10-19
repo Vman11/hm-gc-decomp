@@ -1,7 +1,7 @@
 /* Functions from 0x80273D98 to 0x80273DD8, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80273D98(volatile u32 *arg0) {
+void __ct__9C80273D98Fv(volatile u32 *arg0) {
     extern u8 lbl_802AFC68[];
     extern u8 lbl_802AFC48[];
     extern u8 lbl_802F37B8[];

@@ -9,7 +9,7 @@ void fn_801150D0(void) {
 
 }
 
-void fn_801150D4(void) {
+void __ct__9C801150D4Fv(void) {
 
 }
 

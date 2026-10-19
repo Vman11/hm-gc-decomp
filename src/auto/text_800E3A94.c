@@ -43,39 +43,36 @@ static inline void RestoreGPRegs(UnkRegCtx* ctx, u32* src, s32 n) {
 }
 
 u32 fn_800E3A94(UnkRegCtx* ctx, u16** pc) {
-    UnkFrame* prev = ctx->frame->prev;
-    u16 h = **pc;
-    s32 ps = (h >> 1) & 1;
-    s32 nf = (h >> 6) & 0x1F;
-    UnkFReg* fsrc;
-    f64* dsrc;
-    u32* isrc;
-    s32 i;
-    s32 ni;
+    UnkFrame* callers_SP;
+    char* FPR_save_area;
+    UnkFReg* PS_save_area;
+    s32 saved_GPRs, saved_FPRs;
+    s32 i, j;
 
-    if (ps) {
-        fsrc = (UnkFReg*)prev - nf;
-        isrc = (u32*)fsrc;
+    callers_SP = ctx->frame->prev;
+    saved_FPRs = (**pc >> 6) & 0x1F;
+    if ((**pc >> 1) & 1) {
+        PS_save_area = (UnkFReg*)((char*)callers_SP - saved_FPRs * 16);
+        FPR_save_area = (char*)PS_save_area;
     } else {
-        isrc = (u32*)((f64*)prev - nf);
+        FPR_save_area = (char*)callers_SP - saved_FPRs * 8;
     }
-    if (ps) {
-        for (i = 32 - nf; i < 32; i++, fsrc++) {
-            ctx->f[i].ps0 = fsrc->ps0;
-            ctx->f[i].ps1 = fsrc->ps1;
-            ctx->f[i].d = fsrc->d;
+    if ((**pc >> 1) & 1) {
+        for (i = 32 - saved_FPRs, j = 0; i < 32; i++, j++) {
+            ctx->f[i].ps0 = PS_save_area[j].ps0;
+            ctx->f[i].ps1 = PS_save_area[j].ps1;
+            ctx->f[i].d = PS_save_area[j].d;
         }
     } else {
-        dsrc = (f64*)isrc;
-        for (i = 32 - nf; i < 32; i++) {
-            ctx->f[i].d = *dsrc++;
+        for (i = 32 - saved_FPRs, j = 0; i < 32; i++, j++) {
+            ctx->f[i].d = ((f64*)FPR_save_area)[j];
         }
     }
-    ni = **pc >> 11;
-    isrc -= ni;
-    for (i = 32 - ni; i < 32; i++) {
-        ctx->r[i] = *isrc++;
+    saved_GPRs = **pc >> 11;
+    FPR_save_area -= saved_GPRs * 4;
+    for (i = 32 - saved_GPRs, j = 0; i < 32; i++, j++) {
+        ctx->r[i] = ((u32*)FPR_save_area)[j];
     }
-    ctx->frame = prev;
-    return prev->unk4;
+    ctx->frame = callers_SP;
+    return callers_SP->unk4;
 }

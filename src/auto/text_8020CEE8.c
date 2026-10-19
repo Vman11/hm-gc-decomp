@@ -11,13 +11,16 @@ static inline u32 count_entries(void *arg) {
 
 s32 fn_8020CEE8(void *arg0, void *arg1) {
  s32 total;
- u32 extra = 0;
- char *entry = arg1;
+ char *entry;
+ u32 value;
+ u32 extra;
  u32 i;
+ extra = 0;
+ entry = arg1;
  total = M2C_FIELD(arg1,s32 *,0x114) + 0x60;
  total += M2C_FIELD(arg1,s32 *,0x10c);
  for (i = 0; i < count_entries(arg1); i++) {
- u32 value = M2C_FIELD(entry,u32 *,0x128);
+ value = M2C_FIELD(entry,u32 *,0x128);
  total += M2C_FIELD(entry,s32 *,0x120);
  if (extra == 0 && value != 0) extra = value;
  entry += 0x14;

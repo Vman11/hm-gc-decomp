@@ -1,0 +1,14 @@
+/* Functions from 0x80112168 to 0x80112190, found by decomp-toolkit. */
+#include "common.h"
+
+extern "C" {
+
+BOOL fn_80112168(void* arg0) {
+    return *(s32*)((u8*)arg0 + 0x10) != 0;
+}
+
+s32 fn_8011217C(s32* arg0) {
+    return *arg0 != 0;
+}
+
+} /* extern "C" */

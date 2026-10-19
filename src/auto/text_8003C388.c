@@ -1,7 +1,7 @@
 /* Functions from 0x8003C388 to 0x8003C3D4, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8003C388(void *arg0) {
+void __ct__9C8003C388Fv(void *arg0) {
     extern void *lbl_8035A074;
     lbl_8035A074 = arg0;
     *(s32 *)((char *)arg0 + 0x3C) = 0;

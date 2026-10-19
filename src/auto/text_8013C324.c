@@ -2,6 +2,6 @@
 #include "common.h"
 extern u8 lbl_802E5E94[];
 
-void fn_8013C324(void** arg0) {
+void __ct__9C8013C324Fv(void** arg0) {
     *arg0 = lbl_802E5E94;
 }

@@ -2,7 +2,7 @@
 #include "common.h"
 extern s32 lbl_8035AE58;
 
-void fn_8018F670(void *arg0) {
+void __ct__9C8018F670Fv(void *arg0) {
     *(u32 *)((u8 *)arg0 + 0) = 0;
     *(u32 *)((u8 *)arg0 + 4) = 0;
     *(u32 *)((u8 *)arg0 + 8) = 0;

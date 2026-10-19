@@ -20,19 +20,27 @@ void fn_80118F2C(UnkList_80118F3C* list, s32 arg1, s32 arg2, s32 arg3) {
     list->count = arg3;
 }
 
-BOOL fn_80118F3C(UnkList_80118F3C* list, u32 item) {
-    u32 i;
+u32 fn_80118F3C(u32 *param_1, u32 param_2) {
+    u32 *puVar1;
+    u32 *piVar2;
+    u32 iVar3;
+    u32 uVar4;
 
-    for (i = 0; item != list->items[i] && i < list->count; i++) {
+    piVar2 = (u32 *)*param_1;
+    for (uVar4 = 0; (param_2 != *piVar2 && (uVar4 < (u32)param_1[2])); uVar4 = uVar4 + 1) {
+        piVar2 = piVar2 + 1;
     }
-    if (item != list->items[i]) {
-        return FALSE;
+    iVar3 = uVar4 * 4;
+    if (param_2 != ((u32 *)*param_1)[uVar4]) {
+        return 0;
     }
-    for (; i < list->count - 1; i++) {
-        list->items[i] = list->items[i + 1];
+    for (; uVar4 < param_1[2] - 1U; uVar4 = uVar4 + 1) {
+        puVar1 = (u32 *)(*param_1 + iVar3);
+        iVar3 = iVar3 + 4;
+        *puVar1 = puVar1[1];
     }
-    list->count--;
-    return TRUE;
+    param_1[2] = param_1[2] - 1U;
+    return 1;
 }
 
 void fn_80118FC0(void) {

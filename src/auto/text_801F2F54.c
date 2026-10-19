@@ -8,10 +8,8 @@ static inline void fn_801F2F54_init(void **p) {
     p[0] = lbl_802EE90C;
 }
 
-void fn_801F2F54(void **arg0) {
-    void **p;
-    arg0[0] = lbl_802EE900;
-    p = (void **)((char *)arg0 + 0x8014);
-    p[0] = lbl_802EE90C;
-    p[0x261] = lbl_802EE90C;
+void fn_801F2F54(void *arg0) {
+    *(void **)arg0 = lbl_802EE900;
+    *(void **)((char *)arg0 + 0x8014) = lbl_802EE90C;
+    *(void **)((char *)arg0 + 0x8998) = lbl_802EE90C;
 }

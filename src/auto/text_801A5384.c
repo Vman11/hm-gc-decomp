@@ -6,7 +6,7 @@ extern u8 lbl_802EA470[];
 
 void fn_801A53A8(s32 arg0);
 
-void fn_801A5384(void *arg0) {
+void __ct__9C801A5384Fv(void *arg0) {
     *(void **)((char *)arg0 + 0x10) = lbl_802EA470;
     *(s32 *)((char *)arg0 + 0x4) = 0;
     *(s32 *)((char *)arg0 + 0x0) = 0;

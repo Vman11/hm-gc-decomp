@@ -2,7 +2,7 @@
 #include "common.h"
 extern s32 lbl_8035B4C0;
 
-void fn_80243F5C(void *arg0) {
+void __ct__9C80243F5CFv(void *arg0) {
     *(u32 *)((u8 *)arg0 + 0x0) = 0;
     *((u8 *)arg0 + 0x4) = 0;
     *((u8 *)arg0 + 0xC) = 0;

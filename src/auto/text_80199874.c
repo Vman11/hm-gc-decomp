@@ -4,7 +4,7 @@
 extern f32 lbl_80364C68;
 extern f32 lbl_80364C68;
 
-void fn_80199874(u8* p) {
+void __ct__9C80199874Fv(u8* p) {
     *(s32*)(p + 0x00) = 0;
     *(s32*)(p + 0x04) = 0;
     *(s32*)(p + 0x08) = 0;

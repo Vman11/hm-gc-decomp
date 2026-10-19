@@ -5,7 +5,7 @@ extern void* lbl_8035A03C;
 extern f32 lbl_8035C0E0;
 extern s32 lbl_8035A038;
 
-void fn_8003A978(void* arg0) {
+void __ct__9C8003A978Fv(void* arg0) {
     lbl_8035A03C = arg0;
     *(s32*)((u8*)arg0 + 0x18) = 0;
     *(s32*)((u8*)arg0 + 0x8) = 0;

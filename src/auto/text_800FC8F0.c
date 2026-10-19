@@ -28,7 +28,7 @@ typedef struct UnkStruct800FC8F0 {
     void* unk8C;
 } UnkStruct800FC8F0;
 
-void fn_800FC8F0(UnkStruct800FC8F0* p) {
+void __ct__9C800FC8F0Fv(UnkStruct800FC8F0* p) {
     p->unk8C = lbl_802E2270;
     p->unk4[0] = lbl_80363708;
     p->unk4[1] = lbl_80363708;

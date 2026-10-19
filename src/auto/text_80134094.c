@@ -9,7 +9,7 @@ typedef struct {
 
 extern u8 lbl_802E4FF8[];
 
-void fn_80134094(unkStruct_80134094* arg0) {
+void __ct__9C80134094Fv(unkStruct_80134094* arg0) {
     arg0->unk4 = lbl_802E4FF8;
     arg0->unk0 = 0;
     arg0->unk2 = 0;

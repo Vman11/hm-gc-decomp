@@ -4,15 +4,14 @@
 void fn_8009C2B0(void *arg0) {
     extern u8 lbl_802CD6C8[];
     extern f32 lbl_80361574;
-    u8 *base = lbl_802CD6C8;
     M2C_FIELD(arg0, s32 *, 0x54) = 0x1A;
     M2C_FIELD(arg0, s32 *, 0x2C) = 0x1A;
     M2C_FIELD(arg0, s32 *, 0x68) = 4;
     M2C_FIELD(arg0, s32 *, 0x5C) = 0;
-    M2C_FIELD(arg0, void **, 0x58) = base + 0x22C;
-    M2C_FIELD(arg0, void **, 0x28) = base + 0x294;
-    M2C_FIELD(arg0, void **, 0x30) = base + 0x3CC;
-    M2C_FIELD(arg0, void **, 0x6C) = base + 0x21C;
+    M2C_FIELD(arg0, void **, 0x58) = lbl_802CD6C8 + 0x22C;
+    M2C_FIELD(arg0, void **, 0x28) = lbl_802CD6C8 + 0x294;
+    M2C_FIELD(arg0, void **, 0x30) = lbl_802CD6C8 + 0x3CC;
+    M2C_FIELD(arg0, void **, 0x6C) = lbl_802CD6C8 + 0x21C;
     M2C_FIELD(arg0, s32 *, 0x78) = 0;
     M2C_FIELD(arg0, s32 *, 0x84) = 0;
     M2C_FIELD(arg0, s32 *, 0x88) = 0;

@@ -4,7 +4,7 @@
 extern s32 lbl_8035AB28;
 extern u8 lbl_802E3A00[];
 
-void fn_80119180(s32* arg0) {
+void __ct__9C80119180Fv(s32* arg0) {
     arg0[3] = (s32)&lbl_802E3A00;
     arg0[0] = 0;
     arg0[2] = 0;

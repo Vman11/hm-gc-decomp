@@ -5,9 +5,7 @@ f32 fn_8023D494(void *arg0, f32 farg0, f32 farg1) {
     extern f32 lbl_803660DC;
     f32 vel;
     f32 dv;
-    f32 avg;
-    f32 force;
-
+        f32 force;
     M2C_FIELD(arg0, f32 *, 4) = farg1;
     M2C_FIELD(arg0, f32 *, 0x14) = M2C_FIELD(arg0, f32 *, 0x10) * (farg1 - M2C_FIELD(arg0, f32 *, 8));
     M2C_FIELD(arg0, f32 *, 0x1C) = M2C_FIELD(arg0, f32 *, 0xC) * M2C_FIELD(arg0, f32 *, 0x18);
@@ -15,9 +13,9 @@ f32 fn_8023D494(void *arg0, f32 farg0, f32 farg1) {
     M2C_FIELD(arg0, f32 *, 0x20) = force * M2C_FIELD(arg0, f32 *, 0x24);
     dv = M2C_FIELD(arg0, f32 *, 0x20) * farg0;
     vel = M2C_FIELD(arg0, f32 *, 0xC);
-    avg = vel + lbl_803660DC * dv;
+    force = lbl_803660DC * dv + vel;
     M2C_FIELD(arg0, f32 *, 0xC) = vel + dv;
-    M2C_FIELD(arg0, f32 *, 8) = avg * farg0 + M2C_FIELD(arg0, f32 *, 8);
+    M2C_FIELD(arg0, f32 *, 8) = force * farg0 + M2C_FIELD(arg0, f32 *, 8);
     return M2C_FIELD(arg0, f32 *, 8);
 }
 

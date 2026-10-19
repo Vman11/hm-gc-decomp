@@ -1,7 +1,7 @@
 /* Functions from 0x8025EDC0 to 0x8025EE24, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8025EDC0(void* arg0) {
+void __ct__9C8025EDC0Fv(void* arg0) {
     *(s32*)((char*)arg0 + 0x0) = 0;
     *(s32*)((char*)arg0 + 0x4) = 0;
     *(s32*)((char*)arg0 + 0x8) = 0;

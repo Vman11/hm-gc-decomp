@@ -1,7 +1,7 @@
 /* Functions from 0x80120164 to 0x801201A4, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80120164(void *arg0) {
+void __ct__9C80120164Fv(void *arg0) {
     extern u8 lbl_802E3F98[];
     *(void **)((char *)arg0 + 0x30) = lbl_802E3F98;
     *(s32 *)((char *)arg0 + 0x0) = 0;

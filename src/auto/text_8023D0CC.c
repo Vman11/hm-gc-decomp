@@ -7,7 +7,7 @@ extern s32 lbl_8035B438;
 
 extern s32 lbl_8035B438;
 
-void fn_8023D0CC(void* arg0) {
+void __ct__9C8023D0CCFv(void* arg0) {
     *(s32*)((u8*)arg0 + 0x0) = 0;
     *(s32*)((u8*)arg0 + 0x4) = 0;
     *(s32*)((u8*)arg0 + 0x8) = 0;

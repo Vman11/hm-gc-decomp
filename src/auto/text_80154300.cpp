@@ -1,0 +1,30 @@
+/* Functions from 0x80154300 to 0x80154330, found by decomp-toolkit. */
+#include "common.h"
+
+extern "C" {
+
+s32 fn_80154300(void) {
+    return 0;
+}
+
+s32 fn_80154308(void) {
+    return 0;
+}
+
+u8* fn_80154310(u8* arg0) {
+    return arg0 + 0x2C;
+}
+
+s32 fn_80154318(void) {
+    return 0;
+}
+
+s32 fn_80154320(void) {
+    return 0;
+}
+
+int fn_80154328(void) {
+return 1;
+}
+
+} /* extern "C" */

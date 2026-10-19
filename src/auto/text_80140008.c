@@ -2,7 +2,7 @@
 #include "common.h"
 extern f32 lbl_80364358;
 
-void fn_80140008(void* arg0) {
+void __ct__9C80140008Fv(void* arg0) {
     *(s32*)((u8*)arg0 + 0x0) = 0;
     *(s32*)((u8*)arg0 + 0x8) = 0;
     *(s32*)((u8*)arg0 + 0xC) = 0;

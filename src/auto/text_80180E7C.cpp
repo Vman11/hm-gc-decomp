@@ -1,0 +1,26 @@
+/* Functions from 0x80180E7C to 0x80180ECC, found by decomp-toolkit. */
+#include "common.h"
+
+extern "C" {
+
+s32 fn_80180E7C(void *arg0, s32 arg1) {
+    return M2C_FIELD(arg0, s32 *, 0x2C) + (arg1 * 0x78);
+}
+
+s32 fn_80180E8C(void *arg0, s32 arg1) {
+    return M2C_FIELD(arg0, s32 *, 0x14) + (arg1 * 0x60);
+}
+
+s32 fn_80180E9C(void *arg0, s32 arg1) {
+    return M2C_FIELD(arg0, s32 *, 4) + (arg1 * 0xF0);
+}
+
+s32 fn_80180EAC(void *arg0, s32 arg1) {
+    return M2C_FIELD(arg0, s32 *, 0x28) + (arg1 * 0x1C);
+}
+
+s32 fn_80180EBC(void *arg0, s32 arg1) {
+    return M2C_FIELD(arg0, s32 *, 0x24) + (arg1 * 0x1C);
+}
+
+} /* extern "C" */

@@ -4,7 +4,7 @@
 extern s32 lbl_8035B170;
 extern s32 lbl_8035B170;
 
-void fn_80201508(u8 *arg0) {
+void __ct__9C80201508Fv(u8 *arg0) {
     *(u32 *)(arg0 + 0x0) = 0;
     *(u32 *)(arg0 + 0x4) = 0;
     *(u16 *)(arg0 + 0x8) = 0;

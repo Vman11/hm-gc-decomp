@@ -4,9 +4,6 @@ extern s32 lbl_8035B158;
 extern s32 lbl_8035B15C;
 
 void fn_801FE454(void *arg0, s32 arg1) {
-    s32 mask = 1 << arg1;
     (*(s32 *)((u8 *)arg0 + 0x10))--;
-    mask = ~mask;
-    lbl_8035B15C &= mask;
-    lbl_8035B158 &= mask >> 31;
+    lbl_8035B158 &= ~(1 << arg1);
 }

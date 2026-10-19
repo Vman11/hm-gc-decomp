@@ -62,30 +62,18 @@ void fn_801019A4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2, u8 arg3, u8 arg4,
     arg0->unkB = arg6;
 }
 
-void fn_801019E4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2) {
-    u8 v;
-    if (arg2 < 1) {
-        arg1 &= ~0x200;
-        arg0->unk9 = 0;
-    } else {
-        arg0->unk9 = 0x1F;
-        if (arg2 > 4) {
-            arg2 = 4;
-        }
-        arg1 |= lbl_80363848;
-    }
+void fn_801019E4(UnkStruct_801018FC *__restrict arg0, u32 arg1, u32 arg2) {
+    u32 v;
+    if (arg2 < 1) { arg1 &= ~0x200; arg0->unk9 = 0; }
+    else { arg0->unk9 = 0x1F; if (arg2 > 4) arg2 = 4; arg1 |= lbl_80363848; }
     arg0->unk0 = arg1;
     arg0->unk4 = arg2;
     arg0->unk8 = 0x1F;
     v = 0;
-    if (arg0->unk0 & 0x800) {
-        v = 0x1F;
-    }
+    if (arg0->unk0 & 0x800) v = arg0->unk8;
     arg0->unkB = v;
     v = 0;
-    if (arg0->unk0 & 0x400) {
-        v = 8;
-    }
+    if (arg0->unk0 & 0x400) v = 8;
     arg0->unkA = v;
 }
 
