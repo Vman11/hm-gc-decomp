@@ -4784,11 +4784,11 @@ void fn_800D4CB8(void *arg0, s32 arg1, s32 arg2) {
 }
 
 void fn_800D4FF4(void) {
-    extern void *__GXData;
-    extern void *__cpReg;
-    void *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), 1, 0, 31, 31);
-    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(gx, u32 *, 8);
+    extern GXDataCP *__GXData;
+    extern volatile u16 *__cpReg;
+    GXDataCP *gx = __GXData;
+    gx->cpEnable = __rlwimi(gx->cpEnable, 1, 0, 31, 31);
+    __cpReg[1] = gx->cpEnable;
 }
 
 void fn_800D5018(void) {
