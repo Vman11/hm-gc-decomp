@@ -5,15 +5,15 @@
 extern "C" {
 
 extern char lbl_802AA28C[];
-s32 fn_80261114(int, int, int);
-void fn_80261B18(int, int);
+s32 fn_80261114(void *, int, int);
+void fn_80261B18(void *, int);
 
-void fn_80265E6C(s32 param_1, u32 param_2) {
+void fn_80265E6C(void *param_1, u32 param_2) {
     u32 uVar1;
 
-    uVar1 = fn_80261114((int)(param_1), (int)(lbl_802AA28C), (int)(0)); /* "SlowStop" */
-    *(u32 *)(param_1 + 0xb0) = uVar1;
-    fn_80261B18((int)(param_1), (int)(param_2));
+    uVar1 = fn_80261114(param_1, (int)(lbl_802AA28C), 0); /* "SlowStop" */
+    *(u32 *)((u8 *)param_1 + 0xb0) = uVar1;
+    fn_80261B18(param_1, (int)(param_2));
 }
 
 } /* extern "C" */
