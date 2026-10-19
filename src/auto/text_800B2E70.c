@@ -9083,7 +9083,6 @@ s32 fn_800DECE0(char *path, u8 mode, u32 *handle, u8 *ioResult) {
     fn_800DBB10(bufferId);
     return error;
 }
-s32 fn_800DBDF0();
 s32 fn_800DEE88(TrkBuf *msgBuf, s32 *bufferId, u32 p1, u32 p2, s32 p3) {
     s32 error = 0;
     TrkBuf *buffer;
