@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """apply_q.py fn=path[.c|.cpp] ...: write locally verified candidates into their (unregistered or NonMatching) units.
 .c -> registered Object(NonMatching, unit.c); .cpp -> unit renamed to .cpp with -Cpp_exceptions on (splits too).
+Suffix an arg with +lmw (fn=path.cpp+lmw) to also give the unit -use_lmw_stmw on.
 Run ninja + finalize.py afterwards (finalize re-verifies everything from a clean build and links what holds)."""
 import os, re, sys
 ROOT = "/home/mi/Decomp/hauntedmansion-ghye6s"; os.chdir(ROOT)
 SPL = "config/GHYE6S/splits.txt"
 FLAG = 'extra_cflags=["-Cpp_exceptions on"]'
 cfg = open("configure.py").read(); spl = open(SPL).read()
-def register(unit, ext):
+LMW = 'extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"]'
+def register(unit, ext, FLAG=FLAG):
     global cfg
+    if FLAG == LMW and f'"{unit}.cpp", extra_cflags=["-Cpp_exceptions on"])' in cfg:
+        cfg = cfg.replace(f'"{unit}.cpp", extra_cflags=["-Cpp_exceptions on"])', f'"{unit}.cpp", {LMW})'); return
     if f'"{unit}.c"' in cfg or f'"{unit}.cpp"' in cfg: return
     addr = int(unit.split("_")[-1], 16)
     lines = cfg.split("\n"); start = None
@@ -22,6 +26,7 @@ def register(unit, ext):
     raise SystemExit("could not place " + unit)
 for arg in sys.argv[1:]:
     fn, path = arg.split("=", 1)
+    lmw = path.endswith("+lmw"); path = path[:-4] if lmw else path
     code = open(path).read().strip("\n") + "\n"
     ext = ".cpp" if path.endswith(".cpp") else ".c"
     unit = "auto/text_" + re.search(r"([0-9A-F]{8})(?:F\w*)?$", fn).group(1) if not fn.startswith("auto/") else fn
@@ -35,11 +40,11 @@ for arg in sys.argv[1:]:
             cur = head + '\n\nextern "C" {\n\n' + (body + "\n\n" if body else "") + '} /* extern "C" */\n'
             os.remove(c)
             spl = spl.replace(f"\n{unit}.c:", f"\n{unit}.cpp:")
-            cfg = cfg.replace(f'Object(NonMatching, "{unit}.c")', f'Object(NonMatching, "{unit}.cpp", {FLAG})')
+            cfg = cfg.replace(f'Object(NonMatching, "{unit}.c")', f'Object(NonMatching, "{unit}.cpp", {LMW if lmw else FLAG})')
         cur = cur.replace('} /* extern "C" */', code + '\n} /* extern "C" */', 1)
         open(cp, "w").write(cur)
     else:
         open(c, "w").write(cur.rstrip("\n") + "\n\n" + code)
-    register(unit, ext)
+    register(unit, ext, LMW if lmw else FLAG)
     print("applied", fn, unit + ext)
 open("configure.py", "w").write(cfg); open(SPL, "w").write(spl)

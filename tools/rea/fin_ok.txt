@@ -1,9 +1,3 @@
-auto/text_80076B40
-auto/text_80076C00
-auto/text_800FB5B4
-auto/text_800FF6D0
-auto/text_8010C840
-auto/text_80171838
-auto/text_801A7B28
-auto/text_801A7B90
-auto/text_8023B8FC
+auto/text_800E1F04
+auto/text_80107244
+auto/text_8016C5C0
