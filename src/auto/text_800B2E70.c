@@ -1024,43 +1024,45 @@ void __OSInterruptInit(void) {
     __OSSetExceptionHandler(4, ExternalInterruptHandler);
 }
 
-extern u32 fn_800B7318(u32);
-u32 __OSMaskInterrupts(u32 mask) {
+extern u32 fn_800B7318(u32 mask, u32 current);
+u32 __OSMaskInterrupts(u32 global) {
+    BOOL enabled;
     u32 prev;
-    u32 oldMask;
-    u32 pending;
-    u32 hw;
-    prev = OSDisableInterrupts();
-    oldMask = *(u32 *)0x800000C4;
-    pending = *(u32 *)0x800000C8;
-    hw = mask & ~(oldMask | pending);
-    mask |= oldMask;
-    *(u32 *)0x800000C4 = mask;
-    mask |= pending;
-    while (hw != 0) {
-        hw = fn_800B7318(mask);
+    u32 local;
+    u32 mask;
+
+    enabled = OSDisableInterrupts();
+    prev = *(u32 *)0x800000C4;
+    local = *(u32 *)0x800000C8;
+    mask = global & ~(prev | local);
+    global |= prev;
+    *(u32 *)0x800000C4 = global;
+    global |= local;
+    while (mask) {
+        mask = fn_800B7318(mask, global);
     }
-    OSRestoreInterrupts(prev);
-    return oldMask;
+    OSRestoreInterrupts(enabled);
+    return prev;
 }
 
-u32 __OSUnmaskInterrupts(u32 mask) {
+u32 __OSUnmaskInterrupts(u32 global) {
+    BOOL enabled;
     u32 prev;
-    u32 oldMask;
-    u32 pending;
-    u32 hw;
-    prev = OSDisableInterrupts();
-    oldMask = *(u32 *)0x800000C4;
-    pending = *(u32 *)0x800000C8;
-    hw = mask & (oldMask | pending);
-    mask = oldMask & ~mask;
-    *(u32 *)0x800000C4 = mask;
-    mask |= pending;
-    while (hw != 0) {
-        hw = fn_800B7318(mask);
+    u32 local;
+    u32 mask;
+
+    enabled = OSDisableInterrupts();
+    prev = *(u32 *)0x800000C4;
+    local = *(u32 *)0x800000C8;
+    mask = global & (prev | local);
+    global = prev & ~global;
+    *(u32 *)0x800000C4 = global;
+    global |= local;
+    while (mask) {
+        mask = fn_800B7318(mask, global);
     }
-    OSRestoreInterrupts(prev);
-    return oldMask;
+    OSRestoreInterrupts(enabled);
+    return prev;
 }
 
 void __OSModuleInit(void) {
