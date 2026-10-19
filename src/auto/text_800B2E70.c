@@ -7846,10 +7846,10 @@ void TRKGetInput(void) {
     }
 }
 
+s32 fn_800DBDF0(void) {
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
-s32 fn_800DBDF0(void) {
     s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg);
     s32 fn_800E16F8(u8 *c);
     void fn_800DE95C(TrkBuf* buf, u8 a, u8 b);
