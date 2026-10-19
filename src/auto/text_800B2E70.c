@@ -6302,14 +6302,9 @@ void fn_800D8E94(u8 nIndStages) {
     M2C_FIELD(__GXData, u32 *, 0x5AC) |= 6;
 }
 
-void fn_800D8EB8(void) {
-    M2C_UNK fn_800D8CE4(M2C_UNK, M2C_UNK, M2C_UNK, M2C_UNK, M2C_UNK, M2C_UNK, M2C_UNK);
-    s32 spC;
-    s32 sp8;
-
-    sp8 = 0;
-    spC = 0;
-    fn_800D8CE4(0, 0, 0, 0, 0, 0, 0);
+void fn_800D8EB8(u32 stage) {
+    void fn_800D8CE4(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
+    fn_800D8CE4(stage, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 void fn_800D8F00(void) {
