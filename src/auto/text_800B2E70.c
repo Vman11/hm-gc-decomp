@@ -7951,8 +7951,8 @@ s32 fn_800DBDF0(void) {
     }
     return -1;
 }
-#pragma pop
 void usr_put_initialize(void) {
+#pragma pop
 
 }
 
