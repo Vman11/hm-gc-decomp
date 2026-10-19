@@ -217,7 +217,6 @@ typedef struct HeapDesc {
     HeapCell *allocated;
 } HeapDesc;
 extern int lbl_8035A568;
-#include "trk_priv.h"
 extern u8 lbl_80323560[];
 extern u16 lbl_8035A8F0;
 s32 fn_800CDBD8(s32 chan, void *out);
