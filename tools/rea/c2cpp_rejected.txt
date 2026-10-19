@@ -367,6 +367,7 @@ auto/text_80220984
 auto/text_80220C38
 auto/text_80221414
 auto/text_80221478
+auto/text_802218D0
 auto/text_80222334
 auto/text_802223C0
 auto/text_80225EC0
