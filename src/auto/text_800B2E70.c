@@ -6263,39 +6263,34 @@ void fn_800D8CE4(u32 tevStage, u32 indStage, u32 format, u32 biasSel, u32 mtxSel
 
 void fn_800D8D50(s32 indStage, s32 scaleS, s32 scaleT) {
     extern GXDataHead *const __GXData;
-    u32 *reg;
     switch (indStage) {
     case 0:
-        reg = &M2C_FIELD(__GXData, u32 *, 0x128);
-        *reg = __rlwimi(*reg, scaleS, 0, 28, 31);
-        *reg = __rlwimi(*reg, scaleT, 4, 24, 27);
-        *reg = __rlwimi(*reg, 0x25, 24, 0, 7);
+        M2C_FIELD(__GXData, u32 *, 0x128) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x128), scaleS, 0, 28, 31);
+        M2C_FIELD(__GXData, u32 *, 0x128) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x128), scaleT, 4, 24, 27);
+        M2C_FIELD(__GXData, u32 *, 0x128) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x128), 0x25, 24, 0, 7);
         GXWGFifo.u8 = 0x61;
-        GXWGFifo.u32 = *reg;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x128);
         break;
     case 1:
-        reg = &M2C_FIELD(__GXData, u32 *, 0x128);
-        *reg = __rlwimi(*reg, scaleS, 8, 20, 23);
-        *reg = __rlwimi(*reg, scaleT, 12, 16, 19);
-        *reg = __rlwimi(*reg, 0x25, 24, 0, 7);
+        M2C_FIELD(__GXData, u32 *, 0x128) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x128), scaleS, 8, 20, 23);
+        M2C_FIELD(__GXData, u32 *, 0x128) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x128), scaleT, 12, 16, 19);
+        M2C_FIELD(__GXData, u32 *, 0x128) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x128), 0x25, 24, 0, 7);
         GXWGFifo.u8 = 0x61;
-        GXWGFifo.u32 = *reg;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x128);
         break;
     case 2:
-        reg = &M2C_FIELD(__GXData, u32 *, 0x12C);
-        *reg = __rlwimi(*reg, scaleS, 0, 28, 31);
-        *reg = __rlwimi(*reg, scaleT, 4, 24, 27);
-        *reg = __rlwimi(*reg, 0x26, 24, 0, 7);
+        M2C_FIELD(__GXData, u32 *, 0x12C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x12C), scaleS, 0, 28, 31);
+        M2C_FIELD(__GXData, u32 *, 0x12C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x12C), scaleT, 4, 24, 27);
+        M2C_FIELD(__GXData, u32 *, 0x12C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x12C), 0x26, 24, 0, 7);
         GXWGFifo.u8 = 0x61;
-        GXWGFifo.u32 = *reg;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x12C);
         break;
     case 3:
-        reg = &M2C_FIELD(__GXData, u32 *, 0x12C);
-        *reg = __rlwimi(*reg, scaleS, 8, 20, 23);
-        *reg = __rlwimi(*reg, scaleT, 12, 16, 19);
-        *reg = __rlwimi(*reg, 0x26, 24, 0, 7);
+        M2C_FIELD(__GXData, u32 *, 0x12C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x12C), scaleS, 8, 20, 23);
+        M2C_FIELD(__GXData, u32 *, 0x12C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x12C), scaleT, 12, 16, 19);
+        M2C_FIELD(__GXData, u32 *, 0x12C) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x12C), 0x26, 24, 0, 7);
         GXWGFifo.u8 = 0x61;
-        GXWGFifo.u32 = *reg;
+        GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x12C);
         break;
     }
     __GXData->bpSentNot = 0;
