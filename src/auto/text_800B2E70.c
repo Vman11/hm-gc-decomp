@@ -9394,9 +9394,9 @@ s32 fn_800DF874(void) {
 }
 
 extern u8 lbl_80327F90[];
+void TRKTargetSetStopped(s32 arg0) {
 #pragma push
 #pragma dont_inline on
-void TRKTargetSetStopped(s32 arg0) {
     M2C_FIELD(&gTRKState, s32 *, 0x98) = arg0;
 }
 #pragma pop
