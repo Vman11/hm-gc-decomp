@@ -9153,8 +9153,8 @@ s32 fn_800DEE88(TrkBuf *msgBuf, s32 *bufferId, u32 p1, u32 p2, s32 p3) {
     return error;
 }
 
-#pragma push
 s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s32 read) {
+#pragma push
     s32 error;
     s32 replyBufferId;
     TrkBuf *replyBuffer;
