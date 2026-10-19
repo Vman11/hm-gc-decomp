@@ -4824,12 +4824,12 @@ void fn_800D5070(s32 arg0, u8 arg1) {
 }
 
 void fn_800D50A0(s32 arg0, u8 arg1) {
-    extern void *__GXData;
-    extern void *__cpReg;
-    void *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x10) = __rlwimi(M2C_FIELD(gx, u32 *, 0x10), arg0, 0, 31, 31);
-    M2C_FIELD(gx, u32 *, 0x10) = __rlwimi(M2C_FIELD(gx, u32 *, 0x10), arg1, 1, 30, 30);
-    M2C_FIELD(__cpReg, u16 *, 4) = M2C_FIELD(gx, u32 *, 0x10);
+    extern GXDataCP *__GXData;
+    extern volatile u16 *__cpReg;
+    GXDataCP *gx = __GXData;
+    gx->cpClr = __rlwimi(gx->cpClr, arg0, 0, 31, 31);
+    gx->cpClr = __rlwimi(gx->cpClr, arg1, 1, 30, 30);
+    __cpReg[2] = gx->cpClr;
 }
 
 void GXSetGPFifo(void *fifo);
