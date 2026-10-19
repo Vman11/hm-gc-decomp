@@ -7309,9 +7309,9 @@ s32 TRKInitializeNub(void) {
     return result;
 }
 
+s32 fn_800DAF24(TrkBuf *msg) {
 #pragma push
 #pragma inline_depth(4)
-s32 fn_800DAF24(TrkBuf *msg) {
     s32 err;
     u8 checksum;
     u32 i;
