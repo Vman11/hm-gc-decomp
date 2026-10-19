@@ -8086,9 +8086,6 @@ void fn_800DC374(TrkBuf* buf) {
     } while (ok != 0 && n > 0);
 }
 
-s32 fn_800DFAF0(void);
-s32 fn_800DFB00(u32 rangeStart, u32 rangeEnd, s32 stepOver);
-s32 fn_800DFB7C(u32 count, s32 stepOver);
 void fn_800DC474(TrkBuf* buf) {
     u8 cmd;
     u8 opt;
