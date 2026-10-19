@@ -383,7 +383,10 @@ void PPCMtl2cr(u32 value) { __mtspr(1017, value); }
 
 void PPCMtdec(u32 value) { __mtspr(22, value); }
 
+#pragma push
+#pragma auto_inline off
 void fn_800B2EA8(void) { __sc(); }
+#pragma pop
 
 void PPCHalt(void) { __sync(); for (;;) {} }
 
