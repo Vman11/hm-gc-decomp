@@ -4111,24 +4111,19 @@ s32 fn_800CCFCC(s32 chan, s32 enable) {
     return 0;
 }
 
-s32 fn_800CD17C(s32 arg0) {
-    s32 EXIDeselect(s32);
-    s32 EXIImm(s32, s32 *, M2C_UNK, M2C_UNK, M2C_UNK);
-    s32 EXISelect(M2C_UNK, M2C_UNK);
+s32 fn_800CD17C(s32 chan) {
+    s32 EXISelect(s32, s32, s32);
+    s32 EXIImm(s32, void *, s32, s32, void *);
     s32 EXISync(s32);
-    s32 spC;
-    s32 temp_r31;
-    s32 temp_r31_2;
-
-    if (EXISelect(0, 4) == 0) {
-        return -3;
-    }
-    spC = 0x89000000;
-    temp_r31 = EXIImm(arg0, &spC, 1, 1, 0) == 0;
-    temp_r31_2 = temp_r31 | (EXISync(arg0) == 0);
-    if ((temp_r31_2 | (EXIDeselect(arg0) == 0)) != 0) {
-        return -3;
-    }
+    s32 EXIDeselect(s32);
+    u32 cmd;
+    s32 err;
+    if (!EXISelect(chan, 0, 4)) return -3;
+    cmd = 0x89000000;
+    err = !EXIImm(chan, &cmd, 1, 1, 0);
+    err |= !EXISync(chan);
+    err |= !EXIDeselect(chan);
+    if (err) return -3;
     return 0;
 }
 
