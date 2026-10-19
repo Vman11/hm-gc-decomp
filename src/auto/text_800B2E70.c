@@ -7956,9 +7956,9 @@ void usr_put_initialize(void) {
 
 }
 
+void fn_800DC0AC(const char *s) {
 #pragma push
 #pragma dont_inline off
-void fn_800DC0AC(const char *s) {
     BOOL done;
     char c;
     BOOL old;
