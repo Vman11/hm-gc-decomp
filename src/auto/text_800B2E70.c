@@ -4815,12 +4815,12 @@ void fn_800D503C(u8 arg0) {
 }
 
 void fn_800D5070(s32 arg0, u8 arg1) {
-    extern void *__GXData;
-    extern void *__cpReg;
-    void *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), arg0, 2, 29, 29);
-    M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), arg1, 3, 28, 28);
-    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(gx, u32 *, 8);
+    extern GXDataCP *__GXData;
+    extern volatile u16 *__cpReg;
+    GXDataCP *gx = __GXData;
+    gx->cpEnable = __rlwimi(gx->cpEnable, arg0, 2, 29, 29);
+    gx->cpEnable = __rlwimi(gx->cpEnable, arg1, 3, 28, 28);
+    __cpReg[1] = gx->cpEnable;
 }
 
 void fn_800D50A0(s32 arg0, u8 arg1) {
