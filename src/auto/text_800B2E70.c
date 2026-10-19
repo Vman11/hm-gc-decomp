@@ -7752,7 +7752,6 @@ TrkBuf *TRKGetBuffer(s32 idx) {
 }
 
 #pragma push
-#pragma use_lmw_stmw on
 s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg) {
     extern void fn_800DC0AC(const char *);
     extern char lbl_8029BDF8[];
