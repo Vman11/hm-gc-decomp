@@ -5366,16 +5366,15 @@ void fn_800D6E24(void) {
 }
 
 void fn_800D6E48(u16 left, u16 top, u16 wd, u16 ht) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x1E0) = 0;
-    M2C_FIELD(gx, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E0), left, 0, 22, 31);
-    M2C_FIELD(gx, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E0), top, 10, 12, 21);
-    M2C_FIELD(gx, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E0), 0x49, 24, 0, 7);
-    M2C_FIELD(gx, u32 *, 0x1E4) = 0;
-    M2C_FIELD(gx, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E4), wd - 1, 0, 22, 31);
-    M2C_FIELD(gx, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E4), ht - 1, 10, 12, 21);
-    M2C_FIELD(gx, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E4), 0x4A, 24, 0, 7);
+    extern GXDataHead *const __GXData;
+    M2C_FIELD(__GXData, u32 *, 0x1E0) = 0;
+    M2C_FIELD(__GXData, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E0), left, 0, 22, 31);
+    M2C_FIELD(__GXData, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E0), top, 10, 12, 21);
+    M2C_FIELD(__GXData, u32 *, 0x1E0) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E0), 0x49, 24, 0, 7);
+    M2C_FIELD(__GXData, u32 *, 0x1E4) = 0;
+    M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), wd - 1, 0, 22, 31);
+    M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), ht - 1, 10, 12, 21);
+    M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), 0x4A, 24, 0, 7);
 }
 
 void fn_800D6EC4(u16 left, u16 top, u16 wd, u16 ht) {
