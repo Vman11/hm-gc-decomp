@@ -1313,8 +1313,8 @@ void fn_8027B168(void *arg0) {
     fn_800BFE7C((u8 *)arg0 + 0x4C);
     while ((u32)(DVDGetDriveStatus() - 1) <= 1U) {
     }
-    *(s32 *)((u8 *)arg0 + 0xBC) = 0;
     *(s32 *)((u8 *)arg0 + 0x20) = 0;
+    *(s32 *)((u8 *)arg0 + 0xBC) = 0;
 }
 
 u32 fn_8027B4CC(void *arg0, void *arg1) {
