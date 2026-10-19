@@ -9667,9 +9667,9 @@ s32 fn_800E0070(void *arg0) {
     return 0;
 }
 
+s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerStorageSize, BOOL read) {
 #pragma push
 #pragma dont_inline off
-s32 fn_800E0098(u32 firstRegister, u32 lastRegister, TrkBuf *b, u32 *registerStorageSize, BOOL read) {
     extern TRKExceptionStatus gTRKExceptionStatus_802E01A4;
     TRKExceptionStatus savedException;
     u32 i;
