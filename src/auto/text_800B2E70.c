@@ -7557,8 +7557,8 @@ s32 fn_800DB66C(TrkBuf *buf, u8 *data, s32 count) {
     return err;
 }
 
-#pragma auto_inline off
 s32 fn_800DB6D4(TrkBuf *buf, u64 data) {
+#pragma auto_inline off
     extern s32 gTRKBigEndian[];
     extern void *fn_80003488(void *, const void *, u32);
     u8 *bigEndianData;
