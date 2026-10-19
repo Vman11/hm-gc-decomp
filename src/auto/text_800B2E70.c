@@ -5191,8 +5191,11 @@ void fn_800D6830(u32 a) {
     __peReg[1] = v;
 }
 
-void fn_800D6848(u8 arg0, u8 arg1) {
-    M2C_FIELD(__peReg, s16 *, 4) = (s16) ((((0 & ~0xFF) | (arg1 & 0xFF)) & ~0x100) | ((arg0 << 8) & 0x100));
+void fn_800D6848(u32 a, u32 b) {
+    u32 v = 0;
+    v = __rlwimi(v, (u8)b, 0, 24, 31);
+    v = __rlwimi(v, (u8)a, 8, 23, 23);
+    __peReg[2] = v;
 }
 
 void fn_800D686C(u8 a) {
