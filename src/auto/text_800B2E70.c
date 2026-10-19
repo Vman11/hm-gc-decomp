@@ -2747,7 +2747,7 @@ void fn_800C50AC(s32 a) {
     switch (a) {
     case 0:
         if (lbl_8035A7A8 != 0) {
-            fn_800C69D8(0);
+            fn_800C69D8(0, lbl_8035A7A8);
         }
         break;
     case 1:
@@ -2757,7 +2757,7 @@ void fn_800C50AC(s32 a) {
         break;
     case 2:
         if (lbl_8035A7A8 != 0 && lbl_8035A7AC != 0) {
-            fn_800C69D8();
+            fn_800C69D8(lbl_8035A7A8, lbl_8035A7AC);
         }
         break;
     }
