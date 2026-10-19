@@ -960,13 +960,11 @@ void fn_802756B8(void *arg0, int arg1, int arg2, int arg3) {
     }
 }
 #pragma pop
-void *memset();
 #pragma push
 #pragma use_lmw_stmw on
 void fn_802757D0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 *p = arg0;
     u8 *sub = p + 0x14A;
-    memset(sub, 0, 0x24);
     *(s16 *)(p + 0x14A) = arg2;
     *(s16 *)(sub + 4) = arg3;
     *(s16 *)(p + 0x19C) = arg1;
@@ -1239,7 +1237,6 @@ s32 fn_802767E0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
     void *f;
     s32 a, b, c;
 
-    memset(arg0, 0, 0x178);
     *(s32 *)(arg0 + 0x6C) = arg1;
     *(s32 *)(arg0 + 0x78) = 0x7FFF;
     *(s32 *)(arg0 + 0x80) = 0x67F8;
@@ -1333,10 +1330,7 @@ u32 fn_80276AB8(u8 *arg0) {
         if (pos < base) {
             wrap = base - pos;
             *(u32 *)(arg0 + 0x38) = pos + *(u32 *)(arg0 + 0x28);
-            memset((u8 *)base, 0, len - wrap);
-            memset(*(u8 **)(arg0 + 0x38), 0, wrap);
         } else {
-            memset((u8 *)pos, 0, len);
         }
         *(u32 *)(arg0 + 0x40) += len;
         return ms;
@@ -1401,7 +1395,7 @@ void fn_80276FA0(s32 arg0, s32 arg1) {
 
 #pragma optimize_for_size on
 #pragma opt_unroll_loops off
-void fn_80276FB4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+void fn_80276FB4(s32 arg0) {
     lbl_802F3868[0] = arg0;
 }
 void fn_80276FD8(u32 count, u32 *src) {
@@ -1618,7 +1612,6 @@ void fn_80279948(u8 *arg0, s32 *arg1) {
         now = fn_802753F0();
         fn_80278F28(arg0, now);
         fn_8027964C(arg0, now);
-        memset(arg1, 0, 0x7C);
         arg1[5] = *(s32 *)(arg0 + 0x14);
         arg1[6] = *(s32 *)(arg0 + 0x18);
         arg1[11] = *(s32 *)(arg0 + 0x30C);
@@ -3405,13 +3398,13 @@ s32 fn_80282838(s32 count, s32 base) {
 #pragma pop
 
 #pragma push
-#pragma use_lmw_stmw on
+#pragma optimization_level 1
 void fn_802829C4(s32 a0,s32 a1,s32 a2,s32 a3,s32 a4,s32 a5,s32 a6,s32 a7,s32 a8,s32 a9,s32 a10,s32 a11,s32 a12,s32 a13) {
     extern void fn_8027C408();
     extern u8 lbl_80301920[];
     fn_8027C408(a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,0,lbl_80301920);
 }
-
+#pragma pop
 extern void fn_8027C408();
 #pragma push
 #pragma use_lmw_stmw on
@@ -3570,7 +3563,6 @@ void *fn_80283AA4(s32 arg0) {
     var_r30 = arg0;
     temp_r3 = fn_8027B6D4(0x40);
     if (temp_r3 != NULL) {
-        memset(temp_r3, 0, 0x40);
         M2C_FIELD(temp_r3, s32 *, 0) = 0;
         M2C_FIELD(temp_r3, s32 *, 0x34) = 1;
         M2C_FIELD(temp_r3, s32 *, 0x38) = 0;
@@ -3634,7 +3626,7 @@ s32 fn_80283C8C(void *arg0) {
 #pragma push
 #pragma optimize_for_size on
 void fn_80283D04(void *arg0) {
-    while (fn_80283C94(arg0) == 0) {
+    for (; fn_80283C94(arg0) == 0;) {
         fn_800B9CD8();
     }
 }
@@ -4127,14 +4119,13 @@ void fn_8028B480(s32 n, u32 *dst, u32 *src) {
 }
 
 void fn_8028B510(BitBuf *dst, BitBuf *src, u32 n) {
-    u32 k = 8;
-    while (n >= k) {
-        BitBuf_Write(dst, BitBuf_Read(src, k), k);
-        n -= k;
+    for (; n > 7; n -= 8) {
+        BitBuf_Write(dst, BitBuf_Read(src, 8), 8);
     }
-    if (n != 0) {
-        BitBuf_Write(dst, BitBuf_Read(src, n), n);
+    if (n == 0) {
+        return;
     }
+    BitBuf_Write(dst, BitBuf_Read(src, n), n);
 }
 
 void fn_8028BA78(s32 nw, s32 *ip, f32 *w);
@@ -4282,6 +4273,116 @@ void fn_8028BDF4(s32 n, f32 *a, s32 *ip, s32 nw, f32 *w) {
     }
 }
 
+#pragma push
+#pragma opt_unroll_loops off
+#pragma use_lmw_stmw on
+void fn_8028C390(int n, int *ip, float *a) {
+    int j, j1, k, k1, l, m, m2;
+    float xr, xi, yr, yi;
+
+    ip[0] = 0;
+    l = n;
+    m = 1;
+    while ((m << 3) < l) {
+        l >>= 1;
+        for (j = 0; j < m; j++) {
+            ip[m + j] = ip[j] + l;
+        }
+        m <<= 1;
+    }
+    m2 = 2 * m;
+    if ((m << 3) == l) {
+        for (k = 0; k < m; k++) {
+            for (j = 0; j < k; j++) {
+                j1 = 2 * j + ip[k];
+                k1 = 2 * k + ip[j];
+                xr = a[j1];
+                xi = -a[j1 + 1];
+                yr = a[k1];
+                yi = -a[k1 + 1];
+                a[j1] = yr;
+                a[j1 + 1] = yi;
+                a[k1] = xr;
+                a[k1 + 1] = xi;
+                j1 += m2;
+                k1 += 2 * m2;
+                xr = a[j1];
+                xi = -a[j1 + 1];
+                yr = a[k1];
+                yi = -a[k1 + 1];
+                a[j1] = yr;
+                a[j1 + 1] = yi;
+                a[k1] = xr;
+                a[k1 + 1] = xi;
+                j1 += m2;
+                k1 -= m2;
+                xr = a[j1];
+                xi = -a[j1 + 1];
+                yr = a[k1];
+                yi = -a[k1 + 1];
+                a[j1] = yr;
+                a[j1 + 1] = yi;
+                a[k1] = xr;
+                a[k1 + 1] = xi;
+                j1 += m2;
+                k1 += 2 * m2;
+                xr = a[j1];
+                xi = -a[j1 + 1];
+                yr = a[k1];
+                yi = -a[k1 + 1];
+                a[j1] = yr;
+                a[j1 + 1] = yi;
+                a[k1] = xr;
+                a[k1 + 1] = xi;
+            }
+            k1 = 2 * k + ip[k];
+            a[k1 + 1] = -a[k1 + 1];
+            j1 = k1 + m2;
+            k1 = j1 + m2;
+            xr = a[j1];
+            xi = -a[j1 + 1];
+            yr = a[k1];
+            yi = -a[k1 + 1];
+            a[j1] = yr;
+            a[j1 + 1] = yi;
+            a[k1] = xr;
+            a[k1 + 1] = xi;
+            k1 += m2;
+            a[k1 + 1] = -a[k1 + 1];
+        }
+    } else {
+        a[1] = -a[1];
+        a[m2 + 1] = -a[m2 + 1];
+        for (k = 1; k < m; k++) {
+            for (j = 0; j < k; j++) {
+                j1 = 2 * j + ip[k];
+                k1 = 2 * k + ip[j];
+                xr = a[j1];
+                xi = -a[j1 + 1];
+                yr = a[k1];
+                yi = -a[k1 + 1];
+                a[j1] = yr;
+                a[j1 + 1] = yi;
+                a[k1] = xr;
+                a[k1 + 1] = xi;
+                j1 += m2;
+                k1 += m2;
+                xr = a[j1];
+                xi = -a[j1 + 1];
+                yr = a[k1];
+                yi = -a[k1 + 1];
+                a[j1] = yr;
+                a[j1 + 1] = yi;
+                a[k1] = xr;
+                a[k1 + 1] = xi;
+            }
+            k1 = 2 * k + ip[k];
+            a[k1 + 1] = -a[k1 + 1];
+            a[k1 + m2 + 1] = -a[k1 + m2 + 1];
+        }
+    }
+}
+#pragma pop
 void fn_8028C71C(float *a)
 {
     float x1r, x1i, x2r, x2i, x3r, x3i, x4r, x4i,
@@ -4458,6 +4559,208 @@ void fn_8028C998(f32 *a) {
     a[14] = x4r;
 }
 
+void fn_8028D164(s32 n, f32 *a, f32 *w) {
+    s32 j, j0, j1, j2, j3, k, m, mh;
+    f32 wn4r, csc1, csc3, wk1r, wk1i, wk3r, wk3i, wd1r, wd1i, wd3r, wd3i;
+    f32 x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i, y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i;
+
+    mh = n >> 3;
+    m = 2 * mh;
+    j1 = m;
+    j2 = j1 + m;
+    j3 = j2 + m;
+    x0r = a[0] + a[j2];
+    x0i = -a[1] - a[j2 + 1];
+    x1r = a[0] - a[j2];
+    x1i = -a[1] + a[j2 + 1];
+    x2r = a[j1] + a[j3];
+    x2i = a[j1 + 1] + a[j3 + 1];
+    x3r = a[j1] - a[j3];
+    x3i = a[j1 + 1] - a[j3 + 1];
+    a[0] = x0r + x2r;
+    a[1] = x0i - x2i;
+    a[j1] = x0r - x2r;
+    a[j1 + 1] = x0i + x2i;
+    a[j2] = x1r + x3i;
+    a[j2 + 1] = x1i + x3r;
+    a[j3] = x1r - x3i;
+    a[j3 + 1] = x1i - x3r;
+    wn4r = w[1];
+    csc1 = w[2];
+    csc3 = w[3];
+    wd1r = 1;
+    wd1i = 0;
+    wd3r = 1;
+    wd3i = 0;
+    k = 0;
+    for (j = 2; j < mh - 2; j += 4) {
+        k += 4;
+        wk1r = csc1 * (wd1r + w[k]);
+        wk1i = csc1 * (wd1i + w[k + 1]);
+        wk3r = csc3 * (wd3r + w[k + 2]);
+        wk3i = csc3 * (wd3i - w[k + 3]);
+        wd1r = w[k];
+        wd1i = w[k + 1];
+        wd3r = w[k + 2];
+        wd3i = -w[k + 3];
+        j1 = j + m;
+        j2 = j1 + m;
+        j3 = j2 + m;
+        x0r = a[j] + a[j2];
+        x0i = -a[j + 1] - a[j2 + 1];
+        x1r = a[j] - a[j2];
+        x1i = -a[j + 1] + a[j2 + 1];
+        y0r = a[j + 2] + a[j2 + 2];
+        y0i = -a[j + 3] - a[j2 + 3];
+        y1r = a[j + 2] - a[j2 + 2];
+        y1i = -a[j + 3] + a[j2 + 3];
+        x2r = a[j1] + a[j3];
+        x2i = a[j1 + 1] + a[j3 + 1];
+        x3r = a[j1] - a[j3];
+        x3i = a[j1 + 1] - a[j3 + 1];
+        y2r = a[j1 + 2] + a[j3 + 2];
+        y2i = a[j1 + 3] + a[j3 + 3];
+        y3r = a[j1 + 2] - a[j3 + 2];
+        y3i = a[j1 + 3] - a[j3 + 3];
+        a[j] = x0r + x2r;
+        a[j + 1] = x0i - x2i;
+        a[j + 2] = y0r + y2r;
+        a[j + 3] = y0i - y2i;
+        a[j1] = x0r - x2r;
+        a[j1 + 1] = x0i + x2i;
+        a[j1 + 2] = y0r - y2r;
+        a[j1 + 3] = y0i + y2i;
+        x0r = x1r + x3i;
+        x0i = x1i + x3r;
+        a[j2] = wk1r * x0r - wk1i * x0i;
+        a[j2 + 1] = wk1r * x0i + wk1i * x0r;
+        x0r = y1r + y3i;
+        x0i = y1i + y3r;
+        a[j2 + 2] = wd1r * x0r - wd1i * x0i;
+        a[j2 + 3] = wd1r * x0i + wd1i * x0r;
+        x0r = x1r - x3i;
+        x0i = x1i - x3r;
+        a[j3] = wk3r * x0r + wk3i * x0i;
+        a[j3 + 1] = wk3r * x0i - wk3i * x0r;
+        x0r = y1r - y3i;
+        x0i = y1i - y3r;
+        a[j3 + 2] = wd3r * x0r + wd3i * x0i;
+        a[j3 + 3] = wd3r * x0i - wd3i * x0r;
+        j0 = m - j;
+        j1 = j0 + m;
+        j2 = j1 + m;
+        j3 = j2 + m;
+        x0r = a[j0] + a[j2];
+        x0i = -a[j0 + 1] - a[j2 + 1];
+        x1r = a[j0] - a[j2];
+        x1i = -a[j0 + 1] + a[j2 + 1];
+        y0r = a[j0 - 2] + a[j2 - 2];
+        y0i = -a[j0 - 1] - a[j2 - 1];
+        y1r = a[j0 - 2] - a[j2 - 2];
+        y1i = -a[j0 - 1] + a[j2 - 1];
+        x2r = a[j1] + a[j3];
+        x2i = a[j1 + 1] + a[j3 + 1];
+        x3r = a[j1] - a[j3];
+        x3i = a[j1 + 1] - a[j3 + 1];
+        y2r = a[j1 - 2] + a[j3 - 2];
+        y2i = a[j1 - 1] + a[j3 - 1];
+        y3r = a[j1 - 2] - a[j3 - 2];
+        y3i = a[j1 - 1] - a[j3 - 1];
+        a[j0] = x0r + x2r;
+        a[j0 + 1] = x0i - x2i;
+        a[j0 - 2] = y0r + y2r;
+        a[j0 - 1] = y0i - y2i;
+        a[j1] = x0r - x2r;
+        a[j1 + 1] = x0i + x2i;
+        a[j1 - 2] = y0r - y2r;
+        a[j1 - 1] = y0i + y2i;
+        x0r = x1r + x3i;
+        x0i = x1i + x3r;
+        a[j2] = wk1i * x0r - wk1r * x0i;
+        a[j2 + 1] = wk1i * x0i + wk1r * x0r;
+        x0r = y1r + y3i;
+        x0i = y1i + y3r;
+        a[j2 - 2] = wd1i * x0r - wd1r * x0i;
+        a[j2 - 1] = wd1i * x0i + wd1r * x0r;
+        x0r = x1r - x3i;
+        x0i = x1i - x3r;
+        a[j3] = wk3i * x0r + wk3r * x0i;
+        a[j3 + 1] = wk3i * x0i - wk3r * x0r;
+        x0r = y1r - y3i;
+        x0i = y1i - y3r;
+        a[j3 - 2] = wd3i * x0r + wd3r * x0i;
+        a[j3 - 1] = wd3i * x0i - wd3r * x0r;
+    }
+    wk1r = csc1 * (wd1r + wn4r);
+    wk1i = csc1 * (wd1i + wn4r);
+    wk3r = csc3 * (wd3r - wn4r);
+    wk3i = csc3 * (wd3i - wn4r);
+    j0 = mh;
+    j1 = j0 + m;
+    j2 = j1 + m;
+    j3 = j2 + m;
+    x0r = a[j0 - 2] + a[j2 - 2];
+    x0i = -a[j0 - 1] - a[j2 - 1];
+    x1r = a[j0 - 2] - a[j2 - 2];
+    x1i = -a[j0 - 1] + a[j2 - 1];
+    x2r = a[j1 - 2] + a[j3 - 2];
+    x2i = a[j1 - 1] + a[j3 - 1];
+    x3r = a[j1 - 2] - a[j3 - 2];
+    x3i = a[j1 - 1] - a[j3 - 1];
+    a[j0 - 2] = x0r + x2r;
+    a[j0 - 1] = x0i - x2i;
+    a[j1 - 2] = x0r - x2r;
+    a[j1 - 1] = x0i + x2i;
+    x0r = x1r + x3i;
+    x0i = x1i + x3r;
+    a[j2 - 2] = wk1r * x0r - wk1i * x0i;
+    a[j2 - 1] = wk1r * x0i + wk1i * x0r;
+    x0r = x1r - x3i;
+    x0i = x1i - x3r;
+    a[j3 - 2] = wk3r * x0r + wk3i * x0i;
+    a[j3 - 1] = wk3r * x0i - wk3i * x0r;
+    x0r = a[j0] + a[j2];
+    x0i = -a[j0 + 1] - a[j2 + 1];
+    x1r = a[j0] - a[j2];
+    x1i = -a[j0 + 1] + a[j2 + 1];
+    x2r = a[j1] + a[j3];
+    x2i = a[j1 + 1] + a[j3 + 1];
+    x3r = a[j1] - a[j3];
+    x3i = a[j1 + 1] - a[j3 + 1];
+    a[j0] = x0r + x2r;
+    a[j0 + 1] = x0i - x2i;
+    a[j1] = x0r - x2r;
+    a[j1 + 1] = x0i + x2i;
+    x0r = x1r + x3i;
+    x0i = x1i + x3r;
+    a[j2] = wn4r * (x0r - x0i);
+    a[j2 + 1] = wn4r * (x0i + x0r);
+    x0r = x1r - x3i;
+    x0i = x1i - x3r;
+    a[j3] = -wn4r * (x0r + x0i);
+    a[j3 + 1] = -wn4r * (x0i - x0r);
+    x0r = a[j0 + 2] + a[j2 + 2];
+    x0i = -a[j0 + 3] - a[j2 + 3];
+    x1r = a[j0 + 2] - a[j2 + 2];
+    x1i = -a[j0 + 3] + a[j2 + 3];
+    x2r = a[j1 + 2] + a[j3 + 2];
+    x2i = a[j1 + 3] + a[j3 + 3];
+    x3r = a[j1 + 2] - a[j3 + 2];
+    x3i = a[j1 + 3] - a[j3 + 3];
+    a[j0 + 2] = x0r + x2r;
+    a[j0 + 3] = x0i - x2i;
+    a[j1 + 2] = x0r - x2r;
+    a[j1 + 3] = x0i + x2i;
+    x0r = x1r + x3i;
+    x0i = x1i + x3r;
+    a[j2 + 2] = wk1i * x0r - wk1r * x0i;
+    a[j2 + 3] = wk1i * x0i + wk1r * x0r;
+    x0r = x1r - x3i;
+    x0i = x1i - x3r;
+    a[j3 + 2] = wk3i * x0r + wk3r * x0i;
+    a[j3 + 3] = wk3i * x0i - wk3r * x0r;
+}
+
 void fn_8028DEFC(s32 n, f32 *a, f32 *w);
 #pragma push
 #pragma optimize_for_size on
@@ -4494,6 +4797,118 @@ void fn_8028D990(s32 n, f32 *a, s32 nw, f32 *w) {
     } else {
         fn_8028DC94(n, a, nw, w);
     }
+}
+
+#pragma push
+#pragma scheduling on
+#pragma optimization_level 3
+#pragma use_lmw_stmw on
+void fn_8028DEFC(s32 n, f32 *a, f32 *w) {
+    s32 j, j0, j1, j2, j3, k, m, mh;
+    f32 wn4r, wk1r, wk1i, wk3r, wk3i;
+    f32 x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
+
+    mh = n >> 3;
+    m = 2 * mh;
+    j1 = m;
+    j2 = j1 + m;
+    j3 = j2 + m;
+    x0r = a[0] + a[j2];
+    x0i = a[1] + a[j2 + 1];
+    x1r = a[0] - a[j2];
+    x1i = a[1] - a[j2 + 1];
+    x2r = a[j1] + a[j3];
+    x2i = a[j1 + 1] + a[j3 + 1];
+    x3r = a[j1] - a[j3];
+    x3i = a[j1 + 1] - a[j3 + 1];
+    a[0] = x0r + x2r;
+    a[1] = x0i + x2i;
+    a[j1] = x0r - x2r;
+    a[j1 + 1] = x0i - x2i;
+    a[j2] = x1r - x3i;
+    a[j2 + 1] = x1i + x3r;
+    a[j3] = x1r + x3i;
+    a[j3 + 1] = x1i - x3r;
+    wn4r = w[1];
+    k = 0;
+    for (j = 2; j < mh; j += 2) {
+        k += 4;
+        wk1r = w[k];
+        wk1i = w[k + 1];
+        wk3r = w[k + 2];
+        wk3i = -w[k + 3];
+        j1 = j + m;
+        j2 = j1 + m;
+        j3 = j2 + m;
+        x0r = a[j] + a[j2];
+        x0i = a[j + 1] + a[j2 + 1];
+        x1r = a[j] - a[j2];
+        x1i = a[j + 1] - a[j2 + 1];
+        x2r = a[j1] + a[j3];
+        x2i = a[j1 + 1] + a[j3 + 1];
+        x3r = a[j1] - a[j3];
+        x3i = a[j1 + 1] - a[j3 + 1];
+        a[j] = x0r + x2r;
+        a[j + 1] = x0i + x2i;
+        a[j1] = x0r - x2r;
+        a[j1 + 1] = x0i - x2i;
+        x0r = x1r - x3i;
+        x0i = x1i + x3r;
+        a[j2] = wk1r * x0r - wk1i * x0i;
+        a[j2 + 1] = wk1r * x0i + wk1i * x0r;
+        x0r = x1r + x3i;
+        x0i = x1i - x3r;
+        a[j3] = wk3r * x0r + wk3i * x0i;
+        a[j3 + 1] = wk3r * x0i - wk3i * x0r;
+        j0 = m - j;
+        j1 = j0 + m;
+        j2 = j1 + m;
+        j3 = j2 + m;
+        x0r = a[j0] + a[j2];
+        x0i = a[j0 + 1] + a[j2 + 1];
+        x1r = a[j0] - a[j2];
+        x1i = a[j0 + 1] - a[j2 + 1];
+        x2r = a[j1] + a[j3];
+        x2i = a[j1 + 1] + a[j3 + 1];
+        x3r = a[j1] - a[j3];
+        x3i = a[j1 + 1] - a[j3 + 1];
+        a[j0] = x0r + x2r;
+        a[j0 + 1] = x0i + x2i;
+        a[j1] = x0r - x2r;
+        a[j1 + 1] = x0i - x2i;
+        x0r = x1r - x3i;
+        x0i = x1i + x3r;
+        a[j2] = wk1i * x0r - wk1r * x0i;
+        a[j2 + 1] = wk1i * x0i + wk1r * x0r;
+        x0r = x1r + x3i;
+        x0i = x1i - x3r;
+        a[j3] = wk3i * x0r + wk3r * x0i;
+        a[j3 + 1] = wk3i * x0i - wk3r * x0r;
+    }
+    j0 = mh;
+    j1 = j0 + m;
+    j2 = j1 + m;
+    j3 = j2 + m;
+    x0r = a[j0] + a[j2];
+    x0i = a[j0 + 1] + a[j2 + 1];
+    x1r = a[j0] - a[j2];
+    x1i = a[j0 + 1] - a[j2 + 1];
+    x2r = a[j1] + a[j3];
+    x2i = a[j1 + 1] + a[j3 + 1];
+    x3r = a[j1] - a[j3];
+    x3i = a[j1 + 1] - a[j3 + 1];
+    a[j0] = x0r + x2r;
+    a[j0 + 1] = x0i + x2i;
+    a[j1] = x0r - x2r;
+    a[j1 + 1] = x0i - x2i;
+    x0r = x1r - x3i;
+    x0i = x1i + x3r;
+    a[j2] = wn4r * (x0r - x0i);
+    a[j2 + 1] = wn4r * (x0i + x0r);
+    x0r = x1r + x3i;
+    x0i = x1i - x3r;
+    a[j3] = -wn4r * (x0r + x0i);
+    a[j3 + 1] = -wn4r * (x0i - x0r);
 }
 #pragma pop
 void fn_8028E6FC(s32 n, f32 *a, s32 nw, f32 *w) {
@@ -4757,14 +5172,115 @@ void fn_80290190(s32 n, f32 *a, s32 nc, s32 idx) {
     fn_8028F9D8(n, a, nc, lbl_802AD300[idx]);
 }
 
-void fn_80293258(u16 *);
+void fn_8029086C(s32* data, s8* in) {
+    s32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
+    s32 tmp10, tmp11, tmp12, tmp13;
+    s32 z1, z2, z3, z4, z5, z11, z13;
+    s32* p;
+    int i;
+
+    p = data;
+    for (i = 8; i > 0; i--) {
+        tmp0 = in[0] + in[7];
+        tmp7 = in[0] - in[7];
+        tmp1 = in[1] + in[6];
+        tmp6 = in[1] - in[6];
+        tmp2 = in[2] + in[5];
+        tmp5 = in[2] - in[5];
+        tmp3 = in[3] + in[4];
+        tmp4 = in[3] - in[4];
+        tmp0 <<= 8;
+        tmp1 <<= 8;
+        tmp2 <<= 8;
+        tmp3 <<= 8;
+        tmp4 <<= 8;
+        tmp5 <<= 8;
+        tmp6 <<= 8;
+        tmp7 <<= 8;
+
+        tmp10 = tmp0 + tmp3;
+        tmp13 = tmp0 - tmp3;
+        tmp11 = tmp1 + tmp2;
+        tmp12 = tmp1 - tmp2;
+
+        p[0] = tmp10 + tmp11;
+        p[4] = tmp10 - tmp11;
+
+        z1 = ((tmp12 + tmp13) * 0x5A8) >> 11;
+        p[2] = tmp13 + z1;
+        p[6] = tmp13 - z1;
+
+        tmp10 = tmp4 + tmp5;
+        tmp11 = tmp5 + tmp6;
+        tmp12 = tmp6 + tmp7;
+
+        z5 = ((tmp10 - tmp12) * 0x310) >> 11;
+        z2 = ((tmp10 * 0x454) >> 11) + z5;
+        z4 = ((tmp12 * 0xA74) >> 11) + z5;
+        z3 = (tmp11 * 0x5A8) >> 11;
+
+        z11 = tmp7 + z3;
+        z13 = tmp7 - z3;
+
+        p[5] = z13 + z2;
+        p[3] = z13 - z2;
+        p[1] = z11 + z4;
+        p[7] = z11 - z4;
+
+        p += 8;
+        in += 8;
+    }
+
+    p = data;
+    for (i = 8; i > 0; i--) {
+        tmp0 = p[8 * 0] + p[8 * 7];
+        tmp7 = p[8 * 0] - p[8 * 7];
+        tmp1 = p[8 * 1] + p[8 * 6];
+        tmp6 = p[8 * 1] - p[8 * 6];
+        tmp2 = p[8 * 2] + p[8 * 5];
+        tmp5 = p[8 * 2] - p[8 * 5];
+        tmp3 = p[8 * 3] + p[8 * 4];
+        tmp4 = p[8 * 3] - p[8 * 4];
+
+        tmp10 = tmp0 + tmp3;
+        tmp13 = tmp0 - tmp3;
+        tmp11 = tmp1 + tmp2;
+        tmp12 = tmp1 - tmp2;
+
+        p[8 * 0] = tmp10 + tmp11;
+        p[8 * 4] = tmp10 - tmp11;
+
+        z1 = ((tmp12 + tmp13) * 0x5A8) >> 11;
+        p[8 * 2] = tmp13 + z1;
+        p[8 * 6] = tmp13 - z1;
+
+        tmp10 = tmp4 + tmp5;
+        tmp11 = tmp5 + tmp6;
+        tmp12 = tmp6 + tmp7;
+
+        z5 = ((tmp10 - tmp12) * 0x310) >> 11;
+        z2 = ((tmp10 * 0x454) >> 11) + z5;
+        z4 = ((tmp12 * 0xA74) >> 11) + z5;
+        z3 = (tmp11 * 0x5A8) >> 11;
+
+        z11 = tmp7 + z3;
+        z13 = tmp7 - z3;
+
+        p[8 * 5] = z13 + z2;
+        p[8 * 3] = z13 - z2;
+        p[8 * 1] = z11 + z4;
+        p[8 * 7] = z11 - z4;
+
+        p++;
+    }
+}
+
 #pragma push
 #pragma use_lmw_stmw on
 void fn_80293964(u16 *dst) {
     u16 t[32];
     u16 *d;
     u16 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16;
-    fn_80293258(t);
     d = dst;
     a0 = t[0]; a1 = t[2]; a2 = t[4]; a3 = t[6];
     a4 = t[1]; a5 = t[3]; a6 = t[5]; a7 = t[7];
