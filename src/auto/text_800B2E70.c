@@ -6815,12 +6815,11 @@ void fn_800D9A04(u32 compare_enable, u32 func, u32 update_enable) {
 }
 
 void fn_800D9A38(u8 before_tex) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x1DC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1DC), (u32)before_tex, 6, 25, 25);
-    (*(volatile PPCWGPipe *)0xCC008000).u8 = 0x61;
-    (*(volatile PPCWGPipe *)0xCC008000).u32 = M2C_FIELD(gx, u32 *, 0x1DC);
-    gx->bpSentNot = 0;
+    extern GXDataHead *const __GXData;
+    M2C_FIELD(__GXData, u32 *, 0x1DC) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1DC), (u32)before_tex, 6, 25, 25);
+    GXWGFifo.u8 = 0x61;
+    GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x1DC);
+    __GXData->bpSentNot = 0;
 }
 
 void fn_800D9A6C(s32 pix_fmt, u32 z_fmt) {
