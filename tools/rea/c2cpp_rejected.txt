@@ -387,6 +387,7 @@ auto/text_8023E138
 auto/text_8023E5E4
 auto/text_8023E6BC
 auto/text_8023E8EC
+auto/text_8023E96C
 auto/text_802410CC
 auto/text_8024279C
 auto/text_802455A0
