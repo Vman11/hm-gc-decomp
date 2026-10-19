@@ -5930,13 +5930,12 @@ void fn_800D7B78(s32 chan, u32 *color) {
 }
 
 void fn_800D7C68(u8 nChans) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x204) = __rlwimi(M2C_FIELD(gx, u32 *, 0x204), nChans, 4, 25, 27);
+    extern GXData8 *const __GXData;
+    __GXData->r204 = __rlwimi(__GXData->r204, nChans, 4, 25, 27);
     GXWGFifo.u8 = 0x10;
     GXWGFifo.u32 = 0x1009;
     GXWGFifo.u32 = nChans;
-    M2C_FIELD(gx, u32 *, 0x5AC) |= 4;
+    __GXData->dirty |= 4;
 }
 
 void fn_800D7CA4(s32 chan, u8 enable, s32 amb_src, s32 mat_src, u32 light_mask, s32 diff_fn, s32 attn_fn) {
