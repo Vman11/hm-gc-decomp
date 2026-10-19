@@ -1,4 +1,5 @@
-auto/text_801043E0
-auto/text_801074D0
-auto/text_8014FE3C
-auto/text_801E0CD4
+auto/text_801138F0
+auto/text_80113CA4
+auto/text_80114058
+auto/text_801147C4
+auto/text_801D4F88
