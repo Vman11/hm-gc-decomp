@@ -2045,7 +2045,7 @@ auto/text_8004D778.cpp:
 	extabindex  start:0x80018BB4 end:0x80018BC0
 	.text       start:0x8004D778 end:0x8004D804
 
-auto/text_8004D804.c:
+auto/text_8004D804.cpp:
 	extab       start:0x800065A8 end:0x800065B0
 	extabindex  start:0x80018BC0 end:0x80018BCC
 	.text       start:0x8004D804 end:0x8004D88C
@@ -2070,7 +2070,7 @@ auto/text_8004DBA0.c:
 	extabindex  start:0x80018BF0 end:0x80018BFC
 	.text       start:0x8004DBA0 end:0x8004DC38
 
-auto/text_8004DC38.c:
+auto/text_8004DC38.cpp:
 	extab       start:0x800065F4 end:0x800065FC
 	extabindex  start:0x80018BFC end:0x80018C08
 	.text       start:0x8004DC38 end:0x8004DCC0
@@ -2253,7 +2253,7 @@ auto/text_800500DC.c:
 	extabindex  start:0x80018D58 end:0x80018D64
 	.text       start:0x800500DC end:0x80050174
 
-auto/text_80050174.c:
+auto/text_80050174.cpp:
 	extab       start:0x80006748 end:0x80006750
 	extabindex  start:0x80018D64 end:0x80018D70
 	.text       start:0x80050174 end:0x800501FC
@@ -5164,7 +5164,7 @@ auto/text_8008D984.cpp:
 	extabindex  start:0x8001A5E8 end:0x8001A5F4
 	.text       start:0x8008D984 end:0x8008DA10
 
-auto/text_8008DA10.c:
+auto/text_8008DA10.cpp:
 	extab       start:0x800081E0 end:0x800081E8
 	extabindex  start:0x8001A5F4 end:0x8001A600
 	.text       start:0x8008DA10 end:0x8008DA98
@@ -8670,7 +8670,7 @@ auto/text_800FC278.cpp:
 	extabindex  start:0x8001C22C end:0x8001C238
 	.text       start:0x800FC278 end:0x800FC2E0
 
-auto/text_800FC2E0.c:
+auto/text_800FC2E0.cpp:
 	extab       start:0x80009CB4 end:0x80009CBC
 	extabindex  start:0x8001C238 end:0x8001C244
 	.text       start:0x800FC2E0 end:0x800FC36C
@@ -9040,7 +9040,7 @@ auto/text_80102D70.c:
 	extabindex  start:0x8001C520 end:0x8001C52C
 	.text       start:0x80102D70 end:0x80102E34
 
-auto/text_80102E34.c:
+auto/text_80102E34.cpp:
 	extab       start:0x80009EE8 end:0x80009EF0
 	extabindex  start:0x8001C52C end:0x8001C538
 	.text       start:0x80102E34 end:0x80102EC0
@@ -9087,7 +9087,7 @@ auto/text_8010350C.cpp:
 auto/text_801035AC.c:
 	.text       start:0x801035AC end:0x80103628
 
-auto/text_80103628.c:
+auto/text_80103628.cpp:
 	extab       start:0x80009F5C end:0x80009F64
 	extabindex  start:0x8001C580 end:0x8001C58C
 	.text       start:0x80103628 end:0x801036B4
@@ -9375,7 +9375,7 @@ auto/text_80106634.c:
 	extabindex  start:0x8001C7FC end:0x8001C808
 	.text       start:0x80106634 end:0x80106718
 
-auto/text_80106718.c:
+auto/text_80106718.cpp:
 	extab       start:0x8000A16C end:0x8000A174
 	extabindex  start:0x8001C808 end:0x8001C814
 	.text       start:0x80106718 end:0x801067A4
@@ -10012,7 +10012,7 @@ auto/text_8010C8B4.cpp:
 	extabindex  start:0x8001CD3C end:0x8001CD48
 	.text       start:0x8010C8B4 end:0x8010C958
 
-auto/text_8010C958.c:
+auto/text_8010C958.cpp:
 	extab       start:0x8000A728 end:0x8000A730
 	extabindex  start:0x8001CD48 end:0x8001CD54
 	.text       start:0x8010C958 end:0x8010C9E0
@@ -14972,7 +14972,7 @@ auto/text_8015750C.cpp:
 	extabindex  start:0x8001F514 end:0x8001F520
 	.text       start:0x8015750C end:0x8015755C
 
-auto/text_8015755C.c:
+auto/text_8015755C.cpp:
 	extab       start:0x8000CDBC end:0x8000CDC4
 	extabindex  start:0x8001F520 end:0x8001F52C
 	.text       start:0x8015755C end:0x801575E4
@@ -16951,7 +16951,7 @@ auto/text_8017473C.c:
 	extabindex  start:0x800205D0 end:0x800205DC
 	.text       start:0x8017473C end:0x80174828
 
-auto/text_80174828.c:
+auto/text_80174828.cpp:
 	extab       start:0x8000DEF8 end:0x8000DF00
 	extabindex  start:0x800205DC end:0x800205E8
 	.text       start:0x80174828 end:0x801748B0
@@ -17359,7 +17359,7 @@ auto/text_8017A16C.c:
 	extabindex  start:0x8002093C end:0x80020948
 	.text       start:0x8017A16C end:0x8017A53C
 
-auto/text_8017A53C.c:
+auto/text_8017A53C.cpp:
 	extab       start:0x8000E1B4 end:0x8000E1BC
 	extabindex  start:0x80020948 end:0x80020954
 	.text       start:0x8017A53C end:0x8017A5C4
@@ -18072,7 +18072,7 @@ auto/text_80185260.cpp:
 	extabindex  start:0x80020F30 end:0x80020F3C
 	.text       start:0x80185260 end:0x801852E4
 
-auto/text_801852E4.c:
+auto/text_801852E4.cpp:
 	extab       start:0x8000E99C end:0x8000E9A4
 	extabindex  start:0x80020F3C end:0x80020F48
 	.text       start:0x801852E4 end:0x8018536C
@@ -18082,7 +18082,7 @@ auto/text_8018536C.c:
 	extabindex  start:0x80020F48 end:0x80020F54
 	.text       start:0x8018536C end:0x80185490
 
-auto/text_80185490.c:
+auto/text_80185490.cpp:
 	extab       start:0x8000E9AC end:0x8000E9B4
 	extabindex  start:0x80020F54 end:0x80020F60
 	.text       start:0x80185490 end:0x80185518
@@ -18138,7 +18138,7 @@ auto/text_80185A78.cpp:
 	extabindex  start:0x80020FC0 end:0x80020FCC
 	.text       start:0x80185A78 end:0x80185AF8
 
-auto/text_80185AF8.c:
+auto/text_80185AF8.cpp:
 	extab       start:0x8000E9FC end:0x8000EA04
 	extabindex  start:0x80020FCC end:0x80020FD8
 	.text       start:0x80185AF8 end:0x80185B80
@@ -25155,7 +25155,7 @@ auto/text_801E5EC8.cpp:
 	extabindex  start:0x800249E0 end:0x800249EC
 	.text       start:0x801E5EC8 end:0x801E5F04
 
-auto/text_801E5F04.c:
+auto/text_801E5F04.cpp:
 	extab       start:0x80011E9C end:0x80011EA4
 	extabindex  start:0x800249EC end:0x800249F8
 	.text       start:0x801E5F04 end:0x801E5F8C
@@ -28263,12 +28263,12 @@ auto/text_802063CC.cpp:
 	extabindex  start:0x80026444 end:0x80026450
 	.text       start:0x802063CC end:0x8020643C
 
-auto/text_8020643C.c:
+auto/text_8020643C.cpp:
 	extab       start:0x80013894 end:0x8001389C
 	extabindex  start:0x80026450 end:0x8002645C
 	.text       start:0x8020643C end:0x802064C0
 
-auto/text_802064C0.c:
+auto/text_802064C0.cpp:
 	extab       start:0x8001389C end:0x800138A4
 	extabindex  start:0x8002645C end:0x80026468
 	.text       start:0x802064C0 end:0x80206544
@@ -28518,7 +28518,7 @@ auto/text_80208744.cpp:
 	extabindex  start:0x80026648 end:0x80026654
 	.text       start:0x80208744 end:0x8020878C
 
-auto/text_8020878C.c:
+auto/text_8020878C.cpp:
 	extab       start:0x80013A28 end:0x80013A30
 	extabindex  start:0x80026654 end:0x80026660
 	.text       start:0x8020878C end:0x80208814
@@ -30126,7 +30126,7 @@ auto/text_80217D7C.c:
 	extabindex  start:0x800273B0 end:0x800273BC
 	.text       start:0x80217D7C end:0x8021814C
 
-auto/text_8021814C.c:
+auto/text_8021814C.cpp:
 	extab       start:0x80014654 end:0x8001465C
 	extabindex  start:0x800273BC end:0x800273C8
 	.text       start:0x8021814C end:0x802181D0
@@ -34241,7 +34241,7 @@ auto/text_80250414.c:
 	extabindex  start:0x8002960C end:0x80029618
 	.text       start:0x80250414 end:0x80250710
 
-auto/text_80250710.c:
+auto/text_80250710.cpp:
 	extab       start:0x800168D8 end:0x800168E0
 	extabindex  start:0x80029618 end:0x80029624
 	.text       start:0x80250710 end:0x80250794
@@ -35707,7 +35707,7 @@ auto/text_80267CF8.c:
 	extabindex  start:0x8002A224 end:0x8002A230
 	.text       start:0x80267CF8 end:0x80267E34
 
-auto/text_80267E34.c:
+auto/text_80267E34.cpp:
 	extab       start:0x800175E8 end:0x800175F0
 	extabindex  start:0x8002A230 end:0x8002A23C
 	.text       start:0x80267E34 end:0x80267EB8
