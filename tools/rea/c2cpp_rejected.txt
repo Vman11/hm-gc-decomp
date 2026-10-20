@@ -132,10 +132,12 @@ auto/text_801201A4
 auto/text_801203A8
 auto/text_80121CE8
 auto/text_80121E84
+auto/text_80128EA8
 auto/text_80128EF4
 auto/text_8012C28C
 auto/text_8012C638
 auto/text_8012C6B4
+auto/text_8012D59C
 auto/text_8012DC6C
 auto/text_8012DCC8
 auto/text_8012EE9C

@@ -6,9 +6,12 @@ extern u8 __vt__9C80273730[];
 void __ct__9C80257738Fv();
 void __ct__9C8025E920Fv();
 
-u32 * __ct__9C80273730Fv(u32 *param_1) {
-    __ct__9C80257738Fv();
-    *param_1 = (u32)__vt__9C80273730;
-    __ct__9C8025E920Fv(param_1 + 0x30);
-    return param_1;
+void fn_802575F0(void *);
+
+void *__ct__9C80273730Fv(u8 *p) {
+    __ct__9C80257738Fv(p);
+    *(void **)p = __vt__9C80273730;
+    __ct__9C8025E920Fv(p + 0xC0);
+    fn_802575F0(p);
+    return p;
 }
