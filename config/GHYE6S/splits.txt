@@ -114,12 +114,12 @@ auto/text_8002CFA0.cpp:
 	extabindex  start:0x80017C6C end:0x80017C78
 	.text       start:0x8002CFA0 end:0x8002CFF8
 
-auto/text_8002CFF8.c:
+auto/text_8002CFF8.cpp:
 	extab       start:0x80005770 end:0x80005778
 	extabindex  start:0x80017C78 end:0x80017C84
 	.text       start:0x8002CFF8 end:0x8002D03C
 
-auto/text_8002D03C.c:
+auto/text_8002D03C.cpp:
 	extab       start:0x80005778 end:0x80005780
 	extabindex  start:0x80017C84 end:0x80017C90
 	.text       start:0x8002D03C end:0x8002D080
@@ -15428,7 +15428,7 @@ auto/text_8015B3BC.c:
 auto/text_8015B7DC.c:
 	.text       start:0x8015B7DC end:0x8015B81C
 
-auto/text_8015B81C.c:
+auto/text_8015B81C.cpp:
 	extab       start:0x8000D1E8 end:0x8000D1F0
 	extabindex  start:0x8001F91C end:0x8001F928
 	.text       start:0x8015B81C end:0x8015B860
@@ -17219,7 +17219,7 @@ auto/text_80178B48.c:
 	extabindex  start:0x80020804 end:0x80020810
 	.text       start:0x80178B48 end:0x80178EF0
 
-auto/text_80178EF0.c:
+auto/text_80178EF0.cpp:
 	extab       start:0x8000E084 end:0x8000E08C
 	extabindex  start:0x80020810 end:0x8002081C
 	.text       start:0x80178EF0 end:0x80178F34
@@ -20186,17 +20186,17 @@ auto/text_801A0B20.c:
 	extabindex  start:0x80022130 end:0x8002213C
 	.text       start:0x801A0B20 end:0x801A0BEC
 
-auto/text_801A0BEC.c:
+auto/text_801A0BEC.cpp:
 	extab       start:0x8000FA3C end:0x8000FA44
 	extabindex  start:0x8002213C end:0x80022148
 	.text       start:0x801A0BEC end:0x801A0C30
 
-auto/text_801A0C30.c:
+auto/text_801A0C30.cpp:
 	extab       start:0x8000FA44 end:0x8000FA4C
 	extabindex  start:0x80022148 end:0x80022154
 	.text       start:0x801A0C30 end:0x801A0C74
 
-auto/text_801A0C74.c:
+auto/text_801A0C74.cpp:
 	extab       start:0x8000FA4C end:0x8000FA54
 	extabindex  start:0x80022154 end:0x80022160
 	.text       start:0x801A0C74 end:0x801A0CB8
@@ -29856,7 +29856,7 @@ auto/text_802150C8.cpp:
 	extabindex  start:0x80027170 end:0x8002717C
 	.text       start:0x802150C8 end:0x80215110
 
-auto/text_80215110.c:
+auto/text_80215110.cpp:
 	extab       start:0x8001444C end:0x80014454
 	extabindex  start:0x8002717C end:0x80027188
 	.text       start:0x80215110 end:0x80215154
