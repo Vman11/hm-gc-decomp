@@ -3557,100 +3557,6 @@ double fn_800EB8C4(int max_width, int (*ReadProc)(void *, int, int), void *ReadP
 }
 
 
-u32 fn_800EC990(int base_arg, int width_arg, int (*read_arg)(void *, int, int), void *context, int *count_arg, int *negative_arg, int *overflow_arg) {
-    extern u8 lbl_802E05C8[];
-    extern u8 lbl_802E07C8[];
-    int n = 0;
-    int (*read)(void *, int, int) = read_arg;
-    int base = base_arg;
-    void *arg = context;
-    u32 value = 0;
-    u32 limit = 0;
-    int state = 1;
-    int *overflow = overflow_arg;
-    int spaces = 0;
-    int max_width = width_arg;
-    int *negative = negative_arg;
-    int *count = count_arg;
-    int c;
-    *negative = *overflow = 0;
-    if (base < 0 || base == 1 || base > 36 || max_width < 1) {
-        state = 64;
-    } else {
-        c = read(arg, 0, 0);
-        n = 1;
-    }
-    if (base) limit = 0xFFFFFFFF / base;
-    while (n <= max_width && c != -1 && !(state & 96)) {
-        switch (state) {
-        case 1:
-            if (lbl_802E05C8[(u8)c] & 6) {
-                c = read(arg, 0, 0);
-                spaces++;
-                break;
-            }
-            if (c == '+') {
-                n++;
-                c = read(arg, 0, 0);
-            } else if (c == '-') {
-                n++;
-                c = read(arg, 0, 0);
-                *negative = 1;
-            }
-            state = 2;
-            break;
-        case 2:
-            if ((base == 0 || base == 16) && c == '0') {
-                state = 4;
-                n++;
-                c = read(arg, 0, 0);
-            } else state = 8;
-            break;
-        case 4:
-            if (c == 'X' || c == 'x') {
-                base = 16;
-                state = 8;
-                n++;
-                c = read(arg, 0, 0);
-            } else {
-                if (!base) base = 8;
-                state = 16;
-            }
-            break;
-        case 8:
-        case 16:
-            if (!base) base = 10;
-            if (!limit) limit = 0xFFFFFFFF / base;
-            if (lbl_802E05C8[(u8)c] & 16) {
-                c -= '0';
-                if (c >= base) {
-                    state = state == 16 ? 32 : 64;
-                    c += '0';
-                    break;
-                }
-            } else if (!(lbl_802E05C8[(u8)c] & 192) ||
-                (c == -1 ? -1 : lbl_802E07C8[(u8)c]) - 55 >= base) {
-                if (state == 16) state = 32;
-                else state = 64;
-                break;
-            } else c = (c == -1 ? -1 : lbl_802E07C8[(u8)c]) - 55;
-            if (value > limit) *overflow = 1;
-            value *= base;
-            if ((u32)c > 0xFFFFFFFF - value) *overflow = 1;
-            value += c;
-            state = 16;
-            n++;
-            c = read(arg, 0, 0);
-            break;
-        }
-    }
-    if (!(state & 52)) {
-        *count = 0;
-        value = 0;
-    } else *count = n + spaces - 1;
-    read(arg, c, 1);
-    return value;
-}
 
 s32 fn_800ECD08(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     M2C_UNK fn_800E1B68(s32, s32, s32 *, s32);
@@ -5100,3 +5006,120 @@ int fn_800EE484(double x, double *y) {
  if(hx<0) { y[0]=-y[0]; y[1]=-y[1]; return -n; }
  return n;
 }
+
+extern unsigned char lbl_802E05C8[];
+extern unsigned char lbl_802E07C8[];
+#define su_isspace(c) (lbl_802E05C8[(unsigned char)(c)] & 0x06)
+#define su_isdigit(c) (lbl_802E05C8[(unsigned char)(c)] & 0x10)
+#define su_isalpha(c) (lbl_802E05C8[(unsigned char)(c)] & 0xC0)
+#define su_toupper(c) ((c) == -1 ? -1 : (int)lbl_802E07C8[(unsigned char)(c)])
+#define fetch() (count++, (*ReadProc)(ReadProcArg, 0, 0))
+#define unfetch(c) (*ReadProc)(ReadProcArg, c, 1)
+
+#pragma push
+#pragma use_lmw_stmw on
+u32 fn_800EC990(int base, int max_width, int (*ReadProc)(void *, int, int), void *ReadProcArg, int *chars_scanned, int *negative, int *overflow) {
+    int scan_state = 1;
+    int count = 0;
+    int spaces = 0;
+    unsigned long value = 0;
+    unsigned long value_max = 0;
+    int c;
+
+    *negative = *overflow = 0;
+    if (base < 0 || base == 1 || base > 36 || max_width < 1)
+        scan_state = 64;
+    else
+        c = fetch();
+    if (base != 0)
+        value_max = 0xFFFFFFFF / base;
+    while (count <= max_width && c != -1 && !(scan_state & 0x60)) {
+        switch (scan_state) {
+        case 1:
+            if (su_isspace(c)) {
+                c = fetch();
+                count--;
+                spaces++;
+                break;
+            }
+            if (c == '+') {
+                c = fetch();
+            } else if (c == '-') {
+                c = fetch();
+                *negative = 1;
+            }
+            scan_state = 2;
+            break;
+        case 2:
+            if (base == 0 || base == 16) {
+                if (c == '0') {
+                    scan_state = 4;
+                    c = fetch();
+                    break;
+                }
+            }
+            scan_state = 8;
+            break;
+        case 4:
+            if (c == 'X' || c == 'x') {
+                base = 16;
+                scan_state = 8;
+                c = fetch();
+                break;
+            }
+            if (base == 0)
+                base = 8;
+            scan_state = 16;
+            break;
+        case 8:
+        case 16:
+            if (base == 0)
+                base = 10;
+            if (!value_max)
+                value_max = 0xFFFFFFFF / base;
+            if (su_isdigit(c)) {
+                if ((c -= '0') >= base) {
+                    if (scan_state == 16)
+                        scan_state = 32;
+                    else
+                        scan_state = 64;
+                    c += '0';
+                    break;
+                }
+            } else if (!su_isalpha(c) || (su_toupper(c) - 'A' + 10) >= base) {
+                if (scan_state == 16)
+                    scan_state = 32;
+                else
+                    scan_state = 64;
+                break;
+            } else
+                c = su_toupper(c) - 'A' + 10;
+            if (value > value_max)
+                *overflow = 1;
+            value *= base;
+            if (c > (0xFFFFFFFF - value))
+                *overflow = 1;
+            value += c;
+            scan_state = 16;
+            c = fetch();
+            break;
+        }
+    }
+    if (!(scan_state & 0x34)) {
+        count = 0;
+        value = 0;
+        *chars_scanned = 0;
+    } else {
+        count--;
+        *chars_scanned = count + spaces;
+    }
+    unfetch(c);
+    return value;
+}
+#pragma pop
+#undef su_isspace
+#undef su_isdigit
+#undef su_isalpha
+#undef su_toupper
+#undef fetch
+#undef unfetch
