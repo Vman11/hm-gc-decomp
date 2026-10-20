@@ -1449,7 +1449,7 @@ auto/text_800437AC.cpp:
 	extabindex  start:0x800186D4 end:0x800186E0
 	.text       start:0x800437AC end:0x80043820
 
-auto/text_80043820.c:
+auto/text_80043820.cpp:
 	extab       start:0x80006154 end:0x80006180
 	extabindex  start:0x800186E0 end:0x800186EC
 	.text       start:0x80043820 end:0x800438B8
