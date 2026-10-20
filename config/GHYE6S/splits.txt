@@ -12200,7 +12200,7 @@ auto/text_80129564.c:
 	extabindex  start:0x8001DF24 end:0x8001DF30
 	.text       start:0x80129564 end:0x8012962C
 
-auto/text_8012962C.c:
+auto/text_8012962C.cpp:
 	extab       start:0x8000B734 end:0x8000B73C
 	extabindex  start:0x8001DF30 end:0x8001DF3C
 	.text       start:0x8012962C end:0x80129710
