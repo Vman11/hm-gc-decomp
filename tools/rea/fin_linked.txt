@@ -1,1 +1,3 @@
-auto/text_8012962C
+auto/text_8019F41C
+auto/text_8019FB90
+auto/text_801A0304

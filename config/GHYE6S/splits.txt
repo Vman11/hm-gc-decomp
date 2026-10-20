@@ -20025,7 +20025,7 @@ auto/text_8019F244.c:
 	extabindex  start:0x80021FBC end:0x80021FC8
 	.text       start:0x8019F244 end:0x8019F41C
 
-auto/text_8019F41C.c:
+auto/text_8019F41C.cpp:
 	extab       start:0x8000F944 end:0x8000F94C
 	extabindex  start:0x80021FC8 end:0x80021FD4
 	.text       start:0x8019F41C end:0x8019F53C
@@ -20073,7 +20073,7 @@ auto/text_8019F9B8.c:
 	extabindex  start:0x80022028 end:0x80022034
 	.text       start:0x8019F9B8 end:0x8019FB90
 
-auto/text_8019FB90.c:
+auto/text_8019FB90.cpp:
 	extab       start:0x8000F98C end:0x8000F994
 	extabindex  start:0x80022034 end:0x80022040
 	.text       start:0x8019FB90 end:0x8019FCB0
@@ -20121,7 +20121,7 @@ auto/text_801A012C.c:
 	extabindex  start:0x80022094 end:0x800220A0
 	.text       start:0x801A012C end:0x801A0304
 
-auto/text_801A0304.c:
+auto/text_801A0304.cpp:
 	extab       start:0x8000F9D4 end:0x8000F9DC
 	extabindex  start:0x800220A0 end:0x800220AC
 	.text       start:0x801A0304 end:0x801A0424
