@@ -50,6 +50,7 @@ auto/text_8007C798
 auto/text_8007F9A0
 auto/text_80083C38
 auto/text_80085078
+auto/text_80086AF8
 auto/text_8008B9F4
 auto/text_8008C2A4
 auto/text_8008C974
@@ -318,6 +319,7 @@ auto/text_801DE528
 auto/text_801DE5D8
 auto/text_801DE8CC
 auto/text_801DEB5C
+auto/text_801DFDC8
 auto/text_801E0038
 auto/text_801E0758
 auto/text_801E0B34
