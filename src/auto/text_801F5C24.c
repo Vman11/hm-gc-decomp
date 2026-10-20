@@ -35,3 +35,79 @@ s32 fn_801F5D40(void *arg0) {
     return b >= a;
 }
 
+void fn_801F5BA0(void);
+
+asm void fn_801F5C24(void) {
+    nofralloc
+    li r11, 16
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -8
+    b fn_801F5BA0
+}
+
+void fn_801F59B8(void);
+
+asm void fn_801F5C38(void) {
+    nofralloc
+    li r11, 16
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -12
+    b fn_801F59B8
+}
+
+void fn_801F5990(void);
+
+asm void fn_801F5C4C(void) {
+    nofralloc
+    li r11, 16
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -12
+    b fn_801F5990
+}
+
+void fn_801F5960(void);
+
+asm void fn_801F5C60(void) {
+    nofralloc
+    li r11, 16
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -12
+    b fn_801F5960
+}
+
+void fn_801F5978(void);
+
+asm void fn_801F5C74(void) {
+    nofralloc
+    li r11, 16
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -12
+    b fn_801F5978
+}
+
+void dtor_801F59EC(void);
+
+asm void fn_801F5C88(void) {
+    nofralloc
+    li r11, 16
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -12
+    b dtor_801F59EC
+}
+
+void dtor_801F59EC(void);
+
+asm void fn_801F5C9C(void) {
+    nofralloc
+    li r11, 8
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -32
+    b dtor_801F59EC
+}

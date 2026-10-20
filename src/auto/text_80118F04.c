@@ -55,3 +55,24 @@ BOOL fn_80118FC4(UnkList_80118F3C* list, u32 item) {
     return TRUE;
 }
 
+void fn_80118D98(void);
+
+asm void fn_80118F04(void) {
+    nofralloc
+    li r11, 212
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -16
+    b fn_80118D98
+}
+
+void __dt__9C8011F770Fv(void);
+
+asm void fn_80118F18(void) {
+    nofralloc
+    li r11, 212
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -16
+    b __dt__9C8011F770Fv
+}
