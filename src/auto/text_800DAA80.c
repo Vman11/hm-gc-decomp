@@ -1212,20 +1212,6 @@ void fn_800DC0AC(const char *s) {
     }
 }
 
-s32 TRKDispatchMessage(TrkBuf *buf) {
-#pragma pop
-    s32 fn_800DB4F0(TrkBuf *, u8 *);
-    s32 err;
-    u8 cmd;
-
-    err = 0x500;
-    fn_800DBAA0(buf, 0);
-    fn_800DB4F0(buf, &cmd);
-    if (cmd < lbl_803257C8[0]) {
-        err = lbl_802E00D8[cmd](buf);
-    }
-    return err;
-}
 
 s32 TRKInitializeDispatcher(void) {
     lbl_803257C8[0] = 0x20;
@@ -2553,20 +2539,6 @@ s32 fn_800DF308(u8 cmd) {
     return result;
 }
 
-void fn_800DF3E0(u32 addr, s32 length) {
-#pragma pop
-    u32 p = addr & 0xFFFFFFF1;
-    length += addr - p;
-    do {
-        __dcbst((void *)p, 0);
-        __dcbf((void *)p, 0);
-        __sync();
-        __icbi((void *)p, 0);
-        p += 8;
-        length -= 8;
-    } while (length >= 0);
-    __isync();
-}
 
 void fn_800DF418(void *dest, int val, u32 count) {
     u32 v = (u8)val;
@@ -3428,3 +3400,663 @@ void* __va_arg(struct __va_list_struct* list, int type) {
         addr = *((char**)addr);
     return addr;
 }
+
+asm long fn_800DF4D0() {
+    nofralloc
+    mfmsr r3
+    blr
+}
+
+asm int fn_800DF4D8() {
+    nofralloc
+    mtmsr r3
+    blr
+}
+
+asm unsigned char fn_800E1050(long a, long b, long *c, long d) {
+    nofralloc
+    twi 31, r0, 0
+    blr
+}
+
+asm int fn_800E1058() {
+    nofralloc
+    twi 31, r0, 0
+    blr
+}
+
+asm int fn_800E1060() {
+    nofralloc
+    twi 31, r0, 0
+    blr
+}
+
+asm int fn_800E1068() {
+    nofralloc
+    twi 31, r0, 0
+    blr
+}
+
+asm long fn_800DEA20() {
+    nofralloc
+    lis r3, lbl_803257D0@ha
+    addi r3, r3, lbl_803257D0@l
+    lwz r3, 0(r3)
+    blr
+}
+
+asm void fn_800DF3E0(u32 addr, s32 length) {
+    nofralloc
+    lis r5, 0xFFFF
+    ori r5, r5, 0xFFF1
+    and r5, r5, r3
+    subf r3, r5, r3
+    add r4, r4, r3
+loop:
+    dcbst 0, r5
+    dcbf 0, r5
+    sync
+    icbi 0, r5
+    addic r5, r5, 8
+    addic. r4, r4, -8
+    bge loop
+    isync
+    blr
+}
+
+asm void fn_800DF4E0(void *dst, void *src, u32 len, u32 msr_src, u32 msr_dst) {
+    nofralloc
+    mfmsr r8
+    li r10, 0
+loop:
+    cmpw r10, r5
+    beq done
+    mtmsr r7
+    sync
+    lbzx r9, r10, r4
+    mtmsr r6
+    sync
+    stbx r9, r10, r3
+    addi r10, r10, 1
+    b loop
+done:
+    mtmsr r8
+    sync
+    blr
+}
+
+asm void TRKInterruptHandlerEnableInterrupts(void) {
+    nofralloc
+    lis r2,gTRKState@h
+    ori r2,r2,gTRKState@l
+    lwz r0,140(r2)
+    sync
+    mtmsr r0
+    sync
+    lwz r0,128(r2)
+    mtlr r0
+    lwz r0,132(r2)
+    mtctr r0
+    lwz r0,136(r2)
+    mtxer r0
+    lwz r0,148(r2)
+    mtdsisr r0
+    lwz r0,144(r2)
+    mtdar r0
+    lmw r3,12(r2)
+    lwz r0,0(r2)
+    lwz r1,4(r2)
+    lwz r2,8(r2)
+    b TRKPostInterruptEvent
+}
+
+extern void TRKInterruptHandler();
+asm void TRKLoadContext(void *ctx, long arg) {
+    nofralloc
+    lwz r0,0(r3)
+    lwz r1,4(r3)
+    lwz r2,8(r3)
+    lhz r5,418(r3)
+    rlwinm. r6,r5,0,30,30
+    beq L_6B2C
+    rlwinm r5,r5,0,31,29
+    sth r5,418(r3)
+    lmw r5,20(r3)
+    b L_6B30
+L_6B2C:
+    lmw r13,52(r3)
+L_6B30:
+    mr r31,r3
+    mr r3,r4
+    lwz r4,128(r31)
+    mtcr r4
+    lwz r4,132(r31)
+    mtlr r4
+    lwz r4,136(r31)
+    mtctr r4
+    lwz r4,140(r31)
+    mtxer r4
+    mfmsr r4
+    rlwinm r4,r4,0,17,15
+    rlwinm r4,r4,0,31,29
+    mtmsr r4
+    mtsprg 1,r2
+    lwz r4,12(r31)
+    mtsprg 2,r4
+    lwz r4,16(r31)
+    mtsprg 3,r4
+    lwz r2,408(r31)
+    lwz r4,412(r31)
+    lwz r31,124(r31)
+    b TRKInterruptHandler
+}
+
+extern void TRKRestoreExtended1Block();
+extern struct TRKExceptionStatus gTRKExceptionStatus_802E01A4, wC_unused_exc;
+asm int TRKSwapAndGo() {
+    nofralloc
+    lis r3,gTRKState@h
+    ori r3,r3,gTRKState@l
+    stmw r0,0(r3)
+    mfmsr r0
+    stw r0,140(r3)
+    mflr r0
+    stw r0,128(r3)
+    mfctr r0
+    stw r0,132(r3)
+    mfxer r0
+    stw r0,136(r3)
+    mfdsisr r0
+    stw r0,148(r3)
+    mfdar r0
+    stw r0,144(r3)
+    li r1,-32766
+    not r1,r1
+    mfmsr r3
+    and r3,r3,r1
+    mtmsr r3
+    lis r2,gTRKState@h
+    ori r2,r2,gTRKState@l
+    lwz r2,160(r2)
+    lbz r2,0(r2)
+    cmpwi r2,0
+    beq L_4D48
+    lis r2,gTRKState@h
+    ori r2,r2,gTRKState@l
+    li r3,1
+    stb r3,156(r2)
+    b TRKInterruptHandlerEnableInterrupts
+L_4D48:
+    lis r2,gTRKExceptionStatus_802E01A4@h
+    ori r2,r2,gTRKExceptionStatus_802E01A4@l
+    li r3,0
+    stb r3,12(r2)
+    bl TRKRestoreExtended1Block
+    lis r2,gTRKCPUState@h
+    ori r2,r2,gTRKCPUState@l
+    lmw r27,128(r2)
+    mtsrr0 r27
+    mtlr r28
+    mtcr r29
+    mtctr r30
+    mtxer r31
+    lmw r3,12(r2)
+    lwz r0,0(r2)
+    lwz r1,4(r2)
+    lwz r2,8(r2)
+    rfi
+}
+
+extern void TRKSaveExtended1Block();
+extern void _db_stack_addr();
+asm void InitMetroTRK(void) {
+    nofralloc
+    addi r1,r1,-4
+    stw r3,0(r1)
+    lis r3,gTRKCPUState@h
+    ori r3,r3,gTRKCPUState@l
+    stmw r0,0(r3)
+    lwz r4,0(r1)
+    addi r1,r1,4
+    stw r1,4(r3)
+    stw r4,12(r3)
+    mflr r4
+    stw r4,132(r3)
+    stw r4,128(r3)
+    mfcr r4
+    stw r4,136(r3)
+    mfmsr r4
+    ori r3,r4,32768
+    xori r3,r3,32768
+    mtmsr r3
+    mtsrr1 r4
+    bl TRKSaveExtended1Block
+    lis r3,gTRKCPUState@h
+    ori r3,r3,gTRKCPUState@l
+    lmw r0,0(r3)
+    li r0,0
+    mtspr 1010,r0
+    mtspr 1013,r0
+    lis r1,_db_stack_addr@h
+    ori r1,r1,_db_stack_addr@l
+    mr r3,r5
+    bl InitMetroTRKCommTable
+    cmpwi r3,1
+    bne L_6680
+    lwz r4,132(r3)
+    mtlr r4
+    lmw r0,0(r3)
+    blr
+L_6680:
+    b TRK_main
+}
+
+extern struct TRKExceptionStatus gTRKExceptionStatus_802E01A4, wC_unused_exc;
+asm void TRKExceptionHandler(void) {
+    nofralloc
+    lis r2,gTRKExceptionStatus_802E01A4@h
+    ori r2,r2,gTRKExceptionStatus_802E01A4@l
+    sth r3,8(r2)
+    mfsrr0 r3
+    stw r3,0(r2)
+    lhz r3,8(r2)
+    cmpwi r3,512
+    beq L_4C9C
+    cmpwi r3,768
+    beq L_4C9C
+    cmpwi r3,1024
+    beq L_4C9C
+    cmpwi r3,1536
+    beq L_4C9C
+    cmpwi r3,1792
+    beq L_4C9C
+    cmpwi r3,2048
+    beq L_4C9C
+    cmpwi r3,4096
+    beq L_4C9C
+    cmpwi r3,4352
+    beq L_4C9C
+    cmpwi r3,4608
+    beq L_4C9C
+    cmpwi r3,4864
+    beq L_4C9C
+    b L_4CA8
+L_4C9C:
+    mfsrr0 r3
+    addi r3,r3,4
+    mtsrr0 r3
+L_4CA8:
+    lis r2,gTRKExceptionStatus_802E01A4@h
+    ori r2,r2,gTRKExceptionStatus_802E01A4@l
+    li r3,1
+    stb r3,13(r2)
+    mfsprg r3,3
+    mtcr r3
+    mfsprg r2,1
+    mfsprg r3,2
+    rfi
+}
+
+extern void TRK_saved_exceptionID_803257D8();
+extern struct TRKExceptionStatus gTRKExceptionStatus_802E01A4, wC_unused_exc;
+extern void gTRKSaveState();
+asm void TRKInterruptHandler(void) {
+    nofralloc
+    mtsrr0 r2
+    mtsrr1 r4
+    mfsprg r4,3
+    mfcr r2
+    mtsprg 3,r2
+    lis r2,gTRKState@h
+    ori r2,r2,gTRKState@l
+    lwz r2,140(r2)
+    ori r2,r2,32770
+    xori r2,r2,32770
+    sync
+    mtmsr r2
+    sync
+    lis r2,TRK_saved_exceptionID_803257D8@h
+    ori r2,r2,TRK_saved_exceptionID_803257D8@l
+    sth r3,0(r2)
+    cmpwi r3,1280
+    bne L_4B64
+    lis r2,gTRKCPUState@h
+    ori r2,r2,gTRKCPUState@l
+    mflr r3
+    stw r3,1068(r2)
+    bl TRKUARTInterruptHandler
+    lis r2,gTRKCPUState@h
+    ori r2,r2,gTRKCPUState@l
+    lwz r3,1068(r2)
+    mtlr r3
+    lis r2,gTRKState@h
+    ori r2,r2,gTRKState@l
+    lwz r2,160(r2)
+    lbz r2,0(r2)
+    cmpwi r2,0
+    beq L_4B48
+    lis r2,gTRKExceptionStatus_802E01A4@h
+    ori r2,r2,gTRKExceptionStatus_802E01A4@l
+    lbz r2,12(r2)
+    cmpwi r2,1
+    beq L_4B48
+    lis r2,gTRKState@h
+    ori r2,r2,gTRKState@l
+    li r3,1
+    stb r3,156(r2)
+    b L_4B64
+L_4B48:
+    lis r2,gTRKSaveState@h
+    ori r2,r2,gTRKSaveState@l
+    lwz r3,136(r2)
+    mtcr r3
+    lwz r3,12(r2)
+    lwz r2,8(r2)
+    rfi
+L_4B64:
+    lis r2,TRK_saved_exceptionID_803257D8@h
+    ori r2,r2,TRK_saved_exceptionID_803257D8@l
+    lhz r3,0(r2)
+    lis r2,gTRKExceptionStatus_802E01A4@h
+    ori r2,r2,gTRKExceptionStatus_802E01A4@l
+    lbz r2,12(r2)
+    cmpwi r2,0
+    bne TRKExceptionHandler
+    lis r2,gTRKCPUState@h
+    ori r2,r2,gTRKCPUState@l
+    stw r0,0(r2)
+    stw r1,4(r2)
+    mfsprg r0,1
+    stw r0,8(r2)
+    sth r3,760(r2)
+    sth r3,762(r2)
+    mfsprg r0,2
+    stw r0,12(r2)
+    stmw r4,16(r2)
+    mfsrr0 r27
+    mflr r28
+    mfsprg r29,3
+    mfctr r30
+    mfxer r31
+    stmw r27,128(r2)
+    bl TRKSaveExtended1Block
+    lis r2,gTRKExceptionStatus_802E01A4@h
+    ori r2,r2,gTRKExceptionStatus_802E01A4@l
+    li r3,1
+    stb r3,12(r2)
+    lis r2,gTRKState@h
+    ori r2,r2,gTRKState@l
+    lwz r0,140(r2)
+    sync
+    mtmsr r0
+    sync
+    lwz r0,128(r2)
+    mtlr r0
+    lwz r0,132(r2)
+    mtctr r0
+    lwz r0,136(r2)
+    mtxer r0
+    lwz r0,148(r2)
+    mtdsisr r0
+    lwz r0,144(r2)
+    mtdar r0
+    lmw r3,12(r2)
+    lwz r0,0(r2)
+    lwz r1,4(r2)
+    lwz r2,8(r2)
+    b TRKPostInterruptEvent
+}
+
+asm void TRKSaveExtended1Block(void) {
+    nofralloc
+    lis r2,gTRKCPUState@h
+    ori r2,r2,gTRKCPUState@l
+    mfsr r16,0
+    mfsr r17,1
+    mfsr r18,2
+    mfsr r19,3
+    mfsr r20,4
+    mfsr r21,5
+    mfsr r22,6
+    mfsr r23,7
+    mfsr r24,8
+    mfsr r25,9
+    mfsr r26,10
+    mfsr r27,11
+    mfsr r28,12
+    mfsr r29,13
+    mfsr r30,14
+    mfsr r31,15
+    stmw r16,424(r2)
+    mftb r10
+    mftbu r11
+    mfspr r12,1008
+    mfspr r13,1009
+    mfsrr1 r14
+    mfpvr r15
+    mfibatu r16,0
+    mfibatl r17,0
+    mfibatu r18,1
+    mfibatl r19,1
+    mfibatu r20,2
+    mfibatl r21,2
+    mfibatu r22,3
+    mfibatl r23,3
+    mfdbatu r24,0
+    mfdbatl r25,0
+    mfdbatu r26,1
+    mfdbatl r27,1
+    mfdbatu r28,2
+    mfdbatl r29,2
+    mfdbatu r30,3
+    mfdbatl r31,3
+    stmw r10,488(r2)
+    mfsdr1 r22
+    mfdar r23
+    mfdsisr r24
+    mfsprg r25,0
+    mfsprg r26,1
+    mfsprg r27,2
+    mfsprg r28,3
+    li r29,0
+    mfspr r30,1010
+    mfear r31
+    stmw r22,604(r2)
+    mfspr r20,912
+    mfspr r21,913
+    mfspr r22,914
+    mfspr r23,915
+    mfspr r24,916
+    mfspr r25,917
+    mfspr r26,918
+    mfspr r27,919
+    mfspr r28,920
+    mfspr r29,921
+    mfspr r30,922
+    mfspr r31,923
+    stmw r20,764(r2)
+    b L_6898
+    mfspr r16,928
+    mfspr r17,935
+    mfspr r18,936
+    mfspr r19,937
+    mfspr r20,938
+    mfspr r21,939
+    mfspr r22,940
+    mfspr r23,941
+    mfspr r24,942
+    mfspr r25,943
+    mfspr r26,944
+    mfspr r27,951
+    mfspr r28,959
+    mfspr r29,1014
+    mfspr r30,1015
+    mfspr r31,1023
+    stmw r16,696(r2)
+L_6898:
+    mfspr r19,1013
+    mfspr r20,953
+    mfspr r21,954
+    mfspr r22,957
+    mfspr r23,958
+    mfspr r24,955
+    mfspr r25,952
+    mfspr r26,956
+    mfspr r27,1020
+    mfspr r28,1021
+    mfspr r29,1022
+    mfspr r30,1019
+    mfspr r31,1017
+    stmw r19,644(r2)
+    blr
+    mfspr r25,976
+    mfspr r26,977
+    mfspr r27,978
+    mfspr r28,979
+    mfspr r29,980
+    mfspr r30,981
+    mfspr r31,982
+    stmw r25,576(r2)
+    mfdec r31
+    stw r31,632(r2)
+    blr
+}
+
+extern struct wC_RestoreFlags gTRKRestoreFlags, wC_unused_rf;
+asm void TRKRestoreExtended1Block(void) {
+    nofralloc
+    lis r2,gTRKCPUState@h
+    ori r2,r2,gTRKCPUState@l
+    lis r5,gTRKRestoreFlags@h
+    ori r5,r5,gTRKRestoreFlags@l
+    lbz r3,0(r5)
+    lbz r6,1(r5)
+    li r0,0
+    stb r0,0(r5)
+    stb r0,1(r5)
+    cmpwi r3,0
+    beq L_693C
+    lwz r24,488(r2)
+    lwz r25,492(r2)
+    mttbl r24
+    mttbu r25
+L_693C:
+    lmw r20,764(r2)
+    mtspr 912,r20
+    mtspr 913,r21
+    mtspr 914,r22
+    mtspr 915,r23
+    mtspr 916,r24
+    mtspr 917,r25
+    mtspr 918,r26
+    mtspr 919,r27
+    mtspr 920,r28
+    mtspr 922,r30
+    mtspr 923,r31
+    b L_6988
+    lmw r26,736(r2)
+    mtspr 944,r26
+    mtspr 951,r27
+    mtspr 1014,r29
+    mtspr 1015,r30
+    mtspr 1023,r31
+L_6988:
+    lmw r19,644(r2)
+    mtspr 1013,r19
+    mtspr 953,r20
+    mtspr 954,r21
+    mtspr 957,r22
+    mtspr 958,r23
+    mtspr 955,r24
+    mtspr 952,r25
+    mtspr 956,r26
+    mtspr 1020,r27
+    mtspr 1021,r28
+    mtspr 1022,r29
+    mtspr 1019,r30
+    mtspr 1017,r31
+    b L_69F4
+    cmpwi r6,0
+    beq L_69D4
+    lwz r26,632(r2)
+    mtdec r26
+L_69D4:
+    lmw r25,576(r2)
+    mtspr 976,r25
+    mtspr 977,r26
+    mtspr 978,r27
+    mtspr 979,r28
+    mtspr 980,r29
+    mtspr 981,r30
+    mtspr 982,r31
+L_69F4:
+    lmw r16,424(r2)
+    mtsr 0,r16
+    mtsr 1,r17
+    mtsr 2,r18
+    mtsr 3,r19
+    mtsr 4,r20
+    mtsr 5,r21
+    mtsr 6,r22
+    mtsr 7,r23
+    mtsr 8,r24
+    mtsr 9,r25
+    mtsr 10,r26
+    mtsr 11,r27
+    mtsr 12,r28
+    mtsr 13,r29
+    mtsr 14,r30
+    mtsr 15,r31
+    lmw r12,496(r2)
+    mtspr 1008,r12
+    mtspr 1009,r13
+    mtsrr1 r14
+    mtspr 287,r15
+    mtibatu 0,r16
+    mtibatl 0,r17
+    mtibatu 1,r18
+    mtibatl 1,r19
+    mtibatu 2,r20
+    mtibatl 2,r21
+    mtibatu 3,r22
+    mtibatl 3,r23
+    mtdbatu 0,r24
+    mtdbatl 0,r25
+    mtdbatu 1,r26
+    mtdbatl 1,r27
+    mtdbatu 2,r28
+    mtdbatl 2,r29
+    mtdbatu 3,r30
+    mtdbatl 3,r31
+    lmw r22,604(r2)
+    mtsdr1 r22
+    mtdar r23
+    mtdsisr r24
+    mtsprg 0,r25
+    mtsprg 1,r26
+    mtsprg 2,r27
+    mtsprg 3,r28
+    mtspr 1010,r30
+    mtear r31
+    blr
+}
+
+#include "trk_priv.h"
+
+#pragma push
+#pragma dont_inline on
+s32 TRKDispatchMessage(TrkBuf *buf) {
+    s32 fn_800DB4F0(TrkBuf *, u8 *);
+    s32 err;
+    u8 cmd;
+
+    err = 0x500;
+    fn_800DBAA0(buf, 0);
+    fn_800DB4F0(buf, &cmd);
+    cmd &= 0xFF;
+    if (cmd < lbl_803257C8[0]) {
+        err = lbl_802E00D8[cmd](buf);
+    }
+    return err;
+}
+#pragma pop

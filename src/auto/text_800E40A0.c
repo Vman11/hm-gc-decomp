@@ -3556,26 +3556,6 @@ double fn_800EB8C4(int max_width, int (*ReadProc)(void *, int, int), void *ReadP
     }
 }
 
-int fn_800EC8D0(char *str) {
-    u32 fn_800EC990(int, int, int (*)(void *, int, int), void *, int *, int *, int *);
-    extern s32 lbl_8035A978;
-    struct { char *str; int end; } state;
-    int error;
-    int negative;
-    int count;
-    u32 value;
-    state.str = str;
-    state.end = 0;
-    value = fn_800EC990(10, 0x7FFFFFFF, fn_800EB1D4, &state, &count, &negative, &error);
-    if (error != 0 || (negative == 0 && value > 0x7FFFFFFFU) || (negative != 0 && value > 0x80000000U)) {
-        value = 0x7FFFFFFF;
-        lbl_8035A978 = 0x22;
-        value += (negative != 0);
-        return value;
-    }
-    if (negative != 0) value = -value;
-    return value;
-}
 
 u32 fn_800EC990(int base_arg, int width_arg, int (*read_arg)(void *, int, int), void *context, int *count_arg, int *negative_arg, int *overflow_arg) {
     extern u8 lbl_802E05C8[];
@@ -3970,60 +3950,6 @@ extern double lbl_8035A988, lbl_80363358, lbl_80363360, lbl_80363368;
 extern double lbl_80363370, lbl_80363378, lbl_80363380, lbl_80363388, lbl_80363390;
 extern double lbl_80363398, lbl_803633A0, lbl_803633A8, lbl_803633B0;
 extern double lbl_803633B8, lbl_803633C0, lbl_803633C8;
-double fn_800ED954(double x) {
-    double hfsq,f,s,z,R,w,t1,t2,dk;
-    int k,hx,i,j;
-    unsigned int lx;
-    hx = ((int*)&x)[0];
-    lx = ((unsigned int*)&x)[1];
-    k = 0;
-    if (hx < 0x00100000) {
-        if (((hx & 0x7fffffff) | lx) == 0) return lbl_80363358 / lbl_8035A988;
-        if (hx < 0) {
-            lbl_8035A978 = 33;
-            return (x-x)/lbl_8035A988;
-        }
-        k -= 54;
-        x *= lbl_80363360;
-        hx = ((int*)&x)[0];
-    }
-    if (hx >= 0x7ff00000) return x+x;
-    k += (hx >> 20)-1023;
-    hx &= 0x000fffff;
-    i = (hx+0x95f64)&0x100000;
-    ((int*)&x)[0] = hx | (i^0x3ff00000);
-    k += i>>20;
-    f = x-lbl_80363368;
-    if ((0x000fffff&(2+hx)) < 3) {
-        if (f == lbl_8035A988) {
-            if (k==0) return lbl_8035A988;
-            dk=(double)k;
-            return lbl_80363370*dk+lbl_80363378*dk;
-        }
-        R = (lbl_80363380-lbl_80363388*f)*(f*f);
-        if (k==0) return f-R;
-        dk=(double)k;
-        return lbl_80363370*dk-((R-lbl_80363378*dk)-f);
-    }
-    s=f/(lbl_80363390+f);
-    dk=(double)k;
-    z=s*s;
-    i=hx-0x6147a;
-    w=z*z;
-    j=0x6b851-hx;
-    t1=w*(lbl_803633B8+w*(lbl_803633C0+lbl_803633C8*w));
-    t2=z*(lbl_80363398+w*(lbl_803633A0+w*(lbl_803633A8+lbl_803633B0*w)));
-    i |= j;
-    R=t2+t1;
-    if (i>0) {
-        hfsq=(lbl_80363380*f)*f;
-        if(k==0) return f-(hfsq-s*(hfsq+R));
-        return lbl_80363370*dk-((hfsq-(s*(hfsq+R)+lbl_80363378*dk))-f);
-    } else {
-        if(k==0) return f-s*(f-R);
-        return lbl_80363370*dk-((s*(f-R)-lbl_80363378*dk)-f);
-    }
-}
 
 extern double lbl_8029C578[];
 extern double lbl_803633D8, lbl_803633E0, lbl_803633E8, lbl_803633F0, lbl_803633F8;
@@ -5709,3 +5635,80 @@ u32 fn_800F5334(s32 chan, SITypeAndStatusCallback callback) {
     return type;
 }
 
+extern double lbl_80363358, lbl_8035A988, lbl_80363360, lbl_80363368, lbl_80363370, lbl_80363378, lbl_80363380, lbl_80363388, lbl_80363390, lbl_80363398, lbl_803633A0, lbl_803633A8, lbl_803633B0, lbl_803633B8, lbl_803633C0, lbl_803633C8;
+double fn_800ED954(double x) {
+    double hfsq,f,s,z,R,w,t1,t2,dk;
+    int k,hx,i,j;
+    unsigned int lx;
+    hx = ((int*)&x)[0];
+    lx = ((unsigned int*)&x)[1];
+    k = 0;
+    if (hx < 0x00100000) {
+        if (((hx & 0x7fffffff) | lx) == 0) return lbl_80363358 / lbl_8035A988;
+        if (hx < 0) {
+            lbl_8035A978 = 33;
+            return (x-x)/lbl_8035A988;
+        }
+        k -= 54;
+        x *= lbl_80363360;
+        hx = ((int*)&x)[0];
+    }
+    if (hx >= 0x7ff00000) return x+x;
+    k += (hx >> 20)-1023;
+    hx &= 0x000fffff;
+    i = (hx+0x95f64)&0x100000;
+    ((int*)&x)[0] = hx | (i^0x3ff00000);
+    k += i>>20;
+    f = x-lbl_80363368;
+    if ((0x000fffff&(2+hx)) < 3) {
+        if (f == lbl_8035A988) {
+            if (k==0) return lbl_8035A988;
+            dk=(double)k;
+            return lbl_80363370*dk+lbl_80363378*dk;
+        }
+        R = (lbl_80363380-lbl_80363388*f)*(f*f);
+        if (k==0) return f-R;
+        dk=(double)k;
+        return lbl_80363370*dk-((R-lbl_80363378*dk)-f);
+    }
+    s=f/(lbl_80363390+f);
+    dk=(double)k;
+    z=s*s;
+    i=hx-0x6147a;
+    w=z*z;
+    j=0x6b851-hx;
+    t1=w*(lbl_803633B8+w*(lbl_803633C0+lbl_803633C8*w));
+    t2=z*(lbl_80363398+w*(lbl_803633A0+w*(lbl_803633A8+lbl_803633B0*w)));
+    i |= j;
+    R=t2+t1;
+    if (i>0) {
+        hfsq=0.5*f*f;
+        if(k==0) return f-(hfsq-s*(hfsq+R));
+        return lbl_80363370*dk-((hfsq-(s*(hfsq+R)+lbl_80363378*dk))-f);
+    } else {
+        if(k==0) return f-s*(f-R);
+        return lbl_80363370*dk-((s*(f-R)-lbl_80363378*dk)-f);
+    }
+}
+
+
+int fn_800EC8D0(char *str) {
+    u32 fn_800EC990(int, int, int (*)(void *, int, int), void *, int *, int *, int *);
+    unsigned long value;
+    int overflow, negative, count;
+    struct {
+        char *NextChar;
+        int NullCharDetected;
+    } isc;
+
+    isc.NextChar = str;
+    isc.NullCharDetected = 0;
+    value = fn_800EC990(10, 0x7FFFFFFF, fn_800EB1D4, &isc, &count, &negative, &overflow);
+    if (overflow || (!negative && value > 0x7FFFFFFF) || (negative && value > 0x80000000)) {
+        value = (negative ? 0x80000000 : 0x7FFFFFFF);
+        lbl_8035A978 = 34;
+    } else if (negative) {
+        value = -value;
+    }
+    return (long)value;
+}

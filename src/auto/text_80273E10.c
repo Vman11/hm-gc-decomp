@@ -610,10 +610,6 @@ void fn_80274920(u32 arg0, s32 arg1) {
     }
 }
 
-void fn_80274970(s32 arg0) {
-    M2C_ERROR(/* unknown instruction: tlbsync */);
-    M2C_ERROR(/* unknown instruction: tlbie $r0 */);
-}
 
 u32 fn_80274980(s32 arg0) {
     extern u32* lbl_8035B87C;
@@ -701,27 +697,9 @@ u32 fn_80274D04(u32 arg0) {
     return ((arg0 >> 19) & 0x38) | (lbl_8035B878 | ((arg0 >> 6) & 0xFFC0));
 }
 
-void fn_80274D1C(void) {
-    u32 addr = 0;
-    int i;
-    __tlbsync();
-    for (i = 0; i < 64; ++i) {
-        __tlbie(addr);
-        addr += 0x1000;
-    }
-}
 
 extern void fn_80274DE0(void);
 extern u32 lbl_8035B878, lbl_8035B88C, lbl_8035B890;
-void fn_80274D74(void) {
-    u32 msr, table;
-    lbl_8035B88C = __mfsr(7);
-    __mtsr(7, 0);
-    msr = __mfmsr();
-    table = __mfspr(25);
-    lbl_8035B890 = table;
-    fn_80274DC8(msr & ~0x30, (table & 0xFFFF) + (lbl_8035B878 & 0x7FFF0000), 0);
-}
 
 void fn_80274E0C(void) {
 
@@ -1175,3 +1153,263 @@ void fn_8028F484(f32 *, f32 *);
 #pragma use_lmw_stmw on
 
 #pragma pop
+
+asm void fn_80274970(s32 arg0) {
+    nofralloc
+    rlwinm r0, r3, 0, 14, 19
+    tlbsync
+    tlbie r0
+    blr
+}
+
+asm void fn_80274D1C(void) {
+    nofralloc
+    li r3, 0
+    tlbsync
+    li r0, 8
+    mtctr r0
+loop:
+    tlbie r3
+    addi r3, r3, 0x1000
+    tlbie r3
+    addi r3, r3, 0x1000
+    tlbie r3
+    addi r3, r3, 0x1000
+    tlbie r3
+    addi r3, r3, 0x1000
+    tlbie r3
+    addi r3, r3, 0x1000
+    tlbie r3
+    addi r3, r3, 0x1000
+    tlbie r3
+    addi r3, r3, 0x1000
+    tlbie r3
+    addi r3, r3, 0x1000
+    bdnz loop
+    blr
+}
+
+asm int fn_80274DC8() {
+    nofralloc
+    mtsrr1 r3
+    lis r5, fn_80274DE0@ha
+    addi r5, r5, fn_80274DE0@l
+    clrlwi r5, r5, 1
+    mtsrr0 r5
+    rfi
+}
+
+void fn_80274DE0(void);
+asm void fn_80274DE0(void) {
+    nofralloc
+    sync
+    mtsdr1 r4
+    sync
+    mfmsr r3
+    ori r3, r3, 0x30
+    mtsrr1 r3
+    lis r5, fn_80274DE0+40@ha
+    addi r5, r5, fn_80274DE0+40@l
+    mtsrr0 r5
+    rfi
+
+    nop
+}
+
+extern u32 lbl_8035B878, lbl_8035B88C, lbl_8035B890;
+asm void fn_80274D74(void) {
+    nofralloc
+    stwu r1, -16(r1)
+    mflr r0
+    li r3, 0
+    stw r0, 20(r1)
+    mfsr r0, 7
+    mtsr 7, r3
+    stw r0, lbl_8035B88C
+    mfmsr r3
+    mfsdr1 r4
+    lwz r0, lbl_8035B878
+    clrlwi r5, r4, 16
+    stw r4, lbl_8035B890
+    rlwinm r0, r0, 0, 1, 15
+    rlwinm r3, r3, 0, 28, 25
+    add r4, r5, r0
+    li r5, 0
+    bl fn_80274DC8
+    lwz r0, 20(r1)
+    mtlr r0
+    addi r1, r1, 16
+    blr
+}
+
+asm void fn_80274F8C(void) {
+    nofralloc
+    mtspr 272,r4
+    mtspr 273,r5
+    mtspr 274,r6
+    mfcr r4
+    mtspr 275,r4
+    mfdar r5
+    li r6,126
+    slwi r6,r6,24
+    cmplw r5,r6
+    blt L_1254
+    mfdar r5
+    li r6,128
+    slwi r6,r6,24
+    cmplw r5,r6
+    bge L_1254
+    mfdsisr r5
+    rlwinm r6,r5,0,1,1
+    cmplwi r6,0
+    beq L_1254
+    mfspr r4,275
+    mtcr r4
+    mfspr r4,272
+    mfspr r5,273
+    mfspr r6,274
+    mtspr 272,r4
+    lwz r4,192(r0)
+    stw r3,12(r4)
+    mfspr r3,272
+    stw r3,16(r4)
+    stw r5,20(r4)
+    lhz r3,418(r4)
+    ori r3,r3,2
+    sth r3,418(r4)
+    mfcr r3
+    stw r3,128(r4)
+    mflr r3
+    stw r3,132(r4)
+    mfctr r3
+    stw r3,136(r4)
+    mfxer r3
+    stw r3,140(r4)
+    mfsrr0 r3
+    stw r3,408(r4)
+    mfsrr1 r3
+    stw r3,412(r4)
+    mr r5,r3
+    mfmsr r3
+    ori r3,r3,48
+    mtsrr1 r3
+    lwz r3,212(r0)
+    lis r5,fn_80274F8C+244@ha
+    addi r5,r5,fn_80274F8C+244@l
+    mtsrr0 r5
+    rfi
+L_1254:
+    mfspr r4,275
+    mtcr r4
+    mfspr r4,272
+    mfspr r5,273
+    mfspr r6,274
+    nop
+    nop
+    stw r0,0(r3)
+    stw r1,4(r3)
+    stw r2,8(r3)
+    stmw r6,24(r3)
+    mfspr r0,913
+    stw r0,424(r3)
+    mfspr r0,914
+    stw r0,428(r3)
+    mfspr r0,915
+    stw r0,432(r3)
+    mfspr r0,916
+    stw r0,436(r3)
+    mfspr r0,917
+    stw r0,440(r3)
+    mfspr r0,918
+    stw r0,444(r3)
+    mfspr r0,919
+    stw r0,448(r3)
+    mfdar r4
+    b fn_802750D0
+}
+
+asm void fn_80275134(void) {
+    nofralloc
+    mtspr 272,r4
+    mtspr 273,r5
+    mtspr 274,r6
+    mfcr r4
+    mtspr 275,r4
+    mfdar r5
+    li r6,126
+    slwi r6,r6,24
+    cmplw r5,r6
+    blt L_13FC
+    mfdar r5
+    li r6,128
+    slwi r6,r6,24
+    cmplw r5,r6
+    bge L_13FC
+    mfsrr1 r5
+    rlwinm r6,r5,0,1,1
+    cmplwi r6,0
+    beq L_13FC
+    mfspr r4,275
+    mtcr r4
+    mfspr r4,272
+    mfspr r5,273
+    mfspr r6,274
+    mtspr 272,r4
+    lwz r4,192(r0)
+    stw r3,12(r4)
+    mfspr r3,272
+    stw r3,16(r4)
+    stw r5,20(r4)
+    lhz r3,418(r4)
+    ori r3,r3,2
+    sth r3,418(r4)
+    mfcr r3
+    stw r3,128(r4)
+    mflr r3
+    stw r3,132(r4)
+    mfctr r3
+    stw r3,136(r4)
+    mfxer r3
+    stw r3,140(r4)
+    mfsrr0 r3
+    stw r3,408(r4)
+    mfsrr1 r3
+    stw r3,412(r4)
+    mr r5,r3
+    mfmsr r3
+    ori r3,r3,48
+    mtsrr1 r3
+    lwz r3,212(r0)
+    lis r5,fn_80275134+244@ha
+    addi r5,r5,fn_80275134+244@l
+    mtsrr0 r5
+    rfi
+L_13FC:
+    mfspr r4,275
+    mtcr r4
+    mfspr r4,272
+    mfspr r5,273
+    mfspr r6,274
+    nop
+    nop
+    stw r0,0(r3)
+    stw r1,4(r3)
+    stw r2,8(r3)
+    stmw r6,24(r3)
+    mfspr r0,913
+    stw r0,424(r3)
+    mfspr r0,914
+    stw r0,428(r3)
+    mfspr r0,915
+    stw r0,432(r3)
+    mfspr r0,916
+    stw r0,436(r3)
+    mfspr r0,917
+    stw r0,440(r3)
+    mfspr r0,918
+    stw r0,444(r3)
+    mfspr r0,919
+    stw r0,448(r3)
+    mfdar r4
+    b fn_80275278
+}
