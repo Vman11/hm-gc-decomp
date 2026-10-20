@@ -7851,11 +7851,41 @@ auto/text_800E3E9C.c:
 	.text       start:0x800E3E9C end:0x800E40A0
 
 auto/text_800E40A0.c:
-	.text       start:0x800E40A0 end:0x800F5578
+	.text       start:0x800E40A0 end:0x800F065C
 	.data       start:0x802E04A0 end:0x802E0B74
 
 auto/jt_802E0B74.c:
-	.data       start:0x802E0B74 end:0x802E0F0C
+	.data       start:0x802E0B74 end:0x802E0CA8
+
+sdk/odenotstub.c:
+	.text       start:0x800F065C end:0x800F0664
+
+sdk/DebuggerDriver.c:
+	.text       start:0x800F0664 end:0x800F10E4
+
+sdk/AmcExi2.c:
+	.text       start:0x800F10E4 end:0x800F1DD0
+
+sdk/EXIBios.c:
+	.text       start:0x800F1DD0 end:0x800F37AC
+
+sdk/OSUartExi.c:
+	.text       start:0x800F37AC end:0x800F3D80
+
+sdk/SIBios.c:
+	.text       start:0x800F3D80 end:0x800F5470
+	.data       start:0x802E0CA8 end:0x802E0DC0
+	.bss        start:0x803284D0 end:0x803286D0
+	.sdata      start:0x80359708 end:0x80359710
+	.sbss       start:0x8035A9D0 end:0x8035A9E0
+
+sdk/SISamplingRate.c:
+	.text       start:0x800F5470 end:0x800F5578
+	.data       start:0x802E0DC0 end:0x802E0E58
+	.sbss       start:0x8035A9E0 end:0x8035A9E8
+
+auto/jt_802E0E58.c:
+	.data       start:0x802E0E58 end:0x802E0F0C
 
 auto/text_800F5578.cpp:
 	extab       start:0x80009794 end:0x8000979C

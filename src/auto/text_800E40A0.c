@@ -4158,49 +4158,6 @@ extern double lbl_803634E8, lbl_803634F0, lbl_803634F8, lbl_80363500, lbl_803635
 extern int lbl_8029C6B0[];
 extern int lbl_8029C5A8[];
 int fn_800EE918(double*, double*, int, int, int, const int*);
-int fn_800EE484(double x, double *y) {
- double w,z,t,r,fn,tx[3], saved;
- int e0,i,j,n,nx,hx,ix;
- hx = *(int*)&x; ix = hx & 0x7fffffff;
- if(ix<=0x3fe921fb) { y[0]=x; y[1]=0.0; return 0; }
- if(ix<0x4002d97c) {
-  if(hx>0) {
-   z=x-1.57079632673412561417e+00;
-   if(ix!=0x3ff921fb) { w=6.07710050650619224932e-11; y[0]=z-w; y[1]=(z-y[0])-w; }
-   else { z-=6.07710050630396597660e-11; w=2.02226624879595063154e-21; y[0]=z-w; y[1]=(z-y[0])-w; }
-   return 1;
-  } else {
-   z=1.57079632673412561417e+00+x;
-   if(ix!=0x3ff921fb) { w=6.07710050650619224932e-11; y[0]=w+z; y[1]=w+(z-y[0]); }
-   else { z+=6.07710050630396597660e-11; w=2.02226624879595063154e-21; y[0]=w+z; y[1]=w+(z-y[0]); }
-   return -1;
-  }
- }
- if(ix<=0x413921fb) {
-  t=__fabs(x); n=(int)(6.36619772367581382433e-01*t+0.5); fn=(double)n;
-  r=t-1.57079632673412561417e+00*fn; w=6.07710050650619224932e-11*fn;
-  if(n<32 && ix!=lbl_8029C6B0[n-1]) y[0]=r-w;
-  else {
-   j=ix>>20; y[0]=r-w; i=j-((*(int*)&y[0]>>20)&0x7ff);
-   if(i>16) {
-    saved=r; w=6.07710050630396597660e-11*fn; r-=w; w=2.02226624879595063154e-21*fn-((saved-r)-w); y[0]=r-w;
-    i=j-((*(int*)&y[0]>>20)&0x7ff);
-    if(i>49) { t=r; w=2.02226624871116645580e-21*fn; r-=w; w=8.47842766036889956997e-32*fn-((t-r)-w); y[0]=r-w; }
-   }
-  }
-  y[1]=(r-y[0])-w;
-  if(hx<0) { y[0]=-y[0]; y[1]=-y[1]; return -n; } else return n;
- }
- if(ix>=0x7ff00000) { y[0]=y[1]=x-x; return 0; }
- *(int*)((char*)&z+4)=*(int*)((char*)&x+4);
- e0=(ix>>20)-1046; *(int*)&z=ix-(e0<<20);
- for(i=0;i<2;i++) { tx[i]=(double)(int)z; z=(z-tx[i])*16777216.0; }
- tx[2]=z; nx=3;
- while(tx[nx-1]==0.0) nx--;
- n=fn_800EE918(tx,y,e0,nx,2,lbl_8029C5A8);
- if(hx<0) { y[0]=-y[0]; y[1]=-y[1]; return -n; }
- return n;
-}
 
 double fn_800EE824(double x, double y) {
     extern double lbl_80363540;
@@ -4861,26 +4818,9 @@ int fn_800F05D0(const char* s1, const char* s2) {
     }
 }
 
-s32 Hu_IsStub(void) {
-    return 0;
-}
 
-void DBClose(void) {
 
-}
 
-void DBOpen(void) {
-
-}
-
-int DBRead(void* buf, u32 size) {
-    int enabled = OSDisableInterrupts();
-    fn_800F0CC4(((lbl_8035A998 & 0x10000) ? 0x1000 : 0) + 0x1E000, buf, (size + 3) & ~3);
-    lbl_8035A99C = 0;
-    lbl_8035A9A4 = 0;
-    OSRestoreInterrupts(enabled);
-    return 0;
-}
 
 void __OSMaskInterrupts(u32);
 void __OSUnmaskInterrupts(u32);
@@ -4888,33 +4828,8 @@ void __OSSetInterruptHandler(s16, void*);
 void fn_800F0AC0(void);
 void fn_800F0B00(void);
 extern void* lbl_8035A994;
-void DBInitInterrupts(void) {
-    __OSMaskInterrupts(0x18000);
-    __OSMaskInterrupts(0x40);
-    lbl_8035A994 = fn_800F0B00;
-    __OSSetInterruptHandler(0x19, fn_800F0AC0);
-    __OSUnmaskInterrupts(0x40);
-}
 
-void DBInitComm(u8 **inputFlagPtr, s32 mtrCallback) {
-    extern u8 *lbl_8035A9A0;
-    extern s32 lbl_8035A990;
-    int enabled = OSDisableInterrupts();
-    lbl_8035A9A0 = &lbl_8035A9A4;
-    *inputFlagPtr = lbl_8035A9A0;
-    lbl_8035A990 = mtrCallback;
-    __OSMaskInterrupts(0x18000);
-    *(volatile u32 *)0xCC006828 = 0;
-    OSRestoreInterrupts(enabled);
-}
 
-void fn_800F0B00(void) {
-    extern M2C_UNK (*lbl_8035A990)(M2C_UNK);
-    lbl_8035A9A4 = 1;
-    if (lbl_8035A990 != NULL) {
-        lbl_8035A990(0);
-    }
-}
 
 typedef struct EXI2Control {
     u8 unk0[0xC];
@@ -4925,152 +4840,13 @@ typedef struct EXI2Control {
 extern EXI2Control *lbl_803596F0;
 
 s32 fn_800F0E4C(void *buf, s32 len, s32 mode);
-s32 fn_800F0B3C(u32 *data) {
-    u32 cmd;
-    BOOL err;
-    volatile u32 *exi = (volatile u32 *)0xCC006800;
 
-    exi[10] = (exi[10] & 0x405) | 0xC0;
-    cmd = 0x40000000;
-    err = !fn_800F0E4C(&cmd, 2, 1);
-    while (exi[13] & 1) {
-    }
-    err |= !fn_800F0E4C(data, 4, 0);
-    while (exi[13] & 1) {
-    }
-    exi[10] &= 0x405;
-    return !err;
-}
 
-s32 fn_800F0BE8(u32 addr, u32 *data, s32 size) {
-    u32 cmd;
-    BOOL err;
-    volatile u32 *exi = (volatile u32 *)0xCC006800;
 
-    exi[10] = (exi[10] & 0x405) | 0xC0;
-    cmd = ((addr << 8) & 0x01FFFC00) | 0xA0000000;
-    err = !fn_800F0E4C(&cmd, 4, 1);
-    while (exi[13] & 1) {
-    }
-    while (size != 0) {
-        cmd = *data++;
-        err |= !fn_800F0E4C(&cmd, 4, 1);
-        while (exi[13] & 1) {
-        }
-        size -= 4;
-        if (size < 0) {
-            size = 0;
-        }
-    }
-    exi[10] &= 0x405;
-    return !err;
-}
 
-s32 fn_800F0CC4(u32 addr, void *buf, s32 size) {
-    u32 cmd;
-    u32 value;
-    BOOL err;
-    u32 *data = buf;
-    volatile u32 *exi = (volatile u32 *)0xCC006800;
 
-    exi[10] = (exi[10] & 0x405) | 0xC0;
-    cmd = ((addr << 8) & 0x01FFFC00) | 0x20000000;
-    err = !fn_800F0E4C(&cmd, 4, 1);
-    while (exi[13] & 1) {
-    }
-    while (size != 0) {
-        err |= !fn_800F0E4C(&value, 4, 0);
-        while (exi[13] & 1) {
-        }
-        *data++ = value;
-        size -= 4;
-        if (size < 0) {
-            size = 0;
-        }
-    }
-    exi[10] &= 0x405;
-    return !err;
-}
-
-s32 fn_800F0DA0(u32 *data) {
-    u32 cmd;
-    BOOL err;
-    volatile u32 *exi = (volatile u32 *)0xCC006800;
-
-    exi[10] = (exi[10] & 0x405) | 0xC0;
-    cmd = 0x60000000;
-    err = !fn_800F0E4C(&cmd, 2, 1);
-    while (exi[13] & 1) {
-    }
-    err |= !fn_800F0E4C(data, 4, 0);
-    while (exi[13] & 1) {
-    }
-    exi[10] &= 0x405;
-    return !err;
-}
-
-s32 fn_800F0E4C(void *buf, s32 len, s32 mode) {
-    u32 data;
-    s32 i;
-    u8 *p;
-
-    if ((u32)mode != 0) {
-        data = 0;
-        p = buf;
-        for (i = 0; i < len; i++) {
-            data |= *p++ << ((3 - i) * 8);
-        }
-        ((volatile u32 *)0xCC006800)[14] = data;
-    }
-    ((volatile u32 *)0xCC006800)[13] = (mode << 2) | 1 | ((len - 1) << 4);
-    while (((volatile u32 *)0xCC006800)[13] & 1) {
-    }
-    if ((u32)mode == 0) {
-        data = ((volatile u32 *)0xCC006800)[14];
-        p = buf;
-        for (i = 0; i < len; i++) {
-            *p++ = data >> ((3 - i) * 8);
-        }
-    }
-    return 1;
-}
-
-s32 fn_800F1328(void) {
-    int enabled;
-    s32 i;
-    s32 len;
-    u8 *buf;
-    u32 data;
-    EXI2Control *exi = lbl_803596F0;
-
-    while (exi->state & 4) {
-        if (!(((volatile u32 *)0xCC006800)[13] & 1)) {
-            enabled = OSDisableInterrupts();
-            if (lbl_803596F0->state & 3) {
-                if ((lbl_803596F0->state & 2) && (len = lbl_803596F0->immLen) != 0) {
-                    buf = lbl_803596F0->immBuf;
-                    data = ((volatile u32 *)0xCC006800)[14];
-                    for (i = 0; i < len; i++) {
-                        *buf++ = data >> ((3 - i) * 8);
-                    }
-                }
-                lbl_803596F0->state &= ~3;
-            }
-            OSRestoreInterrupts(enabled);
-            break;
-        }
-    }
-}
 
 volatile u32 __EXIRegs[16] : 0xCC006800;
-void fn_800F14C0(s32 arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(volatile u32 *)0xCC003000 = (*(volatile u32 *)0xCC003000 & 0x1000) | 0x1000;
-    }
-    if (arg1 != 0) {
-        __EXIRegs[10] = (__EXIRegs[10] & 0x7F5) | 8;
-    }
-}
 
 extern u8 *lbl_803596F8;
 extern void (*lbl_8035A9B0)(s32);
@@ -5112,197 +4888,21 @@ void EXI2_Init(u8 **inputPendingPtr, void (*monitorCallback)(s32)) {
 
 extern s32 lbl_8035A9AC;
 extern char lbl_802E0B78[];
-u32 EXI2_Poll(void) {
-    s32 ret;
-    u32 cmd;
-    u32 unused;
-    u32 status;
 
-    if (!(*(volatile u32 *)0xCC003000 & 0x1000) && *lbl_803596F8 == 0) {
-        status = 0;
-    } else {
-        if (lbl_8035A9AC == 0) {
-            ret = 0;
-            while (ret == 0) {
-                ret = fn_800F156C(5);
-            }
-            if (ret == 0) {
-                fn_800E91D0(lbl_802E0B78);
-            } else {
-                lbl_8035A9AC = 1;
-                cmd = 0;
-                fn_800F10E4(&cmd, 2, 1, 0);
-                fn_800F1328();
-                fn_800F10E4(&unused, 2, 0, 0);
-                fn_800F1328();
-            }
-        }
-        fn_800F10E4(&status, 4, 0, 0);
-        fn_800F1328();
-        if (*lbl_803596F8 == 0) {
-            *lbl_803596F8 = 1;
-            *(volatile u32 *)0xCC003000 = *(volatile u32 *)0xCC003000 & 0x1000;
-        }
-    }
-    return status;
-}
 
-void EXI2_Reserve(void) {
 
-}
 
-void EXI2_Unreserve(void) {
-
-}
-
-s32 AMC_IsStub(void) {
-    return 0;
-}
-
-u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext) {
-    u32 cpr;
-    u32 prev;
-
-    prev = cpr = ((volatile u32 *)0xCC006800)[chan * 5];
-    cpr &= 0x7F5;
-    if (exi) {
-        cpr |= 2;
-    }
-    if (tc) {
-        cpr |= 8;
-    }
-    if (ext) {
-        cpr |= 0x800;
-    }
-    ((volatile u32 *)0xCC006800)[chan * 5] = cpr;
-    return prev;
-}
 
 #pragma push
 #pragma use_lmw_stmw on
-BOOL fn_800F2864(s32 chan, EXICallback extCallback) {
-    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
-    BOOL enabled;
-    BOOL rc;
-    u32 id;
-
-    if (__EXIProbe(chan) && exi->idTime == 0) {
-        EXIGetID(chan, 0, &id);
-    }
-    enabled = OSDisableInterrupts();
-    if (exi->idTime == 0) {
-        OSRestoreInterrupts(enabled);
-        return FALSE;
-    }
-    rc = OSDisableInterrupts();
-    if ((exi->state & 8) || __EXIProbe(chan) == FALSE) {
-        OSRestoreInterrupts(rc);
-        rc = FALSE;
-    } else {
-        EXIClearInterrupts(chan, TRUE, FALSE, FALSE);
-        exi->extCallback = extCallback;
-        __OSUnmaskInterrupts(0x100000U >> (chan * 3));
-        exi->state |= 8;
-        OSRestoreInterrupts(rc);
-        rc = TRUE;
-    }
-    OSRestoreInterrupts(enabled);
-    return rc;
-}
 #pragma pop
-BOOL EXIDeselect(s32 chan) {
-    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
-    BOOL enabled;
-    u32 cpr;
-
-    enabled = OSDisableInterrupts();
-    if (!(exi->state & 4)) {
-        OSRestoreInterrupts(enabled);
-        return FALSE;
-    }
-    exi->state &= ~4;
-    cpr = ((volatile u32 *)0xCC006800)[chan * 5];
-    ((volatile u32 *)0xCC006800)[chan * 5] = cpr & 0x405;
-    if (exi->state & 8) {
-        switch (chan) {
-        case 0:
-            __OSUnmaskInterrupts(0x100000);
-            break;
-        case 1:
-            __OSUnmaskInterrupts(0x20000);
-            break;
-        }
-    }
-    OSRestoreInterrupts(enabled);
-    if (chan != 2 && (cpr & 0x80)) {
-        return __EXIProbe(chan) ? TRUE : FALSE;
-    }
-    return TRUE;
-}
 
 extern void __OSMaskInterrupts(u32);
 extern void OSClearContext(void *);
 extern void OSSetCurrentContext(void *);
-void TCIntrruptHandler(s16 interrupt, void *context) {
-    u8 temporaryContext[0x2C8];
-    EXICallback callback;
-    s32 chan;
-    EXIControl *exi;
-    chan = (interrupt - 10) / 3;
-    exi = (EXIControl *)(Ecb_80328410 + chan * 64);
-    __OSMaskInterrupts(0x80000000U >> interrupt);
-    ((volatile u32 *)0xCC006800)[chan * 5] = (((volatile u32 *)0xCC006800)[chan * 5] & 0x7F5) | 8;
-    callback = exi->tcCallback;
-    if (callback) {
-        exi->tcCallback = 0;
-        if (exi->state & 3) {
-            if (exi->state & 2) {
-                int length = exi->immLen;
-                if (length) {
-                    int i;
-                    u8 *buffer = exi->immBuf;
-                    u32 data = ((volatile u32 *)0xCC006800)[chan * 5 + 4];
-                    for (i = 0; i < length; i++) {
-                        *buffer++ = data >> ((3 - i) * 8);
-                    }
-                }
-            }
-            exi->state &= ~3;
-        }
-        OSClearContext(temporaryContext);
-        OSSetCurrentContext(temporaryContext);
-        callback(chan, context);
-        OSClearContext(temporaryContext);
-        OSSetCurrentContext(context);
-    }
-}
 
 extern void SetExiInterruptMask(s32 chan, EXIControl *exi);
 extern void *memmove(void *, const void *, unsigned long);
-BOOL EXIUnlock(s32 chan) {
-    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
-    BOOL enabled;
-    EXICallback unlockedCallback;
-
-    enabled = OSDisableInterrupts();
-    if (!(exi->state & 0x10)) {
-        OSRestoreInterrupts(enabled);
-        return FALSE;
-    }
-    exi->state &= ~0x10;
-    SetExiInterruptMask(chan, exi);
-
-    if (0 < exi->items) {
-        unlockedCallback = exi->queue[0].callback;
-        if (0 < --exi->items) {
-            memmove(&exi->queue[0], &exi->queue[1], sizeof(exi->queue[0]) * exi->items);
-        }
-        unlockedCallback(chan, 0);
-    }
-
-    OSRestoreInterrupts(enabled);
-    return TRUE;
-}
 
 static inline BOOL __EXIAttach(s32 chan, EXICallback extCallback) {
     EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
@@ -5350,16 +4950,7 @@ s32 fn_800B31A4();
 typedef volatile u32 vu32_t;
 extern struct { s32 unk0; volatile u32 poll; u32 unk8[2]; } Si_802E0CEC;
 
-s32 fn_800F33BC(s32 arg0) {
-    return ((struct { u32 unk0[3]; s32 state; u32 unk10[12]; } *)Ecb_80328410)[arg0].state;
-}
 
-void UnlockedHandler(void) {
-    M2C_UNK EXIGetID(M2C_UNK, M2C_UNK *);
-    M2C_UNK sp10;
-
-    EXIGetID(0, &sp10);
-}
 
 extern u32 IDSerialPort1_8035A9B8;
 void UnlockedHandler(void);
@@ -5369,271 +4960,24 @@ extern BOOL EXIImm(s32 chan, void *buf, s32 len, u32 type, EXICallback callback)
 extern BOOL EXISync(s32 chan);
 #pragma push
 #pragma use_lmw_stmw on
-s32 EXIGetID(s32 chan, u32 dev, u32 *id) {
-    EXIControl *exi = &((EXIControl *)Ecb_80328410)[chan];
-    BOOL err;
-    u32 cmd;
-    s32 startTime;
-    BOOL enabled;
-
-    if (chan == 0 && dev == 2 && IDSerialPort1_8035A9B8 != 0) {
-        *id = IDSerialPort1_8035A9B8;
-        return 1;
-    }
-
-    if (chan < 2 && dev == 0) {
-        if (!__EXIProbe(chan)) {
-            return 0;
-        }
-        if (exi->idTime == ((s32 *)0x800030C0)[chan]) {
-            *id = exi->id;
-            return exi->idTime;
-        }
-        if (!__EXIAttach(chan, NULL)) {
-            return 0;
-        }
-        startTime = ((s32 *)0x800030C0)[chan];
-    }
-
-    enabled = OSDisableInterrupts();
-    err = !EXILock(chan, dev, (chan < 2 && dev == 0) ? (EXICallback)UnlockedHandler : NULL);
-    if (!err) {
-        err = !EXISelect(chan, dev, 0);
-        if (!err) {
-            cmd = 0;
-            err |= !EXIImm(chan, &cmd, 2, 1, NULL);
-            err |= !EXISync(chan);
-            err |= !EXIImm(chan, id, 4, 0, NULL);
-            err |= !EXISync(chan);
-            err |= !EXIDeselect(chan);
-        }
-        EXIUnlock(chan);
-    }
-    OSRestoreInterrupts(enabled);
-
-    if (chan < 2 && dev == 0) {
-        __EXIDetach(chan);
-        enabled = OSDisableInterrupts();
-        err |= (startTime != ((s32 *)0x800030C0)[chan]);
-        if (!err) {
-            exi->id = *id;
-            exi->idTime = startTime;
-        }
-        OSRestoreInterrupts(enabled);
-        return err ? 0 : exi->idTime;
-    }
-    return err ? 0 : 1;
-}
 #pragma pop
 
-s32 fn_800F37AC(s32 chan, u32 dev, u32 *id) {
-    s32 EXIDeselect(s32);
-    s32 EXIImm(s32, void *, s32, s32, void *);
-    s32 EXILock(s32, u32, void *);
-    s32 EXISelect(s32, u32, s32);
-    s32 EXISync(s32);
-    s32 EXIUnlock(s32);
-    s32 fn_800F2864(s32, void *);
-    s32 fn_800F2970(s32);
-    BOOL err;
-    u32 cmd;
 
-    if (chan != 2 && dev == 0 && !fn_800F2864(chan, 0)) {
-        return 0;
-    }
-    err = !EXILock(chan, dev, 0);
-    if (!err) {
-        err = !EXISelect(chan, dev, 0);
-        if (!err) {
-            cmd = 0x20011300;
-            err = FALSE;
-            err |= !EXIImm(chan, &cmd, 4, 1, 0);
-            err |= !EXISync(chan);
-            err |= !EXIImm(chan, id, 4, 0, 0);
-            err |= !EXISync(chan);
-            err |= !EXIDeselect(chan);
-        }
-        EXIUnlock(chan);
-    }
-    if (chan != 2 && dev == 0) {
-        fn_800F2970(chan);
-    }
-    if (err) {
-        return 0;
-    }
-    return (*id + 1 != 0x10000) ? 1 : 0;
-}
 
-s32 fn_800F3AF4(void) {
-    if ((u32) (lbl_8035A9CC + 0x5A010000) == 0x5AU) {
-        return 0;
-    }
-    if (!(fn_800B31A4() & 0x10000000)) {
-        lbl_8035A9C8 = 0;
-        return 2;
-    }
-    lbl_8035A9C8 = 0xA5FF005A;
-    lbl_8035A9C0 = 0;
-    lbl_8035A9C4 = 1;
-    return 0;
-}
 
-s32 fn_800F3B64(void *buf, u32 len) {
-    u32 cmd;
-    u32 qcmd;
-    int qLen;
-    s32 xLen;
-    char *ptr;
-    BOOL locked;
-    BOOL enabled;
-    u32 error;
 
-    if ((u32)(lbl_8035A9C8 - 0xA5FF005A) != 0) {
-        return 2;
-    }
-    enabled = OSDisableInterrupts();
-    locked = EXILock(lbl_8035A9C0, lbl_8035A9C4, 0);
-    if (!locked) {
-        OSRestoreInterrupts(enabled);
-        return 0;
-    }
-    for (ptr = (char *)buf; ptr - (char *)buf < len; ptr++) {
-        if (*ptr == '\n') {
-            *ptr = '\r';
-        }
-    }
-    error = 0;
-    cmd = 0xA0010000;
-    while (len) {
-        if (!EXISelect(lbl_8035A9C0, lbl_8035A9C4, 3)) {
-            qLen = -1;
-        } else {
-            qcmd = 0x20010000;
-            EXIImm(lbl_8035A9C0, &qcmd, 4, 1, 0);
-            EXISync(lbl_8035A9C0);
-            EXIImm(lbl_8035A9C0, &qcmd, 1, 0, 0);
-            EXISync(lbl_8035A9C0);
-            EXIDeselect(lbl_8035A9C0);
-            qLen = 16 - (int)((qcmd >> 24) & 0xff);
-        }
-        if (qLen < 0) {
-            error = 3;
-            break;
-        }
-        if (qLen < 12 && qLen < len) {
-            continue;
-        }
-        if (!EXISelect(lbl_8035A9C0, lbl_8035A9C4, 3)) {
-            error = 3;
-            break;
-        }
-        EXIImm(lbl_8035A9C0, &cmd, 4, 1, 0);
-        EXISync(lbl_8035A9C0);
-        while (qLen && len) {
-            if (qLen < 4 && qLen < len) {
-                break;
-            }
-            xLen = (len < 4) ? (s32)len : 4;
-            EXIImm(lbl_8035A9C0, buf, xLen, 1, 0);
-            buf = (char *)buf + xLen;
-            len -= xLen;
-            qLen -= xLen;
-            EXISync(lbl_8035A9C0);
-        }
-        EXIDeselect(lbl_8035A9C0);
-    }
-    EXIUnlock(lbl_8035A9C0);
-    OSRestoreInterrupts(enabled);
-    return error;
-}
-
-s32 fn_800F3D80(void) {
-    if (Si_802E0CEC.unk0 == -1) {
-        return 0;
-    }
-    return 1;
-}
-
-BOOL fn_800F3DA0(s32 chan) {
-    extern struct { s32 chan; u32 unk4[7]; } Packet_803284D0[];
-    BOOL busy = TRUE;
-    if (Packet_803284D0[chan].chan == -1 && Si_802E0CEC.unk0 != chan) {
-        busy = FALSE;
-    }
-    return busy;
-}
 
 #define SIREGS ((vu32_t *)0xCC006400)
 
-void fn_800F49B0(s32 chan, u32 val) {
-    ((volatile u32 (*)[3])0xCC006400)[chan][0] = val;
-}
 
 #pragma scheduling off
-void fn_800F49C4(void) {
-    SIREGS[14] = 0x80000000;
-}
 #pragma scheduling reset
-u32 SISetXY(u32 x, u32 y) {
-    u32 poll;
-    int enabled;
-    poll = (x << 16) | (y << 8);
-    enabled = OSDisableInterrupts();
-    Si_802E0CEC.poll &= ~0x03FFFF00;
-    Si_802E0CEC.poll |= poll;
-    poll = Si_802E0CEC.poll;
-    SIREGS[12] = poll;
-    OSRestoreInterrupts(enabled);
-    return poll;
-}
 
-u32 fn_800F4A40(u32 poll) {
-    int enabled;
-    u32 en;
-    if (poll == 0) {
-        return Si_802E0CEC.poll;
-    }
-    enabled = OSDisableInterrupts();
-    poll >>= 24;
-    en = (poll >> 4) & 0xF;
-    Si_802E0CEC.poll &= ~en;
-    poll &= (en | 0x03FFFFF0);
-    poll &= 0xFC0000FF;
-    Si_802E0CEC.poll |= poll;
-    poll = Si_802E0CEC.poll;
-    SIREGS[14] = 0x80000000;
-    SIREGS[12] = poll;
-    OSRestoreInterrupts(enabled);
-    return poll;
-}
 
 typedef void (*SITypeAndStatusCallback)(s32 chan, u32 type);
 extern u32 Type_802E0D00[];
 extern SITypeAndStatusCallback lbl_80328630[][4];
 u32 SIGetType(s32 chan);
-u32 fn_800F5334(s32 chan, SITypeAndStatusCallback callback) {
-    int enabled;
-    u32 type;
-
-    enabled = OSDisableInterrupts();
-    type = SIGetType(chan);
-    if (Type_802E0D00[chan] & 0x80) {
-        int i;
-        for (i = 0; i < 4; ++i) {
-            if (lbl_80328630[chan][i] == callback) {
-                break;
-            }
-            if (lbl_80328630[chan][i] == 0) {
-                lbl_80328630[chan][i] = callback;
-                break;
-            }
-        }
-    } else {
-        callback(chan, type);
-    }
-    OSRestoreInterrupts(enabled);
-    return type;
-}
 
 extern double lbl_80363358, lbl_8035A988, lbl_80363360, lbl_80363368, lbl_80363370, lbl_80363378, lbl_80363380, lbl_80363388, lbl_80363390, lbl_80363398, lbl_803633A0, lbl_803633A8, lbl_803633B0, lbl_803633B8, lbl_803633C0, lbl_803633C8;
 double fn_800ED954(double x) {
@@ -5711,4 +5055,48 @@ int fn_800EC8D0(char *str) {
         value = -value;
     }
     return (long)value;
+}
+
+int fn_800EE484(double x, double *y) {
+ double w,z,t,r,fn,tx[3], saved;
+ int e0,i,j,n,nx,hx,ix;
+ hx = *(int*)&x; ix = hx & 0x7fffffff;
+ if(ix<=0x3fe921fb) { y[0]=x; y[1]=0.0; return 0; }
+ if(ix<0x4002d97c) {
+  if(hx>0) {
+   z=x-1.57079632673412561417e+00;
+   if(ix!=0x3ff921fb) { w=6.07710050650619224932e-11; y[0]=z-w; y[1]=(z-y[0])-w; }
+   else { z-=6.07710050630396597660e-11; w=2.02226624879595063154e-21; y[0]=z-w; y[1]=(z-y[0])-w; }
+   return 1;
+  } else {
+   z=1.57079632673412561417e+00+x;
+   if(ix!=0x3ff921fb) { w=6.07710050650619224932e-11; y[0]=w+z; y[1]=w+(z-y[0]); }
+   else { z+=6.07710050630396597660e-11; w=2.02226624879595063154e-21; y[0]=w+z; y[1]=w+(z-y[0]); }
+   return -1;
+  }
+ }
+ if(ix<=0x413921fb) {
+  t=__fabs(x); n=(int)(6.36619772367581382433e-01*t+0.5); fn=(double)n;
+  r=t-1.57079632673412561417e+00*fn; w=6.07710050650619224932e-11*fn;
+  if(n<32 && ix!=lbl_8029C6B0[n-1]) y[0]=r-w;
+  else {
+   j=ix>>20; y[0]=r-w; i=j-((*(int*)&y[0]>>20)&0x7ff);
+   if(i>16) {
+    saved=r; w=6.07710050630396597660e-11*fn; r-=w; w=2.02226624879595063154e-21*fn-((saved-r)-w); y[0]=r-w;
+    i=j-((*(int*)&y[0]>>20)&0x7ff);
+    if(i>49) { w=r; t=2.02226624871116645580e-21*fn; r=w-t; w=8.47842766036889956997e-32*fn-((w-r)-t); y[0]=r-w; }
+   }
+  }
+  y[1]=(r-y[0])-w;
+  if(hx<0) { y[0]=-y[0]; y[1]=-y[1]; return -n; } else return n;
+ }
+ if(ix>=0x7ff00000) { y[0]=y[1]=x-x; return 0; }
+ *(int*)((char*)&z+4)=*(int*)((char*)&x+4);
+ e0=(ix>>20)-1046; *(int*)&z=ix-(e0<<20);
+ for(i=0;i<2;i++) { tx[i]=(double)(int)z; z=(z-tx[i])*16777216.0; }
+ tx[2]=z; nx=3;
+ while(tx[nx-1]==0.0) nx--;
+ n=fn_800EE918(tx,y,e0,nx,2,lbl_8029C5A8);
+ if(hx<0) { y[0]=-y[0]; y[1]=-y[1]; return -n; }
+ return n;
 }

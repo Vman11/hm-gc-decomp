@@ -232,7 +232,7 @@ u32 fn_800C4EBC(void);
 u16 fn_800C51D4(void);
 void fn_800C51B4(void);
 void fn_800C4EF8(u32, u32, u32, u32);
-u64 fn_800E27FC(u32, u32, u32, u32);
+u64 __div2i(u32, u32, u32, u32);
 void DCFlushRange(void *, u32);
 void DCInvalidateRange(void *, u32);
 u32 fn_802740E4(void);
@@ -259,7 +259,7 @@ void fn_80273EF4(u32 arg0) {
     u64 t;
 
     t = OSGetTime() * 8;
-    start = fn_800E27FC(t >> 32, t, 0, *(u32 *)0x800000F8 / 4 / 125000);
+    start = __div2i(t >> 32, t, 0, *(u32 *)0x800000F8 / 4 / 125000);
     page = arg0 & ~0xFFF;
     flushed = 0;
     idx = fn_802740E4();
@@ -295,7 +295,7 @@ void fn_80273EF4(u32 arg0) {
     OSRestoreInterrupts(level);
     if (lbl_8035B858 != NULL) {
         t = OSGetTime() * 8;
-        lbl_8035B858(arg0, (u32)buf, idx, (u32)fn_800E27FC(t >> 32, t, 0, *(u32 *)0x800000F8 / 4 / 125000) - start, flushed);
+        lbl_8035B858(arg0, (u32)buf, idx, (u32)__div2i(t >> 32, t, 0, *(u32 *)0x800000F8 / 4 / 125000) - start, flushed);
     }
 }
 
