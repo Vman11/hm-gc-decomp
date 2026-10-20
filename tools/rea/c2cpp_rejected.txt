@@ -97,6 +97,7 @@ auto/text_800B0D7C
 auto/text_800B0F9C
 auto/text_800B1700
 auto/text_800B299C
+auto/text_800E1DA8
 auto/text_800E2074
 auto/text_800F5578
 auto/text_800FBA70
