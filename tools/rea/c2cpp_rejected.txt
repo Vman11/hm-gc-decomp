@@ -2,6 +2,7 @@ auto/text_8002FFD8
 auto/text_80030270
 auto/text_80030E24
 auto/text_80034A10
+auto/text_80036F10
 auto/text_800379AC
 auto/text_80038DDC
 auto/text_8003F87C

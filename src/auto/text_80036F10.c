@@ -41,17 +41,8 @@ void fn_80036FF8(f32 *arg0, f32 *arg1, f32 arg2) {
     arg0[2] = arg0[2] - arg2 * d;
 }
 
-void fn_8003702C(f32 *arg0, f32 *arg1, f32 *arg2) {
-    f32 x0 = arg1[0];
-    f32 x1 = arg2[0];
-    f32 y0 = arg1[1];
-    f32 x = x0 - x1;
-    f32 y1 = arg2[1];
-    f32 z0 = arg1[2];
-    f32 z1 = arg2[2];
-    f32 y = y0 - y1;
-    arg0[0] = x;
-    arg0[1] = y;
-    arg0[2] = z0 - z1;
+void fn_8003702C(f32 *__restrict o, f32 *__restrict a, f32 *__restrict b) {
+    o[0] = a[0] - b[0];
+    o[1] = a[1] - b[1];
+    o[2] = a[2] - b[2];
 }
-

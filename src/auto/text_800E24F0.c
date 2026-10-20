@@ -1,17 +1,7 @@
 /* Functions from 0x800E24F0 to 0x800E2C68, found by decomp-toolkit. */
 #include "common.h"
 
-int fn_800E24F0(int *a) {
-    return (a[0] != 0) | (a[1] != 0) | (a[2] != 0);
-}
 
-int fn_800E2520(int *a, int *b) {
-    int x = a[0], x2 = b[0], y = a[1], y2 = b[1], z = a[2], z2 = b[2];
-    if (x != x2 || y != y2 || z != z2) {
-        return 1;
-    }
-    return 0;
-}
 
 extern const double lbl_8029BF20[];
 unsigned fn_800E2584(double d) {
@@ -30,4 +20,39 @@ return result;
 
 int GetR2__Fv_800E2C60(int r2) {
     return r2;
+}
+
+asm s32 fn_800E24F0(void *p) {
+    nofralloc
+    lwz r5, 0(r3)
+    lwz r6, 4(r3)
+    lwz r7, 8(r3)
+    li r3, 1
+    cmpwi r5, 0
+    cmpwi cr6, r6, 0
+    cmpwi cr7, r7, 0
+    bnelr
+    bnelr cr6
+    bnelr cr7
+    li r3, 0
+    blr
+}
+
+asm s32 fn_800E2520(void *a, void *b) {
+    nofralloc
+    lwz r5, 0(r3)
+    lwz r6, 0(r4)
+    lwz r7, 4(r3)
+    lwz r8, 4(r4)
+    lwz r9, 8(r3)
+    lwz r10, 8(r4)
+    li r3, 1
+    cmpw r5, r6
+    cmpw cr6, r7, r8
+    cmpw cr7, r9, r10
+    bnelr
+    bnelr cr6
+    bnelr cr7
+    li r3, 0
+    blr
 }
