@@ -24,6 +24,20 @@ def register(unit, ext, FLAG=FLAG):
             if m and int(m.group(1), 16) > addr:
                 lines.insert(i, l[:len(l) - len(l.lstrip())] + entry); cfg = "\n".join(lines); return
     raise SystemExit("could not place " + unit)
+def merge(cur, code, fn):
+    """Drop any stale definition of fn from cur, and drop top-level prototypes in code that cur already declares."""
+    name = re.escape(fn)
+    cur = re.sub(r"^(?:asm )?[\w][^\n;{]*\b%s\([^)]*\)\s*\{[^\n]*\}\n" % name, "", cur, flags=re.M)
+    cur = re.sub(r"^(?:asm )?[\w][^\n;{]*\b%s\([^)]*\)\s*\{\n.*?^\}\n" % name, "", cur, flags=re.M | re.S)
+    out = []
+    for l in code.split("\n"):
+        m = re.match(r"^(?:extern )?[\w][\w \*]*?\b(\w+)\s*(\(.*\)|\[.*\])?;$", l)
+        if m and m.group(1) != fn and re.search(r"\b%s\b" % re.escape(m.group(1)), cur):
+            continue
+        out.append(l)
+    return cur, "\n".join(out)
+
+
 for arg in sys.argv[1:]:
     fn, path = arg.split("=", 1)
     lmw = path.endswith("+lmw"); path = path[:-4] if lmw else path
@@ -32,6 +46,8 @@ for arg in sys.argv[1:]:
     unit = "auto/text_" + re.search(r"([0-9A-F]{8})(?:F\w*)?$", fn).group(1) if not fn.startswith("auto/") else fn
     c, cp = f"src/{unit}.c", f"src/{unit}.cpp"
     cur = open(cp).read() if os.path.exists(cp) else open(c).read()
+    for m in re.finditer(r"^(?:asm )?\w[^\n;{]*?\b(\w+)\([^)]*\)\s*\{", code, re.M):
+        cur, code = merge(cur, code, m.group(1))
     if ext == ".cpp":
         if os.path.exists(c):
             lines = cur.split("\n"); k = 0
