@@ -1396,7 +1396,7 @@ config.libs = [
             Object(Matching, "auto/text_800E2F24.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_800E352C.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(NonMatching, "auto/text_800E3A94.c"),
-            Object(NonMatching, "auto/text_800E40A0.c"),
+            Object(NonMatching, "auto/text_800E40A0.c", mw_version="GC/2.0"),
             Object(NonMatching, "auto/jt_802E0B74.c"),
             Object(NonMatching, "dolphin/si.c"),
             Object(Matching, "auto/text_800F5578.cpp", extra_cflags=["-Cpp_exceptions on"]),
