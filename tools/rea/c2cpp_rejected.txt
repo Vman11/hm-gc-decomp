@@ -329,6 +329,7 @@ auto/text_801E3D7C
 auto/text_801E4018
 auto/text_801E44C8
 auto/text_801E4A94
+auto/text_801E4C2C
 auto/text_801E5BA4
 auto/text_801E5C38
 auto/text_801E5F8C
@@ -345,6 +346,7 @@ auto/text_801E8BE4
 auto/text_801E8DE8
 auto/text_801E9210
 auto/text_801E9A20
+auto/text_801EAE64
 auto/text_801EB05C
 auto/text_801ECD58
 auto/text_801ECE7C
