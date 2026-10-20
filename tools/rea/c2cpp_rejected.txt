@@ -1,3 +1,4 @@
+auto/text_8002F9F4
 auto/text_8002FFD8
 auto/text_80030270
 auto/text_80030E24
@@ -15,6 +16,7 @@ auto/text_80044B00
 auto/text_80046D68
 auto/text_80046E50
 auto/text_80048EC0
+auto/text_8004B930
 auto/text_8004C0CC
 auto/text_8004DBA0
 auto/text_8004DCC0
@@ -23,12 +25,14 @@ auto/text_800500DC
 auto/text_800501FC
 auto/text_80051F28
 auto/text_80052028
+auto/text_800546A0
 auto/text_80054790
 auto/text_8005836C
 auto/text_80059FBC
 auto/text_8005B198
 auto/text_8005B280
 auto/text_8005C228
+auto/text_8005F938
 auto/text_800642B8
 auto/text_80064350
 auto/text_800643EC
@@ -43,6 +47,7 @@ auto/text_80064998
 auto/text_800649F8
 auto/text_80064A58
 auto/text_80070B10
+auto/text_80070B70
 auto/text_80070CC0
 auto/text_80078B94
 auto/text_8007B9CC
@@ -51,6 +56,7 @@ auto/text_8007F9A0
 auto/text_80083C38
 auto/text_80085078
 auto/text_80086AF8
+auto/text_8008B00C
 auto/text_8008B9F4
 auto/text_8008C2A4
 auto/text_8008C974
@@ -74,6 +80,7 @@ auto/text_80095E94
 auto/text_80096998
 auto/text_80098E48
 auto/text_80098F48
+auto/text_8009C44C
 auto/text_8009CFD4
 auto/text_8009DAD0
 auto/text_8009DB94
@@ -82,6 +89,7 @@ auto/text_8009EFD4
 auto/text_8009F350
 auto/text_8009F3F8
 auto/text_800A0A30
+auto/text_800A0B78
 auto/text_800A3008
 auto/text_800A47D8
 auto/text_800A4898
@@ -89,6 +97,7 @@ auto/text_800A5AD4
 auto/text_800A6AB4
 auto/text_800A8090
 auto/text_800A850C
+auto/text_800A95E4
 auto/text_800A9CBC
 auto/text_800A9D80
 auto/text_800AB5E4
@@ -104,6 +113,7 @@ auto/text_800E2074
 auto/text_800F5578
 auto/text_800FBA70
 auto/text_800FBB9C
+auto/text_80103870
 auto/text_80104068
 auto/text_80105290
 auto/text_801052F0
@@ -128,6 +138,7 @@ auto/text_801178EC
 auto/text_80118280
 auto/text_8011B6B0
 auto/text_8011C518
+auto/text_8011CF70
 auto/text_8011D6B4
 auto/text_8011DD04
 auto/text_8011F770
@@ -222,6 +233,7 @@ auto/text_8016DF40
 auto/text_8016E0E0
 auto/text_8016E11C
 auto/text_8016E24C
+auto/text_80171288
 auto/text_80178198
 auto/text_80179618
 auto/text_80179E70
@@ -232,6 +244,7 @@ auto/text_8017B690
 auto/text_8017C994
 auto/text_8017E98C
 auto/text_8017FFAC
+auto/text_801829F8
 auto/text_80184C64
 auto/text_80184CE0
 auto/text_801883E0
@@ -246,7 +259,12 @@ auto/text_80195170
 auto/text_801998D4
 auto/text_80199A98
 auto/text_8019A75C
+auto/text_8019AD10
+auto/text_8019B048
+auto/text_8019B380
+auto/text_8019B6B8
 auto/text_8019E3E0
+auto/text_8019F0B4
 auto/text_801A2188
 auto/text_801A359C
 auto/text_801A38E0
@@ -262,12 +280,16 @@ auto/text_801A76C8
 auto/text_801A76E0
 auto/text_801A7E60
 auto/text_801A7F08
+auto/text_801AA6CC
 auto/text_801AA78C
 auto/text_801AA8AC
+auto/text_801AAEA0
 auto/text_801AAF64
 auto/text_801AD748
 auto/text_801AE758
+auto/text_801AF15C
 auto/text_801AF218
+auto/text_801B2A50
 auto/text_801B2B50
 auto/text_801B2D98
 auto/text_801B30E0
@@ -370,6 +392,7 @@ auto/text_801F6B40
 auto/text_801F6BFC
 auto/text_801F6E1C
 auto/text_801F7378
+auto/text_801F786C
 auto/text_801FA0D4
 auto/text_801FA614
 auto/text_801FA6A4
