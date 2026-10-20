@@ -375,11 +375,8 @@ void OSReport(const char* msg, ...);
 void OSDumpContext(void* context);
 
 extern s32 __OSArenaHi_8035A578;
-s32 PPCMfmsr(void) { return __MFMSR(); }
 
-void PPCMtmsr(u32 value) { __MTMSR(value); }
 
-void PPCMtl2cr(u32 value) { __mtspr(1017, value); }
 
 void PPCMtdec(u32 value) { __mtspr(22, value); }
 
@@ -388,23 +385,11 @@ void PPCMtdec(u32 value) { __mtspr(22, value); }
 void fn_800B2EA8(void) { __sc(); }
 #pragma pop
 
-void PPCHalt(void) { __sync(); for (;;) {} }
 
-void PPCMtmmcr0(u32 value) { __mtspr(952, value); }
 
-void PPCMtmmcr1(u32 value) { __mtspr(956, value); }
 
-s32 PPCMffpscr(void) {
-    union { f64 f; u32 u[2]; } data;
-    register f64 fpscr;
-    fpscr = __mffs();
-    data.f = fpscr;
-    return data.u[1];
-}
 
-s32 PPCMfhid2(void) { return __mfspr(920); }
 
-void PPCMthid2(u32 value) { __mtspr(920, value); }
 
 #pragma scheduling on
 void DBInit(void) {
@@ -422,10 +407,6 @@ void fn_800B2FB8(void) {
     PPCHalt();
 }
 
-void __DBExceptionDestination(void) {
-    __MTMSR(__MFMSR() | 0x30);
-    fn_800B2FB8();
-}
 
 u32 __DBIsExceptionMarked(u8 exception) {
     return __DBInterface->exceptionMask & (1 << exception);
@@ -436,34 +417,9 @@ void DBPrintf(char* str, ...) {
 
 #pragma push
 #pragma peephole off
-u32 fn_800B31A4(void) {
-    extern u32* BootInfo_8035A520;
-    u32 result;
-    if (BootInfo_8035A520 == NULL || (result = BootInfo_8035A520[11]) == 0) {
-        result = 0x10000002;
-    }
-    return result;
-}
 #pragma pop
-void InquiryCallback(s32 result, s32* block) {
-    extern u16 DriveInfo_80307500[];
-    switch (block[3]) {
-    case 0:
-        *(u16*)0x800030E6 = DriveInfo_80307500[1] | 0x8000;
-        break;
-    default:
-        *(u16*)0x800030E6 = 1;
-        break;
-    }
-}
 
 extern s32* OSExceptionTable_8035A544;
-s32 __OSSetExceptionHandler(u8 exception, s32 handler) {
-    s32* entry = (s32*)((u32)OSExceptionTable_8035A544 + (exception * 4));
-    s32 oldHandler = *entry;
-    *entry = handler;
-    return oldHandler;
-}
 
 #pragma peephole off
 s32 __OSGetExceptionHandler(u8 exception) {
@@ -475,10 +431,6 @@ u32 fn_800B3B28(void) {
     return (__DIRegs[9] & 0x000000FF);
 }
 
-void OSRegisterVersion(const char* id) {
-    extern char lbl_8035952C[];
-    OSReport(lbl_8035952C, id);
-}
 
 typedef struct OSAlarm OSAlarm;
 struct OSAlarm {
@@ -734,57 +686,11 @@ s32 fn_800B45C4(s32 size, s32 align) {
     return ptr;
 }
 
-void __OSCacheInit(void) {
-    extern u32 PPCMfhid0(void);
-    extern u32 PPCMfl2cr(void);
-    extern void PPCMtl2cr(u32);
-    extern u32 PPCMfmsr(void);
-    extern void PPCMtmsr(u32);
-    extern void ICEnable(void);
-    extern void DCEnable(void);
-    extern void L2GlobalInvalidate(void);
-    extern void DBPrintf(char *, ...);
-    extern void *OSSetErrorHandler(u16, void *);
-    extern void DMAErrorHandler();
-    u32 oldMSR;
-
-    if (!(PPCMfhid0() & 0x8000)) {
-        ICEnable();
-        DBPrintf("L1 i-caches initialized\n");
-    }
-    if (!(PPCMfhid0() & 0x4000)) {
-        DCEnable();
-        DBPrintf("L1 d-caches initialized\n");
-    }
-    if (!(PPCMfl2cr() & 0x80000000)) {
-        oldMSR = PPCMfmsr();
-        __sync();
-        PPCMtmsr(0x30);
-        __sync();
-        __sync();
-        PPCMtl2cr(PPCMfl2cr() & ~0x80000000);
-        __sync();
-        L2GlobalInvalidate();
-        PPCMtmsr(oldMSR);
-        PPCMtl2cr((PPCMfl2cr() | 0x80000000) & ~0x00200000);
-        DBPrintf("L2 cache initialized\n");
-    }
-    OSSetErrorHandler(1, DMAErrorHandler);
-    DBPrintf("Locked cache machine check handler installed\n");
-}
 
 s32 fn_800B4F6C(void) {
     return *(s32 *)0x800000D4;
 }
 
-void OSClearContext(u8 *ctx) {
-    u32 *cur = (u32 *)0x800000D8;
-    *(u16 *)(ctx + 0x1A0) = 0;
-    *(u16 *)(ctx + 0x1A2) = 0;
-    if ((u32)ctx == *cur) {
-        *cur = 0;
-    }
-}
 
 void __OSContextInit(void) {
     extern void OSSwitchFPUContext(void);
@@ -801,22 +707,6 @@ void OSReport(const char* msg, ...) {
     vprintf(msg, &args);
 }
 
-void fn_800B5520(char* file, int line, char* msg, ...) {
-    struct __va_list_struct marker;
-    u32 i;
-    u32* p;
-
-    OSDisableInterrupts();
-    __builtin_va_info(&marker);
-    vprintf(msg, &marker);
-    OSReport(" in \"%s\" on line %d.\n", file, line);
-
-    OSReport("\nAddress:      Back Chain    LR Save\n");
-    for (i = 0, p = (u32*)fn_800B50D0(); p && (u32)p != 0xffffffff && i++ < 16; p = (u32*)*p) {
-        OSReport("0x%08x:   0x%08x    0x%08x\n", p, p[0], p[1]);
-    }
-    PPCHalt();
-}
 
 void fn_800C182C(GXRenderModeObj *rmode);
 void fn_800C2054(u32 a, u32 b, u32 c, u32 d);
@@ -860,110 +750,8 @@ void fn_800B5F28(u16 fbWidth, u16 height) {
 extern u16 fn_800B6B0C();
 extern u16 lbl_802D7F30[];
 extern u16 lbl_802D80B0[];
-u16 fn_800B67FC(u16 code) {
-    if (fn_800B6B0C() == 1) {
-        if (code >= 0x20 && code <= 0xDF) {
-            return lbl_802D7F30[code - 0x20];
-        }
-        if (code > 0x889E && code <= 0x9872) {
-            u8 lo = code;
-            int base = ((code >> 8) - 0x88) * 0xBC;
-            int r = 0;
-            int ok = 0;
-            int idx;
-            if (lo >= 0x40 && lo <= 0xFC) {
-                ok = 1;
-            }
-            if (ok && lo != 0x7F) {
-                r = 1;
-            }
-            if (!r) {
-                return 0;
-            }
-            idx = lo - 0x40;
-            if (idx >= 0x40) {
-                idx--;
-            }
-            return base + (idx + 0x2BE);
-        }
-        if (code >= 0x8140 && code < 0x879E) {
-            u8 lo = code;
-            int base = ((code >> 8) - 0x81) * 0xBC;
-            int r = 0;
-            int ok = 0;
-            int idx;
-            if (lo >= 0x40 && lo <= 0xFC) {
-                ok = 1;
-            }
-            if (ok && lo != 0x7F) {
-                r = 1;
-            }
-            if (!r) {
-                return 0;
-            }
-            idx = lo - 0x40;
-            if (idx >= 0x40) {
-                idx--;
-            }
-            return lbl_802D80B0[base + idx];
-        }
-    } else if (code > 0x20 && code <= 0xFF) {
-        return code - 0x20;
-    }
-    return 0;
-}
 
-void fn_800B6998(u8 *src, u8 *dst) {
-    u32 *flags = (u32 *)(src + 0x10);
-    s32 dstPos = 0;
-    u32 bits = 0;
-    u32 code;
-    s32 size = *(s32 *)(src + 4);
-    s32 linkOfs = *(s32 *)(src + 8);
-    s32 chunkOfs = *(s32 *)(src + 0xC);
-    s32 link;
-    s32 back;
-    s32 count;
-    s32 i;
-    u8 *p;
 
-    do {
-        if (bits == 0) {
-            code = *flags++;
-            bits = 32;
-        }
-        if (code & 0x80000000) {
-            dst[dstPos++] = src[chunkOfs++];
-        } else {
-            p = src + linkOfs;
-            linkOfs += 2;
-            link = (p[0] << 8) | p[1];
-            back = dstPos - (link & 0xFFF);
-            count = link >> 12;
-            if (count == 0) {
-                count = src[chunkOfs++] + 0x12;
-            } else {
-                count += 2;
-            }
-            for (i = 0; i < count; i++) {
-                dst[dstPos++] = dst[back++ - 1];
-            }
-        }
-        code <<= 1;
-        bits--;
-    } while (dstPos < size);
-}
-
-u16 fn_800B6B0C(void) {
-    if (lbl_80359550 > 1) {
-        if (*(s32*)0x800000CC == 0) {
-            lbl_80359550 = (*(u16*)0xCC00206E & 2) ? 1 : 0;
-        } else {
-            lbl_80359550 = 0;
-        }
-    }
-    return lbl_80359550;
-}
 
 extern s32 fn_800B9094(s32, s32, s32);
 void fn_800B6B64(s32 arg0, s32 arg1, s32 arg2) {
@@ -1051,12 +839,6 @@ u32 __OSUnmaskInterrupts(u32 global) {
     return prev;
 }
 
-void __OSModuleInit(void) {
-    void** list = (void**)0x800030C8;
-    list[1] = 0;
-    list[0] = 0;
-    *(void**)0x800030D0 = 0;
-}
 
 #pragma peephole on
 extern s32 lbl_8035A5B0;
@@ -1362,9 +1144,6 @@ u64 OSGetTime(void) {
 }
 #pragma pop
 
-u32 OSGetTick(void) {
-    return __mftb();
-}
 
 u64 __OSGetSystemTime(void) {
     u32 enabled;
@@ -4672,20 +4451,6 @@ void fn_800D5018(void) {
     __cpReg[1] = gx->cpEnable;
 }
 
-void fn_800D503C(u8 arg0) {
-    extern void *__GXData;
-    extern void *__cpReg;
-    void *gx;
-    u32 v;
-    if (arg0) {
-        v = 1;
-    } else {
-        v = 0;
-    }
-    gx = __GXData;
-    M2C_FIELD(gx, u32 *, 8) = __rlwimi(M2C_FIELD(gx, u32 *, 8), v, 4, 27, 27);
-    M2C_FIELD(__cpReg, u16 *, 2) = M2C_FIELD(gx, u32 *, 8);
-}
 
 void fn_800D5070(s32 arg0, u8 arg1) {
     extern GXDataCP *__GXData;
@@ -5155,12 +4920,6 @@ void fn_800D6700(void) {
 }
 
 extern u16 *__peReg;
-void fn_800D6780(u32 a, u32 b) {
-    u16 v = 0;
-    v = (v & ~0xFF) | (b & 0xFF);
-    v = (v & 0xFF) | (a << 8);
-    __peReg[3] = v;
-}
 
 void fn_800D6794(u32 a) {
     u32 v = 0;
@@ -5207,9 +4966,6 @@ void fn_800D686C(u8 a) {
     __peReg[1] = v;
 }
 
-void fn_800D6884(u8 arg0, s32 arg1, s32 arg2) {
-    *__peReg = (((((0 & ~1) | (arg0 & 1)) & ~0xE) | ((arg1 << 1) & 0xE)) & ~0x10) | ((arg2 << 4) & 0x10);
-}
 
 void fn_800D68A4(u32 x, u32 y, u32 *color) {
     u32 addr = 0xC8000000;
@@ -5327,16 +5083,6 @@ void fn_800D6D24(u8 pointSize, s32 texOffsets) {
     __GXData->bpSentNot = 0;
 }
 
-void fn_800D6D64(s32 coord, u8 line_enable, u8 point_enable) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    u32 *reg = (u32 *)((u8 *)gx + coord * 4);
-    reg[0x2E] = __rlwimi(reg[0x2E], line_enable, 18, 13, 13);
-    reg[0x2E] = __rlwimi(reg[0x2E], point_enable, 19, 12, 12);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = reg[0x2E];
-    gx->bpSentNot = 0;
-}
 
 void fn_800D6DAC(s32 arg0) {
     extern GXData8 *const __GXData;
@@ -5352,14 +5098,6 @@ void fn_800D6DAC(s32 arg0) {
     __GXData->dirty |= 4;
 }
 
-void fn_800D6DF0(u8 arg0) {
-    extern GXDataHead *const __GXData;
-    SETF(M2C_FIELD(__GXData, u32 *, 0x204), 1, 19, arg0);
-    *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = 0xFE080000;
-    *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = M2C_FIELD(__GXData, u32 *, 0x204);
-}
 
 void fn_800D6E24(void) {
     extern GXDataHead *__GXData;
@@ -5380,28 +5118,7 @@ void fn_800D6E48(u16 left, u16 top, u16 wd, u16 ht) {
     M2C_FIELD(__GXData, u32 *, 0x1E4) = __rlwimi(M2C_FIELD(__GXData, u32 *, 0x1E4), 0x4A, 24, 0, 7);
 }
 
-void fn_800D6EC4(u16 left, u16 top, u16 wd, u16 ht) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x1F0) = 0;
-    M2C_FIELD(gx, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F0), left, 0, 22, 31);
-    M2C_FIELD(gx, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F0), top, 10, 12, 21);
-    M2C_FIELD(gx, u32 *, 0x1F0) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F0), 0x49, 24, 0, 7);
-    M2C_FIELD(gx, u32 *, 0x1F4) = 0;
-    M2C_FIELD(gx, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F4), wd - 1, 0, 22, 31);
-    M2C_FIELD(gx, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F4), ht - 1, 10, 12, 21);
-    M2C_FIELD(gx, u32 *, 0x1F4) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1F4), 0x4A, 24, 0, 7);
-}
 
-void fn_800D6F40(u16 wd, u16 ht) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    u16 stride;
-    stride = (u16)(wd * 2);
-    M2C_FIELD(gx, u32 *, 0x1E8) = 0;
-    SETF(M2C_FIELD(gx, u32 *, 0x1E8), 10, 0, stride >> 5);
-    M2C_FIELD(gx, u32 *, 0x1E8) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1E8), 0x4D, 24, 0, 7);
-}
 
 void fn_800D70A4(u32 frame2field) {
     extern GXData7 *__GXData;
@@ -5410,16 +5127,6 @@ void fn_800D70A4(u32 frame2field) {
     gx->r1FC = __rlwimi(gx->r1FC, 0, 12, 18, 19);
 }
 
-void fn_800D70C8(u32 clamp) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    u8 clmpT = (clamp & 1) == 1;
-    u8 clmpB = (clamp & 2) == 2;
-    M2C_FIELD(gx, u32 *, 0x1EC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1EC), clmpT, 0, 31, 31);
-    M2C_FIELD(gx, u32 *, 0x1EC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1EC), clmpB, 1, 30, 30);
-    M2C_FIELD(gx, u32 *, 0x1FC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1FC), clmpT, 0, 31, 31);
-    M2C_FIELD(gx, u32 *, 0x1FC) = __rlwimi(M2C_FIELD(gx, u32 *, 0x1FC), clmpB, 1, 30, 30);
-}
 
 void fn_800D71EC(GXColor clear_clr, u32 clear_z) {
     extern GXDataHead *__GXData;
@@ -5801,39 +5508,6 @@ void fn_800D7C68(u8 nChans) {
     __GXData->dirty |= 4;
 }
 
-void fn_800D7CA4(s32 chan, u8 enable, s32 amb_src, s32 mat_src, u32 light_mask, s32 diff_fn, s32 attn_fn) {
-    extern GXDataHead *__GXData;
-    u32 reg;
-    u32 idx;
-    idx = chan & 3;
-    reg = 0;
-    reg = __rlwimi(reg, enable, 1, 30, 30);
-    reg = __rlwimi(reg, mat_src, 0, 31, 31);
-    reg = __rlwimi(reg, amb_src, 6, 25, 25);
-    if (attn_fn == 0) {
-        diff_fn = 0;
-    }
-    reg = __rlwimi(reg, diff_fn, 7, 23, 24);
-    reg = __rlwimi(reg, (attn_fn != 2), 9, 22, 22);
-    reg = __rlwimi(reg, (attn_fn != 0), 10, 21, 21);
-    reg &= ~0x3C;
-    reg = __rlwimi(reg, light_mask, 2, 26, 29);
-    reg &= ~0x7800;
-    reg = __rlwimi(reg, light_mask, 7, 17, 20);
-    GXWGFifo.u8 = 0x10;
-    GXWGFifo.u32 = idx + 0x100E;
-    GXWGFifo.u32 = reg;
-    if (chan == 4) {
-        GXWGFifo.u8 = 0x10;
-        GXWGFifo.u32 = 0x1010;
-        GXWGFifo.u32 = reg;
-    } else if (chan == 5) {
-        GXWGFifo.u8 = 0x10;
-        GXWGFifo.u32 = 0x1011;
-        GXWGFifo.u32 = reg;
-    }
-    __GXData->bpSentNot = 1;
-}
 
 void fn_800D7D5C(int fmt, u16 wd, u16 ht, u32* rowTiles, u32* colTiles, u32* cmpTiles) {
     u32 texRowShift;
@@ -5893,57 +5567,6 @@ void fn_800D7D5C(int fmt, u16 wd, u16 ht, u32* rowTiles, u32* colTiles, u32* cmp
     *cmpTiles = (fmt == 0x6 || fmt == 0x16) ? 2 : 1;
 }
 
-void fn_800D7E24(u32* t, u32 image_ptr, u16 width, u16 height, u32 format, u32 wrap_s, u32 wrap_t, u8 mipmap)
-{
-    extern f32 lbl_80363128;
-    u16 maxLOD;
-    u16 rowT, colT;
-    u32 rowC, colC;
-
-    memset(t, 0, 0x20);
-    t[0] = __rlwimi(t[0], wrap_s, 0, 30, 31);
-    t[0] = __rlwimi(t[0], wrap_t, 2, 28, 29);
-    t[0] = __rlwimi(t[0], 1, 4, 27, 27);
-    if (mipmap) {
-        ((u8*)t)[0x1f] |= 1;
-        if (format - 8 <= 2) {
-            t[0] = __rlwimi(t[0], 5, 5, 24, 26);
-        } else {
-            t[0] = __rlwimi(t[0], 6, 5, 24, 26);
-        }
-        if (width > height) {
-            maxLOD = 31 - __cntlzw(width);
-        } else {
-            maxLOD = 31 - __cntlzw(height);
-        }
-        t[1] = __rlwimi(t[1], (u8)(lbl_80363128 * (f32)maxLOD), 8, 16, 23);
-    } else {
-        t[0] = __rlwimi(t[0], 4, 5, 24, 26);
-    }
-    t[5] = format;
-    t[2] = __rlwimi(t[2], width - 1, 0, 22, 31);
-    t[2] = __rlwimi(t[2], height - 1, 10, 12, 21);
-    t[2] = __rlwimi(t[2], format, 20, 8, 11);
-    t[3] = __rlwimi(t[3], image_ptr, 27, 11, 31);
-    switch (format & 0xF) {
-    case 0: case 8:
-        ((u8*)t)[0x1e] = 1; rowT = 3; colT = 3; break;
-    case 1: case 2: case 9:
-        ((u8*)t)[0x1e] = 2; rowT = 3; colT = 2; break;
-    case 3: case 4: case 5: case 10:
-        ((u8*)t)[0x1e] = 2; rowT = 2; colT = 2; break;
-    case 6:
-        ((u8*)t)[0x1e] = 3; rowT = 2; colT = 2; break;
-    case 14:
-        ((u8*)t)[0x1e] = 0; rowT = 3; colT = 3; break;
-    default:
-        ((u8*)t)[0x1e] = 2; rowT = 2; colT = 2; break;
-    }
-    rowC = (width + (1 << rowT) - 1) >> rowT;
-    colC = (height + (1 << colT) - 1) >> colT;
-    *(u16*)((u8*)t + 0x1c) = (rowC * colC) & 0x7FFF;
-    ((u8*)t)[0x1f] |= 2;
-}
 
 void fn_800D80B8(u32 *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias, u8 bias_clamp, u8 do_edge_lod, s32 max_aniso) {
     extern u8 lbl_80359668[];
@@ -5996,10 +5619,6 @@ void fn_800D821C(u32 *arg0, u32 arg1, u32 arg2) {
 
 void fn_800D8238(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
 
-void fn_800D8240(u32 *arg0, s32 arg1, s32 arg2) {
-    SETF(*arg0, 1, 4, (arg2 == 1) ? 1 : 0);
-    SETF(*arg0, 3, 5, lbl_80359668[arg1]);
-}
 
 void fn_800D8278(void *arg0, f32 farg0) {
     extern f32 lbl_80363148;
@@ -6047,54 +5666,7 @@ void fn_800D8508(void *tlut_obj, u32 lut, s32 fmt, u16 n_entries) {
     M2C_FIELD(tlut_obj, u16 *, 8) = n_entries;
 }
 
-void GXInitTexCacheRegion(void *arg0, s8 arg1, u32 arg2, s32 arg3, u32 arg4, s32 arg5, s32 arg6) {
-    s32 var_r9;
 
-    var_r9 = arg6;
-    switch (arg3) {                                 /* switch 1; irregular */
-    case 0:                                         /* switch 1 */
-        var_r9 = 3;
-        break;
-    case 1:                                         /* switch 1 */
-        var_r9 = 4;
-        break;
-    case 2:                                         /* switch 1 */
-        var_r9 = 5;
-        break;
-    }
-    M2C_FIELD(arg0, s32 *, 0) = 0;
-    M2C_FIELD(arg0, s32 *, 0) = (s32) ((M2C_FIELD(arg0, s32 *, 0) & ~0x7FFF) | ((arg2 >> 5U) & 0x7FFF));
-    M2C_FIELD(arg0, s32 *, 0) = (s32) ((M2C_FIELD(arg0, s32 *, 0) & ~0x38000) | ((var_r9 << 0xF) & 0x38000));
-    M2C_FIELD(arg0, s32 *, 0) = (s32) ((M2C_FIELD(arg0, s32 *, 0) & ~0x1C0000) | ((var_r9 << 0x12) & 0x1C0000));
-    M2C_FIELD(arg0, s32 *, 0) = (s32) (M2C_FIELD(arg0, s32 *, 0) & ~0x200000);
-    switch (arg5) {                                 /* switch 2; irregular */
-    case 0:                                         /* switch 2 */
-        var_r9 = 3;
-        break;
-    case 1:                                         /* switch 2 */
-        var_r9 = 4;
-        break;
-    case 2:                                         /* switch 2 */
-        var_r9 = 5;
-        break;
-    case 3:                                         /* switch 2 */
-        var_r9 = 0;
-        break;
-    }
-    M2C_FIELD(arg0, s32 *, 4) = 0;
-    M2C_FIELD(arg0, s32 *, 4) = (s32) ((M2C_FIELD(arg0, s32 *, 4) & ~0x7FFF) | ((arg4 >> 5U) & 0x7FFF));
-    M2C_FIELD(arg0, s32 *, 4) = (s32) ((M2C_FIELD(arg0, s32 *, 4) & ~0x38000) | ((var_r9 << 0xF) & 0x38000));
-    M2C_FIELD(arg0, s32 *, 4) = (s32) ((M2C_FIELD(arg0, s32 *, 4) & ~0x1C0000) | ((var_r9 << 0x12) & 0x1C0000));
-    M2C_FIELD(arg0, s8 *, 0xC) = arg1;
-    M2C_FIELD(arg0, s8 *, 0xD) = 1;
-}
-
-void GXInitTlutRegion(u32 *region, u32 tmem_addr, u32 tlut_size) {
-    *region = 0;
-    *region = __rlwimi(*region, tmem_addr - 0x80000, 23, 22, 31);
-    *region = __rlwimi(*region, tlut_size, 10, 11, 21);
-    *region = __rlwimi(*region, 0x65, 24, 0, 7);
-}
 
 s32 fn_800D874C(s32 arg0) {
     extern GXDataHead *const __GXData;
@@ -6299,11 +5871,6 @@ void fn_800D8D50(s32 indStage, s32 scaleS, s32 scaleT) {
     __GXData->bpSentNot = 0;
 }
 
-void fn_800D8E94(u8 nIndStages) {
-    extern GXDataHead *const __GXData;
-    SETF(M2C_FIELD(__GXData, u32 *, 0x204), 3, 16, nIndStages);
-    M2C_FIELD(__GXData, u32 *, 0x5AC) |= 6;
-}
 
 void fn_800D8EB8(u32 stage) {
     void fn_800D8CE4(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
@@ -6350,37 +5917,7 @@ void fn_800D8F28(s32 arg0, s32 arg1) {
     gx->bpSentNot = 0;
 }
 
-void fn_800D8FB4(s32 stage, s32 a, s32 b, s32 c, s32 d) {
-    extern GXDataHead *const __GXData;
-    u32 *pTevReg = &M2C_FIELD(__GXData, u32 *, 0x130 + stage * 4);
-    u32 reg = *pTevReg;
-    reg = __rlwimi(reg, a, 12, 16, 19);
-    reg = __rlwimi(reg, b, 8, 20, 23);
-    reg = __rlwimi(reg, c, 4, 24, 27);
-    reg = __rlwimi(reg, d, 0, 28, 31);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = reg;
-    *pTevReg = reg;
-    __GXData->bpSentNot = 0;
-}
 
-void fn_800D8FF8(s32 stage, s32 a, s32 b, s32 c, s32 d) {
-    extern GXDataHead *__GXData;
-    u32 *pTevReg;
-    u32 reg;
-    GXDataHead *gx;
-    gx = __GXData;
-    pTevReg = &((u32 *)((u8 *)gx + 0x170))[stage];
-    reg = *pTevReg;
-    reg = __rlwimi(reg, a, 13, 16, 18);
-    reg = __rlwimi(reg, b, 10, 19, 21);
-    reg = __rlwimi(reg, c, 7, 22, 24);
-    reg = __rlwimi(reg, d, 4, 25, 27);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = reg;
-    *pTevReg = reg;
-    gx->bpSentNot = 0;
-}
 
 void fn_800D903C(s32 stage, s32 op, s32 bias, s32 scale, u8 clamp, s32 out_reg) {
     extern GXDataHead *__GXData;
@@ -6436,24 +5973,6 @@ void fn_800D910C(s32 id, u8 *color) {
  __GXData->bpSentNot=0;
 }
 
-void fn_800D9188(s32 arg0, u8 *arg1) {
-    extern GXDataHead *const __GXData;
-    u32 a = 0;
-    u32 b = 0;
-    SETF(a, 8, 0, arg1[0]);
-    SETF(a, 8, 12, arg1[3]);
-    SETF(b, 8, 0, arg1[2]);
-    SETF(b, 8, 12, arg1[1]);
-    SETF(a, 4, 20, 8);
-    SETF(b, 4, 20, 8);
-    SETF(a, 8, 24, arg0 * 2 + 0xE0);
-    SETF(b, 8, 24, arg0 * 2 + 0xE1);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = a;
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = b;
-    __GXData->bpSentNot = 0;
-}
 #pragma optimize_for_size reset
 void fn_800D91FC(s32 arg0, s32 arg1) {
     extern GXDataHead *__GXData;
@@ -6554,40 +6073,6 @@ void fn_800D93C0(s32 op, s32 fmt, u32 bias) {
     __GXData->bpSentNot = 0;
 }
 
-void fn_800D944C(s32 stage, s32 coord, u32 map, s32 color) {
-    extern GXDataHead *__GXData;
-    extern s32 lbl_802DFFA0[];
-    u32 *ptref;
-    u32 tmap;
-    u32 tcoord;
-
-    ptref = (u32 *)((u8 *)__GXData + 0x100) + stage / 2;
-    ((u32 *)((u8 *)__GXData + 0x554))[stage] = map;
-    tmap = map & ~0x100;
-    tmap = (tmap >= 8) ? 0 : tmap;
-    if (coord >= 8) {
-        tcoord = 0;
-        M2C_FIELD(__GXData, u32 *, 0x598) &= ~(1 << stage);
-    } else {
-        tcoord = coord;
-        M2C_FIELD(__GXData, u32 *, 0x598) |= (1 << stage);
-    }
-    if (stage & 1) {
-        SETF(*ptref, 3, 12, tmap);
-        SETF(*ptref, 3, 15, tcoord);
-        SETF(*ptref, 3, 19, (color == 0xFF) ? 7 : lbl_802DFFA0[color]);
-        SETF(*ptref, 1, 18, (map != 0xFF && !(map & 0x100)));
-    } else {
-        SETF(*ptref, 3, 0, tmap);
-        SETF(*ptref, 3, 3, tcoord);
-        SETF(*ptref, 3, 7, (color == 0xFF) ? 7 : lbl_802DFFA0[color]);
-        SETF(*ptref, 1, 6, (map != 0xFF && !(map & 0x100)));
-    }
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = *ptref;
-    __GXData->bpSentNot = 0;
-    M2C_FIELD(__GXData, u32 *, 0x5AC) |= 1;
-}
 
 void fn_800D95E8(u8 nStages) {
     extern GXData8 *const __GXData;
@@ -6595,30 +6080,6 @@ void fn_800D95E8(u8 nStages) {
     __GXData->dirty |= 4;
 }
 
-void fn_800D9834(u8 enable, u16 center, u16 *table) {
-    extern GXDataHead *__GXData;
-    u32 i;
-    u32 range_adj;
-    u32 range_c;
-
-    if (enable) {
-        for (i = 0; i < 10; i += 2) {
-            range_adj = 0;
-            range_adj = (range_adj & ~0xFFF) | ((u32)table[i] & 0xFFF);
-            range_adj = (range_adj & ~0xFFF000) | (((u32)table[i + 1] << 12) & 0xFFF000);
-            range_adj = (range_adj & ~0xFF000000) | ((((i >> 1) + 0xE9) << 24) & 0xFF000000);
-            GXWGFifo.u8 = 0x61;
-            GXWGFifo.u32 = range_adj;
-        }
-    }
-    range_c = 0;
-    range_c = (range_c & ~0x3FF) | ((u32)(center + 342) & 0x3FF);
-    range_c = (range_c & ~0x400) | (((u32)enable << 10) & 0x400);
-    range_c = (range_c & ~0xFF000000) | ((0xE8 << 24) & 0xFF000000);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = range_c;
-    __GXData->bpSentNot = 0;
-}
 
 void fn_800D9958(s32 type, s32 src_factor, s32 dst_factor, s32 op) {
     extern GXDataHead *__GXData;
@@ -6704,13 +6165,6 @@ void fn_800D9A6C(s32 pix_fmt, u32 z_fmt) {
     __GXData->bpSentNot = 0;
 }
 
-void fn_800D9B40(s32 dither) {
-    extern GXDataHead *__GXData;
-    SETF(M2C_FIELD(__GXData, u32 *, 0x1D0), 1, 2, dither);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = M2C_FIELD(__GXData, u32 *, 0x1D0);
-    __GXData->bpSentNot = 0;
-}
 
 void fn_800D9B6C(u8 enable, u8 alpha) {
     extern GXDataHead *__GXData;
@@ -6724,16 +6178,6 @@ void fn_800D9B6C(u8 enable, u8 alpha) {
     gx->bpSentNot = 0;
 }
 
-void fn_800D9BA8(s32 odd_mask, u8 even_mask) {
-    extern GXDataHead *__GXData;
-    u32 reg = 0;
-    SETF(reg, 1, 0, even_mask);
-    SETF(reg, 1, 1, odd_mask);
-    SETF(reg, 8, 24, 0x44);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = reg;
-    __GXData->bpSentNot = 0;
-}
 
 void fn_800D9BE0(u8 field_mode, u8 half_aspect_ratio) {
     extern struct { u8 pad[0x7C]; u32 lpSize; } *const __GXData;
@@ -6747,13 +6191,6 @@ void fn_800D9BE0(u8 field_mode, u8 half_aspect_ratio) {
     __GXFlushTextureState();
 }
 
-void fn_800D9E98(u32 id) {
-    extern GXDataHead *__GXData;
-    extern void fn_800DA1A4(s32, ...);
-    GXDataHead *gx = __GXData;
-    M2C_FIELD(gx, u32 *, 0x80) = __rlwimi(M2C_FIELD(gx, u32 *, 0x80), id, 0, 26, 31);
-    fn_800DA1A4(0);
-}
 
 #pragma push
 #pragma fp_contract off
@@ -6817,41 +6254,7 @@ void fn_800DA058(f32 scale, f32 offset) {
     gx->bpSentNot = 1;
 }
 
-void fn_800DA0C4(s32 left, s32 top, s32 wd, s32 ht) {
-    extern GXDataHead *__GXData;
-    GXDataHead *gx = __GXData;
-    u32 tp;
-    u32 lf;
-    u32 bm;
-    u32 rt;
-    tp = top + 342;
-    bm = tp + ht - 1;
-    lf = left + 342;
-    rt = lf + wd - 1;
-    M2C_FIELD(gx, u32 *, 0xF8) = __rlwimi(M2C_FIELD(gx, u32 *, 0xF8), tp, 0, 21, 31);
-    M2C_FIELD(gx, u32 *, 0xF8) = __rlwimi(M2C_FIELD(gx, u32 *, 0xF8), lf, 12, 9, 19);
-    M2C_FIELD(gx, u32 *, 0xFC) = __rlwimi(M2C_FIELD(gx, u32 *, 0xFC), bm, 0, 21, 31);
-    M2C_FIELD(gx, u32 *, 0xFC) = __rlwimi(M2C_FIELD(gx, u32 *, 0xFC), rt, 12, 9, 19);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = M2C_FIELD(gx, u32 *, 0xF8);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = M2C_FIELD(gx, u32 *, 0xFC);
-    gx->bpSentNot = 0;
-}
 
-void fn_800DA13C(s32 x_off, s32 y_off) {
-    extern GXDataHead *const __GXData;
-    u32 reg;
-    u32 hx = x_off + 342;
-    u32 hy = y_off + 342;
-    reg = 0;
-    reg = __rlwimi(reg, hx, 31, 22, 31);
-    reg = __rlwimi(reg, hy, 9, 12, 21);
-    reg = __rlwimi(reg, 0x59, 24, 0, 7);
-    GXWGFifo.u8 = 0x61;
-    GXWGFifo.u32 = reg;
-    __GXData->bpSentNot = 0;
-}
 
 void fn_800DA17C(u32 arg0) {
     extern GXDataHead *const __GXData;
@@ -7041,3 +6444,3659 @@ void OSEnableScheduler(void);
 
 extern u8 lbl_80327F90[];
 
+void fn_800B6998(unsigned char * s, unsigned char * d) {
+    int i;
+    int j;
+    int k;
+    int p;
+    int q;
+    int r7;  // huh? DWARF info says these 2 variables might be register names and not actual names.
+    int r25;
+    int cnt;
+    int os;
+    unsigned int flag;
+    unsigned int code;
+
+    os  = *(int*)(s + 0x4);
+    r7  = *(int*)(s + 0x8);
+    r25 = *(int*)(s + 0xC);
+
+    q    = 0;
+    flag = 0;
+    p    = 16;
+
+    do {
+        // Get next mask
+        if (flag == 0) {
+            code = *(u32*)(s + p);
+            p += sizeof(u32);
+            flag = sizeof(u32) * 8;
+        }
+
+        // Non-linked chunk
+        if (code & 0x80000000) {
+            d[q++] = s[r25++];
+        }
+        // Linked chunk
+        else {
+            // Read offset from link table
+            j = s[r7] << 8 | s[r7 + 1];
+            r7 += sizeof(u16);
+
+            // Apply offset
+            k = q - (j & 0x0FFF);
+            cnt    = j >> 12;
+            if (cnt == 0) {
+                cnt = s[r25++] + 0x12;
+            } else {
+                cnt += 2;
+            }
+
+            // Copy chunk
+            for (i = 0; i < cnt; i++, q++, k++) {
+                d[q] = d[k - 1];
+            }
+        }
+
+        // Prepare next mask bit
+        code <<= 1;
+        flag--;
+    } while (q < os);
+}
+
+volatile u16 __VIRegsA[64] : 0xCC002000;
+
+u16 fn_800B6B0C(void) {
+    if (lbl_80359550 <= 1) {
+        return lbl_80359550;
+    }
+    switch (*(int *)0x800000CC) {
+    case 0:
+        lbl_80359550 = (__VIRegsA[0x37] & 2) ? 1 : 0;
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    default:
+        lbl_80359550 = 0;
+    }
+    return lbl_80359550;
+}
+
+
+static inline BOOL IsSjisTrailByteA(u8 c) {
+    return 0x40 <= c && c <= 0xFC && c != 0x7F;
+}
+
+int fn_800B67FC(u16 code) {
+    if (fn_800B6B0C() == 1) {
+        if (0x20 <= code && code <= 0xDF) {
+            return lbl_802D7F30[code - 0x20];
+        } else if (0x889E < code && code <= 0x9872) {
+            int i = ((code >> 8) - 0x88) * 188;
+            int j = (code & 0xFF);
+            if (!IsSjisTrailByteA(j)) {
+                return 0;
+            }
+            j -= 0x40;
+            if (0x40 <= j) {
+                j--;
+            }
+            return (i + j + 0x2BE);
+        } else if (0x8140 <= code && code < 0x879E) {
+            int i = ((code >> 8) - 0x81) * 188;
+            int j = (code & 0xFF);
+            if (!IsSjisTrailByteA(j)) {
+                return 0;
+            }
+            j -= 0x40;
+            if (0x40 <= j) {
+                j--;
+            }
+            return lbl_802D80B0[i + j];
+        }
+    } else if (0x20 < code && code <= 0xFF) {
+        return code - 0x20;
+    }
+    return 0;
+}
+
+volatile u16 __MEMRegsB[64] : 0xCC004000;
+
+BOOL fn_800B7AAC(BOOL final) {
+    if (final) {
+        __MEMRegsB[8] = 0xFF;
+        __OSMaskInterrupts(0xF0000000);
+    }
+    return TRUE;
+}
+
+asm void fn_800B7DF4(void) {
+    nofralloc
+    sync
+    isync
+    mtlr r3
+    blr
+}
+
+typedef struct { void *head; void *tail; } OSModuleQueueE;
+OSModuleQueueE __OSModuleListE : 0x800030C8;
+void *__OSStringTableE : 0x800030D0;
+
+void __OSModuleInit(void) {
+    __OSModuleListE.head = __OSModuleListE.tail = NULL;
+    __OSStringTableE = NULL;
+}
+
+#pragma push
+#pragma peephole off
+volatile u16 __MEMRegsD[64] : 0xCC004000;
+typedef struct { void *func; u32 priority; void *next; void *prev; } OSResetFunctionInfoD;
+extern OSResetFunctionInfoD ResetFunctionInfo_802D8A70;
+void MEMIntrruptHandler(s16, void *);
+void RealMode(u32);
+void Config24MB(void);
+void Config48MB(void);
+
+void __OSInitMemoryProtection(void) {
+    u32 padding[12];
+    u32 simulatedSize;
+    BOOL enabled;
+
+    simulatedSize = *(u32 *)0x800000F0;
+    enabled = OSDisableInterrupts();
+    __MEMRegsD[16] = 0;
+    __MEMRegsD[8] = 0xFF;
+    __OSMaskInterrupts(0xF0000000);
+    __OSSetInterruptHandler(0, MEMIntrruptHandler);
+    __OSSetInterruptHandler(1, MEMIntrruptHandler);
+    __OSSetInterruptHandler(2, MEMIntrruptHandler);
+    __OSSetInterruptHandler(3, MEMIntrruptHandler);
+    __OSSetInterruptHandler(4, MEMIntrruptHandler);
+    OSRegisterResetFunction(&ResetFunctionInfo_802D8A70);
+    if (*(u32 *)0x800000F0 < *(u32 *)0x80000028 && *(u32 *)0x800000F0 == 0x1800000) {
+        DCInvalidateRange((void *)0x81800000, 0x1800000);
+        __MEMRegsD[20] = 2;
+    }
+    if (simulatedSize <= 0x1800000) {
+        RealMode((u32)&Config24MB);
+    } else if (simulatedSize <= 0x3000000) {
+        RealMode((u32)&Config48MB);
+    }
+    __OSUnmaskInterrupts(0x08000000);
+    OSRestoreInterrupts(enabled);
+}
+#pragma pop
+
+extern s32 RunQueueHint_8035A5EC;
+
+void __OSReschedule(void) {
+    if (!RunQueueHint_8035A5EC) {
+        return;
+    }
+    SelectThread(FALSE);
+}
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+extern s32 lbl_802DFFA0[];
+void fn_800D944C(s32 stage, s32 coord, s32 map, s32 color) {
+    extern WBGX *const __GXData;
+    u32 *ptref;
+    u32 tmap;
+    u32 tcoord;
+    ptref = &__GXData->tref[stage / 2];
+    __GXData->texmapId[stage] = map;
+    tmap = map & ~0x100;
+    tmap = (tmap >= 8) ? 0 : tmap;
+    if (coord >= 8) {
+        tcoord = 0;
+        __GXData->tevTcEnab = __GXData->tevTcEnab & ~(1 << stage);
+    } else {
+        tcoord = coord;
+        __GXData->tevTcEnab = __GXData->tevTcEnab | (1 << stage);
+    }
+    if (stage & 1) {
+        WB_RI(*ptref, tmap, 12, 17, 19);
+        WB_RI(*ptref, tcoord, 15, 14, 16);
+        WB_RI(*ptref, (color == 255) ? 7 : lbl_802DFFA0[color], 19, 10, 12);
+        WB_RI(*ptref, (map != 255 && !(map & 0x100)), 18, 13, 13);
+    } else {
+        WB_RI(*ptref, tmap, 0, 29, 31);
+        WB_RI(*ptref, tcoord, 3, 26, 28);
+        WB_RI(*ptref, (color == 255) ? 7 : lbl_802DFFA0[color], 7, 22, 24);
+        WB_RI(*ptref, (map != 255 && !(map & 0x100)), 6, 25, 25);
+    }
+    WB_RASW(*ptref);
+    __GXData->bpSentNot = 0;
+    __GXData->dirtyState |= 1;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D8338(void *obj, void *region, s32 id);
+void fn_800D84B4(void *obj, s32 id) {
+    extern WBGX *const __GXData;
+    void *r = (*(void *(**)(void *, s32))((u8 *)__GXData + 1224))(obj, id);
+    fn_800D8338(obj, r, id);
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void GXInitTlutRegion(u32 *region, u32 tmem_addr, s32 size) {
+    *region = 0;
+    WB_RI(*region, (tmem_addr - 0x80000) >> 9, 0, 22, 31);
+    WB_RI(*region, size, 10, 11, 21);
+    WB_RI(*region, 0x65, 24, 0, 7);
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D7CA4(s32 chan, u8 enable, s32 amb_src, s32 mat_src, u32 light_mask, s32 diff_fn, s32 attn_fn) {
+    extern WBGX *const __GXData;
+    u32 reg;
+    u32 idx;
+    idx = chan & 3;
+    reg = 0;
+    WB_RI(reg, enable, 1, 30, 30);
+    WB_RI(reg, mat_src, 0, 31, 31);
+    WB_RI(reg, amb_src, 6, 25, 25);
+    WB_RI(reg, (attn_fn == 0) ? 0 : diff_fn, 7, 23, 24);
+    WB_RI(reg, (attn_fn != 2), 9, 22, 22);
+    WB_RI(reg, (attn_fn != 0), 10, 21, 21);
+    WB_SET(reg, 4, 2, light_mask & 0xF);
+    WB_SET(reg, 4, 11, (light_mask >> 4) & 0xF);
+    WB_XFW(idx + 14, reg);
+    if (chan == 4) {
+        WB_XFW(16, reg);
+    } else if (chan == 5) {
+        WB_XFW(17, reg);
+    }
+    __GXData->bpSentNot = 1;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D8240(u32 *obj, s32 min_filt, s32 mag_filt) {
+    WB_RI(obj[0], (mag_filt == 1) ? 1 : 0, 4, 27, 27);
+    WB_RI(obj[0], lbl_80359668[min_filt], 5, 24, 26);
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+typedef struct WBTexRegion { u32 image1; u32 image2; u32 pad; u8 is32bMipmap; u8 isCached; } WBTexRegion;
+void GXInitTexCacheRegion(WBTexRegion *t, u8 is32bMipmap, u32 tmem_even, s32 size_even, u32 tmem_odd, s32 size_odd) {
+    u32 WidthExp2;
+    switch (size_even) {
+    case 0: WidthExp2 = 3; break;
+    case 1: WidthExp2 = 4; break;
+    case 2: WidthExp2 = 5; break;
+    }
+    t->image1 = 0;
+    WB_RI(t->image1, tmem_even >> 5, 0, 17, 31);
+    WB_RI(t->image1, WidthExp2, 15, 14, 16);
+    WB_RI(t->image1, WidthExp2, 18, 11, 13);
+    WB_RI(t->image1, 0, 21, 10, 10);
+    switch (size_odd) {
+    case 0: WidthExp2 = 3; break;
+    case 1: WidthExp2 = 4; break;
+    case 2: WidthExp2 = 5; break;
+    case 3: WidthExp2 = 0; break;
+    }
+    t->image2 = 0;
+    WB_RI(t->image2, tmem_odd >> 5, 0, 17, 31);
+    WB_RI(t->image2, WidthExp2, 15, 14, 16);
+    WB_RI(t->image2, WidthExp2, 18, 11, 13);
+    t->is32bMipmap = is32bMipmap;
+    t->isCached = 1;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+#ifndef WB_TEXOBJ
+#define WB_TEXOBJ
+typedef struct WBTexObjI { u32 mode0; u32 mode1; u32 image0; u32 image3; void *userData; s32 fmt; u32 tlutName; u16 loadCnt; u8 loadFmt; u8 flags; } WBTexObjI;
+#endif
+
+#pragma auto_inline off
+void fn_800D7E24(void *obj, void *image_ptr, u16 width, u16 height, s32 format, s32 wrap_s, s32 wrap_t, u8 mipmap) {
+    WBTexObjI *t = (WBTexObjI *)obj;
+    u32 imageBase;
+    u32 maxLOD;
+    u16 rowT;
+    u16 colT;
+    u32 rowC;
+    u32 colC;
+    memset(t, 0, 32);
+    WB_RI(t->mode0, wrap_s, 0, 30, 31);
+    WB_RI(t->mode0, wrap_t, 2, 28, 29);
+    WB_RI(t->mode0, 1, 4, 27, 27);
+    if (mipmap != 0) {
+        u8 lmax;
+        t->flags |= 1;
+        if ((u32)(format - 8) <= 2) {
+            WB_RI(t->mode0, 5, 5, 24, 26);
+        } else {
+            WB_RI(t->mode0, 6, 5, 24, 26);
+        }
+        if (width > height) {
+            maxLOD = 31 - __cntlzw(width);
+        } else {
+            maxLOD = 31 - __cntlzw(height);
+        }
+        lmax = 16.0f * maxLOD;
+        WB_RI(t->mode1, lmax, 8, 16, 23);
+    } else {
+        WB_RI(t->mode0, 4, 5, 24, 26);
+    }
+    t->fmt = format;
+    WB_RI(t->image0, width - 1, 0, 22, 31);
+    WB_RI(t->image0, height - 1, 10, 12, 21);
+    WB_RI(t->image0, format & 0xF, 20, 8, 11);
+    imageBase = (u32)image_ptr >> 5;
+    WB_RI(t->image3, imageBase, 0, 11, 31);
+    switch (format & 0xF) {
+    case 0:
+    case 8:
+        t->loadFmt = 1;
+        rowT = 3;
+        colT = 3;
+        break;
+    case 1:
+    case 2:
+    case 9:
+        t->loadFmt = 2;
+        rowT = 3;
+        colT = 2;
+        break;
+    case 3:
+    case 4:
+    case 5:
+    case 10:
+        t->loadFmt = 2;
+        rowT = 2;
+        colT = 2;
+        break;
+    case 6:
+        t->loadFmt = 3;
+        rowT = 2;
+        colT = 2;
+        break;
+    case 14:
+        t->loadFmt = 0;
+        rowT = 3;
+        colT = 3;
+        break;
+    default:
+        t->loadFmt = 2;
+        rowT = 2;
+        colT = 2;
+        break;
+    }
+    rowC = (width + (1 << rowT) - 1) >> rowT;
+    colC = (height + (1 << colT) - 1) >> colT;
+    t->loadCnt = (rowC * colC) & 0x7FFF;
+    t->flags |= 2;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u32 tImage0[8];
+    u32 tMode0[8];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+#ifndef WB_TEXOBJ
+#define WB_TEXOBJ
+typedef struct WBTexObjI { u32 mode0; u32 mode1; u32 image0; u32 image3; void *userData; s32 fmt; u32 tlutName; u16 loadCnt; u8 loadFmt; u8 flags; } WBTexObjI;
+#endif
+
+#pragma auto_inline off
+typedef struct WBTlutObjI { u32 tlut; u32 loadTlut0; u32 numEntries; } WBTlutObjI;
+typedef struct WBTlutRgn2 { u32 loadTlut1; WBTlutObjI tlutObj; } WBTlutRgn2;
+void fn_800D8540(WBTlutObjI *t, u32 tlut_name) {
+    extern WBGX *const __GXData;
+    WBTlutRgn2 *r;
+    r = (*(WBTlutRgn2 *(**)(u32))((u8 *)__GXData + 1228))(tlut_name);
+    __GXFlushTextureState();
+    WB_RASW(t->loadTlut0);
+    WB_RASW(r->loadTlut1);
+    __GXFlushTextureState();
+    {
+        u32 v = r->loadTlut1;
+        WB_RI(t->tlut, v, 0, 22, 31);
+    }
+    r->tlutObj = *t;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u32 tImage0[8];
+    u32 tMode0[8];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+#ifndef WB_TEXOBJ
+#define WB_TEXOBJ
+typedef struct WBTexObjI { u32 mode0; u32 mode1; u32 image0; u32 image3; void *userData; s32 fmt; u32 tlutName; u16 loadCnt; u8 loadFmt; u8 flags; } WBTexObjI;
+#endif
+
+#pragma auto_inline off
+inline void wbSetDirtyState(void) {
+    extern WBGX *const __GXData;
+    u32 dState = __GXData->dirtyState;
+    if (dState == 0) {
+        return;
+    }
+    if (dState & 1) {
+        fn_800D8814();
+    }
+    if (dState & 2) {
+        fn_800D8F00();
+    }
+    if (dState & 4) {
+        fn_800D6E24();
+    }
+    if (dState & 8) {
+        fn_800D56F4();
+    }
+    if (dState & 0x10) {
+        fn_800D5DE8();
+    }
+    if (dState & 0x18) {
+        fn_800D57B0();
+    }
+    __GXData->dirtyState = 0;
+}
+void fn_800D6B8C(s32 type, s32 vtxfmt, u16 nverts) {
+    extern WBGX *const __GXData;
+    wbSetDirtyState();
+    if (*(u32 *)__GXData == 0) {
+        fn_800D6C5C();
+    }
+    WBWG.u8 = vtxfmt | type;
+    WBWG.u16 = nverts;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u32 tImage0[8];
+    u32 tMode0[8];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+#ifndef WB_TEXOBJ
+#define WB_TEXOBJ
+typedef struct WBTexObjI { u32 mode0; u32 mode1; u32 image0; u32 image3; void *userData; s32 fmt; u32 tlutName; u16 loadCnt; u8 loadFmt; u8 flags; } WBTexObjI;
+#endif
+
+#pragma auto_inline off
+void fn_800D6EC4(u16 left, u16 top, u16 wd, u16 ht) {
+    extern WBGX *const __GXData;
+    __GXData->cpTexSrc = 0;
+    WB_RI(__GXData->cpTexSrc, left, 0, 22, 31);
+    WB_RI(__GXData->cpTexSrc, top, 10, 12, 21);
+    WB_RI(__GXData->cpTexSrc, 0x49, 24, 0, 7);
+    __GXData->cpTexSize = 0;
+    WB_RI(__GXData->cpTexSize, wd - 1, 0, 22, 31);
+    WB_RI(__GXData->cpTexSize, ht - 1, 10, 12, 21);
+    WB_RI(__GXData->cpTexSize, 0x4A, 24, 0, 7);
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u32 tImage0[8];
+    u32 tMode0[8];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+#ifndef WB_TEXOBJ
+#define WB_TEXOBJ
+typedef struct WBTexObjI { u32 mode0; u32 mode1; u32 image0; u32 image3; void *userData; s32 fmt; u32 tlutName; u16 loadCnt; u8 loadFmt; u8 flags; } WBTexObjI;
+#endif
+
+#pragma auto_inline off
+typedef struct WBVatList { s32 attr; s32 cnt; s32 type; u8 frac; } WBVatList;
+inline void wbSETVAT(u32 *va, u32 *vb, u32 *vc, s32 attr, s32 cnt, s32 type, u8 shft) {
+    switch (attr) {
+    case 9:
+        WB_RI(*va, cnt, 0, 31, 31);
+        WB_RI(*va, type, 1, 28, 30);
+        WB_RI(*va, shft, 4, 23, 27);
+        break;
+    case 10:
+    case 25:
+        WB_RI(*va, type, 10, 19, 21);
+        if (cnt == 2) {
+            WB_RI(*va, 1, 9, 22, 22);
+            WB_RI(*va, 1, 31, 0, 0);
+        } else {
+            WB_RI(*va, cnt, 9, 22, 22);
+            WB_RI(*va, 0, 31, 0, 0);
+        }
+        break;
+    case 11:
+        WB_RI(*va, cnt, 13, 18, 18);
+        WB_RI(*va, type, 14, 15, 17);
+        break;
+    case 12:
+        WB_RI(*va, cnt, 17, 14, 14);
+        WB_RI(*va, type, 18, 11, 13);
+        break;
+    case 13:
+        WB_RI(*va, cnt, 21, 10, 10);
+        WB_RI(*va, type, 22, 7, 9);
+        WB_RI(*va, shft, 25, 2, 6);
+        break;
+    case 14:
+        WB_RI(*vb, cnt, 0, 31, 31);
+        WB_RI(*vb, type, 1, 28, 30);
+        WB_RI(*vb, shft, 4, 23, 27);
+        break;
+    case 15:
+        WB_RI(*vb, cnt, 9, 22, 22);
+        WB_RI(*vb, type, 10, 19, 21);
+        WB_RI(*vb, shft, 13, 14, 18);
+        break;
+    case 16:
+        WB_RI(*vb, cnt, 18, 13, 13);
+        WB_RI(*vb, type, 19, 10, 12);
+        WB_RI(*vb, shft, 22, 5, 9);
+        break;
+    case 17:
+        WB_RI(*vb, cnt, 27, 4, 4);
+        WB_RI(*vb, type, 28, 1, 3);
+        WB_RI(*vc, shft, 0, 27, 31);
+        break;
+    case 18:
+        WB_RI(*vc, cnt, 5, 26, 26);
+        WB_RI(*vc, type, 6, 23, 25);
+        WB_RI(*vc, shft, 9, 18, 22);
+        break;
+    case 19:
+        WB_RI(*vc, cnt, 14, 17, 17);
+        WB_RI(*vc, type, 15, 14, 16);
+        WB_RI(*vc, shft, 18, 9, 13);
+        break;
+    case 20:
+        WB_RI(*vc, cnt, 23, 8, 8);
+        WB_RI(*vc, type, 24, 5, 7);
+        WB_RI(*vc, shft, 27, 0, 4);
+        break;
+    }
+}
+void fn_800D5B68(s32 vtxfmt, WBVatList *list) {
+    extern WBGX *const __GXData;
+    u32 *va;
+    u32 *vb;
+    u32 *vc;
+    va = &__GXData->vatA[vtxfmt];
+    vb = &__GXData->vatB[vtxfmt];
+    vc = &__GXData->vatC[vtxfmt];
+    while (list->attr != 255) {
+        wbSETVAT(va, vb, vc, list->attr, list->cnt, list->type, list->frac);
+        list++;
+    }
+    __GXData->dirtyState |= 0x10;
+    __GXData->dirtyVAT |= (u8)(1 << (u8)vtxfmt);
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u32 tImage0[8];
+    u32 tMode0[8];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+#ifndef WB_TEXOBJ
+#define WB_TEXOBJ
+typedef struct WBTexObjI { u32 mode0; u32 mode1; u32 image0; u32 image3; void *userData; s32 fmt; u32 tlutName; u16 loadCnt; u8 loadFmt; u8 flags; } WBTexObjI;
+#endif
+
+#pragma auto_inline off
+void fn_800D9834(u8 enable, u16 center, u16 *table) {
+    extern WBGX *const __GXData;
+    u32 range_adj;
+    u32 range_c;
+    u32 i;
+    if (enable) {
+        for (i = 0; i < 10; i += 2) {
+            range_adj = 0;
+            WB_RI(range_adj, table[i], 0, 20, 31);
+            WB_RI(range_adj, table[i + 1], 12, 8, 19);
+            WB_RI(range_adj, (i >> 1) + 0xE9, 24, 0, 7);
+            WB_RASW(range_adj);
+        }
+    }
+    range_c = 0;
+    WB_RI(range_c, center + 342, 0, 22, 31);
+    WB_RI(range_c, enable, 10, 21, 21);
+    WB_RI(range_c, 0xE8, 24, 0, 7);
+    WB_RASW(range_c);
+    __GXData->bpSentNot = 0;
+}
+#pragma auto_inline reset
+
+asm void PPCHalt(void) {
+    nofralloc
+    sync
+loop:
+    nop
+    li r3, 0
+    nop
+    b loop
+}
+
+void fn_800B2E88(u32);
+
+void PPCDisableSpeculation(void) {
+    fn_800B2E88(PPCMfhid0() | 0x200);
+}
+
+s32 PPCMffpscr(void) {
+    union { f64 f; u32 u[2]; } m;
+    asm {
+        mffs fp31
+        stfd fp31, m.f
+    }
+    return m.u[1];
+}
+
+asm s32 PPCMfhid2(void) {
+    nofralloc
+    mfspr r3, 920
+    blr
+}
+
+asm u32 PPCMfl2cr(void) {
+    nofralloc
+    mfspr r3, 1017
+    blr
+}
+
+asm s32 PPCMfmsr(void) {
+    nofralloc
+    mfmsr r3
+    blr
+}
+
+void PPCMtfpscr(register u32 value) {
+    union { f64 f; u32 u[2]; } m;
+    asm {
+        li r4, 0
+        stw r4, m.u[0]
+        stw value, m.u[1]
+        lfd fp31, m.f
+        mtfsf 0xff, fp31
+    }
+}
+
+asm void PPCMthid2(register u32 value) {
+    nofralloc
+    mtspr 920, value
+    blr
+}
+
+asm void PPCMtl2cr(register u32 value) {
+    nofralloc
+    mtspr 1017, value
+    blr
+}
+
+asm void PPCMtmmcr0(register u32 value) {
+    nofralloc
+    mtspr 952, value
+    blr
+}
+
+asm void PPCMtmmcr1(register u32 value) {
+    nofralloc
+    mtspr 956, value
+    blr
+}
+
+asm void PPCMtmsr(register u32 value) {
+    nofralloc
+    mtmsr value
+    blr
+}
+
+asm void PPCMtpmc1(register u32 value) {
+    nofralloc
+    mtspr 953, value
+    blr
+}
+
+asm void PPCMtpmc2(register u32 value) {
+    nofralloc
+    mtspr 954, value
+    blr
+}
+
+asm void PPCMtpmc3(register u32 value) {
+    nofralloc
+    mtspr 957, value
+    blr
+}
+
+asm void PPCMtpmc4(register u32 value) {
+    nofralloc
+    mtspr 958, value
+    blr
+}
+
+asm void PPCMtwpar(register u32 value) {
+    nofralloc
+    mtspr 921, value
+    blr
+}
+
+asm void PPCSetFpNonIEEEMode(void) {
+    nofralloc
+    mtfsb1 29
+    blr
+}
+
+asm void fn_800B2E88(register u32 value) {
+    nofralloc
+    mtspr 1008, value
+    blr
+}
+
+asm s32 fn_800B2F4C(void) {
+    nofralloc
+    sync
+    mfspr r3, 921
+    blr
+}
+
+#pragma push
+#pragma peephole off
+extern u32 *BootInfo_8035A520;
+
+u32 fn_800B31A4(void) {
+    if (BootInfo_8035A520 == NULL || BootInfo_8035A520[11] == 0) {
+        return 0x10000002;
+    }
+    return BootInfo_8035A520[11];
+}
+#pragma pop
+
+asm void fn_800B39AC(void) {
+    nofralloc
+    bla 0x60
+}
+
+#pragma push
+#pragma peephole off
+extern u16 DriveInfo_80307500[];
+
+void InquiryCallback(s32 result, s32 *block) {
+    switch (block[3]) {
+    case 0:
+        *(u16 *)0x800030E6 = (u16)(DriveInfo_80307500[1] | 0x8000);
+        break;
+    default:
+        *(u16 *)0x800030E6 = 1;
+        break;
+    }
+}
+#pragma pop
+
+asm void __OSDBIntegrator(void) {
+    nofralloc
+    li r5, 0x40
+    mflr r3
+    stw r3, 12(r5)
+    lwz r3, 8(r5)
+    oris r3, r3, 0x8000
+    mtlr r3
+    li r3, 0x30
+    mtmsr r3
+    blr
+}
+
+void __OSUnhandledException(void);
+
+asm void OSDefaultExceptionHandler(register u8 exception, register void *context) {
+    nofralloc
+    stw r0, 0(context)
+    stw r1, 4(context)
+    stw r2, 8(context)
+    stmw r6, 24(context)
+    mfspr r0, 913
+    stw r0, 424(context)
+    mfspr r0, 914
+    stw r0, 428(context)
+    mfspr r0, 915
+    stw r0, 432(context)
+    mfspr r0, 916
+    stw r0, 436(context)
+    mfspr r0, 917
+    stw r0, 440(context)
+    mfspr r0, 918
+    stw r0, 444(context)
+    mfspr r0, 919
+    stw r0, 448(context)
+    mfdsisr r5
+    mfdar r6
+    stwu r1, -8(r1)
+    b __OSUnhandledException
+}
+
+void ICFlashInvalidate(void);
+
+void __OSPSInit(void) {
+    PPCMthid2(PPCMfhid2() | 0xA0000000);
+    ICFlashInvalidate();
+    asm { sync }
+    asm {
+        li r3, 0
+        mtspr 912, r3
+        mtspr 913, r3
+        mtspr 914, r3
+        mtspr 915, r3
+        mtspr 916, r3
+        mtspr 917, r3
+        mtspr 918, r3
+        mtspr 919, r3
+    }
+}
+
+#pragma push
+#pragma peephole off
+extern char lbl_8035952C[8];
+
+void OSRegisterVersion(const char *id) {
+    OSReport(lbl_8035952C, id);
+}
+#pragma pop
+
+#pragma push
+#pragma peephole off
+
+s32 __OSSetExceptionHandler(u8 exception, s32 handler) {
+    s32 old = OSExceptionTable_8035A544[exception];
+    OSExceptionTable_8035A544[exception] = handler;
+    return old;
+}
+#pragma pop
+
+extern f64 ZeroF_8035A530;
+extern f32 ZeroPS_8035A538[2];
+
+asm void __OSFPRInit(void) {
+    nofralloc
+    mfmsr r3
+    ori r3, r3, 0x2000
+    mtmsr r3
+    mfspr r3, 920
+    rlwinm. r3, r3, 3, 31, 31
+    beq skip_ps
+    lis r3, ZeroPS_8035A538@ha
+    addi r3, r3, ZeroPS_8035A538@l
+    psq_l fp0, 0(r3), 0, 0
+    ps_mr fp1, fp0
+    ps_mr fp2, fp0
+    ps_mr fp3, fp0
+    ps_mr fp4, fp0
+    ps_mr fp5, fp0
+    ps_mr fp6, fp0
+    ps_mr fp7, fp0
+    ps_mr fp8, fp0
+    ps_mr fp9, fp0
+    ps_mr fp10, fp0
+    ps_mr fp11, fp0
+    ps_mr fp12, fp0
+    ps_mr fp13, fp0
+    ps_mr fp14, fp0
+    ps_mr fp15, fp0
+    ps_mr fp16, fp0
+    ps_mr fp17, fp0
+    ps_mr fp18, fp0
+    ps_mr fp19, fp0
+    ps_mr fp20, fp0
+    ps_mr fp21, fp0
+    ps_mr fp22, fp0
+    ps_mr fp23, fp0
+    ps_mr fp24, fp0
+    ps_mr fp25, fp0
+    ps_mr fp26, fp0
+    ps_mr fp27, fp0
+    ps_mr fp28, fp0
+    ps_mr fp29, fp0
+    ps_mr fp30, fp0
+    ps_mr fp31, fp0
+skip_ps:
+    lfd fp0, ZeroF_8035A530
+    fmr fp1, fp0
+    fmr fp2, fp0
+    fmr fp3, fp0
+    fmr fp4, fp0
+    fmr fp5, fp0
+    fmr fp6, fp0
+    fmr fp7, fp0
+    fmr fp8, fp0
+    fmr fp9, fp0
+    fmr fp10, fp0
+    fmr fp11, fp0
+    fmr fp12, fp0
+    fmr fp13, fp0
+    fmr fp14, fp0
+    fmr fp15, fp0
+    fmr fp16, fp0
+    fmr fp17, fp0
+    fmr fp18, fp0
+    fmr fp19, fp0
+    fmr fp20, fp0
+    fmr fp21, fp0
+    fmr fp22, fp0
+    fmr fp23, fp0
+    fmr fp24, fp0
+    fmr fp25, fp0
+    fmr fp26, fp0
+    fmr fp27, fp0
+    fmr fp28, fp0
+    fmr fp29, fp0
+    fmr fp30, fp0
+    fmr fp31, fp0
+    mtfsf 0xff, fp0
+    blr
+}
+
+void __OSEVStart(void);
+void __OSEVEnd(void);
+void __OSEVSetNumber(void);
+void __DBVECTOR(void);
+
+asm void OSExceptionVector(void) {
+    nofralloc
+entry __OSEVStart
+    mtsprg 0, r4
+    lwz r4, 0xC0
+    stw r3, 12(r4)
+    mfsprg r3, 0
+    stw r3, 16(r4)
+    stw r5, 20(r4)
+    lhz r3, 418(r4)
+    ori r3, r3, 2
+    sth r3, 418(r4)
+    mfcr r3
+    stw r3, 128(r4)
+    mflr r3
+    stw r3, 132(r4)
+    mfctr r3
+    stw r3, 136(r4)
+    mfxer r3
+    stw r3, 140(r4)
+    mfsrr0 r3
+    stw r3, 408(r4)
+    mfsrr1 r3
+    stw r3, 412(r4)
+    mr r5, r3
+entry __DBVECTOR
+    nop
+    mfmsr r3
+    ori r3, r3, 0x30
+    mtsrr1 r3
+entry __OSEVSetNumber
+    addi r3, 0, 0
+    lwz r4, 0xD4
+    rlwinm. r5, r5, 0, 30, 30
+    bne recoverable
+    addis r5, 0, OSDefaultExceptionHandler@ha
+    addi r5, r5, OSDefaultExceptionHandler@l
+    mtsrr0 r5
+    rfi
+recoverable:
+    rlwinm r5, r3, 2, 22, 29
+    lwz r5, 0x3000(r5)
+    mtsrr0 r5
+    rfi
+entry __OSEVEnd
+    nop
+}
+
+asm void __OSLoadFPUContext(void) {
+    nofralloc
+    lhz r5, 418(r4)
+    clrlwi. r5, r5, 31
+    beq L_120
+    lfd f0, 400(r4)
+    mtfsf 255, f0
+    mfspr r5,  920
+    rlwinm. r5, r5, 3, 31, 31
+    beq L_a0
+    psq_l f0, 456(r4), 0, 0
+    psq_l f1, 464(r4), 0, 0
+    psq_l f2, 472(r4), 0, 0
+    psq_l f3, 480(r4), 0, 0
+    psq_l f4, 488(r4), 0, 0
+    psq_l f5, 496(r4), 0, 0
+    psq_l f6, 504(r4), 0, 0
+    psq_l f7, 512(r4), 0, 0
+    psq_l f8, 520(r4), 0, 0
+    psq_l f9, 528(r4), 0, 0
+    psq_l f10, 536(r4), 0, 0
+    psq_l f11, 544(r4), 0, 0
+    psq_l f12, 552(r4), 0, 0
+    psq_l f13, 560(r4), 0, 0
+    psq_l f14, 568(r4), 0, 0
+    psq_l f15, 576(r4), 0, 0
+    psq_l f16, 584(r4), 0, 0
+    psq_l f17, 592(r4), 0, 0
+    psq_l f18, 600(r4), 0, 0
+    psq_l f19, 608(r4), 0, 0
+    psq_l f20, 616(r4), 0, 0
+    psq_l f21, 624(r4), 0, 0
+    psq_l f22, 632(r4), 0, 0
+    psq_l f23, 640(r4), 0, 0
+    psq_l f24, 648(r4), 0, 0
+    psq_l f25, 656(r4), 0, 0
+    psq_l f26, 664(r4), 0, 0
+    psq_l f27, 672(r4), 0, 0
+    psq_l f28, 680(r4), 0, 0
+    psq_l f29, 688(r4), 0, 0
+    psq_l f30, 696(r4), 0, 0
+    psq_l f31, 704(r4), 0, 0
+L_a0:
+    lfd f0, 144(r4)
+    lfd f1, 152(r4)
+    lfd f2, 160(r4)
+    lfd f3, 168(r4)
+    lfd f4, 176(r4)
+    lfd f5, 184(r4)
+    lfd f6, 192(r4)
+    lfd f7, 200(r4)
+    lfd f8, 208(r4)
+    lfd f9, 216(r4)
+    lfd f10, 224(r4)
+    lfd f11, 232(r4)
+    lfd f12, 240(r4)
+    lfd f13, 248(r4)
+    lfd f14, 256(r4)
+    lfd f15, 264(r4)
+    lfd f16, 272(r4)
+    lfd f17, 280(r4)
+    lfd f18, 288(r4)
+    lfd f19, 296(r4)
+    lfd f20, 304(r4)
+    lfd f21, 312(r4)
+    lfd f22, 320(r4)
+    lfd f23, 328(r4)
+    lfd f24, 336(r4)
+    lfd f25, 344(r4)
+    lfd f26, 352(r4)
+    lfd f27, 360(r4)
+    lfd f28, 368(r4)
+    lfd f29, 376(r4)
+    lfd f30, 384(r4)
+    lfd f31, 392(r4)
+L_120:
+    blr
+}
+
+asm void __OSSaveFPUContext(void) {
+    nofralloc
+    lhz r3, 418(r5)
+    ori r3, r3, 1
+    sth r3, 418(r5)
+    stfd f0, 144(r5)
+    stfd f1, 152(r5)
+    stfd f2, 160(r5)
+    stfd f3, 168(r5)
+    stfd f4, 176(r5)
+    stfd f5, 184(r5)
+    stfd f6, 192(r5)
+    stfd f7, 200(r5)
+    stfd f8, 208(r5)
+    stfd f9, 216(r5)
+    stfd f10, 224(r5)
+    stfd f11, 232(r5)
+    stfd f12, 240(r5)
+    stfd f13, 248(r5)
+    stfd f14, 256(r5)
+    stfd f15, 264(r5)
+    stfd f16, 272(r5)
+    stfd f17, 280(r5)
+    stfd f18, 288(r5)
+    stfd f19, 296(r5)
+    stfd f20, 304(r5)
+    stfd f21, 312(r5)
+    stfd f22, 320(r5)
+    stfd f23, 328(r5)
+    stfd f24, 336(r5)
+    stfd f25, 344(r5)
+    stfd f26, 352(r5)
+    stfd f27, 360(r5)
+    stfd f28, 368(r5)
+    stfd f29, 376(r5)
+    stfd f30, 384(r5)
+    stfd f31, 392(r5)
+    mffs f0
+    stfd f0, 400(r5)
+    lfd f0, 144(r5)
+    mfspr r3,  920
+    rlwinm. r3, r3, 3, 31, 31
+    beq L_124
+    psq_st f0, 456(r5), 0, 0
+    psq_st f1, 464(r5), 0, 0
+    psq_st f2, 472(r5), 0, 0
+    psq_st f3, 480(r5), 0, 0
+    psq_st f4, 488(r5), 0, 0
+    psq_st f5, 496(r5), 0, 0
+    psq_st f6, 504(r5), 0, 0
+    psq_st f7, 512(r5), 0, 0
+    psq_st f8, 520(r5), 0, 0
+    psq_st f9, 528(r5), 0, 0
+    psq_st f10, 536(r5), 0, 0
+    psq_st f11, 544(r5), 0, 0
+    psq_st f12, 552(r5), 0, 0
+    psq_st f13, 560(r5), 0, 0
+    psq_st f14, 568(r5), 0, 0
+    psq_st f15, 576(r5), 0, 0
+    psq_st f16, 584(r5), 0, 0
+    psq_st f17, 592(r5), 0, 0
+    psq_st f18, 600(r5), 0, 0
+    psq_st f19, 608(r5), 0, 0
+    psq_st f20, 616(r5), 0, 0
+    psq_st f21, 624(r5), 0, 0
+    psq_st f22, 632(r5), 0, 0
+    psq_st f23, 640(r5), 0, 0
+    psq_st f24, 648(r5), 0, 0
+    psq_st f25, 656(r5), 0, 0
+    psq_st f26, 664(r5), 0, 0
+    psq_st f27, 672(r5), 0, 0
+    psq_st f28, 680(r5), 0, 0
+    psq_st f29, 688(r5), 0, 0
+    psq_st f30, 696(r5), 0, 0
+    psq_st f31, 704(r5), 0, 0
+L_124:
+    blr
+}
+
+asm void Config24MB(void) {
+    nofralloc
+    li r7, 0
+    lis r4, 0
+    addi r4, r4, 2
+    lis r3, -32768
+    addi r3, r3, 511
+    lis r6, 256
+    addi r6, r6, 2
+    lis r5, -32512
+    addi r5, r5, 255
+    isync
+    mtdbatu 0, r7
+    mtdbatl 0, r4
+    mtdbatu 0, r3
+    isync
+    mtibatu 0, r7
+    mtibatl 0, r4
+    mtibatu 0, r3
+    isync
+    mtdbatu 2, r7
+    mtdbatl 2, r6
+    mtdbatu 2, r5
+    isync
+    mtibatu 2, r7
+    mtibatl 2, r6
+    mtibatu 2, r5
+    isync
+    mfmsr r3
+    ori r3, r3, 48
+    mtsrr1 r3
+    mflr r3
+    mtsrr0 r3
+    rfi
+}
+
+asm void Config48MB(void) {
+    nofralloc
+    li r7, 0
+    lis r4, 0
+    addi r4, r4, 2
+    lis r3, -32768
+    addi r3, r3, 1023
+    lis r6, 512
+    addi r6, r6, 2
+    lis r5, -32256
+    addi r5, r5, 511
+    isync
+    mtdbatu 0, r7
+    mtdbatl 0, r4
+    mtdbatu 0, r3
+    isync
+    mtibatu 0, r7
+    mtibatl 0, r4
+    mtibatu 0, r3
+    isync
+    mtdbatu 2, r7
+    mtdbatl 2, r6
+    mtdbatu 2, r5
+    isync
+    mtibatu 2, r7
+    mtibatl 2, r6
+    mtibatu 2, r5
+    isync
+    mfmsr r3
+    ori r3, r3, 48
+    mtsrr1 r3
+    mflr r3
+    mtsrr0 r3
+    rfi
+}
+
+asm void DCEnable(void) {
+    nofralloc
+    sync
+    mfspr r3,  1008
+    ori r3, r3, 16384
+    mtspr 1008,  r3
+    blr
+}
+
+asm void DCFlushRange(register void * a0, register u32 a1) {
+    nofralloc
+    cmplwi r4, 0
+    blelr
+    clrlwi r5, r3, 27
+    add r4, r4, r5
+    addi r4, r4, 31
+    srwi r4, r4, 5
+    mtctr r4
+L_1c:
+    dcbf 0, r3
+    addi r3, r3, 32
+    bdnz L_1c
+    sc
+    blr
+}
+
+asm void DCFlushRangeNoSync(register void * a0, register u32 a1) {
+    nofralloc
+    cmplwi r4, 0
+    blelr
+    clrlwi r5, r3, 27
+    add r4, r4, r5
+    addi r4, r4, 31
+    srwi r4, r4, 5
+    mtctr r4
+L_1c:
+    dcbf 0, r3
+    addi r3, r3, 32
+    bdnz L_1c
+    blr
+}
+
+void DecrementerExceptionCallback(void);
+asm void DecrementerExceptionHandler(void) {
+    nofralloc
+    stw r0, 0(r4)
+    stw r1, 4(r4)
+    stw r2, 8(r4)
+    stmw r6, 24(r4)
+    mfspr r0, 913
+    stw r0, 424(r4)
+    mfspr r0, 914
+    stw r0, 428(r4)
+    mfspr r0, 915
+    stw r0, 432(r4)
+    mfspr r0, 916
+    stw r0, 436(r4)
+    mfspr r0, 917
+    stw r0, 440(r4)
+    mfspr r0, 918
+    stw r0, 444(r4)
+    mfspr r0, 919
+    stw r0, 448(r4)
+    stwu r1, -8(r1)
+    b DecrementerExceptionCallback
+}
+
+void fn_800B7700(void);
+asm void ExternalInterruptHandler(void) {
+    nofralloc
+    stw r0, 0(r4)
+    stw r1, 4(r4)
+    stw r2, 8(r4)
+    stmw r6, 24(r4)
+    mfspr r0, 913
+    stw r0, 424(r4)
+    mfspr r0, 914
+    stw r0, 428(r4)
+    mfspr r0, 915
+    stw r0, 432(r4)
+    mfspr r0, 916
+    stw r0, 436(r4)
+    mfspr r0, 917
+    stw r0, 440(r4)
+    mfspr r0, 918
+    stw r0, 444(r4)
+    mfspr r0, 919
+    stw r0, 448(r4)
+    stwu r1, -8(r1)
+    b fn_800B7700
+}
+
+asm void fn_800B48F4(void) {
+    nofralloc
+    cmplwi r4, 0
+    blelr
+    clrlwi r5, r3, 27
+    add r4, r4, r5
+    addi r4, r4, 31
+    srwi r4, r4, 5
+    mtctr r4
+L_1c:
+    dcbst 0, r3
+    addi r3, r3, 32
+    bdnz L_1c
+    sc
+    blr
+}
+
+asm void fn_800B4F78(void) {
+    nofralloc
+    stmw r13, 52(r3)
+    mfspr r0, 913
+    stw r0, 424(r3)
+    mfspr r0, 914
+    stw r0, 428(r3)
+    mfspr r0, 915
+    stw r0, 432(r3)
+    mfspr r0, 916
+    stw r0, 436(r3)
+    mfspr r0, 917
+    stw r0, 440(r3)
+    mfspr r0, 918
+    stw r0, 444(r3)
+    mfspr r0, 919
+    stw r0, 448(r3)
+    mfcr r0
+    stw r0, 128(r3)
+    mflr r0
+    stw r0, 132(r3)
+    stw r0, 408(r3)
+    mfmsr r0
+    stw r0, 412(r3)
+    mfctr r0
+    stw r0, 136(r3)
+    mfxer r0
+    stw r0, 140(r3)
+    stw r1, 4(r3)
+    stw r2, 8(r3)
+    li r0, 1
+    stw r0, 12(r3)
+    li r3, 0
+    blr
+}
+
+asm int fn_800B50D0(void) {
+    nofralloc
+    mr r3, r1
+    blr
+}
+
+asm void fn_800B50D8(void) {
+    nofralloc
+    mflr r0
+    mr r5, r1
+    stwu r5, -8(r4)
+    mr r1, r4
+    stw r0, 4(r5)
+    mtlr r3
+    blrl
+    lwz r5, 0(r1)
+    lwz r0, 4(r5)
+    mtlr r0
+    mr r1, r5
+    blr
+}
+
+asm void ICEnable(void) {
+    nofralloc
+    isync
+    mfspr r3,  1008
+    ori r3, r3, 32768
+    mtspr 1008,  r3
+    blr
+}
+
+asm void ICFlashInvalidate(void) {
+    nofralloc
+    mfspr r3,  1008
+    ori r3, r3, 2048
+    mtspr 1008,  r3
+    blr
+}
+
+asm void ICInvalidateRange(register void * a0, register u32 a1) {
+    nofralloc
+    cmplwi r4, 0
+    blelr
+    clrlwi r5, r3, 27
+    add r4, r4, r5
+    addi r4, r4, 31
+    srwi r4, r4, 5
+    mtctr r4
+L_1c:
+    icbi 0, r3
+    addi r3, r3, 32
+    bdnz L_1c
+    sync
+    isync
+    blr
+}
+
+asm void LCDisable(void) {
+    nofralloc
+    lis r3, -8192
+    li r4, 512
+    mtctr r4
+L_c:
+    dcbi 0, r3
+    addi r3, r3, 32
+    bdnz L_c
+    mfspr r4,  920
+    rlwinm r4, r4, 0, 4, 2
+    mtspr 920,  r4
+    blr
+}
+
+asm int OSDisableInterrupts(void) {
+    nofralloc
+    mfmsr r3
+    rlwinm r4, r3, 0, 17, 15
+    mtmsr r4
+    rlwinm r3, r3, 17, 31, 31
+    blr
+}
+
+asm void OSEnableInterrupts(void) {
+    nofralloc
+    mfmsr r3
+    ori r4, r3, 32768
+    mtmsr r4
+    rlwinm r3, r3, 17, 31, 31
+    blr
+}
+
+asm u32 OSGetTick(void) {
+    nofralloc
+    mftb r3
+    blr
+}
+
+asm void OSLoadContext(void) {
+    nofralloc
+    lis r4, OSDisableInterrupts@ha
+    lwz r6, 408(r3)
+    addi r5, r4, OSDisableInterrupts@l
+    cmplw r6, r5
+    ble L_28
+    lis r4, (OSDisableInterrupts+12)@ha
+    addi r0, r4, (OSDisableInterrupts+12)@l
+    cmplw r6, r0
+    bge L_28
+    stw r5, 408(r3)
+L_28:
+    lwz r0, 0(r3)
+    lwz r1, 4(r3)
+    lwz r2, 8(r3)
+    lhz r4, 418(r3)
+    rlwinm. r5, r4, 0, 30, 30
+    beq L_50
+    rlwinm r4, r4, 0, 31, 29
+    sth r4, 418(r3)
+    lmw r5, 20(r3)
+    b L_54
+L_50:
+    lmw r13, 52(r3)
+L_54:
+    lwz r4, 424(r3)
+    mtspr 913, r4
+    lwz r4, 428(r3)
+    mtspr 914, r4
+    lwz r4, 432(r3)
+    mtspr 915, r4
+    lwz r4, 436(r3)
+    mtspr 916, r4
+    lwz r4, 440(r3)
+    mtspr 917, r4
+    lwz r4, 444(r3)
+    mtspr 918, r4
+    lwz r4, 448(r3)
+    mtspr 919, r4
+    lwz r4, 128(r3)
+    mtcr r4
+    lwz r4, 132(r3)
+    mtlr r4
+    lwz r4, 136(r3)
+    mtctr r4
+    lwz r4, 140(r3)
+    mtxer r4
+    mfmsr r4
+    rlwinm r4, r4, 0, 17, 15
+    rlwinm r4, r4, 0, 31, 29
+    mtmsr r4
+    lwz r4, 408(r3)
+    mtsrr0 r4
+    lwz r4, 412(r3)
+    mtsrr1 r4
+    lwz r4, 16(r3)
+    lwz r3, 12(r3)
+    rfi
+}
+
+asm int OSRestoreInterrupts(register int a0) {
+    nofralloc
+    cmpwi r3, 0
+    mfmsr r4
+    beq L_14
+    ori r5, r4, 32768
+    b L_18
+L_14:
+    rlwinm r5, r4, 0, 17, 15
+L_18:
+    mtmsr r5
+    rlwinm r3, r4, 17, 31, 31
+    blr
+}
+
+asm void OSSaveFPUContext(void) {
+    nofralloc
+    addi r5, r3, 0
+    b __OSSaveFPUContext
+}
+
+asm void OSSetCurrentContext(register u8 * a0) {
+    nofralloc
+    lis r4, -32768
+    stw r3, 212(r4)
+    clrlwi r5, r3, 2
+    stw r5, 192(r4)
+    lwz r5, 216(r4)
+    cmpw r5, r3
+    bne L_38
+    lwz r6, 412(r3)
+    ori r6, r6, 8192
+    stw r6, 412(r3)
+    mfmsr r6
+    ori r6, r6, 2
+    mtmsr r6
+    blr
+L_38:
+    lwz r6, 412(r3)
+    rlwinm r6, r6, 0, 19, 17
+    stw r6, 412(r3)
+    mfmsr r6
+    rlwinm r6, r6, 0, 19, 17
+    ori r6, r6, 2
+    mtmsr r6
+    isync
+    blr
+}
+
+asm void OSSwitchFPUContext(void) {
+    nofralloc
+    mfmsr r5
+    ori r5, r5, 8192
+    mtmsr r5
+    isync
+    lwz r5, 412(r4)
+    ori r5, r5, 8192
+    mtsrr1 r5
+    lis r3, -32768
+    lwz r5, 216(r3)
+    stw r4, 216(r3)
+    cmpw r5, r4
+    beq L_40
+    cmpwi r5, 0
+    beq L_3c
+    bl __OSSaveFPUContext
+L_3c:
+    bl __OSLoadFPUContext
+L_40:
+    lwz r3, 128(r4)
+    mtcr r3
+    lwz r3, 132(r4)
+    mtlr r3
+    lwz r3, 408(r4)
+    mtsrr0 r3
+    lwz r3, 136(r4)
+    mtctr r3
+    lwz r3, 140(r4)
+    mtxer r3
+    lhz r3, 418(r4)
+    rlwinm r3, r3, 0, 31, 29
+    sth r3, 418(r4)
+    lwz r5, 20(r4)
+    lwz r3, 12(r4)
+    lwz r4, 16(r4)
+    rfi
+}
+
+asm void __DBExceptionDestination(void) {
+    nofralloc
+    mfmsr r3
+    ori r3, r3, 48
+    mtmsr r3
+    b fn_800B2FB8
+}
+
+asm void Reset(void) {
+    nofralloc
+    b L_20
+L_4:
+    mfspr r8,  1008
+    ori r8, r8, 8
+    mtspr 1008,  r8
+    isync
+    sync
+    nop
+    b L_24
+L_20:
+    b L_40
+L_24:
+    mftb r5
+L_28:
+    mftb r6
+    subf r7, r5, r6
+    cmplwi r7, 4388
+    blt L_28
+    nop
+    b L_44
+L_40:
+    b L_60
+L_44:
+    lis r8, -13312
+    ori r8, r8, 12288
+    li r4, 3
+    stw r4, 36(r8)
+    stw r3, 36(r8)
+    nop
+    b L_64
+L_60:
+    b L_6c
+L_64:
+    nop
+    b L_64
+L_6c:
+    b L_4
+}
+
+volatile u16 __DSPRegsA[32] : 0xCC005000;
+#define ASSERTMSGLINE(a, b, c)
+#define __DSPWorkBuffer (void *)0x81000000
+extern u8 DSPInitCode_802D7788[128];
+void __OSInitAudioSystem(void) {
+  u8 errFlag;
+  u16 reg16;
+  u32 start_tick;
+
+  memcpy((u8 *)OSGetArenaHi() - 128, __DSPWorkBuffer, 128);
+  memcpy(__DSPWorkBuffer, (void*)DSPInitCode_802D7788, 128);
+  DCFlushRange(__DSPWorkBuffer, 128);
+
+  __DSPRegsA[9] = 0x43;
+  ASSERTMSGLINE(0x67, !(__DSPRegsA[5] & 0x200), "__OSInitAudioSystem(): ARAM DMA already in progress");
+  ASSERTMSGLINE(0x6B, !(__DSPRegsA[5] & 0x400), "__OSInitAudioSystem(): DSP DMA already in progress");
+  ASSERTMSGLINE(0x6F, (__DSPRegsA[5] & 0x004), "__OSInitAudioSystem(): DSP already working");
+  __DSPRegsA[5] = 0x8AC;
+  __DSPRegsA[5] |= 1;
+  while (__DSPRegsA[5] & 1);
+  __DSPRegsA[0] = 0;
+  while (((__DSPRegsA[2] << 16) | __DSPRegsA[3]) & 0x80000000);
+  *(u32*)&__DSPRegsA[16] = 0x1000000;
+  *(u32*)&__DSPRegsA[18] = 0;
+  *(u32*)&__DSPRegsA[20] = 0x20;
+
+  reg16 = __DSPRegsA[5];
+  while (!(reg16 & 0x20))
+    reg16 = __DSPRegsA[5];
+  __DSPRegsA[5] = reg16;
+
+  start_tick = OSGetTick();
+  while ((s32)(OSGetTick() - start_tick) < 0x892);
+
+  *(u32*)&__DSPRegsA[16] = 0x1000000;
+  *(u32*)&__DSPRegsA[18] = 0;
+  *(u32*)&__DSPRegsA[20] = 0x20;
+
+  reg16 = __DSPRegsA[5];
+  while (!(reg16 & 0x20)) {
+    reg16 = __DSPRegsA[5];
+  }
+  __DSPRegsA[5] = reg16;
+
+  __DSPRegsA[5] &= ~0x800;
+  while ((__DSPRegsA[5]) & 0x400);
+  __DSPRegsA[5] &= ~4;
+  errFlag = 0;
+
+  reg16 = __DSPRegsA[2];
+
+  // the nonmatching part
+  while (!(reg16 & 0x8000)) {
+    reg16 = __DSPRegsA[2];
+  }
+
+  if(((u32)((reg16 << 16) | __DSPRegsA[3]) + 0x7FAC0000U) != 0x4348) {
+      ASSERTMSGLINE(0xB7, 0, "__OSInitAudioSystem(): DSP returns invalid message");
+  }
+
+  
+  reg16 != 42069;
+  __DSPRegsA[5] |= 4;
+  __DSPRegsA[5] = 0x8AC;
+  __DSPRegsA[5] |= 1;
+  while (__DSPRegsA[5] & 1);
+  memcpy(__DSPWorkBuffer, (u8 *)OSGetArenaHi() - 128, 128);
+}
+
+volatile u16 __DSPRegsA[32] : 0xCC005000;
+#define ASSERTMSGLINE(a, b, c)
+#define __DSPWorkBuffer (void *)0x81000000
+void __OSStopAudioSystem(void) {
+  u16 reg16;
+  u32 start_tick;
+
+#define waitUntil(load, mask)                                                                      \
+  reg16 = (load);                                                                                    \
+  while (reg16 & (mask)) {                                                                           \
+    reg16 = (load);                                                                                  \
+  }
+
+  __DSPRegsA[5] = 0x804;
+  reg16 = __DSPRegsA[27];
+  __DSPRegsA[27] = reg16 & ~0x8000;
+  waitUntil(__DSPRegsA[5], 0x400);
+  waitUntil(__DSPRegsA[5], 0x200);
+  __DSPRegsA[5] = 0x8ac;
+  __DSPRegsA[0] = 0;
+
+  while (((__DSPRegsA[2] << 16) | __DSPRegsA[3]) & 0x80000000)
+    ;
+  start_tick = OSGetTick();
+  while ((s32)(OSGetTick() - start_tick) < 0x2c)
+    ;
+  reg16 = __DSPRegsA[5];
+  __DSPRegsA[5] = reg16 | 1;
+  waitUntil(__DSPRegsA[5], 0x001);
+
+#undef waitUntil
+}
+
+#pragma push
+#pragma peephole off
+extern char lbl_802D7808[];
+
+void DMAErrorHandler(u16 error, u8 *context, ...) {
+    char *s = lbl_802D7808;
+    u32 hid2 = PPCMfhid2();
+    OSReport(s + 44);
+    OSReport(s + 68, hid2, *(u32 *)(context + 412));
+    if (!(hid2 & 0x00F00000) || !(*(u32 *)(context + 412) & 0x00200000)) {
+        OSReport(s + 96);
+        OSDumpContext(context);
+        PPCHalt();
+    }
+    OSReport(s + 144);
+    OSReport(s + 204);
+    if (hid2 & 0x00800000) {
+        OSReport(s + 260);
+    }
+    if (hid2 & 0x00400000) {
+        OSReport(s + 324);
+    }
+    if (hid2 & 0x00200000) {
+        OSReport(s + 368);
+    }
+    if (hid2 & 0x00100000) {
+        OSReport(s + 400);
+    }
+    PPCMthid2(hid2);
+}
+#pragma pop
+
+#pragma push
+#pragma peephole off
+void L2GlobalInvalidate(void);
+void *OSSetErrorHandler(u16, void *);
+
+void __OSCacheInit(void) {
+    char *s = lbl_802D7808;
+    if (!(PPCMfhid0() & 0x8000)) {
+        ICEnable();
+        DBPrintf(s + 428);
+    }
+    if (!(PPCMfhid0() & 0x4000)) {
+        DCEnable();
+        DBPrintf(s + 456);
+    }
+    if (!(PPCMfl2cr() & 0x80000000)) {
+        u32 oldMSR = PPCMfmsr();
+        __sync();
+        PPCMtmsr(0x30);
+        __sync();
+        __sync();
+        PPCMtl2cr(PPCMfl2cr() & ~0x80000000);
+        __sync();
+        L2GlobalInvalidate();
+        PPCMtmsr(oldMSR);
+        PPCMtl2cr((PPCMfl2cr() | 0x80000000) & ~0x00200000);
+        DBPrintf(s + 484);
+    }
+    OSSetErrorHandler(1, DMAErrorHandler);
+    DBPrintf(s + 508);
+}
+#pragma pop
+
+#pragma push
+#pragma peephole off
+void L2GlobalInvalidate(void);
+
+void L2GlobalInvalidate(void) {
+    __sync();
+    PPCMtl2cr(PPCMfl2cr() & ~0x80000000);
+    __sync();
+    PPCMtl2cr(PPCMfl2cr() | 0x00200000);
+    while (PPCMfl2cr() & 1) {
+    }
+    PPCMtl2cr(PPCMfl2cr() & ~0x00200000);
+    while (PPCMfl2cr() & 1) {
+        DBPrintf(">>> L2 INVALIDATE : SHOULD NEVER HAPPEN\n");
+    }
+}
+#pragma pop
+
+#pragma push
+#pragma peephole off
+void OSClearContext(register u8 *context) {
+    *(u16 *)(context + 416) = 0;
+    *(u16 *)(context + 418) = 0;
+    if (context == *(u8 **)0x800000D8) {
+        *(u8 **)0x800000D8 = NULL;
+    }
+}
+#pragma pop
+
+typedef struct { char gpr; char fpr; char reserved[2]; char *input_arg_area; char *reg_save_area; } va_listA[1];
+
+void fn_800B5520(char *file, int line, char *msg, ...) {
+    va_listA marker;
+    u32 i;
+    u32 *p;
+
+    OSDisableInterrupts();
+    __builtin_va_info(&marker);
+    vprintf(msg, (void *)marker);
+    OSReport(" in \"%s\" on line %d.\n", file, line);
+    OSReport("\nAddress:      Back Chain    LR Save\n");
+    for (i = 0, p = (u32 *)fn_800B50D0(); p && (u32)p != 0xffffffff && i++ < 16; p = (u32 *)*p) {
+        OSReport("0x%08x:   0x%08x    0x%08x\n", p, p[0], p[1]);
+    }
+    PPCHalt();
+}
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 pad208[0x5AC - 0x208];
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+
+#pragma auto_inline off
+void fn_800D503C(u8 en) {
+    extern WBGX *const __GXData;
+    extern u16 *__cpReg;
+    WB_RI(__GXData->cpEnable, (en != 0) ? 1 : 0, 4, 27, 27);
+    __cpReg[1] = __GXData->cpEnable;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D6780(s32 func, u8 threshold) {
+    extern u16 *__peReg;
+    u32 reg;
+    reg = (func << 8) | threshold;
+    __peReg[3] = reg;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D6884(u8 compare_enable, s32 func, u8 update_enable) {
+    extern u16 *__peReg;
+    u32 reg = 0;
+    WB_RI(reg, compare_enable, 0, 31, 31);
+    WB_RI(reg, func, 1, 28, 30);
+    WB_RI(reg, update_enable, 4, 27, 27);
+    __peReg[0] = reg;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D6D64(s32 coord, u8 line_enable, u8 point_enable) {
+    extern WBGX *const __GXData;
+    WB_RI(__GXData->suTs0[coord], line_enable, 18, 13, 13);
+    WB_RI(__GXData->suTs0[coord], point_enable, 19, 12, 12);
+    WB_RASW(__GXData->suTs0[coord]);
+    __GXData->bpSentNot = 0;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D6DF0(u8 enable) {
+    extern WBGX *const __GXData;
+    WB_RI(__GXData->genMode, enable, 19, 12, 12);
+    WB_RASW(0xFE080000);
+    WB_RASW(__GXData->genMode);
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D6F40(u16 wd, u16 ht) {
+    extern WBGX *const __GXData;
+    u16 stride = wd * 2;
+    __GXData->cpDispStride = 0;
+    WB_RI(__GXData->cpDispStride, stride >> 5, 0, 22, 31);
+    WB_RI(__GXData->cpDispStride, 0x4D, 24, 0, 7);
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D8E94(u8 nIndStages) {
+    extern WBGX *const __GXData;
+    WB_RI(__GXData->genMode, nIndStages, 16, 13, 15);
+    __GXData->dirtyState |= 6;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D8704(void) {
+    u32 reg0;
+    u32 reg1;
+    reg0 = 0x66001000;
+    reg1 = 0x66001100;
+    __GXFlushTextureState();
+    WB_RASW(reg0);
+    WB_RASW(reg1);
+    __GXFlushTextureState();
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D9BA8(u8 odd_mask, u8 even_mask) {
+    extern WBGX *const __GXData;
+    u32 reg = 0;
+    WB_RI(reg, even_mask, 0, 31, 31);
+    WB_RI(reg, odd_mask, 1, 30, 30);
+    WB_RI(reg, 0x44, 24, 0, 7);
+    WB_RASW(reg);
+    __GXData->bpSentNot = 0;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D9E98(u32 id) {
+    extern WBGX *const __GXData;
+    WB_RI(__GXData->matIdxA, id, 0, 26, 31);
+    fn_800DA1A4(0);
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800DA13C(s32 x_off, s32 y_off) {
+    extern WBGX *const __GXData;
+    u32 reg = 0;
+    u32 hx;
+    u32 hy;
+    hx = (u32)(x_off + 342) >> 1;
+    hy = (u32)(y_off + 342) >> 1;
+    WB_RI(reg, hx, 0, 22, 31);
+    WB_RI(reg, hy, 10, 12, 21);
+    WB_RI(reg, 0x59, 24, 0, 7);
+    WB_RASW(reg);
+    __GXData->bpSentNot = 0;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D9B40(u8 dither) {
+    extern WBGX *const __GXData;
+    u32 reg = __GXData->cmode0;
+    WB_RI(reg, dither, 2, 29, 29);
+    WB_RASW(reg);
+    __GXData->cmode0 = reg;
+    __GXData->bpSentNot = 0;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D70C8(u32 clamp) {
+    extern WBGX *const __GXData;
+    u8 clmpB;
+    u8 clmpT;
+    clmpT = (clamp & 1) == 1;
+    clmpB = (clamp & 2) == 2;
+    WB_RI(__GXData->cpDisp, clmpT, 0, 31, 31);
+    WB_RI(__GXData->cpDisp, clmpB, 1, 30, 30);
+    WB_RI(__GXData->cpTex, clmpT, 0, 31, 31);
+    WB_RI(__GXData->cpTex, clmpB, 1, 30, 30);
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+typedef struct WBColorK { u8 r, g, b, a; } WBColorK;
+void fn_800D9188(s32 id, WBColorK color) {
+    extern WBGX *const __GXData;
+    u32 regRA;
+    u32 regBG;
+    regRA = 0;
+    WB_RI(regRA, color.r, 0, 24, 31);
+    WB_RI(regRA, color.a, 12, 12, 19);
+    WB_RI(regRA, 8, 20, 8, 11);
+    regBG = 0;
+    WB_RI(regBG, color.b, 0, 24, 31);
+    WB_RI(regBG, color.g, 12, 12, 19);
+    WB_RI(regBG, 8, 20, 8, 11);
+    WB_RI(regRA, 0xE0 + id * 2, 24, 0, 7);
+    WB_RI(regBG, 0xE1 + id * 2, 24, 0, 7);
+    WB_RASW(regRA);
+    WB_RASW(regBG);
+    __GXData->bpSentNot = 0;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D8FB4(s32 stage, s32 a, s32 b, s32 c, s32 d) {
+    extern WBGX *const __GXData;
+    u32 reg = __GXData->tevc[stage];
+    WB_RI(reg, a, 12, 16, 19);
+    WB_RI(reg, b, 8, 20, 23);
+    WB_RI(reg, c, 4, 24, 27);
+    WB_RI(reg, d, 0, 28, 31);
+    WB_RASW(reg);
+    __GXData->tevc[stage] = reg;
+    __GXData->bpSentNot = 0;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D8FF8(s32 stage, s32 a, s32 b, s32 c, s32 d) {
+    extern WBGX *const __GXData;
+    u32 reg = __GXData->teva[stage];
+    WB_RI(reg, a, 13, 16, 18);
+    WB_RI(reg, b, 10, 19, 21);
+    WB_RI(reg, c, 7, 22, 24);
+    WB_RI(reg, d, 4, 25, 27);
+    WB_RASW(reg);
+    __GXData->teva[stage] = reg;
+    __GXData->bpSentNot = 0;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800D9C58(void *list, u32 nbytes) {
+    extern WBGX *const __GXData;
+    if (__GXData->dirtyState) {
+        fn_800D6B0C();
+    }
+    if (*(u32 *)__GXData == 0) {
+        fn_800D6C5C();
+    }
+    WBWG.u8 = 0x40;
+    WBWG.u32 = (u32)list;
+    WBWG.u32 = nbytes;
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA
+#define WB_GXDATA
+typedef struct WBGX {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u8 pad514[0x554 - 0x514];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+
+#pragma auto_inline off
+void fn_800DA0C4(u32 left, u32 top, u32 wd, u32 ht) {
+    extern WBGX *const __GXData;
+    u32 tp, lf, bm, rt;
+    tp = top + 342;
+    lf = left + 342;
+    bm = tp + ht - 1;
+    rt = lf + wd - 1;
+    WB_RI(__GXData->suScis0, tp, 0, 21, 31);
+    WB_RI(__GXData->suScis0, lf, 12, 9, 19);
+    WB_RI(__GXData->suScis1, bm, 0, 21, 31);
+    WB_RI(__GXData->suScis1, rt, 12, 9, 19);
+    WB_RASW(__GXData->suScis0);
+    WB_RASW(__GXData->suScis1);
+    __GXData->bpSentNot = 0;
+}
+#pragma auto_inline reset
