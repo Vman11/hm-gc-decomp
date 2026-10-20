@@ -36,3 +36,4 @@ compile_commands.json
 
 # decomp.wtf
 .decomp-wtf/
+src/auto/zz_*
