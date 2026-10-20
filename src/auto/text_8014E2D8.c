@@ -11,9 +11,6 @@ typedef struct {
 } Unk8014E3F0;
 
 void fn_8014D7A0(void* arg0);
-void fn_8014E2D8(void* arg0) {
-    fn_8014D7A0((u8*)arg0 + *(s32*)((u8*)arg0 + 0xD4) - 0x224);
-}
 
 void* fn_8014E3F0(Unk8014E3F0* arg0, s32 arg1) {
     return &arg0->elems[arg1];
@@ -43,7 +40,6 @@ s32 fn_8014E42C(void) {
     return 0;
 }
 
-void fn_8014D7A0(void);
 
 asm void fn_8014E2D8(void) {
     nofralloc

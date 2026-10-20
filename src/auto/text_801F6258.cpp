@@ -1,16 +1,14 @@
 /* Functions from 0x801F6258 to 0x801F6334, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 extern void dtor_801F5E3C(void *);
 extern void fn_801F5D40(void *);
 extern void fn_801F6334(void *);
-void fn_801F626C(void *arg0) { unsigned int offset = 0x10; fn_801F6334((char *)arg0 + *(unsigned int *)((char *)arg0 + offset) + 0x20); }
 
-void fn_801F6280(void *arg0) { unsigned int offset = 0x10; fn_801F5D40((char *)arg0 + *(unsigned int *)((char *)arg0 + offset) - 0x10); }
 
-void fn_801F62A8(void *arg0) { unsigned int offset = 8; dtor_801F5E3C((char *)arg0 + *(unsigned int *)((char *)arg0 + offset) - 0x24); }
 
-void fn_801F62BC(void *arg0) { unsigned int offset = 0x14; dtor_801F5E3C((char *)arg0 + *(unsigned int *)((char *)arg0 + offset) - 0x30); }
 
 void fn_801F61D4(void);
 
@@ -23,7 +21,6 @@ asm void fn_801F6258(void) {
     b fn_801F61D4
 }
 
-void fn_801F6334(void);
 
 asm void fn_801F626C(void) {
     nofralloc
@@ -34,7 +31,6 @@ asm void fn_801F626C(void) {
     b fn_801F6334
 }
 
-void fn_801F5D40(void);
 
 asm void fn_801F6280(void) {
     nofralloc
@@ -45,7 +41,6 @@ asm void fn_801F6280(void) {
     b fn_801F5D40
 }
 
-void dtor_801F5E3C(void);
 
 asm void fn_801F6294(void) {
     nofralloc
@@ -56,7 +51,6 @@ asm void fn_801F6294(void) {
     b dtor_801F5E3C
 }
 
-void dtor_801F5E3C(void);
 
 asm void fn_801F62A8(void) {
     nofralloc
@@ -67,7 +61,6 @@ asm void fn_801F62A8(void) {
     b dtor_801F5E3C
 }
 
-void dtor_801F5E3C(void);
 
 asm void fn_801F62BC(void) {
     nofralloc
@@ -132,3 +125,5 @@ asm void fn_801F6320(void) {
     addi r3, r3, -48
     b fn_801F5D10
 }
+
+} /* extern "C" */

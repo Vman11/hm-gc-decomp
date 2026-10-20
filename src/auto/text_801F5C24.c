@@ -4,14 +4,7 @@
 void fn_801F59B8(void *);
 void fn_801F5BA0(void *);
 void dtor_801F59EC(void *);
-void fn_801F5C24(void *arg0) { fn_801F5BA0((u8 *)arg0 + *(u32 *)((u8 *)arg0 + 0x10) - 8); }
 
-void fn_801F5C38(void *arg0) {
-    u32 offset = 0x10;
-    fn_801F59B8((u8 *)arg0 + *(u32 *)((u8 *)arg0 + offset) - 0xC);
-}
-
-void fn_801F5C9C(void *arg0) { dtor_801F59EC((u8 *)arg0 + *(u32 *)((u8 *)arg0 + 8) - 0x20); }
 
 void fn_801F5CB0(void *arg0) {
     u8 **p5 = *(u8 ***)*(u8 ***)arg0;
@@ -35,7 +28,6 @@ s32 fn_801F5D40(void *arg0) {
     return b >= a;
 }
 
-void fn_801F5BA0(void);
 
 asm void fn_801F5C24(void) {
     nofralloc
@@ -46,7 +38,6 @@ asm void fn_801F5C24(void) {
     b fn_801F5BA0
 }
 
-void fn_801F59B8(void);
 
 asm void fn_801F5C38(void) {
     nofralloc
@@ -90,7 +81,6 @@ asm void fn_801F5C74(void) {
     b fn_801F5978
 }
 
-void dtor_801F59EC(void);
 
 asm void fn_801F5C88(void) {
     nofralloc
@@ -101,7 +91,6 @@ asm void fn_801F5C88(void) {
     b dtor_801F59EC
 }
 
-void dtor_801F59EC(void);
 
 asm void fn_801F5C9C(void) {
     nofralloc
