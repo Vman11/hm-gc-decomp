@@ -2,7 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-typedef struct { u32 a, b, c; } T12_801EFBBC;
+extern "C" {
+
+typedef struct { u32 v[3]; } T12_801EFBBC;
 extern T12_801EFBBC lbl_802EE7D8[];
 void fn_801EF630(void *, void *, void *, s32);
 
@@ -24,3 +26,5 @@ void fn_801EFBBC(u8 *p, void *a, void *b, s32 c) {
     }
     fn_801EF630(p, a, b, c);
 }
+
+} /* extern "C" */
