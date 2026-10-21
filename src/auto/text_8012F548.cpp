@@ -7,6 +7,15 @@ extern "C" {
 struct E { u8 pad[0x124]; virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void m4(s32); virtual s32 m5(); };
 extern "C" { extern u16 lbl_80363F40, lbl_80363F42, lbl_80363F44, lbl_80363F46, lbl_80363F48, lbl_80363F4A, lbl_80363F4C; void fn_800FAEF8(void *); u32 fn_800FADA8(void *); void fn_800FB064(void *, void *); void fn_800FBF5C(void *, void *, u16); void fn_800FAEA0(void *); }
 
+void __dt__9C8012F4C8Fv(void);
+void fn_8012F528(void);
+void fn_800FBF44(void);
+
+/* vtable */
+void *__vt__9C8012F4C8[11] = {
+    0, 0, (void *)__dt__9C8012F4C8Fv, (void *)fn_8012F528, (void *)fn_800FBF44, 0, 0, 0, 0, 0, 0
+};
+
 void fn_8012F548(u32 *p, E *q, u32 c) {
     s32 k;
     p[5] = c;

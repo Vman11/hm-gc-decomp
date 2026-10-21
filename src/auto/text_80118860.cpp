@@ -8,7 +8,7 @@ extern u8 lbl_802E3948[];
 void __dla__FPv(void *);
 void __dl__FPv(void *);
 
-void *dtor_80118860(u8 *p, s16 f) {
+void *__dt__9C801188F8Fv(u8 *p, s16 f) {
     if (p != NULL) {
         *(void **)p = lbl_802E3948;
         if (*(void **)(p + 24) != NULL) {

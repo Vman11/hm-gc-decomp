@@ -14,7 +14,7 @@ void __dl__FPv(int);
 void __dt__9C800FC2E0Fv(int, int);
 struct VCall_dtor_801334B8_0 { char vptr_pad[0x30];  virtual void m(); };
 
-s32 dtor_801334B8(s32 param_1, s16 param_2) {
+s32 __dt__9C8013352CFv(s32 param_1, s16 param_2) {
     if (param_1 != 0) {
         *(u8 **)(param_1 + 0x30) = lbl_802E4D88;
         ((VCall_dtor_801334B8_0 *)(param_1))->m();

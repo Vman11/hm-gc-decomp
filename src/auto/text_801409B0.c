@@ -877,7 +877,14 @@ void fn_80142628(ImgDec *p) {
     p->out += 0x20;
 }
 
-void fn_80142674(ImgDec *p) {
+typedef struct ImgDec_80142674 {
+    u8 pad0[0xB4];
+    u8 *out;
+    u8 padB8[0x18C - 0xB8];
+    u8 *px;
+} ImgDec_80142674;
+
+void fn_80142674(ImgDec_80142674 *p) {
     u8 *s = p->px;
     u8 *e = s + 0x20;
     do {
@@ -885,11 +892,12 @@ void fn_80142674(ImgDec *p) {
         p->out[1] = s[2] | (s[1] << 4);
         p->out[2] = s[4] | (s[3] << 4);
         p->out[3] = s[6] | (s[5] << 4);
-        p->out[4] = (s[7] << 4) | (p->out[4] & 0xF);
+        p->out[4] = (p->out[4] & 0xF) | (s[7] << 4);
         s += 8;
         p->out += 4;
     } while (s < e);
 }
+
 
 void fn_80142710(ImgDec *p) {
     u8 *s = p->px;
@@ -957,4 +965,3 @@ void fn_80142900(ImgDec *p) {
         d[2] = (u32)v >> 8;
     }
 }
-

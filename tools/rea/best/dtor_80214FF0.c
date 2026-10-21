@@ -1,4 +1,4 @@
-// auto/text_80214FF0 dtor_80214FF0 95.0000
+// auto/text_80214FF0 __dt__9C80214FF0Fv 95.0000
 extern "C" {
 extern u8 lbl_802EFFC0[];
 void __dl__FPv(int);
@@ -6,7 +6,7 @@ void fn_800FA1A0(int);
 void fn_800FA324(int, int);
 struct VCall_dtor_80214FF0_0 { char vptr_pad[0x18]; virtual void p0(); virtual void m(); };
 
-s32 dtor_80214FF0(s32 param_1, s16 param_2) {
+s32 __dt__9C80214FF0Fv(s32 param_1, s16 param_2) {
     s32 bVar1;
     s32 iVar2;
     u32 uVar3;

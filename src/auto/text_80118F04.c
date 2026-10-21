@@ -61,7 +61,7 @@ asm void fn_80118F04(void) {
     b fn_80118D98
 }
 
-void __dt__9C8011F770Fv(void);
+void __dt__9C80118E78Fv(void);
 
 asm void fn_80118F18(void) {
     nofralloc
@@ -69,5 +69,5 @@ asm void fn_80118F18(void) {
     lwzx r11, r3, r11
     add r3, r3, r11
     addi r3, r3, -16
-    b __dt__9C8011F770Fv
+    b __dt__9C80118E78Fv
 }

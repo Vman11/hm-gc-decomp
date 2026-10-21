@@ -10,11 +10,11 @@ void fn_801F59BC(void *);
 void __dla__FPv(void *);
 void __dl__FPv(void *);
 void fn_801F4430(void *);
-void fn_801F4684(void);
-void dtor_8013D734(void);
-void dtor_8013D6EC(void);
+void __dt__9C801F4708Fv(void);
+void __dt__9C801F5108Fv(void);
+void __dt__9C801F591CFv(void);
 void fn_800E1F04(void *, void *, u32, u32);
-void dtor_801F59EC(void *, s32);
+void __dt__9C801F5AC4Fv(void *, s32);
 
 void *dtor_8013D5C8(u8 *p, s16 f) {
     u32 i;
@@ -30,11 +30,11 @@ void *dtor_8013D5C8(u8 *p, s16 f) {
                 fn_801F4430(&((S *)p)->arr[*(u32 *)(t + 6996)]);
             }
         }
-        fn_800E1F04(p + 8016, (void *)fn_801F4684, 68, 255);
-        fn_800E1F04(p + 3360, (void *)dtor_8013D734, 904, 4);
-        fn_800E1F04(p + 1708, (void *)dtor_8013D6EC, 412, 4);
-        fn_800E1F04(p + 60, (void *)dtor_8013D6EC, 412, 4);
-        dtor_801F59EC(p, -1);
+        fn_800E1F04(p + 8016, (void *)__dt__9C801F4708Fv, 68, 255);
+        fn_800E1F04(p + 3360, (void *)__dt__9C801F5108Fv, 904, 4);
+        fn_800E1F04(p + 1708, (void *)__dt__9C801F591CFv, 412, 4);
+        fn_800E1F04(p + 60, (void *)__dt__9C801F591CFv, 412, 4);
+        __dt__9C801F5AC4Fv(p, -1);
         if (f > 0) {
             __dl__FPv(p);
         }

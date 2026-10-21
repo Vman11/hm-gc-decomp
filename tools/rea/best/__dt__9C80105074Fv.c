@@ -1,4 +1,4 @@
-// auto/text_80105290 __dt__9C80129A9CFv 99.5833
+// auto/text_80105290 __dt__9C80105818Fv 99.5833
 extern "C" {
 }
 struct C8010500C { char pad[0x24]; ~C8010500C(); };

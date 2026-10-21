@@ -49,4 +49,40 @@ extern "C" f32 fn_80106E84(T *p, f32 dt, s32 lo, s32 hi) {
     return nt;
 }
 
+extern "C" void fn_80107018(T *p, f32 dt, s32 lo, s32 hi) {
+    f32 nt;
+    f32 len;
+    if (p->flags & 2) {
+        if (p->l) {
+            p->l->x0 = 1;
+        }
+        nt = dt * p->speed + p->t;
+        if (p->flags & 4) {
+            len = (f32)hi;
+            p->t = fn_800F04BC(nt, len);
+            if (p->t < lbl_803638F4) {
+                p->t = len + p->t;
+            } else if (nt > p->t) {
+                p->flags |= lbl_803638F0;
+                if (p->l) {
+                    p->l->onLoop(p);
+                }
+            }
+        } else {
+            p->t = (f32)lo;
+            if (nt > p->t) {
+                p->flags |= 24;
+                p->flags &= ~2;
+                if (p->l) {
+                    p->l->onEnd(p);
+                }
+            } else if (nt < lbl_803638F4) {
+                p->t = lbl_803638F4;
+            } else {
+                p->t = nt;
+            }
+        }
+    }
+}
+
 } /* extern "C" */

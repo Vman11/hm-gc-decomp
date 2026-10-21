@@ -8,7 +8,7 @@ struct V1_801051CC { virtual void p0(); virtual void p1(); virtual void a(); vir
 void fn_800F8DD0(void *);
 void fn_800E1E88(void *, void *);
 void __dt__9C80108120Fv(void *, s32);
-void __dt__9C80129A9CFv(void *, s32);
+void __dt__9C80105818Fv(void *, s32);
 
 void fn_801051CC(u8 *p) {
     fn_800F8DD0(p);
@@ -20,7 +20,7 @@ void fn_801051CC(u8 *p) {
         fn_800E1E88(*(void **)(p + 0x28), (void *)__dt__9C80108120Fv);
     }
     if (*(void **)(p + 0x24) != NULL) {
-        fn_800E1E88(*(void **)(p + 0x24), (void *)__dt__9C80129A9CFv);
+        fn_800E1E88(*(void **)(p + 0x24), (void *)__dt__9C80105818Fv);
     }
     *(s32 *)(p + 0x14) = 0;
     *(s32 *)(p + 0x18) = 0;

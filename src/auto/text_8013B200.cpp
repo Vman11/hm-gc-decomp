@@ -10,6 +10,16 @@ struct P { u16 pad0; u16 n; u32 pad4[2]; E *arr; };
 extern "C" { u16 fn_800FADA8(R *); s32 fn_800FB33C(R *); void fn_800FAEA0(R *); void fn_800604C4(s32, s32, s32, s32); void fn_800F7EC0(void *); void fn_800F7E98(void); extern void *lbl_8035AC60; }
 void *__nwa__FUl(u32);
 
+void fn_8013BB48(void);
+void __dt__9C8013BDBCFv(void);
+void fn_8013BBCC(void);
+void fn_8013ABEC(void);
+
+/* vtable */
+void *lbl_802E58B0[7] = {
+    0, 0, 0, (void *)fn_8013BB48, (void *)__dt__9C8013BDBCFv, (void *)fn_8013BBCC, (void *)fn_8013ABEC
+};
+
 extern "C" void fn_8013B200(P *p, R *r) {
     E *e;
     E *end;

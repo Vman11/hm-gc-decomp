@@ -9,6 +9,21 @@ extern "C" {
 }
 
 
+void __dt__9C801CE630Fv(void);
+void fn_801CDA64(void);
+void fn_801CD688(void);
+void fn_801CD014(void);
+void fn_801CE4B0(void);
+void fn_801CDAB4(void);
+void fn_801CDDE4(void);
+void fn_801CDEC0(void);
+void fn_801CDFC8(void);
+
+/* vtable */
+void *lbl_802EC4F0[11] = {
+    0, 0, (void *)__dt__9C801CE630Fv, (void *)fn_801CDA64, (void *)fn_801CD688, (void *)fn_801CD014, (void *)fn_801CE4B0, (void *)fn_801CDAB4, (void *)fn_801CDDE4, (void *)fn_801CDEC0, (void *)fn_801CDFC8
+};
+
 extern "C" int fn_801CCF18(void *arg0, int arg1) {
     switch (arg1) {
     case 0x5F: return 0x1;

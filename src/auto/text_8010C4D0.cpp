@@ -9,6 +9,13 @@ union V { s32 i; f32 f; };
 struct P { u8 key[8]; s32 type; u32 flags; s32 n; V lo; V hi; };
 extern "C" { void *memset(void *, int, u32); void fn_800FB064(R *, void *); void fn_800F6E88(void *, void *); s32 fn_800FB33C(R *); f32 fn_800FB2E0(R *); extern f32 lbl_803596E0[4]; }
 
+void __dt__9C8010C958Fv(void);
+
+/* vtable */
+void *lbl_802E2820[3] = {
+    0, 0, (void *)__dt__9C8010C958Fv
+};
+
 extern "C" s32 fn_8010C4D0(P *p, R *r) {
     u8 key[16];
     u32 k;

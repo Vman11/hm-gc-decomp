@@ -1,7 +1,7 @@
 /* Functions from 0x801F4708 to 0x801F474C, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801F4708(void *arg0) {
+void __ct__9C801F4708Fv(void *arg0) {
     *(s32 *)((char *)arg0 + 0x0) = 0;
     *(s32 *)((char *)arg0 + 0x4) = 0;
     *(s32 *)((char *)arg0 + 0x8) = 0;
