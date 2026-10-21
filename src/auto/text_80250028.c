@@ -11,7 +11,7 @@ s32 fn_800F6CD0(void *, char *);
 void fn_80253A48(void *, void *, void *, void *);
 void fn_80253AD8(void *, void *, void *, void *);
 void __dla__FPv(void *);
-void dtor_8010946C(void *, s32);
+void __dt__9C8010946CFv(void *, s32);
 void __dl__FPv(void *);
 
 static inline void clr_80250028(u8 *p, u8 *base) {
@@ -36,7 +36,7 @@ static inline void clr_80250028(u8 *p, u8 *base) {
     *(s32 *)(p + 12) = 0;
     *(s32 *)(p + 16) = 0;
     *(s32 *)(p + 4) = 0;
-    dtor_8010946C(p, 0);
+    __dt__9C8010946CFv(p, 0);
 }
 
 void *fn_80250028(u8 *p, s16 f) {

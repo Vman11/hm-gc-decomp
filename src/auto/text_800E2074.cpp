@@ -6,7 +6,7 @@ extern "C" {
 
 void __dl__FPv(void *);
 
-u32 * dtor_800E2074(u32 *param_1, s16 param_2) {
+u32 * __dt__26__partial_array_destructorFv(u32 *param_1, s16 param_2) {
     u32 iVar1;
 
     if (param_1 != (u32 *)0x0) {

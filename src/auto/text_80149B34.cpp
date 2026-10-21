@@ -6,7 +6,7 @@ extern "C" {
 
 void __dla__FPv(int);
 void __dl__FPv(int);
-void dtor_801F5E3C(int, int);
+void __dt__9C801F5F94Fv(int, int);
 void fn_801F2ED8(int, int);
 
 u32 * fn_80149B34(u32 *param_1, s16 param_2) {
@@ -30,7 +30,7 @@ u32 * fn_80149B34(u32 *param_1, s16 param_2) {
         param_1[0x24f6] = 0;
         *param_1 = 0;
         fn_801F2ED8((int)(param_1 + 0x28), (int)(0xffffffff));
-        dtor_801F5E3C((int)(param_1 + 1), (int)(0xffffffff));
+        __dt__9C801F5F94Fv((int)(param_1 + 1), (int)(0xffffffff));
         if (0 < param_2) {
             __dl__FPv((int)(param_1));
         }

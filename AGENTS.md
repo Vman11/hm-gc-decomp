@@ -136,10 +136,7 @@ The decoded extab in `build/GHYE6S/asm/<unit>.s` says which C++ construct the or
 - **Zero-then-assign** at +40/+44 after `fn_801EF9A0` (`li r3,0; lwz r4,8(q); stw r3,44; …`): e.g. `fn_801DEE18`, `801E812C`, `801DE80C`, `801E0384`, `801E7D14`.
 - **Descriptor init / factory family** (about 20 functions near 0x8004–0x800B): they address the unit's own `.data` through a section-base register, so they need that data defined as statics in the same TU. The same goes for pooled string literals (`fn_80068D50`, `80046BB8`, `80267CF8`, …).
 - **Local objects whose dtor is `dtor_XXXX`** (`fn_8012D774`, `80138AA8`, `8013EF3C`): need the dtor renamed (see "Plain-named destructors" above).
-- **Symbol renames needed** before some functions can match:
-  - `fn_80117DC4` (calls `__ct__9C800F5578Fv`; the real ctor is `__ct__9C800F6BDCFv`)
-  - the `fn_8012CF08` family (`__ct__9C8012C740Fv` vs `fn_8012C740`)
-  - `fn_80105B88` (`__dt__9C80129A9CFv`)
+- **Symbol renames** (done): 34 plain-named ctors/dtors used by exception tables were renamed to mangled names (recorded in `tools/rea/renames.json`), which matched the `fn_8012CF08` family, `fn_80105B88` and 25 other units. `fn_80117DC4` matched without a rename (inline ctor/dtor calling the two literal names). `dtor_8011F6FC` still needs `__dt__9C8011F770Fv`, which is taken by 0x80118DE0 (rename that first).
 - **Switch jump tables** (data must match too): `fn_8012F7F8`, `80111BC0`, `8010CF00`, `8013410C`, `80139228`, `8012E7A0`, `801022FC`, `8010C4D0`, `80137BC0`, `8019CB40`, `8011BA1C`, `80128910`, `8013B200`, `801A17B8`, `801FA224`, `8021C124`.
 - **Near misses (scheduling or register allocation only)**: `fn_80153D4C`, `8017CB04`, `801BB258`, `801BCA04`, `8016E4D4`, `801B2504`, `80191360`, `8019F53C`, `8019FCB0`, `801A0424`, `80158E34`, `801547BC`, `80149C68`, `80186960`, `8022202C`, `801DF270`, `8023C3F4`, `80213F6C`, `8021F4A4`, `80240948`, `801C9C40`, `8024973C`, `801F13F0`, `801C1774`, `8003C674`, `8003C778`, `801135BC`, `80112FD4`, `8013D4CC`, `8010E280`, `80112190`, `80102730`, `800F9838`, `80112698`, `8011FA98`, `800FA69C`, `80071CE8`.
 - **Factory `new` functions** (solved): real classes with an inline derived ctor storing the vtable label by hand, plus `#pragma optEH2 on` for the stack-slot DESTROYBASE (see above), matched 37 factories with base `C8024262C` and others.

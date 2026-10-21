@@ -5,7 +5,7 @@
 extern "C" {
 
 struct V_80215F50 { u8 pad[0x124]; virtual void m(s32); };
-extern "C" { void __dla__FPv(void *); void fn_80214E80(void *); void fn_80210938(void *); void __dt__9C80210CECFv(void *, s32); void dtor_80214FF0(void *, s32); void __dl__FPv(void *); }
+extern "C" { void __dla__FPv(void *); void fn_80214E80(void *); void fn_80210938(void *); void __dt__9C80210CECFv(void *, s32); void __dt__9C80214FF0Fv(void *, s32); void __dl__FPv(void *); }
 
 void *__dt__9C80215F50Fv(u8 *p, s16 f) {
     if (p != NULL) {
@@ -26,7 +26,7 @@ void *__dt__9C80215F50Fv(u8 *p, s16 f) {
     *(s32 *)(p + 48) = 0;
     *(s32 *)(p + 52) = 0;
         __dt__9C80210CECFv(p + 36, -1);
-        dtor_80214FF0(p, -1);
+        __dt__9C80214FF0Fv(p, -1);
         if (f > 0) {
             __dl__FPv(p);
         }

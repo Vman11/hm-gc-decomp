@@ -30,7 +30,7 @@ static inline s32 Busy80214FF0(X80214FF0 *x) {
     return r;
 }
 
-S80214FF0 *dtor_80214FF0(S80214FF0 *p, s16 f) {
+S80214FF0 *__dt__9C80214FF0Fv(S80214FF0 *p, s16 f) {
     if (p != 0) {
         p->vt = lbl_802EFFC0;
         if (p->x != 0) {

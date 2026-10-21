@@ -6,7 +6,7 @@ extern "C" {
 
 void __dl__FPv(void);
 
-s32 dtor_802054B0(s32 param_1, s16 param_2) {
+s32 __dt__9C802054B0Fv(s32 param_1, s16 param_2) {
     if ((param_1 != 0) && (0 < param_2)) {
         __dl__FPv();
     }

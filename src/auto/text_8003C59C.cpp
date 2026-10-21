@@ -11,7 +11,7 @@ extern u8 lbl_802B029C[];
 void __dl__FPv(int);
 struct VCall_dtor_8003C59C_0 { virtual void p0(); virtual void m(); };
 
-s32 * dtor_8003C59C(s32 *param_1, s16 param_2) {
+s32 * __dt__9C8003C604Fv(s32 *param_1, s16 param_2) {
     if (param_1 != (s32 *)0x0) {
         *param_1 = (s32)lbl_802B029C;
         ((VCall_dtor_8003C59C_0 *)(param_1))->m();

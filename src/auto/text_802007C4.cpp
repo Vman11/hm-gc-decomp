@@ -6,12 +6,12 @@ extern "C" {
 
 extern u8 lbl_802EF678[];
 extern u8 lbl_802EF6D4[];
-void fn_801FEA4C(int);
+void __ct__9C801FEA4CFv(int);
 
 u32 * fn_802007C4(u32 *param_1) {
     *param_1 = (u32)lbl_802EF6D4;
     *param_1 = (u32)lbl_802EF678;
-    fn_801FEA4C((int)(param_1 + 1));
+    __ct__9C801FEA4CFv((int)(param_1 + 1));
     param_1[0x32] = 0;
     return param_1;
 }

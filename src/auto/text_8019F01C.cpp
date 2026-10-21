@@ -11,7 +11,7 @@ extern "C" {
 extern "C" {
 extern u8 __vt__9C8019F0B4[];
 void __dl__FPv(int);
-void dtor_80186A98(int, int);
+void __dt__9C80186B0CFv(int, int);
 void __dt__9C801A1FC0Fv(int, int);
 void fn_800E1F04(int, int, int, int);
 struct VCall_fn_8019F01C_0 { char vptr_pad[0x68]; virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(); };
@@ -20,8 +20,8 @@ s32 __dt__9C8019F0B4Fv(s32 param_1, s16 param_2) {
     if (param_1 != 0) {
         *(u8 **)(param_1 + 0x68) = __vt__9C8019F0B4;
         ((VCall_fn_8019F01C_0 *)(param_1))->m();
-        dtor_80186A98((int)(param_1 + 0xb8), (int)(0xffffffff));
-        fn_800E1F04((int)(param_1 + 0x90), (int)(dtor_80186A98), (int)(0x14), (int)(2));
+        __dt__9C80186B0CFv((int)(param_1 + 0xb8), (int)(0xffffffff));
+        fn_800E1F04((int)(param_1 + 0x90), (int)(__dt__9C80186B0CFv), (int)(0x14), (int)(2));
         __dt__9C801A1FC0Fv((int)(param_1), (int)(0));
         if (0 < param_2) {
             __dl__FPv((int)(param_1));

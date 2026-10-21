@@ -7,7 +7,7 @@ extern "C" {
 void __dla__FPv(int);
 void __dl__FPv(int);
 
-u32 * dtor_80186A98(u32 *param_1, s16 param_2) {
+u32 * __dt__9C80186B0CFv(u32 *param_1, s16 param_2) {
     if (param_1 != (u32 *)0x0) {
         if (*param_1 != 0) {
             __dla__FPv((int)(*param_1));
