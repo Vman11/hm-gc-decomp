@@ -7926,8 +7926,64 @@ sdk/CARDNet.c:
 	.sdata      start:0x80359610 end:0x80359618
 
 auto/text_800D3730.c:
-	.text       start:0x800D3730 end:0x800DAA80
-	.data       start:0x802DF4C0 end:0x802E0198
+	.text       start:0x800D3730 end:0x800D4AA8
+	.data       start:0x802DF4C0 end:0x802DF700
+
+sdk/GXFifo.c:
+	.text       start:0x800D4AA8 end:0x800D5488
+
+sdk/GXAttr.c:
+	.text       start:0x800D5488 end:0x800D61DC
+	.data       start:0x802DF700 end:0x802DF860
+	.sdata      start:0x80359620 end:0x80359630
+
+sdk/GXMisc.c:
+	.text       start:0x800D61DC end:0x800D6B0C
+	.sbss       start:0x8035A940 end:0x8035A958
+
+sdk/GXGeometry.c:
+	.text       start:0x800D6B0C end:0x800D6E48
+
+sdk/GXFrameBuf.c:
+	.text       start:0x800D6E48 end:0x800D77AC
+	.data       start:0x802DF860 end:0x802DFE00
+	.sdata2     start:0x803630F0 end:0x803630F8
+
+sdk/GXLight.c:
+	.text       start:0x800D77AC end:0x800D7D5C
+	.data       start:0x802DFE00 end:0x802DFE20
+	.sdata2     start:0x803630F8 end:0x80363128
+
+sdk/GXTexture.c:
+	.text       start:0x800D7D5C end:0x800D8CE4
+	.data       start:0x802DFE20 end:0x802DFF50
+	.sdata      start:0x80359630 end:0x80359670
+	.sdata2     start:0x80363128 end:0x80363150
+
+sdk/GXBump.c:
+	.text       start:0x800D8CE4 end:0x800D8F28
+
+sdk/GXTev.c:
+	.text       start:0x800D8F28 end:0x800D9610
+	.data       start:0x802DFF50 end:0x802DFFC8
+
+sdk/GXPixel.c:
+	.text       start:0x800D9610 end:0x800D9C58
+	.data       start:0x802DFFC8 end:0x802DFFE8
+	.sdata2     start:0x80363150 end:0x80363188
+
+sdk/GXDisplayList.c:
+	.text       start:0x800D9C58 end:0x800D9CC8
+
+sdk/GXTransform.c:
+	.text       start:0x800D9CC8 end:0x800DA228
+
+sdk/GXPerf.c:
+	.text       start:0x800DA228 end:0x800DAA80
+	.data       start:0x802DFFE8 end:0x802E00D4
+
+auto/jt_802E00D4.c:
+	.data       start:0x802E00D4 end:0x802E0198
 
 auto/jt_802E0198.c:
 	.data       start:0x802E0198 end:0x802E0238
