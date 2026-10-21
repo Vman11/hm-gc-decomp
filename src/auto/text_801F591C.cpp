@@ -3,7 +3,7 @@
 
 extern "C" {
 
-void fn_801F591C(void **arg0) {
+void __ct__9C801F591CFv(void **arg0) {
     extern u8 lbl_802E5E88[];
     arg0[0] = lbl_802E5E88;
     arg0[101] = 0;

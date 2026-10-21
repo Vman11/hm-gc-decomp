@@ -75,7 +75,6 @@ auto/text_80134B70
 auto/text_80134BD0
 auto/text_80137B38
 auto/text_80137FA8
-auto/text_8013D770
 auto/text_8013DEE0
 auto/text_8013E7A0
 auto/text_801408B4

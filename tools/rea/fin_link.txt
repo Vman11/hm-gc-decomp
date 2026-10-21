@@ -4,5 +4,4 @@ auto/text_80052028
 auto/text_8008CA0C
 auto/text_80090C68
 auto/text_800919A4
-auto/text_80165F70
-auto/text_8024279C
+auto/text_8013D770

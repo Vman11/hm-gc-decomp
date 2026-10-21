@@ -9,7 +9,7 @@ void __dla__FPv(int);
 void __dl__FPv(int);
 void fn_800E1E88(int, int);
 
-s32 fn_801F4684(s32 param_1, s16 param_2) {
+s32 __dt__9C801F4708Fv(s32 param_1, s16 param_2) {
     if (param_1 != 0) {
         if (*(u32 *)(param_1 + 0x38) != 0) {
             fn_800E1E88((int)(*(u32 *)(param_1 + 0x38)), (int)(__dt__9C8013C324Fv));
