@@ -2,32 +2,44 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+#pragma optEH2 on
+
+extern "C" {
+
 extern void *lbl_8035B530;
 extern u8 lbl_802CFAA4[];
 void fn_800604C4(s32, s32, s32, s32);
 void fn_800F7EC0(void *);
 void fn_800F7E98(void);
-void *__nw__FUl(u32);
-void __ct__9C8024262CFv(void *);
 void fn_800A0920(void *);
 
-void *fn_800A0B78(void) {
-    u8 *p;
-    if (lbl_8035B530 == NULL) {
+} /* extern "C" */
+
+struct C8024262C {
+    C8024262C();
+    ~C8024262C();
+};
+
+struct C800A0B78 : C8024262C {
+    u8 pad[404];
+    C800A0B78() {
+        *(void **)this = lbl_802CFAA4;
+        *(s32 *)((u8 *)this + 388) = 0;
+        *(s32 *)((u8 *)this + 392) = 0;
+        fn_800A0920(this);
+    }
+};
+
+extern "C" void *fn_800A0B78(void) {
+    C800A0B78 *r;
+    if (lbl_8035B530 == 0) {
         fn_800604C4(-2, 0, 0, 0);
     }
     fn_800F7EC0(lbl_8035B530);
-    p = __nw__FUl(404);
-    if (p != NULL) {
-        __ct__9C8024262CFv(p);
-        *(void **)p = lbl_802CFAA4;
-        *(s32 *)(p + 388) = 0;
-        *(s32 *)(p + 392) = 0;
-        fn_800A0920(p);
-    }
+    r = new C800A0B78;
     fn_800F7E98();
-    if (p == NULL) {
+    if (r == 0) {
         fn_800604C4(-4, 0, 0, 0);
     }
-    return p;
+    return r;
 }

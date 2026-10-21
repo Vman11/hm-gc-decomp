@@ -1,3 +1,6 @@
-auto/text_8022ECB4
-auto/text_80233550
-auto/text_8027245C
+auto/text_80121CE8
+auto/text_8012C638
+auto/text_8012C6B4
+auto/text_80136BF4
+auto/text_8016BAF8
+auto/text_8016BB80

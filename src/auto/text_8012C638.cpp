@@ -2,10 +2,13 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-void fn_800F8DD0();
+extern "C" {
 
-void fn_80136BF4(s32 param_1) {
-    fn_800F8DD0();
-    *(u32 *)(param_1 + 0x14) = 0;
-    fn_800F8DD0(param_1);
+void fn_800FB6D8(s32);
+
+void fn_8012C638(s32 param_1) {
+    fn_800FB6D8(param_1);
+    fn_800FB6D8(param_1 + 0x14);
 }
+
+} /* extern "C" */
