@@ -7,7 +7,7 @@ extern "C" {
 extern u8 __vt__9C801FE9EC[];
 void fn_801FB798(void);
 
-s32 fn_801FEAB0(s32 param_1) {
+s32 __ct__9C801FE9ECFv(s32 param_1) {
     fn_801FB798();
     *(u8 **)(param_1 + 0x3c) = __vt__9C801FE9EC;
     return param_1;

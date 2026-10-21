@@ -159,15 +159,24 @@ void fn_80142E60(Img *p) {
     } while (d < dend);
 }
 
-void fn_80142EB8(Img *p) {
+typedef struct Img_80142EB8 {
+    u8 pad0[0x9c];
+    s32 n;
+    u8 padA0[0x184 - 0xa0];
+    u8 *px;
+    u8 pad188[0x594 - 0x188];
+    u8 *tab;
+} Img_80142EB8;
+void fn_80142EB8(Img_80142EB8 *p) {
     u8 *q = p->px;
     u8 *end = q + p->n * 4;
     for (; q < end; q += 4) {
-        q[0] = (*(u8 **)((u8 *)p + 0x594))[q[0]];
-        q[1] = (*(u8 **)((u8 *)p + 0x594))[q[1] + 0x100];
-        q[2] = (*(u8 **)((u8 *)p + 0x594))[q[2] + 0x200];
+        q[0] = (u8)p->tab[q[0]];
+        q[1] = (u8)p->tab[q[1] + 256];
+        q[2] = (u8)p->tab[q[2] + 512];
     }
 }
+
 
 void fn_80142FB0(Img *p) {
     u8 f;
@@ -786,4 +795,3 @@ void fn_80144B18(Img *p) {
     } while (d < e);
     p->src += 0x10;
 }
-

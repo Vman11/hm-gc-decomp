@@ -111,7 +111,7 @@ asm void fn_8014E378(void) {
     b fn_8014DE10
 }
 
-void dtor_8014E124(void);
+void __dt__9C8014E1E0Fv(void);
 
 asm void fn_8014E38C(void) {
     nofralloc
@@ -119,7 +119,7 @@ asm void fn_8014E38C(void) {
     lwzx r11, r3, r11
     add r3, r3, r11
     addi r3, r3, -548
-    b dtor_8014E124
+    b __dt__9C8014E1E0Fv
 }
 
 void fn_8014DC98(void);

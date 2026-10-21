@@ -4,6 +4,7 @@ auto/text_80052028
 auto/text_8008CA0C
 auto/text_80090C68
 auto/text_800919A4
+<<<<<<< HEAD
 auto/text_8010C4D0
 auto/text_8012F548
 auto/text_8013B200
@@ -12,3 +13,11 @@ auto/text_8019DCDC
 auto/text_801B2DF8
 auto/text_801B3A48
 auto/text_801CCF18
+=======
+auto/text_801188F8
+auto/text_8014F358
+auto/text_80150CD4
+auto/text_80164D18
+auto/text_8018DFAC
+auto/text_8020ABA0
+>>>>>>> 9562713899a2bb696697789240eff9db39214ca7

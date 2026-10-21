@@ -12,7 +12,7 @@ extern "C" {
 extern u8 lbl_802F11DC[];
 extern s32 lbl_8035B308;
 void __dl__FPv(int);
-void dtor_8023CDB8(int, int);
+void __dt__9C8023CE38Fv(int, int);
 struct VCall_fn_80229A9C_0 { char vptr_pad[0x10]; virtual void p0(); virtual void m(); };
 
 s32 fn_80229A9C(s32 param_1, s16 param_2) {
@@ -20,7 +20,7 @@ s32 fn_80229A9C(s32 param_1, s16 param_2) {
         *(u8 **)(param_1 + 0x10) = lbl_802F11DC;
         ((VCall_fn_80229A9C_0 *)(param_1))->m();
         lbl_8035B308 = 0;
-        dtor_8023CDB8((int)(param_1), (int)(0));
+        __dt__9C8023CE38Fv((int)(param_1), (int)(0));
         if (0 < param_2) {
             __dl__FPv((int)(param_1));
         }

@@ -4,16 +4,16 @@
 
 extern "C" {
 
-typedef void (*CD_800E212C)(void *, s16);
-class PAD_800E212C {
+typedef void (*ConstructorDestructor)(void *, s16);
+class __partial_array_destructor {
 public:
     void *p;
     u32 size;
     u32 n;
-    CD_800E212C dtor;
+    ConstructorDestructor dtor;
     u32 i;
-    PAD_800E212C(void *a, u32 s, u32 c, CD_800E212C d) { p = a; size = s; n = c; dtor = d; i = n; }
-    ~PAD_800E212C() {
+    __partial_array_destructor(void *a, u32 s, u32 c, ConstructorDestructor d) { p = a; size = s; n = c; dtor = d; i = n; }
+    ~__partial_array_destructor() {
         if (i < n && dtor) {
             char *q;
             for (q = (char *)p + size * i; i > 0; i--) {
@@ -24,14 +24,14 @@ public:
     }
 };
 
-void *__construct_new_array(void *block, CD_800E212C ctor, CD_800E212C dtor, u32 size, u32 n) {
+void *__construct_new_array(void *block, ConstructorDestructor ctor, ConstructorDestructor dtor, u32 size, u32 n) {
     char *ptr = (char *)block;
     if (ptr != 0) {
         ((u32 *)ptr)[0] = size;
         ((u32 *)ptr)[1] = n;
         ptr += 16;
         if (ctor) {
-            PAD_800E212C pad(ptr, size, n, dtor);
+            __partial_array_destructor pad(ptr, size, n, dtor);
             char *p;
             for (pad.i = 0, p = ptr; pad.i < n; pad.i++, p += size) {
                 ctor(p, 1);

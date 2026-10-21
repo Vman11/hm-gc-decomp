@@ -5,7 +5,7 @@ extern "C" {
 
 extern s32 lbl_8035AE20;
 
-void fn_80186B0C(u32 *arg0) {
+void __ct__9C80186B0CFv(u32 *arg0) {
     arg0[0] = 0;
     arg0[1] = 0;
     arg0[2] = 0;

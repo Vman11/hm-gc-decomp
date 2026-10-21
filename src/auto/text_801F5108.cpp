@@ -6,7 +6,7 @@ extern "C" {
 
 extern void *memset(void *, int, unsigned long);
 
-void * fn_801F5108(void *param_1) {
+void * __ct__9C801F5108Fv(void *param_1) {
     *(u32 *)((s32)param_1 + 0x380) = 0;
     memset(param_1,0,0x80);
     return param_1;

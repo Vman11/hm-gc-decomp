@@ -8,7 +8,7 @@ extern u8 lbl_802C2418[];
 void __dl__FPv(void *);
 void __dt__9C8024262CFv(void *, int);
 
-u32 * dtor_80070B10(u32 *param_1, s16 param_2) {
+u32 * __dt__9C80070B70Fv(u32 *param_1, s16 param_2) {
     if (param_1 != (u32 *)0x0) {
         *param_1 = (u32)lbl_802C2418;
         __dt__9C8024262CFv(param_1, (int)(0));

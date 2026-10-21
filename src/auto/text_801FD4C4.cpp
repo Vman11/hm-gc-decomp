@@ -7,7 +7,7 @@ extern "C" {
 extern u8 lbl_802EF488[];
 void __dl__FPv(int);
 
-u32 * dtor_801FD4C4(u32 *param_1, s16 param_2) {
+u32 * __dt__9C801FD4C4Fv(u32 *param_1, s16 param_2) {
     if ((param_1 != (u32 *)0x0) && (*param_1 = (u32)lbl_802EF488, 0 < param_2)) {
         __dl__FPv((int)(param_1));
     }

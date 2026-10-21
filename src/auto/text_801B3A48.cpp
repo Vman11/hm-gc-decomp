@@ -10,6 +10,25 @@ extern "C" { void fn_800FAEF8(void *); void fn_800FB064(void *, void *); void fn
 
 #pragma push
 #pragma opt_loop_invariants off
+void __dt__9C801B3E18Fv(void);
+void fn_801B3CD4(void);
+s32 fn_801B3A48(V_801B3A48 *p, u8 *q, S_801B3A48 *s, void *x);
+void fn_801B36FC(void);
+void fn_801A5180(void);
+void fn_801A517C(void);
+void fn_801B3D34(void);
+void fn_801B3844(void);
+void fn_801B3764(void);
+void fn_801B36F4(void);
+void fn_801A4F58(void);
+void fn_801A4F54(void);
+void fn_801B3A44(void);
+
+/* vtable */
+void *lbl_802EB040[15] = {
+    0, 0, (void *)__dt__9C801B3E18Fv, (void *)fn_801B3CD4, (void *)fn_801B3A48, (void *)fn_801B36FC, (void *)fn_801A5180, (void *)fn_801A517C, (void *)fn_801B3D34, (void *)fn_801B3844, (void *)fn_801B3764, (void *)fn_801B36F4, (void *)fn_801A4F58, (void *)fn_801A4F54, (void *)fn_801B3A44
+};
+
 s32 fn_801B3A48(V_801B3A48 *p, u8 *q, S_801B3A48 *s, void *x) {
     char b8[8];
     u32 t;

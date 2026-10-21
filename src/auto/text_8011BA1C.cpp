@@ -9,6 +9,13 @@ class T12 { public: s32 b; s32 a; s32 c; private: u32 dummy[0]; };
 struct P { s32 h; u8 sub[0x50]; T12 *arr; void *e; u32 na; u32 n; u32 cntA; };
 extern "C" { void fn_800FB000(R *, s32); void fn_800FAEF8(R *); void fn_800FAEA0(R *); void fn_800604C4(s32, s32, s32, s32); void fn_800F7EC0(void *); void fn_800F7E98(void); extern void *lbl_8035AB48; }
 
+void __dt__9C8011C224Fv(void);
+
+/* vtable */
+void *lbl_802E3E18[3] = {
+    0, 0, (void *)__dt__9C8011C224Fv
+};
+
 extern "C" void fn_8011BA1C(P *p, R *r) {
     BOOL f;
     s32 c;

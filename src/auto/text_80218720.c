@@ -40,3 +40,53 @@ asm void fn_80218758(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
     mtspr 918, r7
     blr
 }
+
+extern f32 lbl_8035B230;
+extern f32 lbl_80359730;
+
+asm void fn_80219410(void *a, void *b, void *c, s32 n, s32 s1, s32 s2) {
+    nofralloc
+    add r9, r7, r7
+    add r10, r8, r8
+    mtctr r6
+    lfs f0, lbl_8035B230(r0)
+    subf r4, r9, r4
+    lis r11, 0xcc00
+    ori r11, r11, 0x8000
+    lfs f1, lbl_80359730(r0)
+    subf r5, r10, r5
+    psq_l f2, 0x0(r3), 0, 0
+    psq_l f3, 0x8(r3), 1, 0
+L_loop:
+    psq_lux f4, r4, r9, 0, 4
+    psq_lx f5, r4, r9, 1, 4
+    add r4, r4, r7
+    psq_lux f6, r5, r10, 0, 6
+    psq_lx f7, r5, r10, 1, 6
+    add r5, r5, r8
+    ps_sub f4, f4, f2
+    ps_sub f5, f5, f3
+    ps_mul f10, f6, f4
+    ps_sum0 f10, f10, f10, f10
+    ps_madd f10, f7, f5, f10
+    ps_merge00 f10, f10, f10
+    ps_add f10, f10, f10
+    ps_nmsub f8, f10, f6, f4
+    ps_nmsub f9, f10, f7, f5
+    ps_mul f11, f8, f8
+    ps_sum0 f11, f11, f11, f11
+    ps_madd f11, f9, f9, f11
+    ps_merge00 f11, f11, f11
+    ps_rsqrte f11, f11
+    ps_mul f8, f8, f11
+    ps_mul f9, f9, f11
+    psq_st f6, 0x0(r11), 0, 6
+    psq_st f7, 0x0(r11), 1, 6
+    psq_st f8, 0x0(r11), 0, 6
+    psq_st f9, 0x0(r11), 1, 6
+    bdnz L_loop
+    psq_st f0, 0x0(r11), 1, 6
+    psq_st f0, 0x0(r11), 1, 6
+    psq_st f1, 0x0(r11), 1, 6
+    blr
+}

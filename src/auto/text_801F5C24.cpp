@@ -4,7 +4,7 @@ extern "C" {
 
 void fn_801F59B8(void *);
 void fn_801F5BA0(void *);
-void dtor_801F59EC(void *);
+void __dt__9C801F5AC4Fv(void *);
 void fn_801F5990(void);
 void fn_801F5960(void);
 void fn_801F5978(void);
@@ -62,7 +62,7 @@ asm void fn_801F5C88(void) {
     lwzx r11, r3, r11
     add r3, r3, r11
     addi r3, r3, -12
-    b dtor_801F59EC
+    b __dt__9C801F5AC4Fv
 }
 
 
@@ -72,7 +72,7 @@ asm void fn_801F5C9C(void) {
     lwzx r11, r3, r11
     add r3, r3, r11
     addi r3, r3, -32
-    b dtor_801F59EC
+    b __dt__9C801F5AC4Fv
 }
 
 void fn_801F5CB0(void *arg0) {
