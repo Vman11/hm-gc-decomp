@@ -2,5 +2,12 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-void fn_80135CB4(void) {
+extern "C" {
+
+s64 OSGetTime(void);
+
+u32 fn_800FBB9C(void) {
+    return OSGetTime() / ((*(u32 *)0x800000F8 / 4) / 1000);
 }
+
+} /* extern "C" */

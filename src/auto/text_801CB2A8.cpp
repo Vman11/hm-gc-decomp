@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+extern "C" {
+
 extern f32 lbl_803596E0[];
 extern f32 lbl_8035AFF8;
 extern u32 lbl_8036503C;
@@ -18,3 +20,7 @@ void fn_801CB2A8(void) {
     lbl_80330808[5] = 0;
     fn_801DDE58(lbl_80330808);
 }
+
+__declspec(section ".ctors") static void (*const ctor_801CB2A8)(void) = fn_801CB2A8;
+
+} /* extern "C" */
