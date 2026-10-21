@@ -8,8 +8,8 @@
 #define GXInvalidateVtxCache fn_800D5F10
 #define GXSetTexCoordGen2 fn_800D5F20
 #define GXSetNumTexGens fn_800D61A0
-#define GXSetArray fn_800D5DE8
-#define __GXSetVAT fn_800D5E84
+#define GXSetArray fn_800D5E84
+#define __GXSetVAT fn_800D5DE8
 #define OSGetCurrentThread fn_800B9790
 #define OSResumeThread fn_800B9ED0
 #define OSSleepThread fn_800BA2C8
@@ -160,7 +160,6 @@
 #define FinishQueue lbl_8035A94C
 #define GXGetGPFifo fn_800D51D8
 #define TokenCB lbl_8035A940
-#define __cvt_fp2unsigned __cvt_fp2unsigned
 #define GX2HWFiltConv lbl_80359668
 #define GXTexImage0Ids lbl_80359640
 #define GXTexImage1Ids lbl_80359648
@@ -182,6 +181,29 @@
 #define calledOnce lbl_8035A918
 #define peCount lbl_8035A908
 #define time lbl_8035A910
+#define AlarmQueue AlarmQueue_8035A560
+#define __OSTimeToSystemTime fn_800BA5E8
+#define EXIImmEx fn_800F2120
+#define Scb Scb_803078A0
+#define OSGetCurrentContext fn_800B4F6C
+#define OSGetStackPointer fn_800B50D0
+#define OSSaveContext fn_800B4F78
+#define Reschedule Reschedule_8035A5F0
+#define RunQueue RunQueue_803078F8
+#define RunQueueBits RunQueueBits_8035A5E8
+#define RunQueueHint RunQueueHint_8035A5EC
+#define SwitchThreadCallback SwitchThreadCallback_80359558
+#define __OSUnlockAllMutex fn_800B7D84
+#define __OSFpscrEnableBits lbl_80359540
+#define InterruptHandlerTable InterruptHandlerTable_8035A590
+#define InterruptPrioTable lbl_802D8A40
+#define LeapYearDays lbl_802D8AB0
+#define YearDays lbl_802D8A80
+#define Down lbl_8035A5CC
+#define HoldDown lbl_8035A5E0
+#define HoldUp lbl_8035A5D8
+#define LastState lbl_8035A5D0
+#define ResetCallback lbl_8035A5C8
 #include <dolphin/gx.h>
 #include <dolphin/os.h>
 
@@ -1106,21 +1128,21 @@ void GXSetVtxAttrFmtv(GXVtxFmt vtxfmt, const GXVtxAttrFmtList* list) {
 }
 
 void __GXSetVAT(void) {
-    s32 i;
-    u32 dirty = __GXData->dirtyVAT;
-    
-    i = 0;
-    do {
-        if (dirty & 1) {
-            GX_WRITE_SOME_REG4(8, i | 0x70, __GXData->vatA[i], i - 12);
-            GX_WRITE_SOME_REG4(8, i | 0x80, __GXData->vatB[i], i - 12);
-            GX_WRITE_SOME_REG4(8, i | 0x90, __GXData->vatC[i], i - 12);
+    u8 i;
+
+    for (i = 0; i < 8; i++) {
+        if (__GXData->dirtyVAT & (1 << i)) {
+            GX_WRITE_U8(8);
+            GX_WRITE_U8(i | 0x70);
+            GX_WRITE_U32(__GXData->vatA[i]);
+            GX_WRITE_U8(8);
+            GX_WRITE_U8(i | 0x80);
+            GX_WRITE_U32(__GXData->vatB[i]);
+            GX_WRITE_U8(8);
+            GX_WRITE_U8(i | 0x90);
+            GX_WRITE_U32(__GXData->vatC[i]);
         }
-
-        dirty >>= 1;
-        i++;
-    } while (dirty != 0);
-
+    }
     __GXData->dirtyVAT = 0;
 }
 
@@ -1229,22 +1251,29 @@ static inline void GXGetVtxAttrFmt(GXVtxFmt fmt, GXAttr attr, GXCompCnt* cnt, GX
 }
 
 void GXSetArray(GXAttr attr, void* base_ptr, u8 stride) {
-    GXAttr cpAttr;
+    s32 cpAttr;
     u32 phyAddr;
+    s32 idx;
 
-    attr;  // needed to match
-
-    CHECK_GXBEGIN(963, "GXSetArray");
     if (attr == GX_VA_NBT) {
         attr = GX_VA_NRM;
     }
-
-    CHECK_ATTRNAME5(966, attr);
     cpAttr = attr - GX_VA_POS;
     phyAddr = (u32)base_ptr & 0x3FFFFFFF;
-
-    GX_WRITE_SOME_REG2(8, cpAttr | 0xA0, phyAddr, cpAttr - 12);
-    GX_WRITE_SOME_REG3(8, cpAttr | 0xB0, stride, cpAttr - 12);
+    GX_WRITE_U8(8);
+    GX_WRITE_U8(cpAttr | 0xA0);
+    GX_WRITE_U32(phyAddr);
+    idx = cpAttr - 12;
+    if (idx >= 0 && idx < 4) {
+        __GXData->indexBase[idx] = phyAddr;
+    }
+    GX_WRITE_U8(8);
+    GX_WRITE_U8(cpAttr | 0xB0);
+    GX_WRITE_U32(stride);
+    idx = cpAttr - 12;
+    if (idx >= 0 && idx < 4) {
+        __GXData->indexStride[idx] = stride;
+    }
 }
 
 void GXInvalidateVtxCache(void) {
