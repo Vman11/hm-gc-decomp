@@ -20054,3 +20054,250 @@ void fn_800C9F0C(s32 *arg0) {
     }
 }
 #pragma auto_inline reset
+
+#pragma push
+#pragma scheduling on
+#pragma optimize_for_size off
+#pragma fp_contract on
+#pragma auto_inline off
+#pragma dont_inline off
+#pragma peephole on
+#ifndef TRK_PRIV_H
+struct DVDCB8 {
+    DVDCB8 *next;
+    DVDCB8 *prev;
+    u32 command;
+    s32 state;
+    u32 offset;
+    u32 length;
+    void *addr;
+    u32 currTransferSize;
+    u32 transferredSize;
+    void *id;
+    void (*callback)(s32, DVDCB8 *);
+    void *userData;
+};
+#endif
+#ifndef TRK_PRIV_H
+volatile u32 __DIRegs[16] : 0xCC006000;
+#endif
+#ifndef TRK_PRIV_H
+extern DVDCB8 *
+    executing_8035A678;
+#endif
+#ifndef TRK_PRIV_H
+extern u8
+    BB2_803083C0[];
+#endif
+#ifndef TRK_PRIV_H
+extern u8 *
+    bootInfo_8035A680;
+#endif
+#ifndef TRK_PRIV_H
+extern u8 *
+    IDShouldBe_8035A67C;
+#endif
+#ifndef TRK_PRIV_H
+extern volatile s32
+    PauseFlag_8035A684;
+#endif
+#ifndef TRK_PRIV_H
+extern volatile s32
+    PausingFlag_8035A688;
+#endif
+#ifndef TRK_PRIV_H
+extern s32
+    FatalErrorFlag_8035A690;
+#endif
+extern volatile u32
+    CurrCommand_8035A694;
+#ifndef TRK_PRIV_H
+extern u32
+    ResumeFromHere_8035A6A0;
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+
+extern volatile u32
+    CancelLastError_8035A6A4;
+extern s32
+    DVDInitialized_8035A6B8;
+extern s32
+    FirstTimeInBootrom_8035A6B4;
+extern char *
+    __DVDVersion;
+extern u8
+    __DVDThreadQueue[8];
+void stateBusy(DVDCB8 *block);
+void __DVDInitWA(void);
+void __DVDInterruptHandler(short type, void *context);
+void __fstLoad(void);
+
+typedef struct {
+    u8 bb2[32];
+    u8 currID[32];
+    u8 dummy[48];
+    u8 alarm[40];
+} DVDBSS3;
+#define EXE3 ((DVDCB8 *)executing_8035A678)
+
+void cbForStateMotorStopped(u32 intType) {
+    DVDBSS3 *bss = (DVDBSS3 *)BB2_803083C0;
+    DVDCB8 *finished;
+
+    __DIRegs[1] = 0;
+    EXE3->state = 3;
+    switch (CurrCommand_8035A694) {
+    case 4:
+    case 5:
+    case 13:
+    case 15:
+        __DVDClearWaitingQueue();
+        finished = EXE3;
+        executing_8035A678 = (void *)(bss->dummy);
+        if (finished->callback) {
+            (*finished->callback)(-4, finished);
+        }
+        stateReady();
+        break;
+    default:
+        DVDReset();
+        OSCreateAlarm((s32 *)(bss->alarm));
+        OSSetAlarm(bss->alarm, (s64)(((*(u32 *)0x800000F8 / 4) / 1000) * 1150), AlarmHandler);
+        break;
+    }
+}
+
+void stateReady(void) {
+    DVDBSS3 *bss = (DVDBSS3 *)BB2_803083C0;
+    DVDCB8 *finished;
+
+    if (!__DVDCheckWaitingQueue()) {
+        executing_8035A678 = NULL;
+        return;
+    }
+    if (PauseFlag_8035A684) {
+        PausingFlag_8035A688 = 1;
+        executing_8035A678 = NULL;
+        return;
+    }
+    executing_8035A678 = __DVDPopWaitingQueue();
+    if (FatalErrorFlag_8035A690) {
+        EXE3->state = -1;
+        finished = EXE3;
+        executing_8035A678 = (void *)(bss->dummy);
+        if (finished->callback) {
+            (*finished->callback)(-1, finished);
+        }
+        stateReady();
+        return;
+    }
+    CurrCommand_8035A694 = EXE3->command;
+    if (*(volatile u32 *)&ResumeFromHere_8035A6A0) {
+        switch (*(volatile u32 *)&ResumeFromHere_8035A6A0) {
+        case 2:
+            EXE3->state = 11;
+            DVDLowWaitCoverClose((s32)cbForStateMotorStopped);
+            break;
+        case 3:
+            EXE3->state = 4;
+            DVDLowWaitCoverClose((s32)cbForStateMotorStopped);
+            break;
+        case 4:
+            EXE3->state = 5;
+            DVDLowWaitCoverClose((s32)cbForStateMotorStopped);
+            break;
+        case 1:
+        case 6:
+        case 7:
+            EXE3->state = 3;
+            switch (CurrCommand_8035A694) {
+            case 4:
+            case 5:
+            case 13:
+            case 15:
+                __DVDClearWaitingQueue();
+                finished = EXE3;
+                executing_8035A678 = (void *)(bss->dummy);
+                if (finished->callback) {
+                    (*finished->callback)(-4, finished);
+                }
+                stateReady();
+                break;
+            default:
+                DVDReset();
+                OSCreateAlarm((s32 *)(bss->alarm));
+                OSSetAlarm(bss->alarm, (s64)(((*(u32 *)0x800000F8 / 4) / 1000) * 1150), AlarmHandler);
+                break;
+            }
+            break;
+        case 5:
+            EXE3->state = -1;
+            __DVDStoreErrorCode(CancelLastError_8035A6A4);
+            DVDLowStopMotor(cbForStateError);
+            break;
+        }
+        *(volatile u32 *)&ResumeFromHere_8035A6A0 = 0;
+    } else {
+        EXE3->state = 1;
+        stateBusy(EXE3);
+    }
+}
+
+void DVDInit(void) {
+    if (DVDInitialized_8035A6B8) {
+        return;
+    }
+    OSRegisterVersion(__DVDVersion);
+    DVDInitialized_8035A6B8 = 1;
+    __DVDFSInit();
+    __DVDClearWaitingQueue();
+    __DVDInitWA();
+    bootInfo_8035A680 = (u8 *)0x80000000;
+    IDShouldBe_8035A67C = (u8 *)0x80000000;
+    __OSSetInterruptHandler(21, __DVDInterruptHandler);
+    __OSUnmaskInterrupts(0x400);
+    OSInitThreadQueue(__DVDThreadQueue);
+    __DIRegs[0] = 0x2A;
+    __DIRegs[1] = 0;
+    if (*(u32 *)(bootInfo_8035A680 + 32) == 0xE5207C22) {
+        OSReport("load fst\n");
+        __fstLoad();
+    } else if (*(u32 *)(bootInfo_8035A680 + 32) != 0x0D15EA5E) {
+        FirstTimeInBootrom_8035A6B4 = 1;
+    }
+}
+#undef EXE3
+#pragma pop
