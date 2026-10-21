@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+extern "C" {
+
 extern f32 lbl_80366118;
 void *memcpy(void *, const void *, u32);
 
@@ -12,13 +14,13 @@ static inline u8 *find_8023E96C(u8 *p) {
             return p + i * 100 + 0x27F4;
         }
     }
-    return NULL;
+    return 0;
 }
 
 void *fn_8023E96C(u8 *p, s32 a, void *src, u32 n, s32 b, s32 c, f32 x, f32 y) {
     u8 *e = find_8023E96C(p);
-    if (e == NULL) {
-        return NULL;
+    if (e == 0) {
+        return 0;
     }
     *(f32 *)e = x;
     *(s32 *)(e + 0xC) = b;
@@ -37,3 +39,5 @@ void *fn_8023E96C(u8 *p, s32 a, void *src, u32 n, s32 b, s32 c, f32 x, f32 y) {
     *(u8 **)(p + 0x59F4) = e;
     return e;
 }
+
+} /* extern "C" */
