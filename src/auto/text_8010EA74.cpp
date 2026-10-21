@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+extern "C" {
+
 void fn_8010E450(void *, void *, void *);
 
 void fn_8010EA74(u8 **p, s32 k, void **a, void *d, s32 e) {
@@ -24,3 +26,5 @@ void fn_8010EA74(u8 **p, s32 k, void **a, void *d, s32 e) {
         q--;
     }
 }
+
+} /* extern "C" */

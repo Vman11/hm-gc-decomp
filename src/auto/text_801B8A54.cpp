@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+extern "C" {
+
 extern void __dl__FPv(void *);
 extern void __dla__FPv(void *);
 
@@ -24,3 +26,5 @@ void fn_801B8A54(void *p) {
         }
     }
 }
+
+} /* extern "C" */
