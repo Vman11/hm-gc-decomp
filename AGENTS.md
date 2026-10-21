@@ -44,7 +44,7 @@ checkout and to `build/tools/{wibo,objdiff-cli,dtk}`, `build/compilers/` and `bu
 `finalize.py`, `c2cpp.py`, `link.py` and `layout.py` too, keeping finalize's state files in `tools/rea`).
 | tool | purpose |
 |---|---|
-| `q.py UNIT FN cand.c [cpp]` | Local judge: compiles the candidate standalone (game flags) and diffs FN against the built object. Prints `MATCH` or a diff. Env `QV=<ver>` (bare, e.g. `1.3.2`, `2.0`), `QX=<extra flags>`. Parallel-safe. |
+| `q.py UNIT FN cand.c [cpp]` | Local judge: compiles the candidate standalone (game flags) and diffs FN against the built object. Prints `MATCH` or a diff. Env `QV=<ver>` (bare, e.g. `1.3.2`, `2.0`), `QX=<extra flags>`. Parallel-safe. It compares relocation types, not symbol names: a candidate that calls the wrong function or ctor still prints `MATCH` (the layout check catches it later), so check names, especially in sibling copies. |
 | `qa3.sh DIR LIST [jobs]` | Parallel judge over `fn unit` lines. Picks `DIR/FN.*`; a `.lmw` suffix adds `-use_lmw_stmw on`. Prints `ok …` / `FAIL …` lines. |
 | `unitcheck.py UNIT FN cand.c [QV]` | Merges the candidate into a temp copy of the unit, as apply does, and compiles the whole unit. Catches declaration conflicts the standalone judge misses. Run it on every C match (it compiles `src/UNIT.c` with `-lang=c`, so it reports ERROR for C++ candidates; build those instead). |
 | `dumpasm2.py N skip.txt` | Compact asm of the N smallest unmatched functions (excludes library units). Writes to stdout. |
@@ -92,7 +92,11 @@ Many NonMatching units have every function at 100% and only fail the unit check 
 
 - **extab garbage**: some actions (e.g. DELETEPOINTERCOND) end in two uninitialized bytes; the original has `b1 02` (or
   `b0 02`). Add `extab_padding=[0xB1, 0x02]` to the unit's `Object(...)`; the `mwcc_extab` rule (`dtk extab clean`)
-  then reproduces them.
+  then reproduces them. dtk consumes the padding bytes once over the whole table, so with several such actions repeat
+  the pair once per action (`extab_padding=[0xB1, 0x02, 0xB1, 0x02]`).
+- **C units that need `-use_lmw_stmw on`**: `tools/rea/apply_q.py` drops the flag for `.c` candidates, so a C match
+  that uses `stmw`/`lmw` silently fails in the build. Convert such units to C++ with both flags (24 units on
+  2026-10-21 matched only this way).
 - **Missing `.ctors`/`.dtors` entries** for static initializers (`addctors.py`).
 - **C to C++ conversion**: any integer cast on an argument (`(int)(p)`, even `(s32)` on an `s32`, or an implicit
   conversion through an `int` prototype) changes register allocation and saved registers in C++ mode. Give callees
@@ -106,6 +110,15 @@ Many NonMatching units have every function at 100% and only fail the unit check 
   unit links from C; add it to `force_active` in `config/GHYE6S/config.yml`.
 - **Literals** the original takes from named `.sdata`/`.sdata2` objects must use those externs (`extern const f64
   lbl_X;`, `extern char lbl_X[6];`, sized so small-data addressing is used).
+- **Jump table at 4 mod 8**: a unit whose `.data` (a switch jump table) starts at 4 mod 8 cannot link alone, since
+  the linker 8-aligns each object's `.data`. When the object in front of it is the class vtable sitting in a
+  synthetic `jt_*` data unit, move the vtable into the unit (shrink the `jt_*` range, extend the unit's `.data` in
+  splits.txt) and define it in the source before the functions: `void *lbl_X[7] = { 0, 0, (void *)fn_A, ... };`.
+  When it is another function's jump table, the two units were one TU and need merging.
+- **Shared compiler constants**: two adjacent units that reference the same `.sdata2` int-to-float double (or a
+  string pool in `.rodata`) were one TU. Merge them and give the merged unit that range.
+- **Mislabeled switch cases**: when only the jump table differs, the case labels can be attached to the wrong
+  blocks (e.g. globals shifted by one case); the code bytes still match.
 
 ## Exception-table constructs (C++, GC/1.3.2)
 
@@ -136,9 +149,9 @@ The decoded extab in `build/GHYE6S/asm/<unit>.s` says which C++ construct the or
 - **Zero-then-assign** at +40/+44 after `fn_801EF9A0` (`li r3,0; lwz r4,8(q); stw r3,44; …`): e.g. `fn_801DEE18`, `801E812C`, `801DE80C`, `801E0384`, `801E7D14`.
 - **Descriptor init / factory family** (about 20 functions near 0x8004–0x800B): they address the unit's own `.data` through a section-base register, so they need that data defined as statics in the same TU. The same goes for pooled string literals (`fn_80068D50`, `80046BB8`, `80267CF8`, …).
 - **Local objects whose dtor is `dtor_XXXX`** (`fn_8012D774`, `80138AA8`, `8013EF3C`): need the dtor renamed (see "Plain-named destructors" above).
-- **Symbol renames** (done): 34 plain-named ctors/dtors used by exception tables were renamed to mangled names (recorded in `tools/rea/renames.json`), which matched the `fn_8012CF08` family, `fn_80105B88` and 25 other units. `fn_80117DC4` matched without a rename (inline ctor/dtor calling the two literal names). `dtor_8011F6FC` still needs `__dt__9C8011F770Fv`, which is taken by 0x80118DE0 (rename that first).
-- **Switch jump tables** (data must match too): `fn_8012F7F8`, `80111BC0`, `8010CF00`, `8013410C`, `80139228`, `8012E7A0`, `801022FC`, `8010C4D0`, `80137BC0`, `8019CB40`, `8011BA1C`, `80128910`, `8013B200`, `801A17B8`, `801FA224`, `8021C124`.
-- **Near misses (scheduling or register allocation only)**: `fn_80153D4C`, `8017CB04`, `801BB258`, `801BCA04`, `8016E4D4`, `801B2504`, `80191360`, `8019F53C`, `8019FCB0`, `801A0424`, `80158E34`, `801547BC`, `80149C68`, `80186960`, `8022202C`, `801DF270`, `8023C3F4`, `80213F6C`, `8021F4A4`, `80240948`, `801C9C40`, `8024973C`, `801F13F0`, `801C1774`, `8003C674`, `8003C778`, `801135BC`, `80112FD4`, `8013D4CC`, `8010E280`, `80112190`, `80102730`, `800F9838`, `80112698`, `8011FA98`, `800FA69C`, `80071CE8`.
+- **Symbol renames** (done): 41 plain-named ctors/dtors used by exception tables were renamed to mangled names (recorded in `tools/rea/renames.json`), which matched the `fn_8012CF08` family, `fn_80105B88` and 30 other units. `fn_80117DC4` matched without a rename (inline ctor/dtor calling the two literal names). 0x80118DE0 is now `__dt__9C80118E78Fv`, which freed `__dt__9C8011F770Fv` for `dtor_8011F6FC`. `fn_8013D770` still needs renames for its four member-array classes.
+- **Switch jump tables** (data must match too): `fn_8012F7F8`, `8010CF00`, `801FA224`, `8021C124`. The others in the old list are linked (vtable moves, case relabeling, extab padding). Units whose jump table follows another function's jump table (`800447E8`, `800501FC`, `80052028`, `8008CA0C`, `80090C68`, `800919A4`) need merging with undecompiled neighbours.
+- **Near misses (scheduling or register allocation only)**: `fn_80153D4C`, `8017CB04`, `801BB258`, `801BCA04`, `8016E4D4`, `801B2504`, `80191360`, `8019F53C`, `8019FCB0`, `801A0424`, `80158E34`, `801547BC`, `80149C68`, `80186960`, `8022202C`, `801DF270`, `8023C3F4`, `80213F6C`, `8021F4A4`, `80240948`, `801C9C40`, `8024973C`, `801F13F0`, `801C1774`, `8003C674`, `8003C778`, `801135BC`, `80112FD4`, `8010E280`, `80112190`, `80102730`, `800F9838`, `80112698`, `8011FA98`, `800FA69C`, `80071CE8`.
 - **Factory `new` functions** (solved): real classes with an inline derived ctor storing the vtable label by hand, plus `#pragma optEH2 on` for the stack-slot DESTROYBASE (see above), matched 37 factories with base `C8024262C` and others.
 - `fn_800F8410` only matches with GC/2.0; its unit would need a compiler switch.
 
