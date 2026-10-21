@@ -7633,9 +7633,6 @@ auto/text_800B1844.c:
 	.text       start:0x800B1844 end:0x800B1D58
 	.data       start:0x802D72A4 end:0x802D72E0
 
-auto/jt_802D72E0.c:
-	.data       start:0x802D72E0 end:0x802D8AE0
-
 auto/text_800B1D58.c:
 	extab       start:0x800095DC end:0x800095E4
 	extabindex  start:0x8001B9D4 end:0x8001B9E0
@@ -7714,6 +7711,7 @@ auto/text_800B2CD8.c:
 	extab       start:0x80009670 end:0x80009688
 	extabindex  start:0x8001BA7C end:0x8001BA88
 	.text       start:0x800B2CD8 end:0x800B2DF8
+	.data       start:0x802D72E0 end:0x802D7578
 
 auto/text_800B2DF8.c:
 	.text       start:0x800B2DF8 end:0x800B2E00
@@ -7729,7 +7727,7 @@ sdk/PPCArch.c:
 
 auto/text_800B2F90.c:
 	.text       start:0x800B2F90 end:0x800B3B68
-	.data       start:0x802D8AE0 end:0x802D9E38
+	.data       start:0x802D7578 end:0x802D7788
 
 sdk/OSAlarm.c:
 	.text       start:0x800B3B68 end:0x800B4294
@@ -7745,18 +7743,22 @@ sdk/OSArena.c:
 
 sdk/OSAudioSystem.c:
 	.text       start:0x800B45F0 end:0x800B4884
+	.data       start:0x802D7788 end:0x802D7808
 
 sdk/OSCache.c:
 	.text       start:0x800B4884 end:0x800B4CBC
+	.data       start:0x802D7808 end:0x802D7A38
 
 auto/text_800B4CBC.c:
 	.text       start:0x800B4CBC end:0x800B7A94
+	.data       start:0x802D7A38 end:0x802D8A70
 
 sdk/OSLink.c:
 	.text       start:0x800B7A94 end:0x800B7AAC
 
 auto/text_800B7AAC.c:
 	.text       start:0x800B7AAC end:0x800B7D84
+	.data       start:0x802D8A70 end:0x802D8A80
 
 sdk/OSMutex.c:
 	.text       start:0x800B7D84 end:0x800B7DF4
@@ -7779,6 +7781,7 @@ sdk/OSThread.c:
 
 auto/text_800BA564.c:
 	.text       start:0x800BA564 end:0x800BC1C8
+	.data       start:0x802D8A80 end:0x802D9E38
 
 sdk/dvdlow.c:
 	.text       start:0x800BC1C8 end:0x800BD00C
