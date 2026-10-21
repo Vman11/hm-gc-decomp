@@ -7725,8 +7725,136 @@ auto/text_800B2E00.cpp:
 	.ctors      start:0x802940E8 end:0x802940EC
 
 auto/text_800B2E70.c:
-	.text       start:0x800B2E70 end:0x800DAA80
-	.data       start:0x802D8AE0 end:0x802E0198
+	.text       start:0x800B2E70 end:0x800BC1C8
+	.data       start:0x802D8AE0 end:0x802D9E38
+
+sdk/dvdlow.c:
+	.text       start:0x800BC1C8 end:0x800BD00C
+	.bss        start:0x803082F0 end:0x803083C0
+	.sdata      start:0x80359560 end:0x80359568
+	.sbss       start:0x8035A610 end:0x8035A658
+
+sdk/dvdfs.c:
+	.text       start:0x800BD00C end:0x800BDA6C
+	.data       start:0x802D9E38 end:0x802D9FA8
+	.sdata      start:0x80359568 end:0x80359570
+	.sbss       start:0x8035A658 end:0x8035A678
+
+sdk/dvd.c:
+	.text       start:0x800BDA6C end:0x800C0168
+	.data       start:0x802D9FA8 end:0x802DA128
+	.bss        start:0x803083C0 end:0x80308458
+	.sdata      start:0x80359570 end:0x80359588
+	.sbss       start:0x8035A678 end:0x8035A6C0
+
+sdk/dvdqueue.c:
+	.text       start:0x800C0168 end:0x800C0360
+	.bss        start:0x80308458 end:0x80308478
+
+sdk/dvderror.c:
+	.text       start:0x800C0360 end:0x800C04F8
+	.data       start:0x802DA128 end:0x802DA170
+
+sdk/dvdidutils.c:
+	.text       start:0x800C04F8 end:0x800C05F0
+
+sdk/dvdFatal.c:
+	.text       start:0x800C05F0 end:0x800C071C
+	.rodata     start:0x8029BDC0 end:0x8029BDD8
+	.data       start:0x802DA170 end:0x802DA5A0
+	.sdata      start:0x80359588 end:0x80359590
+	.sbss       start:0x8035A6C0 end:0x8035A6C8
+	.sdata2     start:0x803630B8 end:0x803630C0
+
+sdk/fstload.c:
+	.text       start:0x800C071C end:0x800C095C
+	.data       start:0x802DA5A0 end:0x802DA610
+	.bss        start:0x80308478 end:0x803084E8
+	.sdata      start:0x80359590 end:0x803595A0
+	.sbss       start:0x8035A6C8 end:0x8035A6D8
+
+sdk/vi.c:
+	.text       start:0x800C095C end:0x800C2AC4
+	.data       start:0x802DA610 end:0x802DA9E0
+	.bss        start:0x803084E8 end:0x80308630
+	.sdata      start:0x803595A0 end:0x803595B0
+	.sbss       start:0x8035A6D8 end:0x8035A738
+
+sdk/Pad.c:
+	.text       start:0x800C2AC4 end:0x800C4594
+	.data       start:0x802DA9E0 end:0x802DAA38
+	.bss        start:0x80308630 end:0x80308680
+	.sdata      start:0x803595B0 end:0x803595D0
+	.sbss       start:0x8035A738 end:0x8035A760
+
+sdk/ai.c:
+	.text       start:0x800C4594 end:0x800C4E78
+	.data       start:0x802DAA38 end:0x802DAA80
+	.sdata      start:0x803595D0 end:0x803595D8
+	.sbss       start:0x8035A760 end:0x8035A7A0
+
+sdk/ar.c:
+	.text       start:0x800C4E78 end:0x800C6B2C
+	.data       start:0x802DAA80 end:0x802DAAC8
+	.sdata      start:0x803595D8 end:0x803595E0
+	.sbss       start:0x8035A7A0 end:0x8035A7C0
+
+sdk/arq.c:
+	.text       start:0x800C6B2C end:0x800C6EC8
+	.data       start:0x802DAAC8 end:0x802DAB10
+	.sdata      start:0x803595E0 end:0x803595E8
+	.sbss       start:0x8035A7C0 end:0x8035A7E8
+
+sdk/AX.c:
+	.text       start:0x800C6EC8 end:0x800C6F6C
+	.data       start:0x802DAB10 end:0x802DAB58
+	.sdata      start:0x803595E8 end:0x803595F0
+
+sdk/AXAlloc.c:
+	.text       start:0x800C6F6C end:0x800C74DC
+	.bss        start:0x80308680 end:0x80308780
+	.sbss       start:0x8035A7E8 end:0x8035A7F0
+
+sdk/AXAux.c:
+	.text       start:0x800C74DC end:0x800C7964
+	.bss        start:0x80308780 end:0x8030B480
+	.sbss       start:0x8035A7F0 end:0x8035A828
+
+sdk/AXCL.c:
+	.text       start:0x800C7964 end:0x800C8094
+	.bss        start:0x8030B480 end:0x8030BA80
+	.sbss       start:0x8035A828 end:0x8035A840
+
+sdk/AXOut.c:
+	.text       start:0x800C8094 end:0x800C8864
+	.bss        start:0x8030BA80 end:0x80310520
+	.sbss       start:0x8035A840 end:0x8035A878
+
+sdk/AXSPB.c:
+	.text       start:0x800C8864 end:0x800C8D2C
+	.bss        start:0x80310520 end:0x80310560
+	.sbss       start:0x8035A878 end:0x8035A8A0
+
+sdk/AXVPB.c:
+	.text       start:0x800C8D2C end:0x800C9EC4
+	.data       start:0x802DAB58 end:0x802DAC40
+	.bss        start:0x80310560 end:0x80321D60
+	.sbss       start:0x8035A8A0 end:0x8035A8B0
+
+sdk/AXComp.c:
+	.data       start:0x802DAC40 end:0x802DC680
+
+sdk/DSPCode.c:
+	.data       start:0x802DC680 end:0x802DE540
+	.sdata      start:0x803595F0 end:0x803595F8
+
+sdk/AXProf.c:
+	.text       start:0x800C9EC4 end:0x800C9F0C
+	.sbss       start:0x8035A8B0 end:0x8035A8C0
+
+auto/text_800C9F0C.c:
+	.text       start:0x800C9F0C end:0x800DAA80
+	.data       start:0x802DE540 end:0x802E0198
 
 auto/jt_802E0198.c:
 	.data       start:0x802E0198 end:0x802E0238
