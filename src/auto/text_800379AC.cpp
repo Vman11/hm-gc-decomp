@@ -1,7 +1,10 @@
 /* Functions from 0x800379AC to 0x80037E64, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 extern f32 lbl_8035BFC0;
+extern const f64 lbl_8035BFC8;
 
 void fn_800379AC(void) {
 
@@ -58,9 +61,9 @@ s32 fn_80037AA4(void *arg0, s32 arg1) {
     switch (arg1) {
     case 0x67: return M2C_FIELD(arg0, s32 *, 0x28);
     case 0x68: return M2C_FIELD(arg0, s32 *, 0x2C);
-    case 0x69: return M2C_FIELD(arg0, s32 *, 0x30);
+    case 0x6B: return M2C_FIELD(arg0, s32 *, 0x30);
     case 0x6A: return M2C_FIELD(arg0, s32 *, 0x34);
-    case 0x6B: return M2C_FIELD(arg0, s32 *, 0x38);
+    case 0x69: return M2C_FIELD(arg0, s32 *, 0x38);
     case 0x6C: return M2C_FIELD(arg0, s32 *, 0x3C);
     case 0x6D: return M2C_FIELD(arg0, s32 *, 0x40);
     case 0x6E: return M2C_FIELD(arg0, s32 *, 0x44);
@@ -77,10 +80,10 @@ void fn_80037B28(void *arg0, void *arg1) {
     case 0x5F: M2C_FIELD(arg0, f32 *, 0xC) = M2C_FIELD(arg1, f32 *, 0x10); break;
     case 0x60: M2C_FIELD(arg0, f32 *, 0x10) = M2C_FIELD(arg1, f32 *, 0x10); break;
     case 0x61: M2C_FIELD(arg0, f32 *, 0x14) = M2C_FIELD(arg1, f32 *, 0x10); break;
-    case 0x62: M2C_FIELD(arg0, f32 *, 0x20) = M2C_FIELD(arg1, f32 *, 0x10); break;
-    case 0x63: M2C_FIELD(arg0, f32 *, 0x24) = M2C_FIELD(arg1, f32 *, 0x10); break;
-    case 0x64:
-        if (M2C_FIELD(arg1, f32 *, 0x10) > 0.0) {
+    case 0x64: M2C_FIELD(arg0, f32 *, 0x20) = M2C_FIELD(arg1, f32 *, 0x10); break;
+    case 0x65: M2C_FIELD(arg0, f32 *, 0x24) = M2C_FIELD(arg1, f32 *, 0x10); break;
+    case 0x66:
+        if (M2C_FIELD(arg1, f32 *, 0x10) > lbl_8035BFC8) {
             if (M2C_FIELD(arg0, s32 *, 0x54) == 0) {
                 M2C_FIELD(arg0, s32 *, 0x34) = 1;
             }
@@ -89,8 +92,8 @@ void fn_80037B28(void *arg0, void *arg1) {
             M2C_FIELD(arg0, s32 *, 0x54) = 0;
         }
         break;
-    case 0x65:
-    case 0x66:
+    case 0x62:
+    case 0x63:
         break;
     }
 }
@@ -99,9 +102,9 @@ void fn_80037BD0(void *arg0, void *arg1) {
     switch (M2C_FIELD(arg1, s32 *, 0xC)) {
     case 0x67: M2C_FIELD(arg0, s32 *, 0x28) = 0; break;
     case 0x68: M2C_FIELD(arg0, s32 *, 0x2C) = 0; break;
-    case 0x69: M2C_FIELD(arg0, s32 *, 0x30) = 0; break;
+    case 0x6B: M2C_FIELD(arg0, s32 *, 0x30) = 0; break;
     case 0x6A: M2C_FIELD(arg0, s32 *, 0x34) = 0; break;
-    case 0x6B: M2C_FIELD(arg0, s32 *, 0x38) = 0; break;
+    case 0x69: M2C_FIELD(arg0, s32 *, 0x38) = 0; break;
     case 0x6C: M2C_FIELD(arg0, s32 *, 0x3C) = 0; break;
     case 0x6D: M2C_FIELD(arg0, s32 *, 0x40) = 0; break;
     case 0x6E: M2C_FIELD(arg0, s32 *, 0x44) = 0; break;
@@ -115,12 +118,12 @@ void fn_80037C7C(void *arg0, void *arg1) {
     switch (M2C_FIELD(arg1, s32 *, 0xC)) {
     case 0x67: M2C_FIELD(arg0, s32 *, 0x28) = 1; break;
     case 0x68: M2C_FIELD(arg0, s32 *, 0x2C) = 1; break;
-    case 0x69: M2C_FIELD(arg0, s32 *, 0x30) = 1; break;
+    case 0x6B: M2C_FIELD(arg0, s32 *, 0x30) = 1; break;
     case 0x6A:
         M2C_FIELD(arg0, s32 *, 0x54) = 1;
         M2C_FIELD(arg0, s32 *, 0x34) = 1;
         break;
-    case 0x6B: M2C_FIELD(arg0, s32 *, 0x38) = 1; break;
+    case 0x69: M2C_FIELD(arg0, s32 *, 0x38) = 1; break;
     case 0x6C: M2C_FIELD(arg0, s32 *, 0x3C) = 1; break;
     case 0x6D: M2C_FIELD(arg0, s32 *, 0x40) = 1; break;
     case 0x6E: M2C_FIELD(arg0, s32 *, 0x44) = 1; break;
@@ -194,3 +197,4 @@ void fn_80037DD8(void *arg0) {
     M2C_FIELD(arg0, s32 *, 4) = 1;
 }
 
+} /* extern "C" */

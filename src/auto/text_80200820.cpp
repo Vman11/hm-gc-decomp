@@ -10,11 +10,13 @@ void __ct__9C802030D8Fv(void *);
 void fn_80200878(void *, s32);
 void fn_80203040(void *, s32);
 void __register_global_object(void *, void *, void *);
-void fn_800E1F7C(void *, void *, void *, u32, u32);
+void __construct_array(void *, void *, void *, u32, u32);
 
 void fn_80200820(void) {
-    fn_800E1F7C(lbl_80330CE4, (void *)__ct__9C802030D8Fv, (void *)fn_80203040, 0x1dc, 0x100);
+    __construct_array(lbl_80330CE4, (void *)__ct__9C802030D8Fv, (void *)fn_80203040, 0x1dc, 0x100);
     __register_global_object(0, (void *)fn_80200878, lbl_80330CD8);
 }
+
+__declspec(section ".ctors") static void (*const ctor_80200820)(void) = fn_80200820;
 
 } /* extern "C" */

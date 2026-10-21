@@ -1,5 +1,8 @@
 /* Functions from 0x802455A0 to 0x802455E0, found by decomp-toolkit. */
 #include "common.h"
+
+extern "C" {
+
 extern f32 lbl_80366250;
 
 f32 fn_802455A0(void* arg0) {
@@ -10,5 +13,7 @@ f32 fn_802455A0(void* arg0) {
         }
         return (*(f32**)((u8*)arg0 + 0x3c))[count - 1];
     }
-    return 0.0f;
+    return lbl_80366250;
 }
+
+} /* extern "C" */

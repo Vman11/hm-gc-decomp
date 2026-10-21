@@ -587,7 +587,7 @@ auto/text_80037974.cpp:
 	.text       start:0x80037974 end:0x800379AC
 	.ctors      start:0x80293F00 end:0x80293F04
 
-auto/text_800379AC.c:
+auto/text_800379AC.cpp:
 	.text       start:0x800379AC end:0x80037E64
 	.data       start:0x802AFDB0 end:0x802AFE78
 
@@ -7734,7 +7734,7 @@ auto/jt_802E0198.c:
 auto/text_800DAA80.c:
 	.text       start:0x800DAA80 end:0x800E1DA8
 
-auto/text_800E1DA8.c:
+auto/text_800E1DA8.cpp:
 	.text       start:0x800E1DA8 end:0x800E1DF0
 	.dtors      start:0x802943E8 end:0x802943EC
 
@@ -33538,7 +33538,7 @@ auto/text_8024548C.c:
 	extabindex  start:0x80028FDC end:0x80028FE8
 	.text       start:0x8024548C end:0x802455A0
 
-auto/text_802455A0.c:
+auto/text_802455A0.cpp:
 	.text       start:0x802455A0 end:0x802455E0
 
 auto/text_802455E0.c:

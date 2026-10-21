@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+#pragma optEH2 on
+
 extern "C" {
 
 extern void *lbl_8035B530;
