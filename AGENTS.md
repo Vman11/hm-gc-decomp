@@ -21,12 +21,13 @@ This is the matching decompilation of The Haunted Mansion (GameCube, GHYE6S). Re
 
 1. `build/GHYE6S/main.dol` must stay **byte-identical**: `sha1sum -c config/GHYE6S/build.sha1` must say OK before every commit.
 2. Commit in batches. End commit messages with the project's standard trailer (see existing commits).
-3. Never run bare `python3 configure.py`; it generates a broken `build.ninja` (wrong tool paths). ninja re-runs configure automatically when `configure.py` changes. If you must regenerate by hand:
+3. On the machine set up by decomp.wtf (toolchains under `~/.local/share/decompnet`), never run bare `python3 configure.py`: it would switch `build.ninja` to downloaded tools under `build/`. ninja re-runs configure automatically when `configure.py` changes. If you must regenerate by hand:
    ```
    T=$HOME/.local/share/decompnet/toolchains
    ~/.local/share/uv/tools/decompnet/bin/python configure.py --wrapper $T/wibo/wibo --compilers $T/mwcc \
      --binutils $T/gc-wii-binutils --dtk $T/dtk/dtk --objdiff $T/objdiff-cli/objdiff-cli --sjiswrap $T/sjiswrap/sjiswrap.exe
    ```
+   On any other machine, plain `python3 configure.py` (as in README.md) downloads the tools into `build/` and is correct; `ninja build/binutils` fetches objdump for the scripts.
 4. Apply a candidate exactly once. Applying, then `git checkout`, then re-applying leaves untracked `.cpp` files and creates duplicate definitions. To roll back use `git checkout -- . && git clean -fdq -e 'zz_q*' src/`.
 5. The judge writes temp files `src/auto/zz_*`. They are gitignored; never commit them.
 
@@ -37,11 +38,15 @@ Copy them into a scratch dir and run from there. Scripts locate each other throu
 export DECOMP_SCRATCH=/tmp/decomp-scratch; mkdir -p $DECOMP_SCRATCH
 cp tools/decomp_agent/* $DECOMP_SCRATCH/; cp $DECOMP_SCRATCH/game_skip.txt $DECOMP_SCRATCH/skip.txt
 ```
+These scripts and the `tools/rea/*.py` ones hardcode the original checkout (`/home/mi/Decomp/hauntedmansion-ghye6s`) and
+toolchain (`~/.local/share/decompnet/toolchains/...`). On another machine, sed those paths in your scratch copies to your
+checkout and to `build/tools/{wibo,objdiff-cli,dtk}`, `build/compilers/` and `build/binutils/` (copy `apply_q.py`,
+`finalize.py`, `c2cpp.py`, `link.py` and `layout.py` too, keeping finalize's state files in `tools/rea`).
 | tool | purpose |
 |---|---|
 | `q.py UNIT FN cand.c [cpp]` | Local judge: compiles the candidate standalone (game flags) and diffs FN against the built object. Prints `MATCH` or a diff. Env `QV=<ver>` (bare, e.g. `1.3.2`, `2.0`), `QX=<extra flags>`. Parallel-safe. |
 | `qa3.sh DIR LIST [jobs]` | Parallel judge over `fn unit` lines. Picks `DIR/FN.*`; a `.lmw` suffix adds `-use_lmw_stmw on`. Prints `ok …` / `FAIL …` lines. |
-| `unitcheck.py UNIT FN cand.c [QV]` | Merges the candidate into a temp copy of the unit, as apply does, and compiles the whole unit. Catches declaration conflicts the standalone judge misses. Run it on every match. |
+| `unitcheck.py UNIT FN cand.c [QV]` | Merges the candidate into a temp copy of the unit, as apply does, and compiles the whole unit. Catches declaration conflicts the standalone judge misses. Run it on every C match (it compiles `src/UNIT.c` with `-lang=c`, so it reports ERROR for C++ candidates; build those instead). |
 | `dumpasm2.py N skip.txt` | Compact asm of the N smallest unmatched functions (excludes library units). Writes to stdout. |
 | `applyres.sh res…` | Applies `ok FN UNIT path` lines through `tools/rea/apply_q.py`. FAIL lines go to skip.txt. |
 | `addctors.py res…` | Adds the `.ctors` entry for sinit functions whose unit has `.ctors` in splits.txt. Without it the layout check fails. |
@@ -76,6 +81,53 @@ After applying: `ninja`, then remove the touched units from `tools/rea/c2cpp_rej
 - **Static initializers**: `__register_global_object` / `__construct_array` / cos-sinit families need `__declspec(section ".ctors") static void (*const ctor_X)(void) = fn_X;` (`addctors.py`).
 - **Thunks**: `asm` functions with `nofralloc` (`addi r3,r3,-N; b tgt`).
 - **Loop hoisting**: `#pragma opt_loop_invariants off` stops `p+K` being hoisted out of parse loops.
+- **Forwarded parameters**: a temporary in r6/r7 while r4/r5 are never set before a call means the function passes its own parameters through (`fn_80272F28(p, a, b)` calls `fn_801AA960(x, a, b)`). Add the parameters.
+- **Scheduling only**: identical instructions in a different order (e.g. a void function whose epilogue restores r31 before `lwz r0`) can need `#pragma scheduling off` … `#pragma scheduling reset` around the function.
+- **Byte locals**: `u8` vs `s8`/`char`/`int` for a loaded byte changes register allocation even when the instructions are the same.
+
+## Linking units whose code already matches
+
+Many NonMatching units have every function at 100% and only fail the unit check (functions plus section layout vs
+`build/GHYE6S/obj/<unit>.o`, see `tools/rea/layout.py`) or the C++ conversion. Check these before decompiling new code:
+
+- **extab garbage**: some actions (e.g. DELETEPOINTERCOND) end in two uninitialized bytes; the original has `b1 02` (or
+  `b0 02`). Add `extab_padding=[0xB1, 0x02]` to the unit's `Object(...)`; the `mwcc_extab` rule (`dtk extab clean`)
+  then reproduces them.
+- **Missing `.ctors`/`.dtors` entries** for static initializers (`addctors.py`).
+- **C to C++ conversion**: any integer cast on an argument (`(int)(p)`, even `(s32)` on an `s32`, or an implicit
+  conversion through an `int` prototype) changes register allocation and saved registers in C++ mode. Give callees
+  pointer prototypes and keep argument types equal to parameter types. C++ also needs explicit casts for `void *`
+  results (`__nw__FUl`, `NULL`), and calls through `(RT (*)())` casts need their parameter list.
+- **12-byte copies** in C++ must be `struct { u32 v[3]; }` (a struct of three scalars is copied memberwise).
+- **Comparisons are `bool`** in C++: `return a == b;` from an `s32` function becomes `cntlzw; extrwi`; use a `bool`
+  return or `x ? 1 : 0`, and `bool` locals for stored comparisons.
+- **Function order** in the object follows source order (asm thunks included).
+- **Dead functions**: a function only referenced by its own unit (e.g. by its jump table) is dead-stripped once the
+  unit links from C; add it to `force_active` in `config/GHYE6S/config.yml`.
+- **Literals** the original takes from named `.sdata`/`.sdata2` objects must use those externs (`extern const f64
+  lbl_X;`, `extern char lbl_X[6];`, sized so small-data addressing is used).
+
+## Exception-table constructs (C++, GC/1.3.2)
+
+The decoded extab in `build/GHYE6S/asm/<unit>.s` says which C++ construct the original used:
+
+- **DELETEPOINTER** on the `new` result: `p = new C;` with `sizeof(C)` equal to the `__nw__FUl` size and a ctor
+  (often inline) holding the code inside `if (p)`. A plain-named base ctor is called as `fn_X(this)` first in it; a
+  mangled one (`__ct__9CXXXXFv`) comes from deriving from `struct CXXXX { CXXXX(); };` (empty bases take no space).
+- **DESTROYBASE / DESTROYMEMBER / DESTROYMEMBERARRAY**: real base classes, member objects and member arrays whose
+  destructors are the Dtor symbols. Actions only cover throwing calls after the subobject is built, so a missing
+  action does not mean there is no destructor. Several DESTROYMEMBER at one offset = a union of class-type members.
+- **DESTROYBASE at `0x8(SP)`** (`06 00 0008`) for `new Derived` with an inline ctor: `#pragma optEH2 on` for the file
+  (or `throw()` on the callees inside the inlined ctor body). Without it GC/1.3.2 names the register (`06 80 001f`).
+  Don't use the pragma where the original names a register: under it multi-call ctor bodies also get the stack form.
+- **DESTROYLOCAL**: `__ct__9CX(&obj); … __dt__9CX(&obj, -1);` is a local `CX obj;`.
+- **Plain vtable labels**: MWCC puts the vptr after the data members of the class that introduces it. For a vtable named
+  `lbl_X`, store it from a holder: an empty base whose inline ctor stores `lbl_X` at the vptr offset (when stored before
+  all member ctors), or a member `struct V { u8 *vt; V() { vt = lbl_X; } }` (when stored between base and members).
+- **Plain-named destructors** (`dtor_XXXX`, `fn_XXXX`) in extab cannot be produced: MWCC has no aliasing. Rename them
+  (symbols.txt + sources, as `tools/rea/cxx.py apply` does) to the mangled destructor of their class. A class's dtor
+  sits right before its ctor in this binary (dtor address + size = ctor address), which tells you the class name.
+- `__ct__9CXXXXFs` is the ctor of a class with a virtual base (hidden `short` in r4); MWCC mangles it `…Fv`.
 
 ## Known blockers (skip unless you crack them)
 
@@ -83,14 +135,14 @@ After applying: `ninja`, then remove the touched units from `tools/rea/c2cpp_rej
 - **Member ctor held in r30** (e.g. `__ct__9C80064474Fv` family, `80239B40`, `8022F98C`).
 - **Zero-then-assign** at +40/+44 after `fn_801EF9A0` (`li r3,0; lwz r4,8(q); stw r3,44; …`): e.g. `fn_801DEE18`, `801E812C`, `801DE80C`, `801E0384`, `801E7D14`.
 - **Descriptor init / factory family** (about 20 functions near 0x8004–0x800B): they address the unit's own `.data` through a section-base register, so they need that data defined as statics in the same TU. The same goes for pooled string literals (`fn_80068D50`, `80046BB8`, `80267CF8`, …).
-- **Local objects whose dtor is `dtor_XXXX`** (`fn_8012D774`, `80138AA8`, `8013EF3C`).
+- **Local objects whose dtor is `dtor_XXXX`** (`fn_8012D774`, `80138AA8`, `8013EF3C`): need the dtor renamed (see "Plain-named destructors" above).
 - **Symbol renames needed** before some functions can match:
   - `fn_80117DC4` (calls `__ct__9C800F5578Fv`; the real ctor is `__ct__9C800F6BDCFv`)
   - the `fn_8012CF08` family (`__ct__9C8012C740Fv` vs `fn_8012C740`)
   - `fn_80105B88` (`__dt__9C80129A9CFv`)
 - **Switch jump tables** (data must match too): `fn_8012F7F8`, `80111BC0`, `8010CF00`, `8013410C`, `80139228`, `8012E7A0`, `801022FC`, `8010C4D0`, `80137BC0`, `8019CB40`, `8011BA1C`, `80128910`, `8013B200`, `801A17B8`, `801FA224`, `8021C124`.
 - **Near misses (scheduling or register allocation only)**: `fn_80153D4C`, `8017CB04`, `801BB258`, `801BCA04`, `8016E4D4`, `801B2504`, `80191360`, `8019F53C`, `8019FCB0`, `801A0424`, `80158E34`, `801547BC`, `80149C68`, `80186960`, `8022202C`, `801DF270`, `8023C3F4`, `80213F6C`, `8021F4A4`, `80240948`, `801C9C40`, `8024973C`, `801F13F0`, `801C1774`, `8003C674`, `8003C778`, `801135BC`, `80112FD4`, `8013D4CC`, `8010E280`, `80112190`, `80102730`, `800F9838`, `80112698`, `8011FA98`, `800FA69C`, `80071CE8`.
-- **Technique to try for the factory `new`/`new[]` functions**: `fn_8024BFCC` byte-matched using real C++ classes. It emits the inline ctor out-of-line, and the vtable reloc is named `__vt__9C8024BF7C` (target `lbl_802F1E68`). The same approach may solve about 20 skipped factory functions, but it needs symbol aliasing at link.
+- **Factory `new` functions** (solved): real classes with an inline derived ctor storing the vtable label by hand, plus `#pragma optEH2 on` for the stack-slot DESTROYBASE (see above), matched 37 factories with base `C8024262C` and others.
 - `fn_800F8410` only matches with GC/2.0; its unit would need a compiler switch.
 
 ## Coordination
