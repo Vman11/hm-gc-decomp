@@ -378,11 +378,9 @@ extern s32 __OSArenaHi_8035A578;
 
 
 
-void PPCMtdec(u32 value) { __mtspr(22, value); }
 
 #pragma push
 #pragma auto_inline off
-void fn_800B2EA8(void) { __sc(); }
 #pragma pop
 
 
@@ -392,28 +390,9 @@ void fn_800B2EA8(void) { __sc(); }
 
 
 #pragma scheduling on
-void DBInit(void) {
-    extern s32 DBVerbose;
-    extern void __DBExceptionDestination(void);
-    __DBInterface = (DBInterface*)0x80000040;
-    *(u32*)0x80000048 = (u32)__DBExceptionDestination + 0x80000000;
-    DBVerbose = 1;
-}
-void fn_800B2FB8(void) {
-    u32* contextAddr = (u32*)0x00C0;
-    void* context = (void*)(0x80000000 + *contextAddr);
-    OSReport("DBExceptionDestination\n");
-    OSDumpContext(context);
-    PPCHalt();
-}
 
 
-u32 __DBIsExceptionMarked(u8 exception) {
-    return __DBInterface->exceptionMask & (1 << exception);
-}
 
-void DBPrintf(char* str, ...) {
-}
 
 #pragma push
 #pragma peephole off
@@ -422,14 +401,8 @@ void DBPrintf(char* str, ...) {
 extern s32* OSExceptionTable_8035A544;
 
 #pragma peephole off
-s32 __OSGetExceptionHandler(u8 exception) {
-    return OSExceptionTable_8035A544[exception];
-}
 
 volatile u32 __DIRegs[16] : 0xCC006000;
-u32 fn_800B3B28(void) {
-    return (__DIRegs[9] & 0x000000FF);
-}
 
 
 typedef struct OSAlarm OSAlarm;
@@ -443,73 +416,16 @@ struct OSAlarm {
     s64 start;
 };
 
-void OSInitAlarm(void) {
-    extern void DecrementerExceptionHandler(void);
-    extern void* __OSGetExceptionHandler(u8);
-    extern void* __OSSetExceptionHandler(u8, void*);
-    extern struct { void* head; void* tail; } AlarmQueue_8035A560;
-    if (__OSGetExceptionHandler(8) != DecrementerExceptionHandler) {
-        AlarmQueue_8035A560.head = AlarmQueue_8035A560.tail = 0;
-        __OSSetExceptionHandler(8, DecrementerExceptionHandler);
-    }
-}
 
 #pragma peephole on
-void OSCreateAlarm(s32 *arg0) {
-    arg0[0] = 0;
-    arg0[1] = 0;
-}
 
 long long fn_800BA5E8(long long arg0);
 void InsertAlarm(void *alarm, long long fire, void *handler);
-void fn_800B3E7C(int *alarm, long long start, long long period, void *handler) {
-    int enabled = OSDisableInterrupts();
-    *(long long *)(alarm + 6) = period;
-    *(long long *)(alarm + 8) = fn_800BA5E8(start);
-    InsertAlarm(alarm, 0, handler);
-    OSRestoreInterrupts(enabled);
-}
 
 u64 __OSGetSystemTime(void);
 #pragma push
 #pragma dont_inline on
 #pragma peephole off
-void fn_800B3EF8(void *arg0) {
-    extern struct { OSAlarm *head; OSAlarm *tail; } AlarmQueue_8035A560;
-    OSAlarm *alarm = arg0;
-    OSAlarm *next;
-    BOOL enabled = OSDisableInterrupts();
-    s64 delta;
-
-    if (alarm->handler == 0) {
-        OSRestoreInterrupts(enabled);
-        return;
-    }
-
-    next = alarm->next;
-    if (next == 0) {
-        AlarmQueue_8035A560.tail = alarm->prev;
-    } else {
-        next->prev = alarm->prev;
-    }
-    if (alarm->prev) {
-        alarm->prev->next = next;
-    } else {
-        AlarmQueue_8035A560.head = next;
-        if (next) {
-            delta = next->fire - __OSGetSystemTime();
-            if (delta < 0) {
-                PPCMtdec(0);
-            } else if (delta < 0x80000000) {
-                PPCMtdec((u32)delta);
-            } else {
-                PPCMtdec(0x7fffffff);
-            }
-        }
-    }
-    alarm->handler = 0;
-    OSRestoreInterrupts(enabled);
-}
 #pragma pop
 static HeapCell *DLAddFront(HeapCell *list, HeapCell *cell) {
     cell->next = list;
@@ -532,220 +448,31 @@ static HeapCell *DLExtract(HeapCell *list, HeapCell *cell) {
     return list;
 }
 
-HeapCell *fn_800B4294(HeapCell *list, HeapCell *cell) {
-    HeapCell *prev = 0;
-    HeapCell *next = list;
-    for (; next; prev = next, next = next->next) {
-        if (cell <= next) {
-            break;
-        }
-    }
-    cell->next = next;
-    cell->prev = prev;
-    if (next) {
-        next->prev = cell;
-        if ((char *)cell + cell->size == (char *)next) {
-            cell->size += next->size;
-            next = next->next;
-            cell->next = next;
-            if (next) {
-                next->prev = cell;
-            }
-        }
-    }
-    if (prev) {
-        prev->next = cell;
-        if ((char *)prev + prev->size == (char *)cell) {
-            prev->size += cell->size;
-            prev->next = next;
-            if (next) {
-                next->prev = prev;
-            }
-        }
-        return list;
-    }
-    return cell;
-}
 
-void *fn_800B4340(int heap, u32 size) {
-    HeapDesc *hd;
-    HeapCell *cell;
-    HeapCell *newCell;
-    u32 leftoverSize;
-
-    hd = &((HeapDesc *)lbl_8035A568)[heap];
-    size = (size + 0x20 + 0x20 - 1) & ~(0x20 - 1);
-
-    for (cell = hd->free; cell != NULL; cell = cell->next) {
-        if ((int)size <= cell->size) {
-            break;
-        }
-    }
-
-    if (cell == NULL) {
-        return NULL;
-    }
-
-    leftoverSize = cell->size - size;
-    if (leftoverSize < 0x40) {
-        hd->free = DLExtract(hd->free, cell);
-    } else {
-        cell->size = size;
-        newCell = (HeapCell *)((char *)cell + size);
-        newCell->size = leftoverSize;
-        newCell->prev = cell->prev;
-        newCell->next = cell->next;
-        if (newCell->next != NULL) {
-            newCell->next->prev = newCell;
-        }
-        if (newCell->prev != NULL) {
-            newCell->prev->next = newCell;
-        } else {
-            hd->free = newCell;
-        }
-    }
-
-    hd->allocated = DLAddFront(hd->allocated, cell);
-    return (char *)cell + 0x20;
-}
 
 extern int lbl_80359530;
 extern int lbl_8035A568;
 extern int lbl_8035A56C;
 extern int lbl_8035A570;
 extern int lbl_8035A574;
-int fn_800B44B8(int arg0) { int old = lbl_80359530; lbl_80359530 = arg0; return old; }
 
-int fn_800B44C8(int arg0, int arg1, int arg2) {
-    unsigned int arraySize = arg2 * 12;
-    int i;
-    lbl_8035A568 = arg0;
-    lbl_8035A56C = arg2;
-    for (i = 0; i < lbl_8035A56C; i++) {
-        int *entry = (int *)(lbl_8035A568 + i * 12);
-        entry[0] = -1;
-        entry[1] = entry[2] = 0;
-    }
-    lbl_80359530 = -1;
-    arg0 = lbl_8035A568 + arraySize;
-    arg0 = (arg0 + 31) & ~31;
-    lbl_8035A570 = arg0;
-    lbl_8035A574 = arg1 & ~31;
-    return arg0;
-}
 
-int fn_800B4538(int arg0, int arg1) {
-    int heap;
-    HeapDesc *hd;
-    HeapCell *cell;
-    u8 *start = (u8 *)((arg0 + 31) & ~31);
-    u8 *end = (u8 *)(arg1 & ~31);
 
-    for (heap = 0; heap < lbl_8035A56C; heap++) {
-        hd = &((HeapDesc *)lbl_8035A568)[heap];
-        if (hd->size < 0) {
-            hd->size = end - start;
-            cell = (HeapCell *)start;
-            cell->prev = NULL;
-            cell->next = NULL;
-            cell->size = hd->size;
-            hd->free = cell;
-            hd->allocated = NULL;
-            return heap;
-        }
-    }
-    return -1;
-}
-
-s32 OSGetArenaHi(void) {
-    return __OSArenaHi_8035A578;
-}
 
 extern s32 __OSArenaLo_80359538;
-s32 OSGetArenaLo(void) {
-    return __OSArenaLo_80359538;
-}
 
-void OSSetArenaHi(s32 arg0) {
-    __OSArenaHi_8035A578 = arg0;
-}
 
 extern s32 __OSArenaLo_80359538;
-void OSSetArenaLo(s32 arg0) {
-    __OSArenaLo_80359538 = arg0;
-}
-
-s32 fn_800B45C4(s32 size, s32 align) {
-    s32 ptr;
-    s32 arenaLo;
-
-    arenaLo = ptr = (__OSArenaLo_80359538 + align - 1) & ~(align - 1);
-    arenaLo += size;
-    arenaLo = (arenaLo + align - 1) & ~(align - 1);
-    __OSArenaLo_80359538 = arenaLo;
-    return ptr;
-}
 
 
-s32 fn_800B4F6C(void) {
-    return *(s32 *)0x800000D4;
-}
 
 
-void __OSContextInit(void) {
-    extern void OSSwitchFPUContext(void);
-    extern void* __OSSetExceptionHandler(u8, void*);
-    extern char lbl_802D7BEC[];
-    __OSSetExceptionHandler(7, OSSwitchFPUContext);
-    *(s32*)0x800000D8 = 0;
-    DBPrintf(lbl_802D7BEC);
-}
 
-void OSReport(const char* msg, ...) {
-    struct __va_list_struct args;
-    __builtin_va_info(&args);
-    vprintf(msg, &args);
-}
+
 
 
 void fn_800C182C(GXRenderModeObj *rmode);
 void fn_800C2054(u32 a, u32 b, u32 c, u32 d);
-void fn_800B5F28(u16 fbWidth, u16 height) {
-    GXRenderModeObj rmode;
-
-    rmode.fbWidth = fbWidth;
-    rmode.efbHeight = 0x1E0;
-    rmode.xfbHeight = height;
-    rmode.viXOrigin = 0x28;
-    rmode.viWidth = 0x280;
-    rmode.viHeight = height;
-    switch (VIGetTvFormat()) {
-    case 0:
-    case 2:
-        if (*(volatile u16 *)0xCC00206C & 1) {
-            rmode.viTVmode = 2;
-            rmode.viYOrigin = 0;
-            rmode.xFBmode = 0;
-        } else {
-            rmode.viTVmode = 0;
-            rmode.viYOrigin = 0;
-            rmode.xFBmode = 1;
-        }
-        break;
-    case 5:
-        rmode.viTVmode = 0x14;
-        rmode.viYOrigin = 0;
-        rmode.xFBmode = 1;
-        break;
-    case 1:
-        rmode.viTVmode = 4;
-        rmode.viYOrigin = 0x2F;
-        rmode.xFBmode = 1;
-        break;
-    }
-    fn_800C182C(&rmode);
-    fn_800C2054(0, 0, 0x280, 0x1E0);
-}
 
 extern u16 fn_800B6B0C();
 extern u16 lbl_802D7F30[];
@@ -754,521 +481,64 @@ extern u16 lbl_802D80B0[];
 
 
 extern s32 fn_800B9094(s32, s32, s32);
-void fn_800B6B64(s32 arg0, s32 arg1, s32 arg2) {
-    s32 n;
-    while (arg1 > 0) {
-        if (arg1 <= 0x100) {
-            n = arg1;
-        } else {
-            n = 0x100;
-        }
-        arg1 -= n;
-        if (fn_800B9094(arg0, n, arg2) != 0) {
-            arg2 += n;
-            arg0 += n;
-        }
-    }
-}
 
 extern void **InterruptHandlerTable_8035A590;
-void *__OSSetInterruptHandler(short type, void *handler) {
-    void **p = (void **)((char *)InterruptHandlerTable_8035A590 + (type << 2));
-    void *old = *p;
-    *p = handler;
-    return old;
-}
 
 extern void *memset(void *, int, unsigned long);
 extern u32 __OSMaskInterrupts(u32);
-void *fn_800B7290(s16 type) {
-    return InterruptHandlerTable_8035A590[type];
-}
 
 #pragma peephole off
-void __OSInterruptInit(void) {
-    extern void ExternalInterruptHandler(void);
-    extern void *memset(void *, int, unsigned long);
-    extern u32 __OSMaskInterrupts(u32);
-    extern void *__OSSetExceptionHandler(u8, void *);
-    u8 *base = (u8 *)0x80000000;
-    InterruptHandlerTable_8035A590 = (void **)(base + 0x3040);
-    memset(InterruptHandlerTable_8035A590, 0, 0x80);
-    *(u32 *)(base + 0xC4) = 0;
-    *(u32 *)(base + 0xC8) = 0;
-    *(u32 *)0xCC003004 = 0xF0;
-    __OSMaskInterrupts(0xFFFFFFE0);
-    __OSSetExceptionHandler(4, ExternalInterruptHandler);
-}
 
 extern u32 fn_800B7318(u32 mask, u32 current);
-u32 __OSMaskInterrupts(u32 global) {
-    BOOL enabled;
-    u32 prev;
-    u32 local;
-    u32 mask;
 
-    enabled = OSDisableInterrupts();
-    prev = *(u32 *)0x800000C4;
-    local = *(u32 *)0x800000C8;
-    mask = ~(prev | local) & global;
-    global |= prev;
-    *(u32 *)0x800000C4 = global;
-    while (mask) {
-        mask = fn_800B7318(mask, global | local);
-    }
-    OSRestoreInterrupts(enabled);
-    return prev;
-}
-
-u32 __OSUnmaskInterrupts(u32 global) {
-    BOOL enabled;
-    u32 prev;
-    u32 local;
-    u32 mask;
-
-    enabled = OSDisableInterrupts();
-    prev = *(u32 *)0x800000C4;
-    local = *(u32 *)0x800000C8;
-    mask = (prev | local) & global;
-    global = prev & ~global;
-    *(u32 *)0x800000C4 = global;
-    while (mask) {
-        mask = fn_800B7318(mask, global | local);
-    }
-    OSRestoreInterrupts(enabled);
-    return prev;
-}
 
 
 #pragma peephole on
 extern s32 lbl_8035A5B0;
 void fn_800BA3B4(void* arg0);
-void fn_800B7E04(void) {
-    lbl_8035A5B0 = 1;
-}
 
-void OSRegisterResetFunction(void *arg0) {
-    OSResetFunctionInfo *info = arg0;
-    OSResetFunctionInfo *iter;
-    OSResetFunctionInfo *prev;
-    iter = ResetFunctionQueue_8035A5B8.head;
-    while (iter != NULL && iter->priority <= info->priority) iter = iter->next;
-    if (iter == NULL) {
-        prev = ResetFunctionQueue_8035A5B8.tail;
-        if (prev == NULL) ResetFunctionQueue_8035A5B8.head = info;
-        else prev->next = info;
-        info->prev = prev;
-        info->next = NULL;
-        ResetFunctionQueue_8035A5B8.tail = info;
-        return;
-    }
-    info->next = iter;
-    prev = iter->prev;
-    iter->prev = info;
-    info->prev = prev;
-    if (prev == NULL) ResetFunctionQueue_8035A5B8.head = info;
-    else prev->next = info;
-}
 
-s32 fn_800B81D4(s32 arg0) {
-    extern s32 __OSSyncSram(void);
-    OSResetFunctionInfo *iter;
-    s32 failed;
-    failed = 0;
-    for (iter = ResetFunctionQueue_8035A5B8.head; iter != NULL && failed == 0; iter = iter->next) {
-        failed |= iter->func(arg0) == 0;
-    }
-    failed |= __OSSyncSram() == 0;
-    if (failed) return 0;
-    return 1;
-}
 
-u32 OSGetResetCode(void) {
-    u32 code;
-    if (*(u8 *)0x800030E2 != 0) {
-        code = 0x80000000;
-    } else {
-        code = (*(volatile u32 *)(0xCC003000 + 0x24) & ~7) >> 3;
-    }
-    return code;
-}
 
-void *__OSLockSram(void) {
-    extern SramControlBlock Scb_803078A0;
-    SramControlBlock *scb = &Scb_803078A0;
-    s32 enabled = OSDisableInterrupts();
-    if (scb->locked != 0) {
-        OSRestoreInterrupts(enabled);
-        scb = NULL;
-    } else {
-        scb->enabled = enabled;
-        scb->locked = 1;
-    }
-    return scb;
-}
 
-void *__OSLockSramEx(void) {
-    extern SramControlBlock Scb_803078A0;
-    SramControlBlock *scb = &Scb_803078A0;
-    s32 enabled = OSDisableInterrupts();
-    if (scb->locked != 0) {
-        OSRestoreInterrupts(enabled);
-        return NULL;
-    }
-    scb->enabled = enabled;
-    scb->locked = 1;
-    return (u8 *)scb + 0x14;
-}
 
-void __OSUnlockSram(s32 commit) {
-    fn_800B8D00(commit, 0);
-}
 
-void __OSUnlockSramEx(s32 commit) {
-    fn_800B8D00(commit, 0x14);
-}
 
 extern SramControlBlock Scb_803078A0;
-s32 __OSSyncSram(void) {
-    return Scb_803078A0.sync;
-}
 
-s32 fn_800B91B8(void) {
-    SramControlBlock *scb = &Scb_803078A0;
-    s32 enabled;
-    s32 ret;
 
-    enabled = OSDisableInterrupts();
-    if (scb->locked != 0) {
-        OSRestoreInterrupts(enabled);
-        scb = NULL;
-        ret = 0;
-    } else {
-        scb->enabled = enabled;
-        scb->locked = 1;
-        if (scb->flags & 4) {
-            ret = 1;
-        } else {
-            ret = 0;
-        }
-    }
-    fn_800B8D00(0, 0);
-    return ret;
-}
 
-void fn_800B9238(s32 arg0) {
-    SramControlBlock *scb = &Scb_803078A0;
-    u32 flag = (arg0 & 1) << 2;
-    s32 enabled = OSDisableInterrupts();
-    if (scb->locked != 0) {
-        OSRestoreInterrupts(enabled);
-        scb = NULL;
-    } else {
-        scb->enabled = enabled;
-        scb->locked = 1;
-    }
-    if (flag == (scb->flags & 4)) {
-        fn_800B8D00(0, 0);
-    } else {
-        scb->flags &= ~4;
-        scb->flags |= flag;
-        fn_800B8D00(1, 0);
-    }
-}
 
-u8 fn_800B92DC(void) {
-    SramControlBlock *scb = &Scb_803078A0;
-    s32 enabled = OSDisableInterrupts();
-    u8 value;
-    if (scb->locked != 0) {
-        OSRestoreInterrupts(enabled);
-        scb = NULL;
-    } else {
-        scb->enabled = enabled;
-        scb->locked = 1;
-    }
-    value = scb->pad0[0x12];
-    fn_800B8D00(0, 0);
-    return value;
-}
 
-u16 fn_800B9348(s32 arg0) {
-    extern SramControlBlock Scb_803078A0;
-    s32 enabled;
-    u8 *sram;
-    u16 value;
-    enabled = OSDisableInterrupts();
-    if (Scb_803078A0.locked) {
-        OSRestoreInterrupts(enabled);
-        sram = 0;
-    } else {
-        Scb_803078A0.enabled = enabled;
-        Scb_803078A0.locked = 1;
-        sram = (u8 *)&Scb_803078A0 + 0x14;
-    }
-    value = ((u16 *)(sram + 0x1C))[arg0];
-    fn_800B8D00(0, 0x14);
-    return value;
-}
-
-void fn_800B93CC(s32 arg0, u16 arg1) {
-    extern SramControlBlock Scb_803078A0;
-    s32 enabled;
-    u8 *sram;
-    u16 *value;
-    enabled = OSDisableInterrupts();
-    if (Scb_803078A0.locked) {
-        OSRestoreInterrupts(enabled);
-        sram = 0;
-    } else {
-        Scb_803078A0.enabled = enabled;
-        Scb_803078A0.locked = 1;
-        sram = (u8 *)&Scb_803078A0 + 0x14;
-    }
-    value = (u16 *)(sram + 0x1C) + arg0;
-    if (*value != arg1) {
-        *value = arg1;
-        fn_800B8D00(1, 0x14);
-    } else {
-        fn_800B8D00(0, 0x14);
-    }
-}
 
 extern u8 __OSSystemCallVectorStart[];
 extern u8 __OSSystemCallVectorEnd[];
 extern void *memcpy(void *, const void *, unsigned long);
 extern void DCFlushRangeNoSync(void *, u32);
 extern void ICInvalidateRange(void *, u32);
-void __OSInitSystemCall(void) {
-    void *addr = (void *)0x80000C00;
-    memcpy(addr, __OSSystemCallVectorStart, __OSSystemCallVectorEnd - __OSSystemCallVectorStart);
-    DCFlushRangeNoSync(addr, 0x100);
-    __sync();
-    ICInvalidateRange(addr, 0x100);
-}
 
-void fn_800B9624(void) {
 
-}
 
-void OSInitThreadQueue(void *arg0) {
-    M2C_FIELD(arg0, s32 *, 4) = 0;
-    M2C_FIELD(arg0, s32 *, 0) = 0;
-}
 
-s32 fn_800B9790(void) {
-    return *(s32 *)0x800000E4;
-}
 
-s32 OSDisableScheduler(void) {
-    extern s32 Reschedule_8035A5F0;
-    s32 previous;
-    s32 enabled = OSDisableInterrupts();
-    previous = Reschedule_8035A5F0;
-    Reschedule_8035A5F0 = previous + 1;
-    OSRestoreInterrupts(enabled);
-    return previous;
-}
 
-void fn_800B981C(Thread5 *thread) {
-    extern s32 RunQueueBits_8035A5E8;
-    Thread5 *next;
-    ThreadQ5 *queue;
-    Thread5 *prev;
 
-    next = thread->next;
-    queue = thread->queue;
-    prev = thread->prev;
-    if (next == NULL) {
-        queue->tail = prev;
-    } else {
-        next->prev = prev;
-    }
-    if (prev == NULL) {
-        queue->head = next;
-    } else {
-        prev->next = next;
-    }
-    if (queue->head == NULL) {
-        RunQueueBits_8035A5E8 &= ~(1 << (0x1F - thread->priority));
-    }
-    thread->queue = NULL;
-}
 
-s32 fn_800B9884(void *arg0) {
-    s32 p;
-    s32 priority;
-    void *thread;
-    void *mutex;
-    priority = M2C_FIELD(arg0, s32 *, 0x2D4);
-    mutex = M2C_FIELD(arg0, void **, 0x2F4);
-    while (mutex != NULL) {
-        thread = M2C_FIELD(mutex, void **, 0);
-        if (thread != NULL) {
-            p = M2C_FIELD(thread, s32 *, 0x2D0);
-            if (p < priority) priority = p;
-        }
-        mutex = M2C_FIELD(mutex, void **, 0x10);
-    }
-    return priority;
-}
-
-void fn_800B9CD8(void) {
-    s32 enabled;
-
-    enabled = OSDisableInterrupts();
-    SelectThread(1);
-    OSRestoreInterrupts(enabled);
-}
-
-void OSClearStack(u8 val) {
-    u32 value = ((u32)val << 24) | ((u32)val << 16) | ((u32)val << 8) | val;
-    u32 end = fn_800B50D0();
-    u32 *p = (u32*)(*(u32*)(*(u32*)0x800000E4 + 0x308) + 4);
-    while ((u32)p < end) *p++ = value;
-}
 
 #pragma push
 #pragma auto_inline off
-u64 OSGetTime(void) {
-    u32 high1;
-    u32 low;
-    u32 high2;
-
-    do {
-        high1 = __mftbu();
-        low = __mftb();
-        high2 = __mftbu();
-    } while (high1 != high2);
-    return ((u64)high1 << 32) | low;
-}
 #pragma pop
 
 
-u64 __OSGetSystemTime(void) {
-    u32 enabled;
-    u64 time;
 
-    enabled = OSDisableInterrupts();
-    time = OSGetTime();
-    time += *(volatile u64*)0x800030D8;
-    OSRestoreInterrupts(enabled);
-    return time;
-}
-
-long long fn_800BA5E8(long long arg0) {
-    long long result;
-    OSDisableInterrupts();
-    result = *(long long *)0x800030D8 + arg0;
-    OSRestoreInterrupts();
-    return result;
-}
 
 extern s32 lbl_802D8A80[];
 extern s32 lbl_802D8AB0[];
-void fn_800BA640(s32 days, s32* td) {
-    s32 year;
-    s32 n;
-    s32 month;
-    s32* p_days;
 
-    td[6] = (days + 6) % 7;
-    for (year = days / 365; days < (n = year * 365 + (year < 1 ? 0 : (year + 3) / 4 - (year - 1) / 100 + (year - 1) / 400)); year--) {
-    }
-    days -= n;
-    td[5] = year;
-    td[7] = days;
-    p_days = ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) ? lbl_802D8AB0 : lbl_802D8A80;
-    for (month = 12; days < p_days[--month];) {
-    }
-    td[4] = month;
-    td[3] = days - p_days[month] + 1;
-}
 
-void InitMetroTRK_BBA(void) {
 
-}
 
-void __init_user(void) { __init_cpp(); }
 
-void fn_800BAA78(UnkHeader_800BAA78 *hdr, u32 x, u32 y) {
-    u32 i;
-    UnkEntry_800BAA78 *e;
-    u8 *data;
-    u32 xh;
-    u32 y2;
-    u32 yh;
-    u32 x2;
-
-    y2 = y * 2 + 2;
-    x2 = x * 2;
-    xh = x >> 1;
-    yh = y >> 1;
-    e = hdr->entries;
-    data = (u8 *)&hdr->entries[hdr->count];
-    for (i = 0; i < hdr->count; i++, e++) {
-        switch (e->type) {
-        case 0:
-            e->unk8 = y2;
-            e->unkC = 0;
-            e->unk10 = x2 + e->unk10;
-            e->unk14 = x2 + e->unk14;
-            e->unk18 = data;
-            data += 0x2E;
-            break;
-        case 1:
-            e->unk8 = x2 + e->unk8;
-            e->unkC = x2 + e->unkC;
-            e->unk10 = x2 + e->unk10;
-            e->unk14 = x2 + e->unk14;
-            e->unk18 = data;
-            data += 0x2E;
-            break;
-        case 2:
-            e->unk8 = yh;
-            e->unkC = 0;
-            e->unk10 = xh + e->unk10;
-            e->unk14 = xh + e->unk14;
-            break;
-        case 3:
-            e->unk8 = xh + e->unk8;
-            e->unkC = xh + e->unkC;
-            e->unk10 = xh + e->unk10;
-            e->unk14 = xh + e->unk14;
-            break;
-        case 4:
-            e->unk8 = y;
-            e->unkC = 0;
-            e->unk10 = x + e->unk10;
-            e->unk14 = x + e->unk14;
-            break;
-        case 5:
-            e->unk8 = x + e->unk8;
-            e->unkC = x + e->unkC;
-            e->unk10 = x + e->unk10;
-            e->unk14 = x + e->unk14;
-            break;
-        }
-    }
-}
-
-void *fn_800BAC18(u32 *arg0, u32 arg1) {
-    if (*arg0 > arg1) {
-        return (u8 *)arg0 + arg1 * 0x1C + 4;
-    }
-    return NULL;
-}
-
-void fn_800BB284(void) {
-    extern void *lbl_8035A600;
-    extern f32 lbl_80363048;
-    extern f32 lbl_8036304C;
-    void fn_800BBD48(f32);
-    void fn_800BBD40(f32);
-    lbl_8035A600 = 0;
-    fn_800BBD48(lbl_80363048);
-    fn_800BBD40(lbl_8036304C);
-}
 
 int fn_800B50D0();
 extern void *lbl_8035A600;
@@ -1276,226 +546,34 @@ extern f32 lbl_80363048, lbl_8036304C;
 void fn_800BBD48(f32);
 void fn_800BBD40(f32);
 void fn_800BB7E0(void*);
-void fn_800BB2B8(void) {
-    void *p = lbl_8035A600;
-    while (p != NULL) {
-        fn_800BB7E0(p);
-        p = *(void**)p;
-    }
-}
 
-void fn_800BB2F8(void *arg0, s32 arg1, u32 arg2) {
-    f32 f;
-    *(s32 *)((u8 *)arg0 + 0x10) = 0;
-    *(s32 *)((u8 *)arg0 + 0x8) = arg1;
-    f = arg2;
-    *(f32 *)((u8 *)arg0 + 0xC) = f;
-}
 
-void fn_800BB678(void *arg0, s32 arg1, s32 arg2, f32 farg0) {
-    extern f32 lbl_80363068;
-    *(s32 *)((u8 *)arg0 + 0x0) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x4) = arg2;
-    *(f32 *)((u8 *)arg0 + 0x8) = farg0;
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(f32 *)((u8 *)arg0 + 0x10) = *(f32 *)((u8 *)arg0 + 0x14) = *(f32 *)((u8 *)arg0 + 0x18) = *(f32 *)((u8 *)arg0 + 0x1C) = lbl_80363068;
-}
 
-void fn_800BB6A4(void *arg0) {
-    extern f32 lbl_8036306C;
-    u32 zero = 0;
-    f32 temp_f0;
 
-    M2C_FIELD(arg0, s32 *, 4) = 1;
-    M2C_FIELD(arg0, s32 *, 0x18) = zero;
-    temp_f0 = (f32) zero;
-    M2C_FIELD(arg0, f32 *, 0x14) = temp_f0;
-    M2C_FIELD(arg0, f32 *, 0x10) = temp_f0;
-    M2C_FIELD(arg0, f32 *, 0xC) = temp_f0;
-    M2C_FIELD(arg0, f32 *, 8) = temp_f0;
-    M2C_FIELD(arg0, u8 *, 0x1C) = 0x40;
-    M2C_FIELD(arg0, u8 *, 0x1D) = 0x7F;
-    M2C_FIELD(arg0, u8 *, 0x1E) = 1;
-    M2C_FIELD(arg0, s16 *, 0x22) = zero;
-    M2C_FIELD(arg0, s16 *, 0x20) = zero;
-    M2C_FIELD(arg0, f32 *, 0x24) = lbl_8036306C;
-    M2C_FIELD(arg0, s32 *, 0x28) = 0xFC400000;
-}
 
-void fn_800BB714(void *arg0) {
-    u8 a = 0x40;
-    M2C_FIELD(arg0, s32 *, 4) = 2;
-    M2C_FIELD(arg0, u8 *, 8) = a;
-    M2C_FIELD(arg0, u8 *, 9) = 0x7F;
-}
 
-void fn_800BB730(s32 *p) {
-    p[1] = 5;
-    p[2] = 0;
-}
 
-void fn_800BB744(s32 *p) {
-    f32 f;
-    p[1] = 7;
-    p[10] = 0;
-    p[2] = (s32)lbl_802D8F60;
-    p[3] = 0x40;
-    f = lbl_80363068;
-    *(f32 *)&p[4] = f;
-    p[5] = 0;
-    *(f32 *)&p[9] = f;
-    *(f32 *)&p[8] = f;
-    *(f32 *)&p[7] = f;
-    *(f32 *)&p[6] = f;
-}
 
-void fn_800BB788(AnimInit *p) {
-    p->unk4 = 8;
-    p->unk8 = 0;
-}
 
-void fn_800BB79C(AnimInit *p) {
-    p->unk4 = 0xE;
-    p->unk28 = 0;
-    p->unk8 = lbl_802D8F60;
-    p->unkC = 0x40;
-    p->unk10 = lbl_80363068;
-    p->unk14 = 0;
-    p->unk24 = lbl_80363068;
-    p->unk20 = lbl_80363068;
-    p->unk1C = lbl_80363068;
-    p->unk18 = lbl_80363068;
-}
-
-void fn_800BBAC8(void **arg0, void **arg1) {
-    *arg1 = arg0[4];
-    arg0[4] = arg1;
-}
 
 extern f32 lbl_802D8B70[];
 extern f32 lbl_80363080;
-f32 fn_800BBAD8(s32 cents) {
-    f32 *table = lbl_802D8B70;
-    s32 fine;
-    s32 semi;
-
-    if (cents > 0) {
-        return table[cents % 100] * (table[100 + cents / 1200] * table[112 + (cents % 1200) / 100]);
-    } else if (cents < 0) {
-        fine = cents % 100;
-        semi = cents / 100;
-        if (fine != 0) {
-            fine += 100;
-            semi -= 1;
-        }
-        return table[124 + -semi] * table[fine];
-    } else {
-        return lbl_80363080;
-    }
-}
 
 #pragma dont_inline reset
 
-void fn_800BBBD4(UnkStep* arg0) {
-    if (arg0->unk10 != arg0->unkC) {
-        arg0->unk10 += arg0->unk8;
-        if (arg0->unk8 > 0) {
-            if (arg0->unk10 > arg0->unkC) {
-                arg0->unk10 = arg0->unkC;
-            }
-        } else if (arg0->unk8 < 0) {
-            if (arg0->unk10 < arg0->unkC) {
-                arg0->unk10 = arg0->unkC;
-            }
-        }
-    }
-}
 
-void fn_800BBC30(UnkStep* arg0) {
-    if (arg0->unk10 != arg0->unkC) {
-        arg0->unk10 += arg0->unk8;
-        if (arg0->unk8 > 0) {
-            if (arg0->unk10 > arg0->unkC) {
-                arg0->unk10 = arg0->unkC;
-            }
-        } else if (arg0->unk8 < 0) {
-            if (arg0->unk10 < arg0->unkC) {
-                arg0->unk10 = arg0->unkC;
-            }
-        }
-    }
-}
 
 extern s32 fn_800E2584();
-void fn_800BBC8C(Anim *a) {
-    f32 d;
-    a->t = a->t + a->speed;
-    if (a->t >= lbl_80363088) {
-        a->t = a->t - a->t;
-        a->idx = a->idx + fn_800E2584();
-        a->idx = a->idx % a->count;
-        a->prev = a->cur;
-        a->cur = a->data[a->idx];
-    }
-    d = a->t * (a->prev - a->cur);
-    a->out = a->prev - d;
-}
 
 extern f32 lbl_8035A608;
 extern f32 lbl_80363088;
 extern u16 lbl_802D9DD8[];
 s32 fn_800E2584(void);
-void fn_800BBD40(f32 arg0) {
-    lbl_8035A608 = arg0;
-}
 
 extern f32 lbl_8035A60C;
-void fn_800BBD48(f32 arg0) {
-    lbl_8035A60C = arg0;
-}
 
-void fn_800BBED4(u32* arg0, u8* arg1) {
-    u32 idx;
-
-    if (arg0[4] != 0) {
-        if (arg0[2] != 0) {
-            arg0[2] = 0;
-            *(u16*)(arg1 + 0x1F2) = 1;
-            *(u16*)(arg1 + 0x1F4) = 0;
-            *(u32*)(arg1 + 0x1C) |= 0x200000;
-        } else {
-            *(u32*)(arg1 + 0x1C) |= 0x400000;
-        }
-        idx = arg0[3] * 2;
-        *(u16*)(arg1 + 0x1F6) = ((u16*)lbl_802D9DD8)[idx];
-        *(u16*)(arg1 + 0x1F8) = ((u16*)lbl_802D9DD8)[idx + 1];
-        arg0[4] = 0;
-    }
-}
 
 extern f32 lbl_803630A0, lbl_803630A4, lbl_803630A8, lbl_803630AC;
-void fn_800BC02C(f32 m[4][4], f32 t, f32 b, f32 l, f32 r, f32 n, f32 f) {
-    f32 tmp;
-    tmp = 1.0f / (r - l);
-    m[0][0] = 2.0f * tmp;
-    m[0][1] = 0.0f;
-    m[0][2] = 0.0f;
-    m[0][3] = tmp * -(r + l);
-    tmp = 1.0f / (t - b);
-    m[1][0] = 0.0f;
-    m[1][1] = 2.0f * tmp;
-    m[1][2] = 0.0f;
-    m[1][3] = tmp * -(t + b);
-    tmp = 1.0f / (f - n);
-    m[2][0] = 0.0f;
-    m[2][1] = 0.0f;
-    m[2][2] = -1.0f * tmp;
-    m[2][3] = -f * tmp;
-    m[3][0] = 0.0f;
-    m[3][1] = 0.0f;
-    m[3][2] = 0.0f;
-    m[3][3] = 1.0f;
-}
 
 
 
@@ -2049,124 +1127,15 @@ void OSEnableScheduler(void);
 
 extern u8 lbl_80327F90[];
 
-void fn_800B6998(unsigned char * s, unsigned char * d) {
-    int i;
-    int j;
-    int k;
-    int p;
-    int q;
-    int r7;  // huh? DWARF info says these 2 variables might be register names and not actual names.
-    int r25;
-    int cnt;
-    int os;
-    unsigned int flag;
-    unsigned int code;
-
-    os  = *(int*)(s + 0x4);
-    r7  = *(int*)(s + 0x8);
-    r25 = *(int*)(s + 0xC);
-
-    q    = 0;
-    flag = 0;
-    p    = 16;
-
-    do {
-        // Get next mask
-        if (flag == 0) {
-            code = *(u32*)(s + p);
-            p += sizeof(u32);
-            flag = sizeof(u32) * 8;
-        }
-
-        // Non-linked chunk
-        if (code & 0x80000000) {
-            d[q++] = s[r25++];
-        }
-        // Linked chunk
-        else {
-            // Read offset from link table
-            j = s[r7] << 8 | s[r7 + 1];
-            r7 += sizeof(u16);
-
-            // Apply offset
-            k = q - (j & 0x0FFF);
-            cnt    = j >> 12;
-            if (cnt == 0) {
-                cnt = s[r25++] + 0x12;
-            } else {
-                cnt += 2;
-            }
-
-            // Copy chunk
-            for (i = 0; i < cnt; i++, q++, k++) {
-                d[q] = d[k - 1];
-            }
-        }
-
-        // Prepare next mask bit
-        code <<= 1;
-        flag--;
-    } while (q < os);
-}
 
 volatile u16 __VIRegsA[64] : 0xCC002000;
 
-u16 fn_800B6B0C(void) {
-    if (lbl_80359550 <= 1) {
-        return lbl_80359550;
-    }
-    switch (*(int *)0x800000CC) {
-    case 0:
-        lbl_80359550 = (__VIRegsA[0x37] & 2) ? 1 : 0;
-        break;
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    default:
-        lbl_80359550 = 0;
-    }
-    return lbl_80359550;
-}
 
 
 static inline BOOL IsSjisTrailByteA(u8 c) {
     return 0x40 <= c && c <= 0xFC && c != 0x7F;
 }
 
-int fn_800B67FC(u16 code) {
-    if (fn_800B6B0C() == 1) {
-        if (0x20 <= code && code <= 0xDF) {
-            return lbl_802D7F30[code - 0x20];
-        } else if (0x889E < code && code <= 0x9872) {
-            int i = ((code >> 8) - 0x88) * 188;
-            int j = (code & 0xFF);
-            if (!IsSjisTrailByteA(j)) {
-                return 0;
-            }
-            j -= 0x40;
-            if (0x40 <= j) {
-                j--;
-            }
-            return (i + j + 0x2BE);
-        } else if (0x8140 <= code && code < 0x879E) {
-            int i = ((code >> 8) - 0x81) * 188;
-            int j = (code & 0xFF);
-            if (!IsSjisTrailByteA(j)) {
-                return 0;
-            }
-            j -= 0x40;
-            if (0x40 <= j) {
-                j--;
-            }
-            return lbl_802D80B0[i + j];
-        }
-    } else if (0x20 < code && code <= 0xFF) {
-        return code - 0x20;
-    }
-    return 0;
-}
 
 volatile u16 __MEMRegsB[64] : 0xCC004000;
 
@@ -2178,22 +1147,11 @@ BOOL fn_800B7AAC(BOOL final) {
     return TRUE;
 }
 
-asm void fn_800B7DF4(void) {
-    nofralloc
-    sync
-    isync
-    mtlr r3
-    blr
-}
 
 typedef struct { void *head; void *tail; } OSModuleQueueE;
 OSModuleQueueE __OSModuleListE : 0x800030C8;
 void *__OSStringTableE : 0x800030D0;
 
-void __OSModuleInit(void) {
-    __OSModuleListE.head = __OSModuleListE.tail = NULL;
-    __OSStringTableE = NULL;
-}
 
 #pragma push
 #pragma peephole off
@@ -2237,12 +1195,6 @@ void __OSInitMemoryProtection(void) {
 
 extern s32 RunQueueHint_8035A5EC;
 
-void __OSReschedule(void) {
-    if (!RunQueueHint_8035A5EC) {
-        return;
-    }
-    SelectThread(FALSE);
-}
 
 #ifndef WB_PRELUDE
 #define WB_PRELUDE
@@ -3045,543 +1997,70 @@ typedef struct WBTexObjI { u32 mode0; u32 mode1; u32 image0; u32 image3; void *u
 #pragma auto_inline off
 #pragma auto_inline reset
 
-asm void PPCHalt(void) {
-    nofralloc
-    sync
-loop:
-    nop
-    li r3, 0
-    nop
-    b loop
-}
 
 void fn_800B2E88(u32);
 
-void PPCDisableSpeculation(void) {
-    fn_800B2E88(PPCMfhid0() | 0x200);
-}
 
-s32 PPCMffpscr(void) {
-    union { f64 f; u32 u[2]; } m;
-    asm {
-        mffs fp31
-        stfd fp31, m.f
-    }
-    return m.u[1];
-}
 
-asm s32 PPCMfhid2(void) {
-    nofralloc
-    mfspr r3, 920
-    blr
-}
 
-asm u32 PPCMfl2cr(void) {
-    nofralloc
-    mfspr r3, 1017
-    blr
-}
 
-asm s32 PPCMfmsr(void) {
-    nofralloc
-    mfmsr r3
-    blr
-}
 
-void PPCMtfpscr(register u32 value) {
-    union { f64 f; u32 u[2]; } m;
-    asm {
-        li r4, 0
-        stw r4, m.u[0]
-        stw value, m.u[1]
-        lfd fp31, m.f
-        mtfsf 0xff, fp31
-    }
-}
 
-asm void PPCMthid2(register u32 value) {
-    nofralloc
-    mtspr 920, value
-    blr
-}
 
-asm void PPCMtl2cr(register u32 value) {
-    nofralloc
-    mtspr 1017, value
-    blr
-}
 
-asm void PPCMtmmcr0(register u32 value) {
-    nofralloc
-    mtspr 952, value
-    blr
-}
 
-asm void PPCMtmmcr1(register u32 value) {
-    nofralloc
-    mtspr 956, value
-    blr
-}
 
-asm void PPCMtmsr(register u32 value) {
-    nofralloc
-    mtmsr value
-    blr
-}
 
-asm void PPCMtpmc1(register u32 value) {
-    nofralloc
-    mtspr 953, value
-    blr
-}
 
-asm void PPCMtpmc2(register u32 value) {
-    nofralloc
-    mtspr 954, value
-    blr
-}
 
-asm void PPCMtpmc3(register u32 value) {
-    nofralloc
-    mtspr 957, value
-    blr
-}
 
-asm void PPCMtpmc4(register u32 value) {
-    nofralloc
-    mtspr 958, value
-    blr
-}
 
-asm void PPCMtwpar(register u32 value) {
-    nofralloc
-    mtspr 921, value
-    blr
-}
 
-asm void PPCSetFpNonIEEEMode(void) {
-    nofralloc
-    mtfsb1 29
-    blr
-}
 
-asm void fn_800B2E88(register u32 value) {
-    nofralloc
-    mtspr 1008, value
-    blr
-}
 
-asm s32 fn_800B2F4C(void) {
-    nofralloc
-    sync
-    mfspr r3, 921
-    blr
-}
 
 #pragma push
 #pragma peephole off
 extern u32 *BootInfo_8035A520;
 
-u32 fn_800B31A4(void) {
-    if (BootInfo_8035A520 == NULL || BootInfo_8035A520[11] == 0) {
-        return 0x10000002;
-    }
-    return BootInfo_8035A520[11];
-}
 #pragma pop
 
-asm void fn_800B39AC(void) {
-    nofralloc
-    bla 0x60
-}
 
 #pragma push
 #pragma peephole off
 extern u16 DriveInfo_80307500[];
 
-void InquiryCallback(s32 result, s32 *block) {
-    switch (block[3]) {
-    case 0:
-        *(u16 *)0x800030E6 = (u16)(DriveInfo_80307500[1] | 0x8000);
-        break;
-    default:
-        *(u16 *)0x800030E6 = 1;
-        break;
-    }
-}
 #pragma pop
 
-asm void __OSDBIntegrator(void) {
-    nofralloc
-    li r5, 0x40
-    mflr r3
-    stw r3, 12(r5)
-    lwz r3, 8(r5)
-    oris r3, r3, 0x8000
-    mtlr r3
-    li r3, 0x30
-    mtmsr r3
-    blr
-}
 
 void __OSUnhandledException(void);
 
-asm void OSDefaultExceptionHandler(register u8 exception, register void *context) {
-    nofralloc
-    stw r0, 0(context)
-    stw r1, 4(context)
-    stw r2, 8(context)
-    stmw r6, 24(context)
-    mfspr r0, 913
-    stw r0, 424(context)
-    mfspr r0, 914
-    stw r0, 428(context)
-    mfspr r0, 915
-    stw r0, 432(context)
-    mfspr r0, 916
-    stw r0, 436(context)
-    mfspr r0, 917
-    stw r0, 440(context)
-    mfspr r0, 918
-    stw r0, 444(context)
-    mfspr r0, 919
-    stw r0, 448(context)
-    mfdsisr r5
-    mfdar r6
-    stwu r1, -8(r1)
-    b __OSUnhandledException
-}
 
 void ICFlashInvalidate(void);
 
-void __OSPSInit(void) {
-    PPCMthid2(PPCMfhid2() | 0xA0000000);
-    ICFlashInvalidate();
-    asm { sync }
-    asm {
-        li r3, 0
-        mtspr 912, r3
-        mtspr 913, r3
-        mtspr 914, r3
-        mtspr 915, r3
-        mtspr 916, r3
-        mtspr 917, r3
-        mtspr 918, r3
-        mtspr 919, r3
-    }
-}
 
 #pragma push
 #pragma peephole off
 extern char lbl_8035952C[8];
 
-void OSRegisterVersion(const char *id) {
-    OSReport(lbl_8035952C, id);
-}
 #pragma pop
 
 #pragma push
 #pragma peephole off
 
-s32 __OSSetExceptionHandler(u8 exception, s32 handler) {
-    s32 old = OSExceptionTable_8035A544[exception];
-    OSExceptionTable_8035A544[exception] = handler;
-    return old;
-}
 #pragma pop
 
 extern f64 ZeroF_8035A530;
 extern f32 ZeroPS_8035A538[2];
 
-asm void __OSFPRInit(void) {
-    nofralloc
-    mfmsr r3
-    ori r3, r3, 0x2000
-    mtmsr r3
-    mfspr r3, 920
-    rlwinm. r3, r3, 3, 31, 31
-    beq skip_ps
-    lis r3, ZeroPS_8035A538@ha
-    addi r3, r3, ZeroPS_8035A538@l
-    psq_l fp0, 0(r3), 0, 0
-    ps_mr fp1, fp0
-    ps_mr fp2, fp0
-    ps_mr fp3, fp0
-    ps_mr fp4, fp0
-    ps_mr fp5, fp0
-    ps_mr fp6, fp0
-    ps_mr fp7, fp0
-    ps_mr fp8, fp0
-    ps_mr fp9, fp0
-    ps_mr fp10, fp0
-    ps_mr fp11, fp0
-    ps_mr fp12, fp0
-    ps_mr fp13, fp0
-    ps_mr fp14, fp0
-    ps_mr fp15, fp0
-    ps_mr fp16, fp0
-    ps_mr fp17, fp0
-    ps_mr fp18, fp0
-    ps_mr fp19, fp0
-    ps_mr fp20, fp0
-    ps_mr fp21, fp0
-    ps_mr fp22, fp0
-    ps_mr fp23, fp0
-    ps_mr fp24, fp0
-    ps_mr fp25, fp0
-    ps_mr fp26, fp0
-    ps_mr fp27, fp0
-    ps_mr fp28, fp0
-    ps_mr fp29, fp0
-    ps_mr fp30, fp0
-    ps_mr fp31, fp0
-skip_ps:
-    lfd fp0, ZeroF_8035A530
-    fmr fp1, fp0
-    fmr fp2, fp0
-    fmr fp3, fp0
-    fmr fp4, fp0
-    fmr fp5, fp0
-    fmr fp6, fp0
-    fmr fp7, fp0
-    fmr fp8, fp0
-    fmr fp9, fp0
-    fmr fp10, fp0
-    fmr fp11, fp0
-    fmr fp12, fp0
-    fmr fp13, fp0
-    fmr fp14, fp0
-    fmr fp15, fp0
-    fmr fp16, fp0
-    fmr fp17, fp0
-    fmr fp18, fp0
-    fmr fp19, fp0
-    fmr fp20, fp0
-    fmr fp21, fp0
-    fmr fp22, fp0
-    fmr fp23, fp0
-    fmr fp24, fp0
-    fmr fp25, fp0
-    fmr fp26, fp0
-    fmr fp27, fp0
-    fmr fp28, fp0
-    fmr fp29, fp0
-    fmr fp30, fp0
-    fmr fp31, fp0
-    mtfsf 0xff, fp0
-    blr
-}
 
 void __OSEVStart(void);
 void __OSEVEnd(void);
 void __OSEVSetNumber(void);
 void __DBVECTOR(void);
 
-asm void OSExceptionVector(void) {
-    nofralloc
-entry __OSEVStart
-    mtsprg 0, r4
-    lwz r4, 0xC0
-    stw r3, 12(r4)
-    mfsprg r3, 0
-    stw r3, 16(r4)
-    stw r5, 20(r4)
-    lhz r3, 418(r4)
-    ori r3, r3, 2
-    sth r3, 418(r4)
-    mfcr r3
-    stw r3, 128(r4)
-    mflr r3
-    stw r3, 132(r4)
-    mfctr r3
-    stw r3, 136(r4)
-    mfxer r3
-    stw r3, 140(r4)
-    mfsrr0 r3
-    stw r3, 408(r4)
-    mfsrr1 r3
-    stw r3, 412(r4)
-    mr r5, r3
-entry __DBVECTOR
-    nop
-    mfmsr r3
-    ori r3, r3, 0x30
-    mtsrr1 r3
-entry __OSEVSetNumber
-    addi r3, 0, 0
-    lwz r4, 0xD4
-    rlwinm. r5, r5, 0, 30, 30
-    bne recoverable
-    addis r5, 0, OSDefaultExceptionHandler@ha
-    addi r5, r5, OSDefaultExceptionHandler@l
-    mtsrr0 r5
-    rfi
-recoverable:
-    rlwinm r5, r3, 2, 22, 29
-    lwz r5, 0x3000(r5)
-    mtsrr0 r5
-    rfi
-entry __OSEVEnd
-    nop
-}
 
-asm void __OSLoadFPUContext(void) {
-    nofralloc
-    lhz r5, 418(r4)
-    clrlwi. r5, r5, 31
-    beq L_120
-    lfd f0, 400(r4)
-    mtfsf 255, f0
-    mfspr r5,  920
-    rlwinm. r5, r5, 3, 31, 31
-    beq L_a0
-    psq_l f0, 456(r4), 0, 0
-    psq_l f1, 464(r4), 0, 0
-    psq_l f2, 472(r4), 0, 0
-    psq_l f3, 480(r4), 0, 0
-    psq_l f4, 488(r4), 0, 0
-    psq_l f5, 496(r4), 0, 0
-    psq_l f6, 504(r4), 0, 0
-    psq_l f7, 512(r4), 0, 0
-    psq_l f8, 520(r4), 0, 0
-    psq_l f9, 528(r4), 0, 0
-    psq_l f10, 536(r4), 0, 0
-    psq_l f11, 544(r4), 0, 0
-    psq_l f12, 552(r4), 0, 0
-    psq_l f13, 560(r4), 0, 0
-    psq_l f14, 568(r4), 0, 0
-    psq_l f15, 576(r4), 0, 0
-    psq_l f16, 584(r4), 0, 0
-    psq_l f17, 592(r4), 0, 0
-    psq_l f18, 600(r4), 0, 0
-    psq_l f19, 608(r4), 0, 0
-    psq_l f20, 616(r4), 0, 0
-    psq_l f21, 624(r4), 0, 0
-    psq_l f22, 632(r4), 0, 0
-    psq_l f23, 640(r4), 0, 0
-    psq_l f24, 648(r4), 0, 0
-    psq_l f25, 656(r4), 0, 0
-    psq_l f26, 664(r4), 0, 0
-    psq_l f27, 672(r4), 0, 0
-    psq_l f28, 680(r4), 0, 0
-    psq_l f29, 688(r4), 0, 0
-    psq_l f30, 696(r4), 0, 0
-    psq_l f31, 704(r4), 0, 0
-L_a0:
-    lfd f0, 144(r4)
-    lfd f1, 152(r4)
-    lfd f2, 160(r4)
-    lfd f3, 168(r4)
-    lfd f4, 176(r4)
-    lfd f5, 184(r4)
-    lfd f6, 192(r4)
-    lfd f7, 200(r4)
-    lfd f8, 208(r4)
-    lfd f9, 216(r4)
-    lfd f10, 224(r4)
-    lfd f11, 232(r4)
-    lfd f12, 240(r4)
-    lfd f13, 248(r4)
-    lfd f14, 256(r4)
-    lfd f15, 264(r4)
-    lfd f16, 272(r4)
-    lfd f17, 280(r4)
-    lfd f18, 288(r4)
-    lfd f19, 296(r4)
-    lfd f20, 304(r4)
-    lfd f21, 312(r4)
-    lfd f22, 320(r4)
-    lfd f23, 328(r4)
-    lfd f24, 336(r4)
-    lfd f25, 344(r4)
-    lfd f26, 352(r4)
-    lfd f27, 360(r4)
-    lfd f28, 368(r4)
-    lfd f29, 376(r4)
-    lfd f30, 384(r4)
-    lfd f31, 392(r4)
-L_120:
-    blr
-}
 
-asm void __OSSaveFPUContext(void) {
-    nofralloc
-    lhz r3, 418(r5)
-    ori r3, r3, 1
-    sth r3, 418(r5)
-    stfd f0, 144(r5)
-    stfd f1, 152(r5)
-    stfd f2, 160(r5)
-    stfd f3, 168(r5)
-    stfd f4, 176(r5)
-    stfd f5, 184(r5)
-    stfd f6, 192(r5)
-    stfd f7, 200(r5)
-    stfd f8, 208(r5)
-    stfd f9, 216(r5)
-    stfd f10, 224(r5)
-    stfd f11, 232(r5)
-    stfd f12, 240(r5)
-    stfd f13, 248(r5)
-    stfd f14, 256(r5)
-    stfd f15, 264(r5)
-    stfd f16, 272(r5)
-    stfd f17, 280(r5)
-    stfd f18, 288(r5)
-    stfd f19, 296(r5)
-    stfd f20, 304(r5)
-    stfd f21, 312(r5)
-    stfd f22, 320(r5)
-    stfd f23, 328(r5)
-    stfd f24, 336(r5)
-    stfd f25, 344(r5)
-    stfd f26, 352(r5)
-    stfd f27, 360(r5)
-    stfd f28, 368(r5)
-    stfd f29, 376(r5)
-    stfd f30, 384(r5)
-    stfd f31, 392(r5)
-    mffs f0
-    stfd f0, 400(r5)
-    lfd f0, 144(r5)
-    mfspr r3,  920
-    rlwinm. r3, r3, 3, 31, 31
-    beq L_124
-    psq_st f0, 456(r5), 0, 0
-    psq_st f1, 464(r5), 0, 0
-    psq_st f2, 472(r5), 0, 0
-    psq_st f3, 480(r5), 0, 0
-    psq_st f4, 488(r5), 0, 0
-    psq_st f5, 496(r5), 0, 0
-    psq_st f6, 504(r5), 0, 0
-    psq_st f7, 512(r5), 0, 0
-    psq_st f8, 520(r5), 0, 0
-    psq_st f9, 528(r5), 0, 0
-    psq_st f10, 536(r5), 0, 0
-    psq_st f11, 544(r5), 0, 0
-    psq_st f12, 552(r5), 0, 0
-    psq_st f13, 560(r5), 0, 0
-    psq_st f14, 568(r5), 0, 0
-    psq_st f15, 576(r5), 0, 0
-    psq_st f16, 584(r5), 0, 0
-    psq_st f17, 592(r5), 0, 0
-    psq_st f18, 600(r5), 0, 0
-    psq_st f19, 608(r5), 0, 0
-    psq_st f20, 616(r5), 0, 0
-    psq_st f21, 624(r5), 0, 0
-    psq_st f22, 632(r5), 0, 0
-    psq_st f23, 640(r5), 0, 0
-    psq_st f24, 648(r5), 0, 0
-    psq_st f25, 656(r5), 0, 0
-    psq_st f26, 664(r5), 0, 0
-    psq_st f27, 672(r5), 0, 0
-    psq_st f28, 680(r5), 0, 0
-    psq_st f29, 688(r5), 0, 0
-    psq_st f30, 696(r5), 0, 0
-    psq_st f31, 704(r5), 0, 0
-L_124:
-    blr
-}
 
 asm void Config24MB(void) {
     nofralloc
@@ -3655,577 +2134,44 @@ asm void Config48MB(void) {
     rfi
 }
 
-asm void DCEnable(void) {
-    nofralloc
-    sync
-    mfspr r3,  1008
-    ori r3, r3, 16384
-    mtspr 1008,  r3
-    blr
-}
 
-asm void DCFlushRange(register void * a0, register u32 a1) {
-    nofralloc
-    cmplwi r4, 0
-    blelr
-    clrlwi r5, r3, 27
-    add r4, r4, r5
-    addi r4, r4, 31
-    srwi r4, r4, 5
-    mtctr r4
-L_1c:
-    dcbf 0, r3
-    addi r3, r3, 32
-    bdnz L_1c
-    sc
-    blr
-}
 
-asm void DCFlushRangeNoSync(register void * a0, register u32 a1) {
-    nofralloc
-    cmplwi r4, 0
-    blelr
-    clrlwi r5, r3, 27
-    add r4, r4, r5
-    addi r4, r4, 31
-    srwi r4, r4, 5
-    mtctr r4
-L_1c:
-    dcbf 0, r3
-    addi r3, r3, 32
-    bdnz L_1c
-    blr
-}
 
 void DecrementerExceptionCallback(void);
-asm void DecrementerExceptionHandler(void) {
-    nofralloc
-    stw r0, 0(r4)
-    stw r1, 4(r4)
-    stw r2, 8(r4)
-    stmw r6, 24(r4)
-    mfspr r0, 913
-    stw r0, 424(r4)
-    mfspr r0, 914
-    stw r0, 428(r4)
-    mfspr r0, 915
-    stw r0, 432(r4)
-    mfspr r0, 916
-    stw r0, 436(r4)
-    mfspr r0, 917
-    stw r0, 440(r4)
-    mfspr r0, 918
-    stw r0, 444(r4)
-    mfspr r0, 919
-    stw r0, 448(r4)
-    stwu r1, -8(r1)
-    b DecrementerExceptionCallback
-}
 
 void fn_800B7700(void);
-asm void ExternalInterruptHandler(void) {
-    nofralloc
-    stw r0, 0(r4)
-    stw r1, 4(r4)
-    stw r2, 8(r4)
-    stmw r6, 24(r4)
-    mfspr r0, 913
-    stw r0, 424(r4)
-    mfspr r0, 914
-    stw r0, 428(r4)
-    mfspr r0, 915
-    stw r0, 432(r4)
-    mfspr r0, 916
-    stw r0, 436(r4)
-    mfspr r0, 917
-    stw r0, 440(r4)
-    mfspr r0, 918
-    stw r0, 444(r4)
-    mfspr r0, 919
-    stw r0, 448(r4)
-    stwu r1, -8(r1)
-    b fn_800B7700
-}
 
-asm void fn_800B48F4(void) {
-    nofralloc
-    cmplwi r4, 0
-    blelr
-    clrlwi r5, r3, 27
-    add r4, r4, r5
-    addi r4, r4, 31
-    srwi r4, r4, 5
-    mtctr r4
-L_1c:
-    dcbst 0, r3
-    addi r3, r3, 32
-    bdnz L_1c
-    sc
-    blr
-}
 
-asm void fn_800B4F78(void) {
-    nofralloc
-    stmw r13, 52(r3)
-    mfspr r0, 913
-    stw r0, 424(r3)
-    mfspr r0, 914
-    stw r0, 428(r3)
-    mfspr r0, 915
-    stw r0, 432(r3)
-    mfspr r0, 916
-    stw r0, 436(r3)
-    mfspr r0, 917
-    stw r0, 440(r3)
-    mfspr r0, 918
-    stw r0, 444(r3)
-    mfspr r0, 919
-    stw r0, 448(r3)
-    mfcr r0
-    stw r0, 128(r3)
-    mflr r0
-    stw r0, 132(r3)
-    stw r0, 408(r3)
-    mfmsr r0
-    stw r0, 412(r3)
-    mfctr r0
-    stw r0, 136(r3)
-    mfxer r0
-    stw r0, 140(r3)
-    stw r1, 4(r3)
-    stw r2, 8(r3)
-    li r0, 1
-    stw r0, 12(r3)
-    li r3, 0
-    blr
-}
 
-asm int fn_800B50D0(void) {
-    nofralloc
-    mr r3, r1
-    blr
-}
 
-asm void fn_800B50D8(void) {
-    nofralloc
-    mflr r0
-    mr r5, r1
-    stwu r5, -8(r4)
-    mr r1, r4
-    stw r0, 4(r5)
-    mtlr r3
-    blrl
-    lwz r5, 0(r1)
-    lwz r0, 4(r5)
-    mtlr r0
-    mr r1, r5
-    blr
-}
 
-asm void ICEnable(void) {
-    nofralloc
-    isync
-    mfspr r3,  1008
-    ori r3, r3, 32768
-    mtspr 1008,  r3
-    blr
-}
 
-asm void ICFlashInvalidate(void) {
-    nofralloc
-    mfspr r3,  1008
-    ori r3, r3, 2048
-    mtspr 1008,  r3
-    blr
-}
 
-asm void ICInvalidateRange(register void * a0, register u32 a1) {
-    nofralloc
-    cmplwi r4, 0
-    blelr
-    clrlwi r5, r3, 27
-    add r4, r4, r5
-    addi r4, r4, 31
-    srwi r4, r4, 5
-    mtctr r4
-L_1c:
-    icbi 0, r3
-    addi r3, r3, 32
-    bdnz L_1c
-    sync
-    isync
-    blr
-}
 
-asm void LCDisable(void) {
-    nofralloc
-    lis r3, -8192
-    li r4, 512
-    mtctr r4
-L_c:
-    dcbi 0, r3
-    addi r3, r3, 32
-    bdnz L_c
-    mfspr r4,  920
-    rlwinm r4, r4, 0, 4, 2
-    mtspr 920,  r4
-    blr
-}
 
-asm int OSDisableInterrupts(void) {
-    nofralloc
-    mfmsr r3
-    rlwinm r4, r3, 0, 17, 15
-    mtmsr r4
-    rlwinm r3, r3, 17, 31, 31
-    blr
-}
 
-asm void OSEnableInterrupts(void) {
-    nofralloc
-    mfmsr r3
-    ori r4, r3, 32768
-    mtmsr r4
-    rlwinm r3, r3, 17, 31, 31
-    blr
-}
 
-asm u32 OSGetTick(void) {
-    nofralloc
-    mftb r3
-    blr
-}
 
-asm void OSLoadContext(void) {
-    nofralloc
-    lis r4, OSDisableInterrupts@ha
-    lwz r6, 408(r3)
-    addi r5, r4, OSDisableInterrupts@l
-    cmplw r6, r5
-    ble L_28
-    lis r4, (OSDisableInterrupts+12)@ha
-    addi r0, r4, (OSDisableInterrupts+12)@l
-    cmplw r6, r0
-    bge L_28
-    stw r5, 408(r3)
-L_28:
-    lwz r0, 0(r3)
-    lwz r1, 4(r3)
-    lwz r2, 8(r3)
-    lhz r4, 418(r3)
-    rlwinm. r5, r4, 0, 30, 30
-    beq L_50
-    rlwinm r4, r4, 0, 31, 29
-    sth r4, 418(r3)
-    lmw r5, 20(r3)
-    b L_54
-L_50:
-    lmw r13, 52(r3)
-L_54:
-    lwz r4, 424(r3)
-    mtspr 913, r4
-    lwz r4, 428(r3)
-    mtspr 914, r4
-    lwz r4, 432(r3)
-    mtspr 915, r4
-    lwz r4, 436(r3)
-    mtspr 916, r4
-    lwz r4, 440(r3)
-    mtspr 917, r4
-    lwz r4, 444(r3)
-    mtspr 918, r4
-    lwz r4, 448(r3)
-    mtspr 919, r4
-    lwz r4, 128(r3)
-    mtcr r4
-    lwz r4, 132(r3)
-    mtlr r4
-    lwz r4, 136(r3)
-    mtctr r4
-    lwz r4, 140(r3)
-    mtxer r4
-    mfmsr r4
-    rlwinm r4, r4, 0, 17, 15
-    rlwinm r4, r4, 0, 31, 29
-    mtmsr r4
-    lwz r4, 408(r3)
-    mtsrr0 r4
-    lwz r4, 412(r3)
-    mtsrr1 r4
-    lwz r4, 16(r3)
-    lwz r3, 12(r3)
-    rfi
-}
 
-asm int OSRestoreInterrupts(register int a0) {
-    nofralloc
-    cmpwi r3, 0
-    mfmsr r4
-    beq L_14
-    ori r5, r4, 32768
-    b L_18
-L_14:
-    rlwinm r5, r4, 0, 17, 15
-L_18:
-    mtmsr r5
-    rlwinm r3, r4, 17, 31, 31
-    blr
-}
 
-asm void OSSaveFPUContext(void) {
-    nofralloc
-    addi r5, r3, 0
-    b __OSSaveFPUContext
-}
 
-asm void OSSetCurrentContext(register u8 * a0) {
-    nofralloc
-    lis r4, -32768
-    stw r3, 212(r4)
-    clrlwi r5, r3, 2
-    stw r5, 192(r4)
-    lwz r5, 216(r4)
-    cmpw r5, r3
-    bne L_38
-    lwz r6, 412(r3)
-    ori r6, r6, 8192
-    stw r6, 412(r3)
-    mfmsr r6
-    ori r6, r6, 2
-    mtmsr r6
-    blr
-L_38:
-    lwz r6, 412(r3)
-    rlwinm r6, r6, 0, 19, 17
-    stw r6, 412(r3)
-    mfmsr r6
-    rlwinm r6, r6, 0, 19, 17
-    ori r6, r6, 2
-    mtmsr r6
-    isync
-    blr
-}
 
-asm void OSSwitchFPUContext(void) {
-    nofralloc
-    mfmsr r5
-    ori r5, r5, 8192
-    mtmsr r5
-    isync
-    lwz r5, 412(r4)
-    ori r5, r5, 8192
-    mtsrr1 r5
-    lis r3, -32768
-    lwz r5, 216(r3)
-    stw r4, 216(r3)
-    cmpw r5, r4
-    beq L_40
-    cmpwi r5, 0
-    beq L_3c
-    bl __OSSaveFPUContext
-L_3c:
-    bl __OSLoadFPUContext
-L_40:
-    lwz r3, 128(r4)
-    mtcr r3
-    lwz r3, 132(r4)
-    mtlr r3
-    lwz r3, 408(r4)
-    mtsrr0 r3
-    lwz r3, 136(r4)
-    mtctr r3
-    lwz r3, 140(r4)
-    mtxer r3
-    lhz r3, 418(r4)
-    rlwinm r3, r3, 0, 31, 29
-    sth r3, 418(r4)
-    lwz r5, 20(r4)
-    lwz r3, 12(r4)
-    lwz r4, 16(r4)
-    rfi
-}
 
-asm void __DBExceptionDestination(void) {
-    nofralloc
-    mfmsr r3
-    ori r3, r3, 48
-    mtmsr r3
-    b fn_800B2FB8
-}
 
-asm void Reset(void) {
-    nofralloc
-    b L_20
-L_4:
-    mfspr r8,  1008
-    ori r8, r8, 8
-    mtspr 1008,  r8
-    isync
-    sync
-    nop
-    b L_24
-L_20:
-    b L_40
-L_24:
-    mftb r5
-L_28:
-    mftb r6
-    subf r7, r5, r6
-    cmplwi r7, 4388
-    blt L_28
-    nop
-    b L_44
-L_40:
-    b L_60
-L_44:
-    lis r8, -13312
-    ori r8, r8, 12288
-    li r4, 3
-    stw r4, 36(r8)
-    stw r3, 36(r8)
-    nop
-    b L_64
-L_60:
-    b L_6c
-L_64:
-    nop
-    b L_64
-L_6c:
-    b L_4
-}
 
 volatile u16 __DSPRegsA[32] : 0xCC005000;
 #define ASSERTMSGLINE(a, b, c)
 #define __DSPWorkBuffer (void *)0x81000000
 extern u8 DSPInitCode_802D7788[128];
-void __OSInitAudioSystem(void) {
-  u8 errFlag;
-  u16 reg16;
-  u32 start_tick;
-
-  memcpy((u8 *)OSGetArenaHi() - 128, __DSPWorkBuffer, 128);
-  memcpy(__DSPWorkBuffer, (void*)DSPInitCode_802D7788, 128);
-  DCFlushRange(__DSPWorkBuffer, 128);
-
-  __DSPRegsA[9] = 0x43;
-  ASSERTMSGLINE(0x67, !(__DSPRegsA[5] & 0x200), "__OSInitAudioSystem(): ARAM DMA already in progress");
-  ASSERTMSGLINE(0x6B, !(__DSPRegsA[5] & 0x400), "__OSInitAudioSystem(): DSP DMA already in progress");
-  ASSERTMSGLINE(0x6F, (__DSPRegsA[5] & 0x004), "__OSInitAudioSystem(): DSP already working");
-  __DSPRegsA[5] = 0x8AC;
-  __DSPRegsA[5] |= 1;
-  while (__DSPRegsA[5] & 1);
-  __DSPRegsA[0] = 0;
-  while (((__DSPRegsA[2] << 16) | __DSPRegsA[3]) & 0x80000000);
-  *(u32*)&__DSPRegsA[16] = 0x1000000;
-  *(u32*)&__DSPRegsA[18] = 0;
-  *(u32*)&__DSPRegsA[20] = 0x20;
-
-  reg16 = __DSPRegsA[5];
-  while (!(reg16 & 0x20))
-    reg16 = __DSPRegsA[5];
-  __DSPRegsA[5] = reg16;
-
-  start_tick = OSGetTick();
-  while ((s32)(OSGetTick() - start_tick) < 0x892);
-
-  *(u32*)&__DSPRegsA[16] = 0x1000000;
-  *(u32*)&__DSPRegsA[18] = 0;
-  *(u32*)&__DSPRegsA[20] = 0x20;
-
-  reg16 = __DSPRegsA[5];
-  while (!(reg16 & 0x20)) {
-    reg16 = __DSPRegsA[5];
-  }
-  __DSPRegsA[5] = reg16;
-
-  __DSPRegsA[5] &= ~0x800;
-  while ((__DSPRegsA[5]) & 0x400);
-  __DSPRegsA[5] &= ~4;
-  errFlag = 0;
-
-  reg16 = __DSPRegsA[2];
-
-  // the nonmatching part
-  while (!(reg16 & 0x8000)) {
-    reg16 = __DSPRegsA[2];
-  }
-
-  if(((u32)((reg16 << 16) | __DSPRegsA[3]) + 0x7FAC0000U) != 0x4348) {
-      ASSERTMSGLINE(0xB7, 0, "__OSInitAudioSystem(): DSP returns invalid message");
-  }
-
-  
-  reg16 != 42069;
-  __DSPRegsA[5] |= 4;
-  __DSPRegsA[5] = 0x8AC;
-  __DSPRegsA[5] |= 1;
-  while (__DSPRegsA[5] & 1);
-  memcpy(__DSPWorkBuffer, (u8 *)OSGetArenaHi() - 128, 128);
-}
 
 volatile u16 __DSPRegsA[32] : 0xCC005000;
 #define ASSERTMSGLINE(a, b, c)
 #define __DSPWorkBuffer (void *)0x81000000
-void __OSStopAudioSystem(void) {
-  u16 reg16;
-  u32 start_tick;
-
-#define waitUntil(load, mask)                                                                      \
-  reg16 = (load);                                                                                    \
-  while (reg16 & (mask)) {                                                                           \
-    reg16 = (load);                                                                                  \
-  }
-
-  __DSPRegsA[5] = 0x804;
-  reg16 = __DSPRegsA[27];
-  __DSPRegsA[27] = reg16 & ~0x8000;
-  waitUntil(__DSPRegsA[5], 0x400);
-  waitUntil(__DSPRegsA[5], 0x200);
-  __DSPRegsA[5] = 0x8ac;
-  __DSPRegsA[0] = 0;
-
-  while (((__DSPRegsA[2] << 16) | __DSPRegsA[3]) & 0x80000000)
-    ;
-  start_tick = OSGetTick();
-  while ((s32)(OSGetTick() - start_tick) < 0x2c)
-    ;
-  reg16 = __DSPRegsA[5];
-  __DSPRegsA[5] = reg16 | 1;
-  waitUntil(__DSPRegsA[5], 0x001);
-
-#undef waitUntil
-}
 
 #pragma push
 #pragma peephole off
 extern char lbl_802D7808[];
 
-void DMAErrorHandler(u16 error, u8 *context, ...) {
-    char *s = lbl_802D7808;
-    u32 hid2 = PPCMfhid2();
-    OSReport(s + 44);
-    OSReport(s + 68, hid2, *(u32 *)(context + 412));
-    if (!(hid2 & 0x00F00000) || !(*(u32 *)(context + 412) & 0x00200000)) {
-        OSReport(s + 96);
-        OSDumpContext(context);
-        PPCHalt();
-    }
-    OSReport(s + 144);
-    OSReport(s + 204);
-    if (hid2 & 0x00800000) {
-        OSReport(s + 260);
-    }
-    if (hid2 & 0x00400000) {
-        OSReport(s + 324);
-    }
-    if (hid2 & 0x00200000) {
-        OSReport(s + 368);
-    }
-    if (hid2 & 0x00100000) {
-        OSReport(s + 400);
-    }
-    PPCMthid2(hid2);
-}
 #pragma pop
 
 #pragma push
@@ -4233,80 +2179,20 @@ void DMAErrorHandler(u16 error, u8 *context, ...) {
 void L2GlobalInvalidate(void);
 void *OSSetErrorHandler(u16, void *);
 
-void __OSCacheInit(void) {
-    char *s = lbl_802D7808;
-    if (!(PPCMfhid0() & 0x8000)) {
-        ICEnable();
-        DBPrintf(s + 428);
-    }
-    if (!(PPCMfhid0() & 0x4000)) {
-        DCEnable();
-        DBPrintf(s + 456);
-    }
-    if (!(PPCMfl2cr() & 0x80000000)) {
-        u32 oldMSR = PPCMfmsr();
-        __sync();
-        PPCMtmsr(0x30);
-        __sync();
-        __sync();
-        PPCMtl2cr(PPCMfl2cr() & ~0x80000000);
-        __sync();
-        L2GlobalInvalidate();
-        PPCMtmsr(oldMSR);
-        PPCMtl2cr((PPCMfl2cr() | 0x80000000) & ~0x00200000);
-        DBPrintf(s + 484);
-    }
-    OSSetErrorHandler(1, DMAErrorHandler);
-    DBPrintf(s + 508);
-}
 #pragma pop
 
 #pragma push
 #pragma peephole off
 void L2GlobalInvalidate(void);
 
-void L2GlobalInvalidate(void) {
-    __sync();
-    PPCMtl2cr(PPCMfl2cr() & ~0x80000000);
-    __sync();
-    PPCMtl2cr(PPCMfl2cr() | 0x00200000);
-    while (PPCMfl2cr() & 1) {
-    }
-    PPCMtl2cr(PPCMfl2cr() & ~0x00200000);
-    while (PPCMfl2cr() & 1) {
-        DBPrintf(">>> L2 INVALIDATE : SHOULD NEVER HAPPEN\n");
-    }
-}
 #pragma pop
 
 #pragma push
 #pragma peephole off
-void OSClearContext(register u8 *context) {
-    *(u16 *)(context + 416) = 0;
-    *(u16 *)(context + 418) = 0;
-    if (context == *(u8 **)0x800000D8) {
-        *(u8 **)0x800000D8 = NULL;
-    }
-}
 #pragma pop
 
 typedef struct { char gpr; char fpr; char reserved[2]; char *input_arg_area; char *reg_save_area; } va_listA[1];
 
-void fn_800B5520(char *file, int line, char *msg, ...) {
-    va_listA marker;
-    u32 i;
-    u32 *p;
-
-    OSDisableInterrupts();
-    __builtin_va_info(&marker);
-    vprintf(msg, (void *)marker);
-    OSReport(" in \"%s\" on line %d.\n", file, line);
-    OSReport("\nAddress:      Back Chain    LR Save\n");
-    for (i = 0, p = (u32 *)fn_800B50D0(); p && (u32)p != 0xffffffff && i++ < 16; p = (u32 *)*p) {
-        OSReport("0x%08x:   0x%08x    0x%08x\n", p, p[0], p[1]);
-    }
-    PPCHalt();
-}
 
 #ifndef WB_PRELUDE
 #define WB_PRELUDE

@@ -7724,9 +7724,61 @@ auto/text_800B2E00.cpp:
 	.text       start:0x800B2E00 end:0x800B2E70
 	.ctors      start:0x802940E8 end:0x802940EC
 
-auto/text_800B2E70.c:
-	.text       start:0x800B2E70 end:0x800BC1C8
+sdk/PPCArch.c:
+	.text       start:0x800B2E70 end:0x800B2F90
+
+auto/text_800B2F90.c:
+	.text       start:0x800B2F90 end:0x800B3B68
 	.data       start:0x802D8AE0 end:0x802D9E38
+
+sdk/OSAlarm.c:
+	.text       start:0x800B3B68 end:0x800B4294
+	.sbss       start:0x8035A560 end:0x8035A568
+
+auto/text_800B4294.c:
+	.text       start:0x800B4294 end:0x800B45A4
+
+sdk/OSArena.c:
+	.text       start:0x800B45A4 end:0x800B45F0
+	.sdata      start:0x80359538 end:0x80359540
+	.sbss       start:0x8035A578 end:0x8035A580
+
+sdk/OSAudioSystem.c:
+	.text       start:0x800B45F0 end:0x800B4884
+
+sdk/OSCache.c:
+	.text       start:0x800B4884 end:0x800B4CBC
+
+auto/text_800B4CBC.c:
+	.text       start:0x800B4CBC end:0x800B7A94
+
+sdk/OSLink.c:
+	.text       start:0x800B7A94 end:0x800B7AAC
+
+auto/text_800B7AAC.c:
+	.text       start:0x800B7AAC end:0x800B7D84
+
+sdk/OSMutex.c:
+	.text       start:0x800B7D84 end:0x800B7DF4
+
+auto/text_800B7DF4.c:
+	.text       start:0x800B7DF4 end:0x800B8994
+
+sdk/OSRtc.c:
+	.text       start:0x800B8994 end:0x800B95A0
+	.bss        start:0x803078A0 end:0x803078F8
+
+sdk/OSSync.c:
+	.text       start:0x800B95A0 end:0x800B9624
+
+sdk/OSThread.c:
+	.text       start:0x800B9624 end:0x800BA564
+	.bss        start:0x803078F8 end:0x803082F0
+	.sdata      start:0x80359558 end:0x80359560
+	.sbss       start:0x8035A5E8 end:0x8035A5F8
+
+auto/text_800BA564.c:
+	.text       start:0x800BA564 end:0x800BC1C8
 
 sdk/dvdlow.c:
 	.text       start:0x800BC1C8 end:0x800BD00C
