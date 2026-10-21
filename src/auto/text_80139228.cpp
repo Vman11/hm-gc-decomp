@@ -9,6 +9,29 @@ extern "C" { void fn_800FAEF8(R *); u32 fn_800FB33C(R *);
     extern u32 lbl_803641D8, lbl_803641DC, lbl_803641E0, lbl_803641E4, lbl_803641E8, lbl_803641EC, lbl_803641F0, lbl_803641F4, lbl_803641F8, lbl_803641FC, lbl_80364200, lbl_80364204, lbl_80364208, lbl_8036420C, lbl_80364210, lbl_80364214, lbl_80364218, lbl_8036421C, lbl_80364220, lbl_80364224, lbl_80364228, lbl_8036422C, lbl_80364230, lbl_80364234, lbl_80364238;
 }
 
+void fn_8013AB10(void);
+void fn_8013A160(void);
+void fn_8013A0C0(void);
+void fn_8013A034(void);
+void fn_80139FA0(void);
+void fn_80139F04(void);
+void fn_80139E74(void);
+void fn_80139DDC(void);
+void fn_80139D3C(void);
+void fn_80139584(void);
+void fn_80139500(void);
+void fn_80139D34(void);
+void fn_8013A1B0(void);
+void fn_8013A110(void);
+void fn_80139B38(void);
+void fn_801397FC(void);
+void fn_80139438(void);
+
+/* vtable */
+void *__vt__9C8013AB84[29] = {
+    0, 0, 0, 0, (void *)fn_8013AB10, (void *)fn_8013A160, (void *)fn_8013A0C0, 0, 0, (void *)fn_8013A034, (void *)fn_80139FA0, (void *)fn_80139F04, (void *)fn_80139E74, (void *)fn_80139DDC, (void *)fn_80139D3C, (void *)fn_80139584, (void *)fn_80139500, (void *)fn_80139D34, 0, 0, 0, 0, (void *)fn_8013A1B0, (void *)fn_8013A110, 0, 0, (void *)fn_80139B38, (void *)fn_801397FC, (void *)fn_80139438
+};
+
 extern "C" u32 fn_80139228(R *r, u32 *a, u32 *b) {
     u32 f = 0;
     u32 k;

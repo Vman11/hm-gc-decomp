@@ -8,6 +8,17 @@ extern "C" { void fn_800FB064(void *, void *); void *fn_800F9398(void *, void *)
 f32 fn_800FB2E0(void *); void fn_80121CE8(void *, void *); void fn_80182AAC(void *, void *, u32);
 extern u32 lbl_80364CE8; extern u32 lbl_80364CEC; extern u32 lbl_80364CF0; extern u32 lbl_80364CF4; }
 
+void fn_8019DCDC(u8 *p, void *s, u32 t);
+void __dt__9C8019E380Fv(void);
+void fn_8019DF04(void);
+void fn_8019E2B4(void);
+void fn_8019DF78(void);
+
+/* vtable of C8019E380 */
+void *lbl_802E9A70[7] = {
+    0, 0, (void *)fn_8019DCDC, (void *)__dt__9C8019E380Fv, (void *)fn_8019DF04, (void *)fn_8019E2B4, (void *)fn_8019DF78
+};
+
 void fn_8019DCDC(u8 *p, void *s, u32 t) {
     u8 b16[8];
     char b8[8];
