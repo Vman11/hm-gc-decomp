@@ -18,6 +18,7 @@ import tempfile
 args = sys.argv[1:]
 at = next(i for i, a in enumerate(args) if a.lower().endswith("ngccc.exe"))
 run, src, out, flags = args[:at + 1], os.path.abspath(args[at + 1]), os.path.abspath(args[at + 2]), args[at + 3:]
+run = [os.path.abspath(r) if os.path.exists(r) else r for r in run]  # it runs in another folder (wibo, ngccc.exe)
 flags = [os.path.abspath(f) if i and flags[i - 1] == "-I" else f for i, f in enumerate(flags)]
 env = dict(os.environ, SN_NGC_PATH=os.path.dirname(os.path.abspath(run[-1])))
 with tempfile.TemporaryDirectory(prefix="prodg-") as tmp:

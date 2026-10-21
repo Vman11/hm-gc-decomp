@@ -5,36 +5,35 @@
 extern "C" {
 
 extern u8 lbl_802EC288[];
+void fn_801A7684(void *);
 extern u32 lbl_8035AFCC;
 void fn_800604C4(int, int, int, int);
 void fn_800F7E98(void);
-void fn_800F7EC0(int);
-u32 __nw__FUl(int);
-void fn_801A7684(void);
+void fn_800F7EC0(u32);
 
-extern "C" {
-}
+struct C801CBD8C {
+    u8 b[0x170];
+    C801CBD8C() {
+        fn_801A7684(this);
+        *(u8 **)(b + 0x80) = lbl_802EC288;
+        *(u32 *)(b + 0x168) = 0;
+        *(u32 *)(b + 0x16c) = 0;
+    }
+};
 
-
-extern "C" u32 fn_801CBD8C(void) {
-    u32 iVar1;
+C801CBD8C *fn_801CBD8C(void) {
+    C801CBD8C *p;
 
     if (lbl_8035AFCC == 0) {
-        fn_800604C4((int)(0xfffffffe), (int)(0), (int)(0), (int)(0));
+        fn_800604C4(-2, 0, 0, 0);
     }
-    fn_800F7EC0((int)(lbl_8035AFCC));
-    iVar1 = __nw__FUl((int)(0x170));
-    if (iVar1 != 0) {
-        fn_801A7684();
-        *(u8 **)(iVar1 + 0x80) = lbl_802EC288;
-        *(u32 *)(iVar1 + 0x168) = 0;
-        *(u32 *)(iVar1 + 0x16c) = 0;
-    }
+    fn_800F7EC0(lbl_8035AFCC);
+    p = new C801CBD8C;
     fn_800F7E98();
-    if (iVar1 == 0) {
-        fn_800604C4((int)(0xfffffffc), (int)(0), (int)(0), (int)(0));
+    if (p == 0) {
+        fn_800604C4(-4, 0, 0, 0);
     }
-    return iVar1;
+    return p;
 }
 
 } /* extern "C" */
