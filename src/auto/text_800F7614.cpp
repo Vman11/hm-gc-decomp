@@ -1,5 +1,8 @@
 /* Functions from 0x800F7614 to 0x800F771C, found by decomp-toolkit. */
 #include "common.h"
+
+extern "C" {
+
 typedef struct UnkBlock800F7520 {
     u32 unk0_0 : 6;
     u32 unk0_6 : 1;
@@ -29,20 +32,20 @@ typedef struct UnkManager800F7670 {
 } UnkManager800F7670;
 
 void fn_800F7614(UnkHeap800F7520* arg0) {
-    arg0->unk0 = NULL;
+    arg0->unk0 = 0;
     arg0->unk8 = 0;
     arg0->unkC = 0;
     arg0->unk18 = 2;
     arg0->unk1C = 2;
     arg0->unk20 = 0;
-    arg0->unk4 = NULL;
+    arg0->unk4 = 0;
     arg0->unk24 = 0;
 }
 
 s32 fn_800F7640(UnkHeap800F7520* arg0) {
     s32 max = 0;
     s32* node;
-    for (node = (s32*)arg0->unk8; node != NULL; node = (s32*)node[1]) {
+    for (node = (s32*)arg0->unk8; node != 0; node = (s32*)node[1]) {
         if (node[0] > max) max = node[0];
     }
     return max & ~63;
@@ -95,3 +98,5 @@ void fn_800F7670(Mgr800F7670* arg0, Heap800F7670* arg1, Heap800F7670* arg2) {
     } while (p < end);
     Replace800F7670(arg0, arg1, arg2);
 }
+
+} /* extern "C" */

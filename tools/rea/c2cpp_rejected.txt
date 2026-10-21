@@ -50,7 +50,6 @@ auto/text_800AE8E4
 auto/text_800B0D7C
 auto/text_800B0F9C
 auto/text_800F5578
-auto/text_800F7614
 auto/text_80104068
 auto/text_801052F0
 auto/text_8010A664
