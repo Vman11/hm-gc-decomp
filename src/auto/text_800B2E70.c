@@ -3555,27 +3555,6 @@ void *fn_800C9EC4(void) {
  return 0;
 }
 
-void fn_800C9F0C(s32 *arg0) {
- extern u8 lbl_802DE540[];
- extern u32 lbl_8035A8C8;
- s32 left = arg0[5];
- s32 right = arg0[6];
- s32 invLeft = 127 - left;
- s32 invRight = 127 - right;
- if (lbl_8035A8C8 == 3) {
-  arg0[8] = *(s16 *)(lbl_802DE540 + 0x98c + left * 2);
-  arg0[9] = *(s16 *)(lbl_802DE540 + 0x98c + invLeft * 2);
-  arg0[10] = *(s16 *)(lbl_802DE540 + 0x98c + invRight * 2);
-  arg0[11] = *(s16 *)(lbl_802DE540 + 0x98c + right * 2);
-  arg0[12] = *(s16 *)(lbl_802DE540 + 0xa8c + invLeft * 2);
-  arg0[13] = *(s16 *)(lbl_802DE540 + 0xa8c + left * 2);
- } else {
-  arg0[8] = *(s32 *)(lbl_802DE540 + 0x78c + left * 4);
-  arg0[9] = *(s32 *)(lbl_802DE540 + 0x78c + invLeft * 4);
-  arg0[10] = *(s32 *)(lbl_802DE540 + 0x78c + invRight * 4);
-  arg0[11] = *(s32 *)(lbl_802DE540 + 0x78c + right * 4);
- }
-}
 
 extern s32 lbl_8035A8C8;
 void fn_800CA090(s32 arg0) {
@@ -3763,9 +3742,6 @@ s32 fn_800CC124(void) {
     return ((u16) *(u16 *)0xCC005004 >> 0xFU) & 1;
 }
 
-u32 fn_800CC134(void) {
-    return (*(u16 *)0xCC005004 << 16) | *(u16 *)0xCC005006;
-}
 
 
 extern s32 lbl_8035A8D0;
@@ -19717,5 +19693,364 @@ volatile u16 WBDSPRegs[32] : 0xCC005000; /* keep */
 void fn_800CC14C(u32 mail) {
     WBDSPRegs[0] = mail >> 16;
     WBDSPRegs[1] = mail & 0xFFFF;
+}
+#pragma auto_inline reset
+
+#pragma push
+#pragma scheduling on
+#pragma optimize_for_size off
+#pragma fp_contract on
+#pragma auto_inline off
+#pragma dont_inline off
+#pragma peephole on
+typedef struct DVDCB8 DVDCB8;
+struct DVDCB8 {
+    DVDCB8 *next;
+    DVDCB8 *prev;
+    u32 command;
+    s32 state;
+    u32 offset;
+    u32 length;
+    void *addr;
+    u32 currTransferSize;
+    u32 transferredSize;
+    void *id;
+    void (*callback)(s32, DVDCB8 *);
+    void *userData;
+};
+typedef struct {
+    u32 bootFilePosition;
+    u32 FSTPosition;
+    u32 FSTLength;
+    u32 FSTMaxLength;
+    void *FSTAddress;
+    u32 userPosition;
+    u32 userLength;
+    u32 padding0;
+} DVDBB28;
+#ifndef TRK_PRIV_H
+extern DVDCB8
+    DummyCommandBlock_80308400;
+#endif
+#ifndef TRK_PRIV_H
+extern DVDCB8 *
+    executing_8035A678;
+#endif
+#ifndef TRK_PRIV_H
+extern s32
+    lbl_8035A6AC;
+#endif
+#ifndef TRK_PRIV_H
+extern u8
+    BB2_803083C0[];
+#endif
+#ifndef TRK_PRIV_H
+extern u8 *
+    bootInfo_8035A680;
+#endif
+#ifndef TRK_PRIV_H
+extern char
+    lbl_802D9FFC[];
+#endif
+#ifndef TRK_PRIV_H
+extern char
+    lbl_8035957C[];
+#endif
+#ifndef TRK_PRIV_H
+extern u8 *
+    IDShouldBe_8035A67C;
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+#ifndef TRK_PRIV_H
+#endif
+
+extern u8
+    lbl_803083E0[];
+extern void (*lbl_8035A6BC)(
+    DVDCB8 *);
+void fn_800BCAC4(void *diskID, void (*cb)(u32));
+void fn_800BE1D4(u32 intType);
+void cbForStateMotorStopped(u32 intType);
+void fn_800BDBD0(u32 intType);
+
+void fn_800BDB3C(void) {
+    lbl_8035A6BC = (void (*)(DVDCB8 *))fn_800BDB3C;
+    if (*(u32 *)(bootInfo_8035A680 + 60) < ((DVDBB28 *)BB2_803083C0)->FSTLength) {
+        fn_800B5520("dvd.c", 644, lbl_802D9FFC);
+    }
+    fn_800BC76C(*(void **)(bootInfo_8035A680 + 56), (((DVDBB28 *)BB2_803083C0)->FSTLength + 31) & ~31,
+                ((DVDBB28 *)BB2_803083C0)->FSTPosition, fn_800BDBD0);
+}
+
+void fn_800BDBD0(u32 intType) {
+    DVDCB8 *finished;
+
+    if (intType == 16) {
+        ((DVDCB8 *)executing_8035A678)->state = -1;
+        fn_800BDD08();
+    } else if (intType & 1) {
+        lbl_8035A6AC = 0;
+        __DVDFSInit();
+        finished = (DVDCB8 *)executing_8035A678;
+        executing_8035A678 = (void *)&DummyCommandBlock_80308400;
+        finished->state = 0;
+        if (finished->callback) {
+            (finished->callback)(0, finished);
+        }
+        stateReady();
+    } else {
+        fn_800BDD3C();
+    }
+}
+
+void fn_800BE1AC(void) {
+    DVDLowStopMotor(fn_800BE1D4);
+}
+
+void fn_800BE440(DVDCB8 *block) {
+    fn_800BCE40(IDShouldBe_8035A67C[8], 10, fn_800BE474);
+}
+
+void fn_800BE924(DVDCB8 *block) {
+    fn_800BCAC4(lbl_803083E0, fn_800BE954);
+}
+
+void fn_800BE9C4(DVDCB8 *block) {
+    DVDLowWaitCoverClose((s32)cbForStateMotorStopped);
+}
+
+void AlarmHandler(void *alarm, void *context) {
+    DVDReset();
+    DCInvalidateRange(lbl_803083E0, 32);
+    lbl_8035A6BC = fn_800BE924;
+    fn_800BE924(executing_8035A678);
+}
+#pragma pop
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA2
+#define WB_GXDATA2
+typedef struct WBGX2 {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u32 tImage0[8];
+    u32 tMode0[8];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX2;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+#ifndef WB_TEXOBJ
+#define WB_TEXOBJ
+typedef struct WBTexObjI { u32 mode0; u32 mode1; u32 image0; u32 image3; void *userData; s32 fmt; u32 tlutName; u16 loadCnt; u8 loadFmt; u8 flags; } WBTexObjI;
+#endif
+#ifndef WB_FIFOP
+#define WB_FIFOP
+#define WB_CPUF (*(WBFifo **)&lbl_8035A920)
+#define WB_GPF (*(WBFifo **)&lbl_8035A924)
+#endif
+#ifndef WB_CARD
+#define WB_CARD
+typedef void (*WBCardCB)(s32 chan, s32 result); /* keep */
+typedef struct WBCardFileInfo { s32 chan; s32 fileNo; s32 offset; s32 length; u16 iBlock; } WBCardFileInfo;
+typedef struct WBCardDir {
+    u8 gameName[4]; u8 company[2]; u8 _padding0; u8 bannerFormat; u8 fileName[32];
+    u32 time; u32 iconAddr; u16 iconFormat; u16 iconSpeed; u8 permission; u8 copyTimes;
+    u16 startBlock; u16 length; u8 _padding1[2]; u32 commentAddr;
+} WBCardDir;
+typedef struct WBCard {
+    s32 attached; s32 result; u16 size; u16 pageSize; s32 sectorSize; u16 cBlock; u16 vendorID; s32 latency;
+    u8 id[12]; s32 mountStep; s32 formatStep; u32 scramble; u8 task[0x50]; void *workArea;
+    WBCardDir *currentDir; u16 *currentFat; u8 threadQueue[8]; u8 cmd[9]; s32 cmdlen; volatile u32 mode;
+    s32 retry; s32 repeat; u32 addr; void *buffer; s32 xferred; u16 freeNo; u16 startBlock;
+    WBCardFileInfo *fileInfo; WBCardCB extCallback; WBCardCB txCallback; WBCardCB exiCallback;
+    WBCardCB apiCallback; WBCardCB xferCallback; WBCardCB eraseCallback; WBCardCB unlockCallback;
+    u8 alarm[0x28]; u32 cid; const void *diskID;
+} WBCard;
+#define WB_CARDBLK ((WBCard *)lbl_80323560)
+#endif
+
+#pragma auto_inline off
+#ifndef WB_DSPREGS_D
+#define WB_DSPREGS_D
+volatile u16 WBDSPRegs[32] : 0xCC005000; /* keep */
+#endif
+int fn_800CC134(void) {
+    return (WBDSPRegs[2] << 16) | WBDSPRegs[3];
+}
+#pragma auto_inline reset
+
+#ifndef WB_PRELUDE
+#define WB_PRELUDE
+typedef struct WBFifo { u8 *base; u8 *top; u32 size; u32 hiWatermark; u32 loWatermark; void *rdPtr; void *wrPtr; s32 count; u8 bind_cpu; u8 bind_gp; } WBFifo;
+typedef union WBPipe { u8 u8; u16 u16; u32 u32; s8 s8; s16 s16; s32 s32; f32 f32; } WBPipe;
+volatile WBPipe WBWG : 0xCC008000;
+#define WB_PHYS(x) (((u32)(x)) & 0x3FFFFFFF)
+#define WB_SET(reg, size, shift, val) ((reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)))
+#define WB_GET(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_GXDATA2
+#define WB_GXDATA2
+typedef struct WBGX2 {
+    u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim;
+    u32 cpEnable; u32 cpStatus; u32 cpClr; u32 vcdLo; u32 vcdHi;
+    u32 vatA[8]; u32 vatB[8]; u32 vatC[8];
+    u32 lpSize; u32 matIdxA; u32 matIdxB;
+    u32 indexBase[4]; u32 indexStride[4];
+    u32 ambColor[2]; u32 matColor[2];
+    u32 suTs0[8]; u32 suTs1[8]; u32 suScis0; u32 suScis1;
+    u32 tref[8]; u32 iref; u32 bpMask; u32 IndTexScale0; u32 IndTexScale1;
+    u32 tevc[16]; u32 teva[16]; u32 tevKsel[8];
+    u32 cmode0; u32 cmode1; u32 zmode; u32 peCtrl;
+    u32 cpDispSrc; u32 cpDispSize; u32 cpDispStride; u32 cpDisp;
+    u32 cpTexSrc; u32 cpTexSize; u32 cpTexStride; u32 cpTex;
+    u8 cpTexZ; u32 genMode;
+    u8 TexRegions0[8][16];
+    u8 TexRegions1[8][16];
+    u8 TexRegions2[8][16];
+    u8 TlutRegions[20][16];
+    u8 pad4C8[0x50C - 0x4C8];
+    f32 zOffset;
+    f32 zScale;
+    u32 tImage0[8];
+    u32 tMode0[8];
+    u32 texmapId[16];
+    u32 tcsManEnab;
+    u32 tevTcEnab;
+    u8 pad59C[0x5A4 - 0x59C];
+    u32 perfSel;
+    u8 inDispList;
+    u8 dlSaveContext;
+    u8 abtWaitPECopy;
+    u8 dirtyVAT;
+    u32 dirtyState;
+} WBGX2;
+#define WB_RI(reg, val, sh, mb, me) ((reg) = __rlwimi((reg), (val), (sh), (mb), (me)))
+#endif
+#ifndef WB_RAS
+#define WB_RAS
+#define WB_RASW(v) do { WBWG.u8 = 0x61; WBWG.u32 = (v); } while (0)
+#define WB_XFW(a, v) do { WBWG.u8 = 0x10; WBWG.u32 = 0x1000 + (a); WBWG.u32 = (v); } while (0)
+#endif
+#ifndef WB_TEXOBJ
+#define WB_TEXOBJ
+typedef struct WBTexObjI { u32 mode0; u32 mode1; u32 image0; u32 image3; void *userData; s32 fmt; u32 tlutName; u16 loadCnt; u8 loadFmt; u8 flags; } WBTexObjI;
+#endif
+#ifndef WB_FIFOP
+#define WB_FIFOP
+#define WB_CPUF (*(WBFifo **)&lbl_8035A920)
+#define WB_GPF (*(WBFifo **)&lbl_8035A924)
+#endif
+#ifndef WB_CARD
+#define WB_CARD
+typedef void (*WBCardCB)(s32 chan, s32 result); /* keep */
+typedef struct WBCardFileInfo { s32 chan; s32 fileNo; s32 offset; s32 length; u16 iBlock; } WBCardFileInfo;
+typedef struct WBCardDir {
+    u8 gameName[4]; u8 company[2]; u8 _padding0; u8 bannerFormat; u8 fileName[32];
+    u32 time; u32 iconAddr; u16 iconFormat; u16 iconSpeed; u8 permission; u8 copyTimes;
+    u16 startBlock; u16 length; u8 _padding1[2]; u32 commentAddr;
+} WBCardDir;
+typedef struct WBCard {
+    s32 attached; s32 result; u16 size; u16 pageSize; s32 sectorSize; u16 cBlock; u16 vendorID; s32 latency;
+    u8 id[12]; s32 mountStep; s32 formatStep; u32 scramble; u8 task[0x50]; void *workArea;
+    WBCardDir *currentDir; u16 *currentFat; u8 threadQueue[8]; u8 cmd[9]; s32 cmdlen; volatile u32 mode;
+    s32 retry; s32 repeat; u32 addr; void *buffer; s32 xferred; u16 freeNo; u16 startBlock;
+    WBCardFileInfo *fileInfo; WBCardCB extCallback; WBCardCB txCallback; WBCardCB exiCallback;
+    WBCardCB apiCallback; WBCardCB xferCallback; WBCardCB eraseCallback; WBCardCB unlockCallback;
+    u8 alarm[0x28]; u32 cid; const void *diskID;
+} WBCard;
+#define WB_CARDBLK ((WBCard *)lbl_80323560)
+#endif
+
+#pragma auto_inline off
+#ifndef WBT_PanTab
+#define WBT_PanTab
+#ifndef WBT_WBPanTab_v2
+#define WBT_WBPanTab_v2
+typedef struct WBPanTab_v2 {
+    u8 pad[0x78C];
+    s32 pan32[128];
+    s16 pan16[128];
+    s16 pan16b[128];
+} WBPanTab_v2;
+#endif
+#endif
+void fn_800C9F0C(s32 *arg0) {
+    extern u8 lbl_802DE540[];
+    extern s32 lbl_8035A8C8;
+    WBPanTab_v2 *t = (WBPanTab_v2 *)lbl_802DE540;
+    s32 left = arg0[5];
+    s32 right = arg0[6];
+    s32 invLeft = 127 - left;
+    s32 invRight = 127 - right;
+    if ((u32)lbl_8035A8C8 == 3) {
+        arg0[8] = t->pan16[left];
+        arg0[9] = t->pan16[invLeft];
+        arg0[10] = t->pan16[invRight];
+        arg0[11] = t->pan16[right];
+        arg0[12] = t->pan16b[invLeft];
+        arg0[13] = t->pan16b[left];
+    } else {
+        arg0[8] = t->pan32[left];
+        arg0[9] = t->pan32[invLeft];
+        arg0[10] = t->pan32[invRight];
+        arg0[11] = t->pan32[right];
+    }
 }
 #pragma auto_inline reset

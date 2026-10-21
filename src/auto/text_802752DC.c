@@ -2861,15 +2861,7 @@ void fn_80283E90(s32 a, void *b) {
     }
 }
 
-void fn_80283EFC(int a, int b, int c, int d, int e, void *f) {
-    fn_80283E90(e, f);
-    fn_80283E90(e, f);
-}
 
-void fn_80283FB0(int a, void *b) {
-    fn_80283D04(0);
-    fn_80283D04(b);
-}
 
 void fn_80283FE4(u8 *arg0) {
     if (arg0 != 0) {
@@ -4433,4 +4425,64 @@ void fn_80293964(u16 *dst) {
     d[21] = a4; d[22] = a5; d[23] = a6; d[24] = a7;
     d[25] = a8; d[26] = a9; d[27] = a10; d[28] = a11;
     d[29] = a12; d[30] = a13; d[31] = a14;
+}
+
+typedef struct wCN { s32 a; struct wCN *next; u32 key; } wCN;
+void fn_8028391C(wCN **head, wCN *n) {
+    wCN *c = *head;
+    wCN *prev;
+    if (c == 0) {
+        n->next = c;
+        *head = n;
+    } else if (n->key >= c->key) {
+        n->next = c;
+        *head = n;
+    } else {
+        for (prev = c; prev->next != 0; prev = prev->next) {
+            if (n->key >= prev->next->key) {
+                n->next = prev->next;
+                prev->next = n;
+                return;
+            }
+        }
+        n->next = 0;
+        prev->next = n;
+    }
+}
+
+s32 OSEnableInterrupts(void);
+s32 wC_OSRestoreInterrupts(s32) asm("OSRestoreInterrupts");
+
+void fn_80283A54(u8 *a) {
+    u8 *p = a - 8;
+    if (p != 0 && *(s32 *)(p + 48) != 0) {
+        s32 e = OSEnableInterrupts();
+        fn_80283984(p);
+        wC_OSRestoreInterrupts(e);
+    }
+}
+
+s32 fn_8027AA64(u8 *p, s32 v) {
+    if (p != 0) {
+        *(s32 *)(p + 676) = v;
+    }
+    return v;
+}
+
+
+void fn_80283EFC(void *a, void *b, void *c, void *d) {
+    fn_80283E90(a, b);
+    fn_80283E90(c, d);
+}
+
+
+void fn_80283FB0(void *a, void *b) {
+    fn_80283D04(a);
+    fn_80283D04(b);
+}
+
+
+void fn_80284028(void *a, void *b) {
+    fn_80283FE4(a);
+    fn_80283FE4(b);
 }
