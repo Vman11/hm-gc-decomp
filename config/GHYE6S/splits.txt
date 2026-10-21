@@ -7749,9 +7749,24 @@ sdk/OSCache.c:
 	.text       start:0x800B4884 end:0x800B4CBC
 	.data       start:0x802D7808 end:0x802D7A38
 
-auto/text_800B4CBC.c:
-	.text       start:0x800B4CBC end:0x800B7A94
-	.data       start:0x802D7A38 end:0x802D8A70
+sdk/OSContext.c:
+	.text       start:0x800B4CBC end:0x800B54A0
+	.data       start:0x802D7A38 end:0x802D7C10
+
+sdk/OSError.c:
+	.text       start:0x800B54A0 end:0x800B5B4C
+	.data       start:0x802D7C10 end:0x802D7F30
+	.bss        start:0x80307550 end:0x80307598
+	.sdata      start:0x80359540 end:0x80359548
+
+auto/text_800B5B4C.c:
+	.text       start:0x800B5B4C end:0x800B7228
+	.data       start:0x802D7F30 end:0x802D8A40
+
+sdk/OSInterrupt.c:
+	.text       start:0x800B7228 end:0x800B7A94
+	.data       start:0x802D8A40 end:0x802D8A70
+	.sbss       start:0x8035A590 end:0x8035A5A8
 
 sdk/OSLink.c:
 	.text       start:0x800B7A94 end:0x800B7AAC

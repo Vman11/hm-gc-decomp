@@ -466,25 +466,9 @@ extern s32 __OSArenaLo_80359538;
 
 
 
-s32 fn_800B4F6C(void) {
-    return *(s32 *)0x800000D4;
-}
 
 
-void __OSContextInit(void) {
-    extern void OSSwitchFPUContext(void);
-    extern void* __OSSetExceptionHandler(u8, void*);
-    extern char lbl_802D7BEC[];
-    __OSSetExceptionHandler(7, OSSwitchFPUContext);
-    *(s32*)0x800000D8 = 0;
-    DBPrintf(lbl_802D7BEC);
-}
 
-void OSReport(const char* msg, ...) {
-    struct __va_list_struct args;
-    __builtin_va_info(&args);
-    vprintf(msg, &args);
-}
 
 
 void fn_800C182C(GXRenderModeObj *rmode);
@@ -550,73 +534,14 @@ void fn_800B6B64(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 extern void **InterruptHandlerTable_8035A590;
-void *__OSSetInterruptHandler(short type, void *handler) {
-    void **p = (void **)((char *)InterruptHandlerTable_8035A590 + (type << 2));
-    void *old = *p;
-    *p = handler;
-    return old;
-}
 
 extern void *memset(void *, int, unsigned long);
 extern u32 __OSMaskInterrupts(u32);
-void *fn_800B7290(s16 type) {
-    return InterruptHandlerTable_8035A590[type];
-}
 
 #pragma peephole off
-void __OSInterruptInit(void) {
-    extern void ExternalInterruptHandler(void);
-    extern void *memset(void *, int, unsigned long);
-    extern u32 __OSMaskInterrupts(u32);
-    extern void *__OSSetExceptionHandler(u8, void *);
-    u8 *base = (u8 *)0x80000000;
-    InterruptHandlerTable_8035A590 = (void **)(base + 0x3040);
-    memset(InterruptHandlerTable_8035A590, 0, 0x80);
-    *(u32 *)(base + 0xC4) = 0;
-    *(u32 *)(base + 0xC8) = 0;
-    *(u32 *)0xCC003004 = 0xF0;
-    __OSMaskInterrupts(0xFFFFFFE0);
-    __OSSetExceptionHandler(4, ExternalInterruptHandler);
-}
 
 extern u32 fn_800B7318(u32 mask, u32 current);
-u32 __OSMaskInterrupts(u32 global) {
-    BOOL enabled;
-    u32 prev;
-    u32 local;
-    u32 mask;
 
-    enabled = OSDisableInterrupts();
-    prev = *(u32 *)0x800000C4;
-    local = *(u32 *)0x800000C8;
-    mask = ~(prev | local) & global;
-    global |= prev;
-    *(u32 *)0x800000C4 = global;
-    while (mask) {
-        mask = fn_800B7318(mask, global | local);
-    }
-    OSRestoreInterrupts(enabled);
-    return prev;
-}
-
-u32 __OSUnmaskInterrupts(u32 global) {
-    BOOL enabled;
-    u32 prev;
-    u32 local;
-    u32 mask;
-
-    enabled = OSDisableInterrupts();
-    prev = *(u32 *)0x800000C4;
-    local = *(u32 *)0x800000C8;
-    mask = (prev | local) & global;
-    global = prev & ~global;
-    *(u32 *)0x800000C4 = global;
-    while (mask) {
-        mask = fn_800B7318(mask, global | local);
-    }
-    OSRestoreInterrupts(enabled);
-    return prev;
-}
 
 
 #pragma peephole on
@@ -2260,163 +2185,7 @@ void __OSEVSetNumber(void);
 void __DBVECTOR(void);
 
 
-asm void __OSLoadFPUContext(void) {
-    nofralloc
-    lhz r5, 418(r4)
-    clrlwi. r5, r5, 31
-    beq L_120
-    lfd f0, 400(r4)
-    mtfsf 255, f0
-    mfspr r5,  920
-    rlwinm. r5, r5, 3, 31, 31
-    beq L_a0
-    psq_l f0, 456(r4), 0, 0
-    psq_l f1, 464(r4), 0, 0
-    psq_l f2, 472(r4), 0, 0
-    psq_l f3, 480(r4), 0, 0
-    psq_l f4, 488(r4), 0, 0
-    psq_l f5, 496(r4), 0, 0
-    psq_l f6, 504(r4), 0, 0
-    psq_l f7, 512(r4), 0, 0
-    psq_l f8, 520(r4), 0, 0
-    psq_l f9, 528(r4), 0, 0
-    psq_l f10, 536(r4), 0, 0
-    psq_l f11, 544(r4), 0, 0
-    psq_l f12, 552(r4), 0, 0
-    psq_l f13, 560(r4), 0, 0
-    psq_l f14, 568(r4), 0, 0
-    psq_l f15, 576(r4), 0, 0
-    psq_l f16, 584(r4), 0, 0
-    psq_l f17, 592(r4), 0, 0
-    psq_l f18, 600(r4), 0, 0
-    psq_l f19, 608(r4), 0, 0
-    psq_l f20, 616(r4), 0, 0
-    psq_l f21, 624(r4), 0, 0
-    psq_l f22, 632(r4), 0, 0
-    psq_l f23, 640(r4), 0, 0
-    psq_l f24, 648(r4), 0, 0
-    psq_l f25, 656(r4), 0, 0
-    psq_l f26, 664(r4), 0, 0
-    psq_l f27, 672(r4), 0, 0
-    psq_l f28, 680(r4), 0, 0
-    psq_l f29, 688(r4), 0, 0
-    psq_l f30, 696(r4), 0, 0
-    psq_l f31, 704(r4), 0, 0
-L_a0:
-    lfd f0, 144(r4)
-    lfd f1, 152(r4)
-    lfd f2, 160(r4)
-    lfd f3, 168(r4)
-    lfd f4, 176(r4)
-    lfd f5, 184(r4)
-    lfd f6, 192(r4)
-    lfd f7, 200(r4)
-    lfd f8, 208(r4)
-    lfd f9, 216(r4)
-    lfd f10, 224(r4)
-    lfd f11, 232(r4)
-    lfd f12, 240(r4)
-    lfd f13, 248(r4)
-    lfd f14, 256(r4)
-    lfd f15, 264(r4)
-    lfd f16, 272(r4)
-    lfd f17, 280(r4)
-    lfd f18, 288(r4)
-    lfd f19, 296(r4)
-    lfd f20, 304(r4)
-    lfd f21, 312(r4)
-    lfd f22, 320(r4)
-    lfd f23, 328(r4)
-    lfd f24, 336(r4)
-    lfd f25, 344(r4)
-    lfd f26, 352(r4)
-    lfd f27, 360(r4)
-    lfd f28, 368(r4)
-    lfd f29, 376(r4)
-    lfd f30, 384(r4)
-    lfd f31, 392(r4)
-L_120:
-    blr
-}
 
-asm void __OSSaveFPUContext(void) {
-    nofralloc
-    lhz r3, 418(r5)
-    ori r3, r3, 1
-    sth r3, 418(r5)
-    stfd f0, 144(r5)
-    stfd f1, 152(r5)
-    stfd f2, 160(r5)
-    stfd f3, 168(r5)
-    stfd f4, 176(r5)
-    stfd f5, 184(r5)
-    stfd f6, 192(r5)
-    stfd f7, 200(r5)
-    stfd f8, 208(r5)
-    stfd f9, 216(r5)
-    stfd f10, 224(r5)
-    stfd f11, 232(r5)
-    stfd f12, 240(r5)
-    stfd f13, 248(r5)
-    stfd f14, 256(r5)
-    stfd f15, 264(r5)
-    stfd f16, 272(r5)
-    stfd f17, 280(r5)
-    stfd f18, 288(r5)
-    stfd f19, 296(r5)
-    stfd f20, 304(r5)
-    stfd f21, 312(r5)
-    stfd f22, 320(r5)
-    stfd f23, 328(r5)
-    stfd f24, 336(r5)
-    stfd f25, 344(r5)
-    stfd f26, 352(r5)
-    stfd f27, 360(r5)
-    stfd f28, 368(r5)
-    stfd f29, 376(r5)
-    stfd f30, 384(r5)
-    stfd f31, 392(r5)
-    mffs f0
-    stfd f0, 400(r5)
-    lfd f0, 144(r5)
-    mfspr r3,  920
-    rlwinm. r3, r3, 3, 31, 31
-    beq L_124
-    psq_st f0, 456(r5), 0, 0
-    psq_st f1, 464(r5), 0, 0
-    psq_st f2, 472(r5), 0, 0
-    psq_st f3, 480(r5), 0, 0
-    psq_st f4, 488(r5), 0, 0
-    psq_st f5, 496(r5), 0, 0
-    psq_st f6, 504(r5), 0, 0
-    psq_st f7, 512(r5), 0, 0
-    psq_st f8, 520(r5), 0, 0
-    psq_st f9, 528(r5), 0, 0
-    psq_st f10, 536(r5), 0, 0
-    psq_st f11, 544(r5), 0, 0
-    psq_st f12, 552(r5), 0, 0
-    psq_st f13, 560(r5), 0, 0
-    psq_st f14, 568(r5), 0, 0
-    psq_st f15, 576(r5), 0, 0
-    psq_st f16, 584(r5), 0, 0
-    psq_st f17, 592(r5), 0, 0
-    psq_st f18, 600(r5), 0, 0
-    psq_st f19, 608(r5), 0, 0
-    psq_st f20, 616(r5), 0, 0
-    psq_st f21, 624(r5), 0, 0
-    psq_st f22, 632(r5), 0, 0
-    psq_st f23, 640(r5), 0, 0
-    psq_st f24, 648(r5), 0, 0
-    psq_st f25, 656(r5), 0, 0
-    psq_st f26, 664(r5), 0, 0
-    psq_st f27, 672(r5), 0, 0
-    psq_st f28, 680(r5), 0, 0
-    psq_st f29, 688(r5), 0, 0
-    psq_st f30, 696(r5), 0, 0
-    psq_st f31, 704(r5), 0, 0
-L_124:
-    blr
-}
 
 
 
@@ -2426,260 +2195,22 @@ L_124:
 void DecrementerExceptionCallback(void);
 
 void fn_800B7700(void);
-asm void ExternalInterruptHandler(void) {
-    nofralloc
-    stw r0, 0(r4)
-    stw r1, 4(r4)
-    stw r2, 8(r4)
-    stmw r6, 24(r4)
-    mfspr r0, 913
-    stw r0, 424(r4)
-    mfspr r0, 914
-    stw r0, 428(r4)
-    mfspr r0, 915
-    stw r0, 432(r4)
-    mfspr r0, 916
-    stw r0, 436(r4)
-    mfspr r0, 917
-    stw r0, 440(r4)
-    mfspr r0, 918
-    stw r0, 444(r4)
-    mfspr r0, 919
-    stw r0, 448(r4)
-    stwu r1, -8(r1)
-    b fn_800B7700
-}
-
-
-asm void fn_800B4F78(void) {
-    nofralloc
-    stmw r13, 52(r3)
-    mfspr r0, 913
-    stw r0, 424(r3)
-    mfspr r0, 914
-    stw r0, 428(r3)
-    mfspr r0, 915
-    stw r0, 432(r3)
-    mfspr r0, 916
-    stw r0, 436(r3)
-    mfspr r0, 917
-    stw r0, 440(r3)
-    mfspr r0, 918
-    stw r0, 444(r3)
-    mfspr r0, 919
-    stw r0, 448(r3)
-    mfcr r0
-    stw r0, 128(r3)
-    mflr r0
-    stw r0, 132(r3)
-    stw r0, 408(r3)
-    mfmsr r0
-    stw r0, 412(r3)
-    mfctr r0
-    stw r0, 136(r3)
-    mfxer r0
-    stw r0, 140(r3)
-    stw r1, 4(r3)
-    stw r2, 8(r3)
-    li r0, 1
-    stw r0, 12(r3)
-    li r3, 0
-    blr
-}
-
-asm int fn_800B50D0(void) {
-    nofralloc
-    mr r3, r1
-    blr
-}
-
-asm void fn_800B50D8(void) {
-    nofralloc
-    mflr r0
-    mr r5, r1
-    stwu r5, -8(r4)
-    mr r1, r4
-    stw r0, 4(r5)
-    mtlr r3
-    blrl
-    lwz r5, 0(r1)
-    lwz r0, 4(r5)
-    mtlr r0
-    mr r1, r5
-    blr
-}
 
 
 
 
 
-asm int OSDisableInterrupts(void) {
-    nofralloc
-    mfmsr r3
-    rlwinm r4, r3, 0, 17, 15
-    mtmsr r4
-    rlwinm r3, r3, 17, 31, 31
-    blr
-}
-
-asm void OSEnableInterrupts(void) {
-    nofralloc
-    mfmsr r3
-    ori r4, r3, 32768
-    mtmsr r4
-    rlwinm r3, r3, 17, 31, 31
-    blr
-}
 
 
-asm void OSLoadContext(void) {
-    nofralloc
-    lis r4, OSDisableInterrupts@ha
-    lwz r6, 408(r3)
-    addi r5, r4, OSDisableInterrupts@l
-    cmplw r6, r5
-    ble L_28
-    lis r4, (OSDisableInterrupts+12)@ha
-    addi r0, r4, (OSDisableInterrupts+12)@l
-    cmplw r6, r0
-    bge L_28
-    stw r5, 408(r3)
-L_28:
-    lwz r0, 0(r3)
-    lwz r1, 4(r3)
-    lwz r2, 8(r3)
-    lhz r4, 418(r3)
-    rlwinm. r5, r4, 0, 30, 30
-    beq L_50
-    rlwinm r4, r4, 0, 31, 29
-    sth r4, 418(r3)
-    lmw r5, 20(r3)
-    b L_54
-L_50:
-    lmw r13, 52(r3)
-L_54:
-    lwz r4, 424(r3)
-    mtspr 913, r4
-    lwz r4, 428(r3)
-    mtspr 914, r4
-    lwz r4, 432(r3)
-    mtspr 915, r4
-    lwz r4, 436(r3)
-    mtspr 916, r4
-    lwz r4, 440(r3)
-    mtspr 917, r4
-    lwz r4, 444(r3)
-    mtspr 918, r4
-    lwz r4, 448(r3)
-    mtspr 919, r4
-    lwz r4, 128(r3)
-    mtcr r4
-    lwz r4, 132(r3)
-    mtlr r4
-    lwz r4, 136(r3)
-    mtctr r4
-    lwz r4, 140(r3)
-    mtxer r4
-    mfmsr r4
-    rlwinm r4, r4, 0, 17, 15
-    rlwinm r4, r4, 0, 31, 29
-    mtmsr r4
-    lwz r4, 408(r3)
-    mtsrr0 r4
-    lwz r4, 412(r3)
-    mtsrr1 r4
-    lwz r4, 16(r3)
-    lwz r3, 12(r3)
-    rfi
-}
 
-asm int OSRestoreInterrupts(register int a0) {
-    nofralloc
-    cmpwi r3, 0
-    mfmsr r4
-    beq L_14
-    ori r5, r4, 32768
-    b L_18
-L_14:
-    rlwinm r5, r4, 0, 17, 15
-L_18:
-    mtmsr r5
-    rlwinm r3, r4, 17, 31, 31
-    blr
-}
 
-asm void OSSaveFPUContext(void) {
-    nofralloc
-    addi r5, r3, 0
-    b __OSSaveFPUContext
-}
 
-asm void OSSetCurrentContext(register u8 * a0) {
-    nofralloc
-    lis r4, -32768
-    stw r3, 212(r4)
-    clrlwi r5, r3, 2
-    stw r5, 192(r4)
-    lwz r5, 216(r4)
-    cmpw r5, r3
-    bne L_38
-    lwz r6, 412(r3)
-    ori r6, r6, 8192
-    stw r6, 412(r3)
-    mfmsr r6
-    ori r6, r6, 2
-    mtmsr r6
-    blr
-L_38:
-    lwz r6, 412(r3)
-    rlwinm r6, r6, 0, 19, 17
-    stw r6, 412(r3)
-    mfmsr r6
-    rlwinm r6, r6, 0, 19, 17
-    ori r6, r6, 2
-    mtmsr r6
-    isync
-    blr
-}
 
-asm void OSSwitchFPUContext(void) {
-    nofralloc
-    mfmsr r5
-    ori r5, r5, 8192
-    mtmsr r5
-    isync
-    lwz r5, 412(r4)
-    ori r5, r5, 8192
-    mtsrr1 r5
-    lis r3, -32768
-    lwz r5, 216(r3)
-    stw r4, 216(r3)
-    cmpw r5, r4
-    beq L_40
-    cmpwi r5, 0
-    beq L_3c
-    bl __OSSaveFPUContext
-L_3c:
-    bl __OSLoadFPUContext
-L_40:
-    lwz r3, 128(r4)
-    mtcr r3
-    lwz r3, 132(r4)
-    mtlr r3
-    lwz r3, 408(r4)
-    mtsrr0 r3
-    lwz r3, 136(r4)
-    mtctr r3
-    lwz r3, 140(r4)
-    mtxer r3
-    lhz r3, 418(r4)
-    rlwinm r3, r3, 0, 31, 29
-    sth r3, 418(r4)
-    lwz r5, 20(r4)
-    lwz r3, 12(r4)
-    lwz r4, 16(r4)
-    rfi
-}
+
+
+
+
+
 
 
 
@@ -2713,32 +2244,10 @@ void L2GlobalInvalidate(void);
 
 #pragma push
 #pragma peephole off
-void OSClearContext(register u8 *context) {
-    *(u16 *)(context + 416) = 0;
-    *(u16 *)(context + 418) = 0;
-    if (context == *(u8 **)0x800000D8) {
-        *(u8 **)0x800000D8 = NULL;
-    }
-}
 #pragma pop
 
 typedef struct { char gpr; char fpr; char reserved[2]; char *input_arg_area; char *reg_save_area; } va_listA[1];
 
-void fn_800B5520(char *file, int line, char *msg, ...) {
-    va_listA marker;
-    u32 i;
-    u32 *p;
-
-    OSDisableInterrupts();
-    __builtin_va_info(&marker);
-    vprintf(msg, (void *)marker);
-    OSReport(" in \"%s\" on line %d.\n", file, line);
-    OSReport("\nAddress:      Back Chain    LR Save\n");
-    for (i = 0, p = (u32 *)fn_800B50D0(); p && (u32)p != 0xffffffff && i++ < 16; p = (u32 *)*p) {
-        OSReport("0x%08x:   0x%08x    0x%08x\n", p, p[0], p[1]);
-    }
-    PPCHalt();
-}
 
 #ifndef WB_PRELUDE
 #define WB_PRELUDE
