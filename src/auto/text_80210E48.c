@@ -22,9 +22,9 @@ const char *fn_80210E48(u32 n) {
     case 16: return "media not ready";
     case 17: return "media is corrupt";
     case 18: return "media is invalid";
-    case 19: return "feature is unimplemented";
-    case 20: return "feature is unsupported";
-    case 21:
+    case 20: return "feature is unimplemented";
+    case 21: return "feature is unsupported";
+    case 19:
     default: return "<unspecified error>";
     }
 }

@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+extern "C" {
+
 typedef struct S8 {
     u8 pad[8];
 } S8;
@@ -26,7 +28,7 @@ S228 *fn_8022ECB4(void *p, void *arg) {
         }
     }
     if (i == M2C_FIELD(p, u32 *, 12)) {
-        return NULL;
+        return 0;
     }
     n = M2C_FIELD(p, u32 **, 4)[i];
     for (j = 0; j < n; j++) {
@@ -35,5 +37,7 @@ S228 *fn_8022ECB4(void *p, void *arg) {
             return &e[j];
         }
     }
-    return NULL;
+    return 0;
 }
+
+} /* extern "C" */

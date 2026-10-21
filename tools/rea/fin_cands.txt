@@ -1,15 +1,3 @@
-auto/text_8007C5AC
-auto/text_8008B740
-auto/text_80106634
-auto/text_8010C29C
-auto/text_8011B0B4
-auto/text_80137A9C
-auto/text_801F60FC
-auto/text_80210E48
 auto/text_8022ECB4
 auto/text_80233550
-auto/text_80235ADC
-auto/text_8024125C
-auto/text_8024AF54
-auto/text_8025AA70
 auto/text_8027245C

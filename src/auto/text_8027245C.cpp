@@ -1,6 +1,8 @@
 /* Functions from 0x8027245C to 0x80272500, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 extern s32 lbl_8035B808;
 
 typedef struct {
@@ -11,10 +13,6 @@ typedef struct {
     s32 unk1E8;
 } UnkStruct8027245C;
 
-
-void fn_802724F8(s32 arg0) {
-    lbl_8035B808 = arg0;
-}
 
 typedef struct X_8027245C X_8027245C;
 typedef struct T_8027245C { s32 n; X_8027245C *a[60]; u32 k[60]; void *mgr; s32 x; } T_8027245C;
@@ -33,3 +31,9 @@ static inline void clr_8027245C(T_8027245C *t) {
 void __ct__9C8027245CFv(T_8027245C *t) {
     clr_8027245C(t);
 }
+
+void fn_802724F8(s32 arg0) {
+    lbl_8035B808 = arg0;
+}
+
+} /* extern "C" */
