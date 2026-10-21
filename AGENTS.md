@@ -119,6 +119,10 @@ Many NonMatching units have every function at 100% and only fail the unit check 
   string pool in `.rodata`) were one TU. Merge them and give the merged unit that range.
 - **Mislabeled switch cases**: when only the jump table differs, the case labels can be attached to the wrong
   blocks (e.g. globals shifted by one case); the code bytes still match.
+- **Linker hangs forever** (`mwldeppc` at 100% CPU; a normal link takes about 15 s): an object whose `.text` starts with
+  a global function and a global label at offset 0 (e.g. `SystemCallVector` and `__OSSystemCallVectorStart` in
+  OSSync). Make the function `scope:local` in symbols.txt. To find the culprit, link with `timeout` while leaving out
+  one object at a time from `build/GHYE6S/main.elf.rsp`.
 
 ## Exception-table constructs (C++, GC/1.3.2)
 
