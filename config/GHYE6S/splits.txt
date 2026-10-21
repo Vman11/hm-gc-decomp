@@ -7852,9 +7852,82 @@ sdk/AXProf.c:
 	.text       start:0x800C9EC4 end:0x800C9F0C
 	.sbss       start:0x8035A8B0 end:0x8035A8C0
 
-auto/text_800C9F0C.c:
-	.text       start:0x800C9F0C end:0x800DAA80
-	.data       start:0x802DE540 end:0x802E0198
+sdk/mix.c:
+	.text       start:0x800C9F0C end:0x800CC114
+	.data       start:0x802DE540 end:0x802DF100
+	.bss        start:0x80321D60 end:0x80323560
+	.sbss       start:0x8035A8C0 end:0x8035A8D0
+
+sdk/dsp.c:
+	.text       start:0x800CC114 end:0x800CC3A4
+	.data       start:0x802DF100 end:0x802DF180
+	.sdata      start:0x803595F8 end:0x80359600
+	.sbss       start:0x8035A8D0 end:0x8035A8D8
+
+sdk/dsp_debug.c:
+	.text       start:0x800CC3A4 end:0x800CC3F4
+
+sdk/dsp_task.c:
+	.text       start:0x800CC3F4 end:0x800CCC78
+	.data       start:0x802DF180 end:0x802DF2C0
+	.sbss       start:0x8035A8D8 end:0x8035A8F0
+
+sdk/CARDBios.c:
+	.text       start:0x800CCC78 end:0x800CDFE0
+	.data       start:0x802DF2C0 end:0x802DF320
+	.bss        start:0x80323560 end:0x803237A0
+	.sdata      start:0x80359600 end:0x80359608
+	.sbss       start:0x8035A8F0 end:0x8035A8F8
+
+sdk/CARDUnlock.c:
+	.text       start:0x800CDFE0 end:0x800CF240
+	.data       start:0x802DF320 end:0x802DF480
+	.sdata      start:0x80359608 end:0x80359610
+
+sdk/CARDRdwr.c:
+	.text       start:0x800CF240 end:0x800CF4C0
+
+sdk/CARDBlock.c:
+	.text       start:0x800CF4C0 end:0x800CF8C4
+
+sdk/CARDDir.c:
+	.text       start:0x800CF8C4 end:0x800CFB28
+
+sdk/CARDCheck.c:
+	.text       start:0x800CFB28 end:0x800D0A90
+
+sdk/CARDMount.c:
+	.text       start:0x800D0A90 end:0x800D1588
+	.data       start:0x802DF480 end:0x802DF4C0
+
+sdk/CARDFormat.c:
+	.text       start:0x800D1588 end:0x800D1D78
+
+sdk/CARDOpen.c:
+	.text       start:0x800D1D78 end:0x800D2468
+
+sdk/CARDCreate.c:
+	.text       start:0x800D2468 end:0x800D2800
+
+sdk/CARDRead.c:
+	.text       start:0x800D2800 end:0x800D2C74
+
+sdk/CARDWrite.c:
+	.text       start:0x800D2C74 end:0x800D2FA8
+
+sdk/CARDDelete.c:
+	.text       start:0x800D2FA8 end:0x800D31A4
+
+sdk/CARDStat.c:
+	.text       start:0x800D31A4 end:0x800D366C
+
+sdk/CARDNet.c:
+	.text       start:0x800D366C end:0x800D3730
+	.sdata      start:0x80359610 end:0x80359618
+
+auto/text_800D3730.c:
+	.text       start:0x800D3730 end:0x800DAA80
+	.data       start:0x802DF4C0 end:0x802E0198
 
 auto/jt_802E0198.c:
 	.data       start:0x802E0198 end:0x802E0238

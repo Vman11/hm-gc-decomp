@@ -826,486 +826,47 @@ int OSRestoreInterrupts(int level);
 
 
 extern s32 lbl_8035A8C8;
-void fn_800CA090(s32 arg0) {
-    lbl_8035A8C8 = arg0;
-}
 
 extern s32 lbl_8035A8C8;
-s32 fn_800CA098(void) {
-    return lbl_8035A8C8;
-}
 
-void fn_800CA0A0(u8 *arg0, u32 mode, s32 input, s32 auxA, s32 auxB, s32 pan, s32 span, s32 fader) {
-    void fn_800C9F0C(void *);
-    s32 old;
-    UnkVoice80321D60 *c;
-    u16 mixerCtrl;
-    u16 *p;
 
-    c = &lbl_80321D60[*(s32 *)(arg0 + 0x18)];
-    c->unk0 = (s32)arg0;
-    c->unk4 = mode & 7;
-    c->unk8 = input;
-    c->unkC = auxA;
-    c->unk10 = auxB;
-    c->unk14 = pan;
-    c->unk18 = span;
-    c->unk1C = fader;
 
-    fn_800C9F0C(c);
 
-    if (c->unk4 & 4) {
-        c->unk38 = 0;
-    } else {
-        c->unk38 = __MIXGetVolume(input);
-    }
 
-    mixerCtrl = 0;
 
-    switch (lbl_8035A8C8) {
-    case 0:
-        c->unk3C = __MIXGetVolume(c->unk1C + c->unk28);
-        c->unk40 = __MIXGetVolume(c->unk1C + c->unk28);
-        c->unk44 = __MIXGetVolume(c->unk1C + (c->unk2C - 30));
-        if (c->unk4 & 1) {
-            c->unk48 = __MIXGetVolume(c->unkC + c->unk28);
-            c->unk4C = __MIXGetVolume(c->unkC + c->unk28);
-            c->unk50 = __MIXGetVolume(c->unkC + (c->unk2C - 30));
-        } else {
-            c->unk48 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk28));
-            c->unk4C = __MIXGetVolume(c->unk1C + (c->unkC + c->unk28));
-            c->unk50 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk2C - 30));
-        }
-        if (c->unk4 & 2) {
-            c->unk54 = __MIXGetVolume(c->unk10 + c->unk28);
-            c->unk58 = __MIXGetVolume(c->unk10 + c->unk28);
-            c->unk5C = __MIXGetVolume(c->unk10 + (c->unk2C - 30));
-        } else {
-            c->unk54 = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk28));
-            c->unk58 = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk28));
-            c->unk5C = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk2C - 30));
-        }
-        break;
-    case 1:
-    case 2:
-        c->unk3C = __MIXGetVolume(c->unk1C + (c->unk20 + c->unk28));
-        c->unk40 = __MIXGetVolume(c->unk1C + (c->unk24 + c->unk28));
-        c->unk44 = __MIXGetVolume(c->unk1C + (c->unk2C - 30));
-        if (c->unk4 & 1) {
-            c->unk48 = __MIXGetVolume(c->unkC + (c->unk20 + c->unk28));
-            c->unk4C = __MIXGetVolume(c->unkC + (c->unk24 + c->unk28));
-            c->unk50 = __MIXGetVolume(c->unkC + (c->unk2C - 30));
-        } else {
-            c->unk48 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk20 + c->unk28));
-            c->unk4C = __MIXGetVolume(c->unk1C + (c->unkC + c->unk24 + c->unk28));
-            c->unk50 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk2C - 30));
-        }
-        if (c->unk4 & 2) {
-            c->unk54 = __MIXGetVolume(c->unk10 + (c->unk20 + c->unk28));
-            c->unk58 = __MIXGetVolume(c->unk10 + (c->unk24 + c->unk28));
-            c->unk5C = __MIXGetVolume(c->unk10 + (c->unk2C - 30));
-        } else {
-            c->unk54 = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk20 + c->unk28));
-            c->unk58 = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk24 + c->unk28));
-            c->unk5C = __MIXGetVolume(c->unk1C + (c->unk10 + c->unk2C - 30));
-        }
-        break;
-    case 3:
-        c->unk3C = __MIXGetVolume(c->unk1C + (c->unk20 + c->unk28));
-        c->unk40 = __MIXGetVolume(c->unk1C + (c->unk24 + c->unk28));
-        c->unk54 = __MIXGetVolume(c->unk1C + (c->unk30 + c->unk2C));
-        c->unk58 = __MIXGetVolume(c->unk1C + (c->unk34 + c->unk2C));
-        if (c->unk4 & 1) {
-            c->unk48 = __MIXGetVolume(c->unkC + (c->unk20 + c->unk28));
-            c->unk4C = __MIXGetVolume(c->unkC + (c->unk24 + c->unk28));
-            c->unk50 = __MIXGetVolume(c->unkC + (c->unk30 + c->unk2C));
-            c->unk5C = __MIXGetVolume(c->unkC + (c->unk34 + c->unk2C));
-        } else {
-            c->unk48 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk20 + c->unk28));
-            c->unk4C = __MIXGetVolume(c->unk1C + (c->unkC + c->unk24 + c->unk28));
-            c->unk50 = __MIXGetVolume(c->unk1C + (c->unkC + c->unk30 + c->unk2C));
-            c->unk5C = __MIXGetVolume(c->unk1C + (c->unkC + c->unk34 + c->unk2C));
-        }
-        mixerCtrl = 0x4000;
-        break;
-    }
 
-    old = OSDisableInterrupts();
-    *(u16 *)(arg0 + 0x19C) = c->unk38;
-    *(u16 *)(arg0 + 0x19E) = 0;
-    p = (u16 *)(arg0 + 0x14A);
-    if ((*p++ = c->unk3C)) mixerCtrl |= 0x1;
-    *p++ = 0;
-    if ((*p++ = c->unk40)) mixerCtrl |= 0x2;
-    *p++ = 0;
-    if ((*p++ = c->unk48)) mixerCtrl |= 0x10;
-    *p++ = 0;
-    if ((*p++ = c->unk4C)) mixerCtrl |= 0x20;
-    *p++ = 0;
-    if ((*p++ = c->unk54)) mixerCtrl |= 0x200;
-    *p++ = 0;
-    if ((*p++ = c->unk58)) mixerCtrl |= 0x400;
-    *p++ = 0;
-    if ((*p++ = c->unk5C)) mixerCtrl |= 0x1000;
-    *p++ = 0;
-    if ((*p++ = c->unk44)) mixerCtrl |= 0x4;
-    *p++ = 0;
-    if ((*p++ = c->unk50)) mixerCtrl |= 0x80;
-    *p++ = 0;
-    *(u16 *)(arg0 + 0x144) = mixerCtrl;
-    *(u32 *)(arg0 + 0x1C) |= 0x212;
-    OSRestoreInterrupts(old);
-}
 
-void fn_800CAF1C(char *arg0) {
-    s32 *p = &lbl_80321D60[*(s32 *)(arg0 + 0x18)].unk0;
-    *p = 0;
-}
 
-void fn_800CAF3C(char *arg0, s32 arg1) {
-    UnkVoice80321D60 *v = &lbl_80321D60[*(s32 *)(arg0 + 0x18)];
-    v->unk8 = arg1;
-    v->unk4 |= 0x10000000;
-}
-
-void fn_800CAF64(char *arg0, s32 arg1) {
-    UnkVoice80321D60 *v = &lbl_80321D60[*(s32 *)(arg0 + 0x18)];
-    v->unkC = arg1;
-    v->unk4 |= 0x40000000;
-}
-
-void fn_800CAF8C(char *arg0, s32 arg1) {
-    UnkVoice80321D60 *v;
-    if ((u32)lbl_8035A8C8 != 3) {
-        v = &lbl_80321D60[*(s32 *)(arg0 + 0x18)];
-        v->unk10 = arg1;
-        v->unk4 |= 0x40000000;
-    }
-}
-
-void fn_800CAFC0(void *arg0, s32 arg1) {
-    void fn_800C9F0C(void *);
-    UnkVoice80321D60 *voice = &lbl_80321D60[M2C_FIELD(arg0, s32 *, 0x18)];
-    if (arg1 < 0) arg1 = 0;
-    else if (arg1 > 127) arg1 = 127;
-    M2C_FIELD(voice, s32 *, 0x14) = arg1;
-    fn_800C9F0C(voice);
-    voice->unk4 |= 0x40000000;
-}
-
-void fn_800CB02C(void *arg0, s32 arg1) {
-    void fn_800C9F0C(void *);
-    UnkVoice80321D60 *voice = &lbl_80321D60[M2C_FIELD(arg0, s32 *, 0x18)];
-    if (arg1 < 0) arg1 = 0;
-    else if (arg1 > 127) arg1 = 127;
-    M2C_FIELD(voice, s32 *, 0x18) = arg1;
-    fn_800C9F0C(voice);
-    voice->unk4 |= 0x40000000;
-}
-
-s32 fn_800CC114(void) {
-    return ((u16) *(u16 *)0xCC005000 >> 0xFU) & 1;
-}
-
-s32 fn_800CC124(void) {
-    return ((u16) *(u16 *)0xCC005004 >> 0xFU) & 1;
-}
 
 
 
 extern s32 lbl_8035A8D0;
-s32 fn_800CC224(void) {
-    return lbl_8035A8D0;
-}
 
-void fn_800CC3A4(char* str, ...) {
-}
 
 extern char lbl_802DF180[];
-void fn_800CC9B8(u8 *arg0) {
-    char *str = lbl_802DF180;
-    u32 status;
-
-    while (fn_800CC124() == 0) {}
-    status = fn_800CC134();
-    fn_800CC14C(0x80F3A001);
-    while (fn_800CC114() != 0) {}
-    fn_800CC14C(*(u32 *)(arg0 + 0xC));
-    while (fn_800CC114() != 0) {}
-    fn_800CC14C(0x80F3C002);
-    while (fn_800CC114() != 0) {}
-    fn_800CC14C((u16)*(u32 *)(arg0 + 0x14));
-    while (fn_800CC114() != 0) {}
-    fn_800CC14C(0x80F3A002);
-    while (fn_800CC114() != 0) {}
-    fn_800CC14C(*(u32 *)(arg0 + 0x10));
-    while (fn_800CC114() != 0) {}
-    fn_800CC14C(0x80F3B002);
-    while (fn_800CC114() != 0) {}
-    fn_800CC14C(0);
-    while (fn_800CC114() != 0) {}
-    fn_800CC14C(0x80F3D001);
-    while (fn_800CC114() != 0) {}
-    fn_800CC14C(*(u16 *)(arg0 + 0x24));
-    while (fn_800CC114() != 0) {}
-    fn_800CC3A4(str, arg0);
-    fn_800CC3A4(str + 0x20, *(u32 *)(arg0 + 0xC));
-    fn_800CC3A4(str + 0x50, *(u32 *)(arg0 + 0x14));
-    fn_800CC3A4(str + 0x80, *(u32 *)(arg0 + 0x10));
-    fn_800CC3A4(str + 0xB0, *(u32 *)(arg0 + 0x1C));
-    fn_800CC3A4(str + 0xE0, *(u16 *)(arg0 + 0x24));
-}
-
-void fn_800CCB44(Alarm6 *arg0) {
-    extern Alarm6 *lbl_8035A8E4;
-    extern Alarm6 *lbl_8035A8E8;
-    extern Alarm6 *lbl_8035A8EC;
-    Alarm6 *q;
-
-    if (lbl_8035A8E8 == NULL) {
-        lbl_8035A8EC = arg0;
-        lbl_8035A8E4 = arg0;
-        lbl_8035A8E8 = arg0;
-        arg0->prev = NULL;
-        arg0->next = NULL;
-        return;
-    }
-    for (q = lbl_8035A8E8; q != NULL; q = q->next) {
-        if (arg0->fire < q->fire) {
-            arg0->prev = q->prev;
-            q->prev = arg0;
-            arg0->next = q;
-            if (arg0->prev == NULL) {
-                lbl_8035A8E8 = arg0;
-            } else {
-                arg0->prev->next = arg0;
-            }
-            break;
-        }
-    }
-    if (q == NULL) {
-        lbl_8035A8E4->next = arg0;
-        arg0->next = NULL;
-        arg0->prev = lbl_8035A8E4;
-        lbl_8035A8E4 = arg0;
-    }
-}
 
 
-void fn_800CCC78(void) {
 
-}
 
-s32 fn_800CCFCC(s32 chan, s32 enable) {
-    s32 EXISelect(s32, s32, s32);
-    s32 EXIImm(s32, void *, s32, s32, void *);
-    s32 EXISync(s32);
-    s32 EXIDeselect(s32);
-    u32 cmd;
-    s32 err;
-    if (!EXISelect(chan, 0, 4)) return -3;
-    cmd = enable ? 0x81010000 : 0x81000000;
-    err = !EXIImm(chan, &cmd, 2, 1, 0);
-    err |= !EXISync(chan);
-    err |= !EXIDeselect(chan);
-    if (err) return -3;
-    return 0;
-}
 
-s32 fn_800CD17C(s32 chan) {
-    s32 EXISelect(s32, s32, s32);
-    s32 EXIImm(s32, void *, s32, s32, void *);
-    s32 EXISync(s32);
-    s32 EXIDeselect(s32);
-    u32 cmd;
-    s32 err;
-    if (!EXISelect(chan, 0, 4)) return -3;
-    cmd = 0x89000000;
-    err = !EXIImm(chan, &cmd, 1, 1, 0);
-    err |= !EXISync(chan);
-    err |= !EXIDeselect(chan);
-    if (err) return -3;
-    return 0;
-}
 
 
 #pragma push
 #pragma dont_inline on
-void fn_800CDAEC(void) {
-    u8 *p = lbl_80323560;
-    int i;
-    if (*(u32 *)(p + 0x10c) == 0 || *(u32 *)(p + 0x21c) == 0) {
-        lbl_8035A8F0 = fn_800B6B0C();
-        OSRegisterVersion(lbl_80359600);
-        fn_800CC160();
-        OSInitAlarm();
-        for (i = 0; i < 2; i++) {
-            *(s32 *)(p + 4) = -3;
-            OSInitThreadQueue(p + 0x8c);
-            OSCreateAlarm((s32 *)(p + 0xe0));
-            p += 0x110;
-        }
-        fn_800CDBA0(0x80000000);
-        OSRegisterResetFunction(lbl_802DF308);
-    }
-}
 
-s32 fn_800CDB98(void) {
-    return lbl_8035A8F0;
-}
 
 #pragma pop
-void fn_800CDBA0(u32 arg) {
-    u8 *p = lbl_80323560;
-    *(u32 *)(p + 0x10c) = arg ? arg : (u32)(p + 0x220);
-    *(u32 *)(p + 0x21c) = arg ? arg : (u32)(p + 0x220);
-}
-
-int fn_800CDCF4(int chan) {
-    if (chan < 0 || chan >= 2) {
-        return -128;
-    }
-    return *(int *)(lbl_80323560 + chan * 0x110 + 4);
-}
-
-s32 fn_800CDE74(s32 chan, s32 *arg1) {
-    u8 *card;
-    s32 result = fn_800CDBD8(chan, &card);
-    int enabled;
-    s32 *p;
-    if (result < 0) {
-        return result;
-    }
-    *arg1 = *(s32 *)(card + 0xC);
-    p = (s32 *)card;
-    enabled = OSDisableInterrupts();
-    if (p[0] != 0) {
-        p[1] = 0;
-    } else if (p[1] == -1) {
-        p[1] = 0;
-    }
-    OSRestoreInterrupts(enabled);
-    return 0;
-}
-
-s32 fn_800CDF90(s32 arg0) {
-    extern s32 fn_800D14DC(s32);
-    if (arg0 == 0 && (fn_800D14DC(0) == -1 || fn_800D14DC(1) == -1)) {
-        return 0;
-    }
-    return 1;
-}
-
-u32 fn_800CDFE0(u32 data) {
-    u32 wk;
-    u32 i;
-    u32 k = 0;
-    u32 j = 1;
-
-    wk = 0;
-    for (i = 0; i < 32; i++) {
-        if (i > 15) {
-            if (i == 31) {
-                wk |= (((data & (0x01 << 31)) >> 31) & 0x01);
-            } else {
-                wk |= ((data & (0x01 << i)) >> j);
-                j += 2;
-            }
-        } else {
-            wk |= ((data & (0x01 << i)) << (31 - i - k));
-            k++;
-        }
-    }
-    return wk;
-}
 
 
-s32 fn_800CF4C0(void *arg0) {
-    return M2C_FIELD(arg0, s32 *, 0x88);
-}
 
-s32 fn_800CF8C4(void *arg0) {
-    return M2C_FIELD(arg0, s32 *, 0x84);
-}
 
-void fn_800CFB28(void *ptr, int length, u16 *checksum, u16 *checksumInv) {
-    u16 *p;
-    int i;
 
-    length /= sizeof(u16);
-    *checksum = *checksumInv = 0;
-    for (i = 0, p = ptr; i < length; i++, p++) {
-        *checksum += *p;
-        *checksumInv += ~*p;
-    }
-    if (*checksum == 0xFFFF) {
-        *checksum = 0;
-    }
-    if (*checksumInv == 0xFFFF) {
-        *checksumInv = 0;
-    }
-}
 
-s32 fn_800D0420(s32 chan) {
-    extern s32 fn_800CFCD8(s32);
-    extern s32 fn_800CFF5C(s32, s32);
-    extern s32 fn_800D019C(s32, s32);
-    s32 result = fn_800CFCD8(chan);
-    s32 first;
-    if (result < 0) return result;
-    first = fn_800CFF5C(chan, 0);
-    switch (first + fn_800D019C(chan, 0)) {
-    case 0: return 0;
-    case 1: return -6;
-    default: return -6;
-    }
-}
 
-s32 fn_800D0A3C(s32 chan) {
-    extern void fn_800CCC7C(void);
-    extern s32 fn_800D04AC(s32, void *, void *);
-    extern s32 fn_800CDEF8(s32);
-    s32 value;
-    s32 result = fn_800D04AC(chan, &value, fn_800CCC7C);
-    if (result < 0 || &value == 0) return result;
-    return fn_800CDEF8(chan);
-}
 
-s32 fn_800D0A90(u32 id) {
-    extern s32 lbl_802DF480[];
-    extern u16 lbl_80359610;
-    u32 size;
-    s32 sectorSize;
-    s32* p;
 
-    if ((id & 0xFFFF0000) && (id != 0x80000004 || lbl_80359610 == 0xFFFF)) {
-        return 0;
-    }
-    if ((id & 3) != 0) {
-        return 0;
-    }
-    size = id & 0xFC;
-    switch (size) {
-    case 4:
-    case 8:
-    case 16:
-    case 32:
-    case 64:
-    case 128:
-        break;
-    default:
-        return 0;
-    }
-    p = &lbl_802DF480[(id & 0x3800) >> 11];
-    sectorSize = *p;
-    if (sectorSize == 0) {
-        return 0;
-    }
-    if ((size * 1024 * 1024 / 8) / sectorSize < 8) {
-        return 0;
-    }
-    return 1;
-}
+
+
 
 extern u8 lbl_80323560[];
 s32 fn_800D1258(s32 chan, void *buf, s32 len, void *cb);
@@ -1319,181 +880,18 @@ s32 fn_800F2730(s32 chan);
 s32 fn_800CDB98(void);
 s32 fn_800D16CC(s32, s32, void *);
 s32 fn_800D04AC(s32, void *, void *);
-s32 fn_800D13F8(s32 chan, void *buf, s32 len) {
-    s32 result = fn_800D1258(chan, buf, len, fn_800CCC7C);
-    if (result < 0) return result;
-    return fn_800CDEF8(chan);
-}
 
-void fn_800D1440(s32 chan, s32 arg1) {
-    u8 *p = lbl_80323560 + chan * 0x110;
-    int enabled = OSDisableInterrupts();
-    if (*(s32 *)(p + 0x0) != 0) {
-        fn_800F2540(chan, 0);
-        fn_800F2970(chan);
-        fn_800B3EF8(p + 0xE0);
-        *(s32 *)(p + 0x0) = 0;
-        *(s32 *)(p + 0x4) = arg1;
-        *(s32 *)(p + 0x24) = 0;
-    }
-    OSRestoreInterrupts(enabled);
-}
 
-s32 fn_800D14DC(s32 chan) {
-    s32 result;
-    u8 buf[4];
 
-    result = fn_800CDBD8(chan, buf);
-    if (result < 0) {
-        return result;
-    }
-    fn_800D1440(chan, -3);
-    return 0;
-}
-
-s32 fn_800D1D24(s32 chan) {
-    s32 result = fn_800D16CC(chan, fn_800CDB98(), fn_800CCC7C);
-    if (result < 0) return result;
-    return fn_800CDEF8(chan);
-}
 
 s32 fn_800CDEF8(s32);
-s32 fn_800D1D78(void *arg0, char *name) {
-    char *p = (char *)arg0 + 8;
-    char a, b;
-    s32 n = 32;
-    while (--n >= 0) {
-        a = *p++;
-        b = *name++;
-        if (a != b) return 0;
-        if (b == 0) return 1;
-    }
-    if (*name == 0) {
-        return 1;
-    }
-    return 0;
-}
 
-s32 fn_800D1DE0(void *arg0, u8 *arg1) {
-    extern u8 lbl_80323780[];
-    extern s32 fn_800E8B1C(const void *, const void *, u32);
-    u8 *id = *(u8 **)((u8 *)arg0 + 0x10C);
-    if (*arg1 == 0xFF) return -4;
-    if (id == lbl_80323780 ||
-        (fn_800E8B1C(arg1, id, 4) == 0 &&
-         fn_800E8B1C(arg1 + 4, id + 4, 2) == 0)) {
-        return 0;
-    }
-    return -10;
-}
 
-s32 fn_800D21EC(s32 chan, s32 fileNo, s32 *fileInfo) {
-    extern s32 fn_800CDC90(s32, s32);
-    extern s32 fn_800D1E74(s32, u8 *);
-    s32 card;
-    u8 *ent;
-    s32 result;
 
-    if (fileNo < 0 || fileNo >= 127) {
-        return -128;
-    }
-    fileInfo[0] = -1;
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    ent = (u8 *)fn_800CF8C4((void *)card) + fileNo * 0x40;
-    result = fn_800D1E74(card, ent);
-    if (result == -10 && (ent[0x34] & 4)) {
-        result = 0;
-    }
-    if (result >= 0) {
-        u16 block = *(u16 *)(ent + 0x36);
-        if (block < 5 || block >= *(u16 *)(card + 0x10)) {
-            result = -6;
-        } else {
-            fileInfo[0] = chan;
-            fileInfo[1] = fileNo;
-            fileInfo[2] = 0;
-            *(u16 *)(fileInfo + 4) = *(u16 *)(ent + 0x36);
-        }
-    }
-    return fn_800CDC90(card, result);
-}
 
-s32 fn_800D240C(s32 *arg0) {
-    extern s32 fn_800CDC90(s32, s32);
-    s32 control;
-    s32 result = fn_800CDBD8(*arg0, &control);
-    if (result < 0) return result;
-    *arg0 = -1;
-    return fn_800CDC90(control, 0);
-}
 
-s32 fn_800D2460(void) {
-    return 0;
-}
-
-void fn_800D31A4(u8* arg0, u8* arg1) {
-    u32 offset;
-    s32 flag;
-    s32 i;
-
-    offset = *(u32*)(arg0 + 0x2C);
-    if (offset == 0xFFFFFFFF) {
-        *(u8*)(arg1 + 0x2E) = 0;
-        offset = 0;
-        *(u16*)(arg1 + 0x34) = 0;
-        *(u16*)(arg1 + 0x36) = 0;
-    }
-    flag = 0;
-    switch (arg0[7] & 3) {
-    case 1:
-        *(u32*)(arg1 + 0x3C) = offset;
-        *(u32*)(arg1 + 0x40) = offset + 0xC00;
-        offset += 0xE00;
-        break;
-    case 2:
-        *(u32*)(arg1 + 0x3C) = offset;
-        *(u32*)(arg1 + 0x40) = 0xFFFFFFFF;
-        offset += 0x1800;
-        break;
-    default:
-        *(u32*)(arg1 + 0x3C) = 0xFFFFFFFF;
-        *(u32*)(arg1 + 0x40) = 0xFFFFFFFF;
-        break;
-    }
-    for (i = 0; i < 8; i++) {
-        switch ((*(u16*)(arg0 + 0x30) >> (i * 2)) & 3) {
-        case 1:
-            *(u32*)(arg1 + i * 4 + 0x44) = offset;
-            flag = 1;
-            offset += 0x400;
-            break;
-        case 2:
-            *(u32*)(arg1 + i * 4 + 0x44) = offset;
-            offset += 0x800;
-            break;
-        default:
-            *(u32*)(arg1 + i * 4 + 0x44) = 0xFFFFFFFF;
-            break;
-        }
-    }
-    if (flag) {
-        *(u32*)(arg1 + 0x64) = offset;
-        offset += 0x200;
-    } else {
-        *(u32*)(arg1 + 0x64) = 0xFFFFFFFF;
-    }
-    *(u32*)(arg1 + 0x68) = offset;
-}
 
 s32 fn_800D34B0(s32 chan, void *buf, s32 len, void *cb);
-s32 fn_800D3624(s32 chan, void *buf, s32 len) {
-    s32 result = fn_800D34B0(chan, buf, len, fn_800CCC7C);
-    if (result < 0) return result;
-    return fn_800CDEF8(chan);
-}
 
 s32 fn_800D8318(void *);
 u8 fn_800D8320(void *);
@@ -5814,32 +5212,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CCCB0(s32 chan, void *context) {
-    void fn_800F2540(s32 chan, void *cb);
-    void fn_800B3EF8(void *alarm);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    card = &WB_CARDBLK[chan];
-    if (card->attached) {
-        card->attached = 0;
-        fn_800F2540(chan, 0);
-        fn_800B3EF8(card->alarm);
-        callback = card->exiCallback;
-        if (callback) {
-            card->exiCallback = 0;
-            callback(chan, -3);
-        }
-        if (card->result != -1) {
-            card->result = -3;
-        }
-        callback = card->extCallback;
-        if (callback && 7 <= card->mountStep) {
-            card->extCallback = 0;
-            callback(chan, -3);
-        }
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -5926,23 +5298,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CCEA0(s32 chan, void *context) {
-    s32 EXIDeselect(s32);
-    s32 EXIUnlock(s32);
-    s32 fn_800F2730(s32 chan);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    s32 err;
-    card = &WB_CARDBLK[chan];
-    err = !EXIDeselect(chan);
-    EXIUnlock(chan);
-    callback = card->txCallback;
-    if (callback) {
-        card->txCallback = 0;
-        callback(chan, (!err && fn_800F2730(chan)) ? 0 : -3);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -6029,18 +5384,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CCF48(s32 chan, void *context) {
-    s32 fn_800F2730(s32 chan);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    card = &WB_CARDBLK[chan];
-    callback = card->unlockCallback;
-    if (callback) {
-        card->unlockCallback = 0;
-        callback(chan, fn_800F2730(chan) ? 1 : -3);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -6127,27 +5470,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CD08C(s32 chan, u8 *status) {
-    s32 EXISelect(s32, s32, s32);
-    s32 EXIImm(s32, void *, s32, s32, void *);
-    s32 EXISync(s32);
-    s32 EXIDeselect(s32);
-    s32 err;
-    u32 cmd;
-    if (!EXISelect(chan, 0, 4)) {
-        return -3;
-    }
-    cmd = 0x83000000;
-    err = !EXIImm(chan, &cmd, 2, 1, 0);
-    err |= !EXISync(chan);
-    err |= !EXIImm(chan, status, 1, 0, 0);
-    err |= !EXISync(chan);
-    err |= !EXIDeselect(chan);
-    if (err) {
-        return -3;
-    }
-    return 0;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -6234,28 +5556,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CD228(void *alarm, void *context) {
-    void fn_800F2540(s32 chan, void *cb);
-    extern u8 lbl_80323560[];
-    s32 chan;
-    WBCard *card;
-    WBCardCB callback;
-    for (chan = 0; chan < 2; ++chan) {
-        card = &WB_CARDBLK[chan];
-        if (alarm == card->alarm) {
-            break;
-        }
-    }
-    if (!card->attached) {
-        return;
-    }
-    fn_800F2540(chan, 0);
-    callback = card->exiCallback;
-    if (callback) {
-        card->exiCallback = 0;
-        callback(chan, -5);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -6368,48 +5668,6 @@ inline void wbSetupTimeoutAlarm(WBCard *card) {
     }
 }
 
-s32 fn_800CD2CC(s32 chan) {
-    void fn_800B3EF8(void *alarm);
-    void OSSetAlarm(void *alarm, s64 tick, void *handler);
-    void fn_800CD228(void *alarm, void *context);
-    s32 EXISelect(s32, s32, s32);
-    s32 EXIDeselect(s32);
-    s32 EXIUnlock(s32);
-    s32 EXILock(s32, s32, void *);
-    s32 fn_800F2120(s32 chan, void *buf, s32 len, s32 mode);
-    s32 EXIDma(s32 chan, void *buf, s32 len, u32 type, void *cb);
-    void fn_800CCEA0(s32 chan, void *context);
-    void fn_800CCF48(s32 chan, void *context);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    card = &WB_CARDBLK[chan];
-    if (!EXISelect(chan, 0, 4)) {
-        EXIUnlock(chan);
-        return -3;
-    }
-    wbSetupTimeoutAlarm(card);
-    if (!fn_800F2120(chan, card->cmd, card->cmdlen, 1)) {
-        EXIDeselect(chan);
-        EXIUnlock(chan);
-        return -3;
-    }
-    if (card->cmd[0] == 0x52 && !fn_800F2120(chan, (u8 *)card->workArea + 512, card->latency, 1)) {
-        EXIDeselect(chan);
-        EXIUnlock(chan);
-        return -3;
-    }
-    if (card->mode == 0xFFFFFFFF) {
-        EXIDeselect(chan);
-        EXIUnlock(chan);
-        return 0;
-    }
-    if (!EXIDma(chan, card->buffer, (s32)((card->cmd[0] == 0x52) ? 512 : 128), card->mode, fn_800CCEA0)) {
-        EXIDeselect(chan);
-        EXIUnlock(chan);
-        return -3;
-    }
-    return 0;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -6496,46 +5754,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CCD88(s32 chan, void *context) {
-    void fn_800B3EF8(void *alarm);
-    s32 EXILock(s32, s32, void *);
-    s32 EXIUnlock(s32);
-    s32 fn_800CD08C(s32 chan, u8 *status);
-    s32 fn_800CD17C(s32 chan);
-    s32 fn_800CD2CC(s32 chan);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    u8 status;
-    s32 result;
-    card = &WB_CARDBLK[chan];
-    fn_800B3EF8(card->alarm);
-    if (!card->attached) {
-        return;
-    }
-    if (!EXILock(chan, 0, 0)) {
-        result = -128;
-        goto fatal;
-    }
-    if ((result = fn_800CD08C(chan, &status)) < 0 || (result = fn_800CD17C(chan)) < 0) {
-        goto error;
-    }
-    if ((result = (status & 0x18) ? -5 : 0) == -5 && --card->retry > 0) {
-        result = fn_800CD2CC(chan);
-        if (result >= 0) {
-            return;
-        }
-        goto fatal;
-    }
-error:
-    EXIUnlock(chan);
-fatal:
-    callback = card->exiCallback;
-    if (callback) {
-        card->exiCallback = 0;
-        callback(chan, result);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -6622,44 +5840,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CD4F8(s32 chan, s32 result) {
-    s32 EXILock(s32, s32, void *);
-    void fn_800CCF48(s32 chan, void *context);
-    s32 fn_800CD2CC(s32 chan);
-    extern u8 lbl_80323560[];
-    WBCardCB callback;
-    WBCard *card;
-    card = &WB_CARDBLK[chan];
-    if (result >= 0) {
-        card->unlockCallback = fn_800CD4F8;
-        if (!EXILock(chan, 0, fn_800CCF48)) {
-            result = 0;
-        } else {
-            card->unlockCallback = 0;
-            result = fn_800CD2CC(chan);
-        }
-    }
-    if (result < 0) {
-        switch (card->cmd[0]) {
-        case 0x52:
-            callback = card->txCallback;
-            if (callback) {
-                card->txCallback = 0;
-                callback(chan, result);
-            }
-            break;
-        case 0xF2:
-        case 0xF4:
-        case 0xF1:
-            callback = card->exiCallback;
-            if (callback) {
-                card->exiCallback = 0;
-                callback(chan, result);
-            }
-            break;
-        }
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -6746,17 +5926,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CDC90(WBCard *card, s32 result) {
-    int enabled;
-    enabled = OSDisableInterrupts();
-    if (card->attached) {
-        card->result = result;
-    } else if (card->result == -1) {
-        card->result = result;
-    }
-    OSRestoreInterrupts(enabled);
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -6858,39 +6027,6 @@ inline s32 wbPutControlBlock(WBCard *card, s32 result) {
     return result;
 }
 
-s32 fn_800CDD24(s32 chan, s32 *byteNotUsed, s32 *filesNotUsed) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    u16 *fn_800CF4C0(WBCard *card);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    WBCard *card;
-    s32 result;
-    u16 *fat;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    u16 fileNo;
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    fat = fn_800CF4C0(card);
-    dir = fn_800CF8C4(card);
-    if (fat == 0 || dir == 0) {
-        return wbPutControlBlock(card, -6);
-    }
-    if (byteNotUsed) {
-        *byteNotUsed = (s32)(card->sectorSize * fat[3]);
-    }
-    if (filesNotUsed) {
-        *filesNotUsed = 0;
-        for (fileNo = 0; fileNo < 127; fileNo++) {
-            ent = &dir[fileNo];
-            if (ent->fileName[0] == 0xff) {
-                ++*filesNotUsed;
-            }
-        }
-    }
-    return wbPutControlBlock(card, 0);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -6977,28 +6113,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CDBD8(s32 chan, void *pcard) {
-    extern u8 lbl_80323560[];
-    int enabled;
-    s32 result;
-    WBCard *card = &WB_CARDBLK[chan];
-    if (chan < 0 || chan >= 2 || !card->diskID) {
-        return -128;
-    }
-    enabled = OSDisableInterrupts();
-    if (!card->attached) {
-        result = -3;
-    } else if (card->result == -1) {
-        result = -1;
-    } else {
-        card->result = -1;
-        result = 0;
-        card->apiCallback = 0;
-        *(WBCard **)pcard = card;
-    }
-    OSRestoreInterrupts(enabled);
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -7085,44 +6199,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CD7BC(s32 chan, WBCardCB callback) {
-    s32 fn_800CD608(s32 chan, WBCardCB txCallback, WBCardCB exiCallback);
-    s32 fn_800F2120(s32 chan, void *buf, s32 len, s32 mode);
-    s32 EXIDma(s32 chan, void *buf, s32 len, u32 type, void *cb);
-    s32 EXIDeselect(s32);
-    s32 EXIUnlock(s32);
-    void fn_800CCEA0(s32 chan, void *context);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    s32 result;
-    card = &WB_CARDBLK[chan];
-    card->cmd[0] = 0x52;
-    card->cmd[1] = (u8)((card->addr >> 17) & 0x7f);
-    card->cmd[2] = (u8)((card->addr >> 9) & 0xff);
-    card->cmd[3] = (u8)((card->addr >> 7) & 0x03);
-    card->cmd[4] = (u8)(card->addr & 0x7f);
-    card->cmdlen = 5;
-    card->mode = 0;
-    card->retry = 0;
-    result = fn_800CD608(chan, callback, 0);
-    if (result == -1) {
-        return 0;
-    }
-    if (result < 0) {
-        goto end;
-    }
-    if (!fn_800F2120(chan, card->cmd, card->cmdlen, 1) ||
-        !fn_800F2120(chan, (u8 *)card->workArea + 512, card->latency, 1) ||
-        !EXIDma(chan, card->buffer, 512, card->mode, fn_800CCEA0)) {
-        card->txCallback = 0;
-        EXIDeselect(chan);
-        EXIUnlock(chan);
-        return -3;
-    }
-    result = 0;
-end:
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -7209,43 +6285,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CD8F0(s32 chan, WBCardCB callback) {
-    s32 fn_800CD608(s32 chan, WBCardCB txCallback, WBCardCB exiCallback);
-    s32 fn_800F2120(s32 chan, void *buf, s32 len, s32 mode);
-    s32 EXIDma(s32 chan, void *buf, s32 len, u32 type, void *cb);
-    s32 EXIDeselect(s32);
-    s32 EXIUnlock(s32);
-    void fn_800CCEA0(s32 chan, void *context);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    s32 result;
-    card = &WB_CARDBLK[chan];
-    card->cmd[0] = 0xF2;
-    card->cmd[1] = (u8)((card->addr >> 17) & 0x7f);
-    card->cmd[2] = (u8)((card->addr >> 9) & 0xff);
-    card->cmd[3] = (u8)((card->addr >> 7) & 0x03);
-    card->cmd[4] = (u8)(card->addr & 0x7f);
-    card->cmdlen = 5;
-    card->mode = 1;
-    card->retry = 3;
-    result = fn_800CD608(chan, 0, callback);
-    if (result == -1) {
-        return 0;
-    }
-    if (result < 0) {
-        goto end;
-    }
-    if (!fn_800F2120(chan, card->cmd, card->cmdlen, 1) ||
-        !EXIDma(chan, card->buffer, 128, card->mode, fn_800CCEA0)) {
-        card->exiCallback = 0;
-        EXIDeselect(chan);
-        EXIUnlock(chan);
-        return -3;
-    }
-    result = 0;
-end:
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -7332,40 +6371,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CE14C(s32 chan, u32 data, void *rbuf, s32 rlen, s32 mode) {
-    s32 EXISelect(s32, s32, s32);
-    s32 EXIDeselect(s32);
-    s32 fn_800F2120(s32 chan, void *buf, s32 len, s32 mode);
-    void *memset(void *, int, unsigned long);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    s32 err;
-    u8 cmd[5];
-    card = &WB_CARDBLK[chan];
-    if (!EXISelect(chan, 0, 4)) {
-        return -3;
-    }
-    data &= 0xfffff000;
-    memset(cmd, 0, 5);
-    cmd[0] = 0x52;
-    if (mode == 0) {
-        cmd[1] = (u8)((data >> 29) & 0x03);
-        cmd[2] = (u8)((data >> 21) & 0xff);
-        cmd[3] = (u8)((data >> 19) & 0x03);
-        cmd[4] = (u8)((data >> 12) & 0x7f);
-    } else {
-        cmd[1] = (u8)((data & 0xff000000) >> 24);
-        cmd[2] = (u8)((data & 0x00ff0000) >> 16);
-    }
-    err = !fn_800F2120(chan, cmd, 5, 1);
-    err |= !fn_800F2120(chan, (u8 *)card->workArea + 512, card->latency, 1);
-    err |= !fn_800F2120(chan, rbuf, rlen, 0);
-    err |= !EXIDeselect(chan);
-    if (err) {
-        return -3;
-    }
-    return 0;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -7452,29 +6457,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CEEAC(void *_task) {
-    void fn_800CC14C(u32 mail);
-    u32 fn_800CC114(void);
-    extern u8 lbl_80323560[];
-    s32 chan;
-    WBCard *card;
-    void *task;
-    void *param;
-    task = _task;
-    for (chan = 0; chan < 2; ++chan) {
-        card = &WB_CARDBLK[chan];
-        if ((void *)card->task == task) {
-            break;
-        }
-    }
-    param = card->workArea;
-    fn_800CC14C(0xff000000);
-    while (fn_800CC114()) {
-    }
-    fn_800CC14C((u32)param);
-    while (fn_800CC114()) {
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -7573,40 +6555,6 @@ inline void wbCARDSrand(u32 seed) {
     lbl_80359608 = seed;
 }
 
-s32 fn_800CE290(void) {
-    u32 OSGetTick(void);
-    u32 tick;
-    u32 wk;
-    s32 tmp;
-    u32 max;
-    wk = 1;
-    max = 0;
-    tick = OSGetTick();
-    {
-        u32 seed = tick;
-        wbCARDSrand(seed);
-    }
-    tmp = wbCARDRand();
-    tmp &= 0x0000001f;
-    tmp += 1;
-    while ((tmp < 4) && (max < 10)) {
-        tick = OSGetTick();
-        tmp = (s32)(tick << wk);
-        wk++;
-        if (wk > 16) {
-            wk = 1;
-        }
-        wbCARDSrand((u32)tmp);
-        tmp = wbCARDRand();
-        tmp &= 0x0000001f;
-        tmp += 1;
-        max++;
-    }
-    if (tmp < 4) {
-        tmp = 4;
-    }
-    return tmp;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -7718,73 +6666,6 @@ inline u32 wbexnor(u32 data, u32 lshift) {
     }
     return work;
 }
-void fn_800CEF1C(void *_task) {
-    s32 fn_800CE290(void);
-    s32 fn_800CE14C(s32 chan, u32 data, void *rbuf, s32 rlen, s32 mode);
-    s32 EXIUnlock(s32);
-    void fn_800D1120(s32 chan, s32 result);
-    s32 fn_800CD08C(s32 chan, u8 *status);
-    s32 fn_800F2730(s32 chan);
-    extern u8 lbl_80323560[];
-    u8 rbuf[64];
-    u32 data;
-    s32 dummy;
-    s32 rlen;
-    u32 rshift;
-    u8 unk;
-    u32 wk, wk1;
-    u32 Ans2;
-    s32 chan;
-    WBCard *card;
-    s32 result;
-    void *task;
-    WBDecParam *param;
-    u8 *input;
-    u8 *output;
-    task = _task;
-    for (chan = 0; chan < 2; ++chan) {
-        card = &WB_CARDBLK[chan];
-        if ((void *)card->task == task) {
-            break;
-        }
-    }
-    param = (WBDecParam *)card->workArea;
-    input = (u8 *)((u8 *)param + sizeof(WBDecParam));
-    input = (u8 *)(((u32)input + 31) & ~31);
-    output = input + 32;
-    Ans2 = *(u32 *)output;
-    dummy = fn_800CE290();
-    rlen = dummy;
-    data = ((Ans2 ^ card->scramble) & 0xffff0000);
-    if (fn_800CE14C(chan, data, rbuf, rlen, 1) < 0) {
-        EXIUnlock(chan);
-        fn_800D1120(chan, -3);
-        return;
-    }
-    rshift = (u32)((dummy + 4 + card->latency) * 8 + 1);
-    wk = wbexnor(card->scramble, rshift);
-    wk1 = ~(wk ^ (wk << 7) ^ (wk << 15) ^ (wk << 23));
-    card->scramble = (wk | ((wk1 >> 31) & 0x00000001));
-    dummy = fn_800CE290();
-    rlen = dummy;
-    data = (((Ans2 << 16) ^ card->scramble) & 0xffff0000);
-    if (fn_800CE14C(chan, data, rbuf, rlen, 1) < 0) {
-        EXIUnlock(chan);
-        fn_800D1120(chan, -3);
-        return;
-    }
-    result = fn_800CD08C(chan, &unk);
-    if (!fn_800F2730(chan)) {
-        EXIUnlock(chan);
-        fn_800D1120(chan, -3);
-        return;
-    }
-    if (result == 0 && !(unk & 0x40)) {
-        EXIUnlock(chan);
-        result = -5;
-    }
-    fn_800D1120(chan, result);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -7871,33 +6752,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CF240(s32 chan, s32 result) {
-    s32 fn_800CD7BC(s32 chan, WBCardCB callback);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    card = &WB_CARDBLK[chan];
-    if (result >= 0) {
-        card->xferred += 512;
-        card->addr += 512;
-        card->buffer = (u8 *)card->buffer + 512;
-        if (--card->repeat > 0) {
-            result = fn_800CD7BC(chan, fn_800CF240);
-            if (result >= 0) {
-                return;
-            }
-        }
-    }
-    if (!card->apiCallback) {
-        fn_800CDC90(card, result);
-    }
-    callback = card->xferCallback;
-    if (callback) {
-        card->xferCallback = 0;
-        callback(chan, result);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -7984,21 +6838,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CF31C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback) {
-    s32 fn_800CD7BC(s32 chan, WBCardCB callback);
-    void fn_800CF240(s32 chan, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    card = &WB_CARDBLK[chan];
-    if (card->attached == 0) {
-        return -3;
-    }
-    card->xferCallback = callback;
-    card->repeat = (length / 512u);
-    card->addr = addr;
-    card->buffer = dst;
-    return fn_800CD7BC(chan, fn_800CF240);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -8085,33 +6924,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CF380(s32 chan, s32 result) {
-    s32 fn_800CD8F0(s32 chan, WBCardCB callback);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    card = &WB_CARDBLK[chan];
-    if (result >= 0) {
-        card->xferred += 128;
-        card->addr += 128;
-        card->buffer = (u8 *)card->buffer + 128;
-        if (--card->repeat > 0) {
-            result = fn_800CD8F0(chan, fn_800CF380);
-            if (result >= 0) {
-                return;
-            }
-        }
-    }
-    if (!card->apiCallback) {
-        fn_800CDC90(card, result);
-    }
-    callback = card->xferCallback;
-    if (callback) {
-        card->xferCallback = 0;
-        callback(chan, result);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -8198,21 +7010,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CF45C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback) {
-    s32 fn_800CD8F0(s32 chan, WBCardCB callback);
-    void fn_800CF380(s32 chan, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    card = &WB_CARDBLK[chan];
-    if (card->attached == 0) {
-        return -3;
-    }
-    card->xferCallback = callback;
-    card->repeat = (length / 128u);
-    card->addr = addr;
-    card->buffer = dst;
-    return fn_800CD8F0(chan, fn_800CF380);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -8299,35 +7096,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CF4C8(s32 chan, s32 result) {
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    void *memcpy(void *, const void *, unsigned long);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    u16 *fat0;
-    u16 *fat1;
-    card = &WB_CARDBLK[chan];
-    if (result >= 0) {
-        fat0 = (u16 *)((u8 *)card->workArea + 0x6000);
-        fat1 = (u16 *)((u8 *)card->workArea + 0x8000);
-        if (card->currentFat == fat0) {
-            card->currentFat = fat1;
-            memcpy(fat1, fat0, 0x2000);
-        } else {
-            card->currentFat = fat0;
-            memcpy(fat0, fat1, 0x2000);
-        }
-    }
-    if (!card->apiCallback) {
-        fn_800CDC90(card, result);
-    }
-    callback = card->eraseCallback;
-    if (callback) {
-        card->eraseCallback = 0;
-        callback(chan, result);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -8414,35 +7182,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800CF8CC(s32 chan, s32 result) {
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    void *memcpy(void *, const void *, unsigned long);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    WBCardDir *fat0;
-    WBCardDir *fat1;
-    card = &WB_CARDBLK[chan];
-    if (result >= 0) {
-        fat0 = (WBCardDir *)((u8 *)card->workArea + 0x2000);
-        fat1 = (WBCardDir *)((u8 *)card->workArea + 0x4000);
-        if (card->currentDir == fat0) {
-            card->currentDir = fat1;
-            memcpy(fat1, fat0, 0x2000);
-        } else {
-            card->currentDir = fat0;
-            memcpy(fat0, fat1, 0x2000);
-        }
-    }
-    if (!card->apiCallback) {
-        fn_800CDC90(card, result);
-    }
-    callback = card->eraseCallback;
-    if (callback) {
-        card->eraseCallback = 0;
-        callback(chan, result);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -8529,22 +7268,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CF818(s32 chan, u16 *fat, WBCardCB callback) {
-    void fn_800CFB28(void *ptr, int length, u16 *checksum, u16 *checksumInv);
-    void fn_800B48F4(void *, u32);
-    s32 fn_800CDA0C(s32 chan, u32 addr, WBCardCB callback);
-    void fn_800CF59C(s32 chan, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    u32 addr;
-    card = &WB_CARDBLK[chan];
-    ++fat[2];
-    fn_800CFB28(fat + 2, 0x1FFC, fat, fat + 1);
-    fn_800B48F4(fat, 0x2000);
-    card->eraseCallback = callback;
-    addr = (((char *)fat - (char *)card->workArea) / 8192u) * card->sectorSize;
-    return fn_800CDA0C(chan, addr, fn_800CF59C);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -8634,50 +7357,6 @@ typedef struct WBCard {
 inline u16 *wbGetFat(WBCard *card) {
     s32 fn_800CF818(s32 chan, u16 *fat, WBCardCB callback);
     return card->currentFat;
-}
-s32 fn_800CF664(s32 chan, u32 cBlock, WBCardCB callback) {
-    s32 fn_800CF818(s32 chan, u16 *fat, WBCardCB callback);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    u16 *fat;
-    u16 iBlock;
-    u16 startBlock;
-    u16 prevBlock;
-    u16 count;
-    card = &WB_CARDBLK[chan];
-    if (!card->attached) {
-        return -3;
-    }
-    fat = wbGetFat(card);
-    if (fat[3] < cBlock) {
-        return -9;
-    }
-    fat[3] -= cBlock;
-    startBlock = 0xFFFF;
-    iBlock = fat[4];
-    count = 0;
-    while (0 < cBlock) {
-        if (card->cBlock - 5 < ++count) {
-            return -6;
-        }
-        iBlock++;
-        if (!(iBlock >= 5 && iBlock < card->cBlock)) {
-            iBlock = 5;
-        }
-        if (fat[iBlock] == 0x0000u) {
-            if (startBlock == 0xFFFF) {
-                startBlock = iBlock;
-            } else {
-                fat[prevBlock] = iBlock;
-            }
-            prevBlock = iBlock;
-            fat[iBlock] = 0xFFFF;
-            --cBlock;
-        }
-    }
-    fat[4] = iBlock;
-    card->startBlock = startBlock;
-    return fn_800CF818(chan, fat, callback);
 }
 #pragma auto_inline reset
 
@@ -8771,34 +7450,6 @@ inline WBCardDir *wbGetDir(WBCard *card) {
     s32 fn_800CF45C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback);
     void fn_800CF8CC(s32 chan, s32 result);
     return card->currentDir;
-}
-void fn_800CF99C(s32 chan, s32 result) {
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    void *memcpy(void *, const void *, unsigned long);
-    s32 fn_800CF45C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback);
-    void fn_800CF8CC(s32 chan, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card = &WB_CARDBLK[chan];
-    WBCardCB callback;
-    WBCardDir *dir;
-    u32 addr;
-    u32 pad0;
-    if (result >= 0) {
-        dir = wbGetDir(card);
-        addr = ((u32)dir - (u32)card->workArea) / 0x2000 * card->sectorSize;
-        result = fn_800CF45C(chan, addr, 0x2000, dir, fn_800CF8CC);
-        if (result >= 0) {
-            return;
-        }
-    }
-    if (!card->apiCallback) {
-        fn_800CDC90(card, result);
-    }
-    callback = card->eraseCallback;
-    if (callback) {
-        card->eraseCallback = 0;
-        callback(chan, result);
-    }
 }
 #pragma auto_inline reset
 
@@ -9152,30 +7803,6 @@ inline s32 wbAccess(WBCard *card, WBCardDir *ent) {
     return -10;
 }
 
-s32 fn_800D1E74(WBCard *card, WBCardDir *ent) {
-    s32 fn_800E8B1C(const void *, const void *, u32);
-    extern u8 lbl_80323780[];
-    extern u8 lbl_80359612;
-    const u8 *diskID;
-    s32 result;
-    u8 perm;
-    diskID = (const u8 *)card->diskID;
-    result = wbAccess(card, ent);
-    if (result == -10) {
-        perm = ent->permission & lbl_80359612;
-        if (perm & 0x20) {
-            if (fn_800E8B1C(ent->gameName, lbl_80323780, 4) == 0 && fn_800E8B1C(ent->company, lbl_80323780 + 4, 2) == 0) {
-                return 0;
-            }
-        }
-        if (perm & 0x40) {
-            if (fn_800E8B1C(ent->gameName, lbl_80323780, 4) == 0 && fn_800E8B1C(ent->company, diskID + 4, 2) == 0) {
-                return 0;
-            }
-        }
-    }
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -9288,15 +7915,6 @@ inline s32 wbIsWritable(WBCard *card, WBCardDir *ent) {
     return result;
 }
 
-s32 fn_800D1FA8(WBCard *card, WBCardDir *ent) {
-    s32 fn_800E8B1C(const void *, const void *, u32);
-    s32 fn_800D1DE0(WBCard *card, WBCardDir *ent);
-    s32 result = wbIsWritable(card, ent);
-    if (result == -10 && (ent->permission & 4)) {
-        return 0;
-    }
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -9410,37 +8028,6 @@ inline s32 wbGetFileNo(WBCard *card, const char *fileName, s32 *pfileNo) {
     }
     return -4;
 }
-s32 fn_800D22F0(s32 chan, const char *fileName, WBCardFileInfo *fileInfo) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    s32 fn_800D1DE0(WBCard *card, WBCardDir *ent);
-    s32 fn_800D1D78(WBCardDir *ent, const char *fileName);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCard *card;
-    s32 result;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    s32 fileNo;
-    fileInfo->chan = -1;
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    result = wbGetFileNo(card, fileName, &fileNo);
-    if (result >= 0) {
-        dir = fn_800CF8C4(card);
-        ent = &dir[fileNo];
-        if (!(ent->startBlock >= 5 && ent->startBlock < card->cBlock)) {
-            result = -6;
-        } else {
-            fileInfo->chan = chan;
-            fileInfo->fileNo = fileNo;
-            fileInfo->offset = 0;
-            fileInfo->iBlock = ent->startBlock;
-        }
-    }
-    return fn_800CDC90(card, result);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -9527,50 +8114,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D2800(WBCardFileInfo *fileInfo, s32 length, s32 offset, WBCard **pcard) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    s32 fn_800CF31C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback);
-    WBCard *card;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    s32 result;
-    u16 *fat;
-    result = fn_800CDBD8(fileInfo->chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    if (!(fileInfo->iBlock >= 5 && fileInfo->iBlock < card->cBlock) || card->cBlock * card->sectorSize <= fileInfo->offset) {
-        return fn_800CDC90(card, -128);
-    }
-    dir = fn_800CF8C4(card);
-    ent = &dir[fileInfo->fileNo];
-    if (ent->length * card->sectorSize <= offset || ent->length * card->sectorSize < offset + length) {
-        return fn_800CDC90(card, -11);
-    }
-    card->fileInfo = fileInfo;
-    fileInfo->length = length;
-    if (offset < fileInfo->offset) {
-        fileInfo->offset = 0;
-        fileInfo->iBlock = ent->startBlock;
-        if (!(fileInfo->iBlock >= 5 && fileInfo->iBlock < card->cBlock)) {
-            return fn_800CDC90(card, -6);
-        }
-    }
-    fat = fn_800CF4C0(card);
-    while (fileInfo->offset < (((u32)offset) & ~(card->sectorSize - 1))) {
-        fileInfo->offset += card->sectorSize;
-        fileInfo->iBlock = fat[fileInfo->iBlock];
-        if (!(fileInfo->iBlock >= 5 && fileInfo->iBlock < card->cBlock)) {
-            return fn_800CDC90(card, -6);
-        }
-    }
-    fileInfo->offset = offset;
-    *pcard = card;
-    return 0;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -9657,50 +8200,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800D29B8(s32 chan, s32 result) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    s32 fn_800CF31C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    u16 *fat;
-    WBCardFileInfo *fileInfo;
-    s32 length;
-    card = &WB_CARDBLK[chan];
-    if (result < 0) {
-        goto error;
-    }
-    fileInfo = card->fileInfo;
-    if (fileInfo->length < 0) {
-        result = -14;
-        goto error;
-    }
-    length = (((u32)(fileInfo->offset + card->sectorSize)) & ~(card->sectorSize - 1)) - fileInfo->offset;
-    fileInfo->length -= length;
-    if (fileInfo->length <= 0) {
-        goto error;
-    }
-    fat = fn_800CF4C0(card);
-    fileInfo->offset += length;
-    fileInfo->iBlock = fat[fileInfo->iBlock];
-    if (!(fileInfo->iBlock >= 5 && fileInfo->iBlock < card->cBlock)) {
-        result = -6;
-        goto error;
-    }
-    result = fn_800CF31C(chan, card->sectorSize * (u32)fileInfo->iBlock, (fileInfo->length < card->sectorSize) ? fileInfo->length : card->sectorSize, card->buffer, fn_800D29B8);
-    if (result < 0) {
-        goto error;
-    }
-    return;
-error:
-    callback = card->apiCallback;
-    card->apiCallback = 0;
-    fn_800CDC90(card, result);
-    callback(chan, result);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -9787,16 +8286,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D2C2C(WBCardFileInfo *fileInfo, void *buf, s32 length, s32 offset) {
-    s32 fn_800D2AE8(WBCardFileInfo *fileInfo, void *buf, s32 length, s32 offset, WBCardCB callback);
-    s32 fn_800CDEF8(s32 chan);
-    void fn_800CCC7C(void);
-    s32 result = fn_800D2AE8(fileInfo, buf, length, offset, (WBCardCB)fn_800CCC7C);
-    if (result < 0) {
-        return result;
-    }
-    return fn_800CDEF8(fileInfo->chan);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -9883,44 +8372,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D2AE8(WBCardFileInfo *fileInfo, void *buf, s32 length, s32 offset, WBCardCB callback) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    s32 fn_800CF31C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback);
-    s32 fn_800D2800(WBCardFileInfo *fileInfo, s32 length, s32 offset, WBCard **pcard);
-    s32 fn_800D1FA8(WBCard *card, WBCardDir *ent);
-    void DCInvalidateRange(void *, u32);
-    void fn_800CCC78(s32 chan, s32 result);
-    void fn_800D29B8(s32 chan, s32 result);
-    WBCard *card;
-    s32 result;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    if ((offset & 0x1FF) != 0 || (length & 0x1FF) != 0) {
-        return -128;
-    }
-    result = fn_800D2800(fileInfo, length, offset, &card);
-    if (result < 0) {
-        return result;
-    }
-    dir = fn_800CF8C4(card);
-    ent = &dir[fileInfo->fileNo];
-    result = fn_800D1FA8(card, ent);
-    if (result < 0) {
-        return fn_800CDC90(card, result);
-    }
-    DCInvalidateRange(buf, (u32)length);
-    card->apiCallback = callback ? callback : fn_800CCC78;
-    offset = (s32)(fileInfo->offset & (card->sectorSize - 1));
-    length = (length < card->sectorSize - offset) ? length : card->sectorSize - offset;
-    result = fn_800CF31C(fileInfo->chan, card->sectorSize * (u32)fileInfo->iBlock + offset, length, buf, fn_800D29B8);
-    if (result < 0) {
-        fn_800CDC90(card, result);
-    }
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -10007,60 +8458,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800D2C74(s32 chan, s32 result) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    s64 OSGetTime(void);
-    s32 fn_800CFA64(s32 chan, WBCardCB callback);
-    s32 fn_800CDA0C(s32 chan, u32 addr, WBCardCB callback);
-    void fn_800D2DE4(s32 chan, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    u16 *fat;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    WBCardFileInfo *fileInfo;
-    card = &WB_CARDBLK[chan];
-    if (result >= 0) {
-        fileInfo = card->fileInfo;
-        if (fileInfo->length < 0) {
-            result = -14;
-            goto after;
-        }
-        fileInfo->length -= card->sectorSize;
-        if (fileInfo->length <= 0) {
-            dir = fn_800CF8C4(card);
-            ent = dir + fileInfo->fileNo;
-            ent->time = OSGetTime() / (*(u32 *)0x800000F8 / 4);
-            callback = card->apiCallback;
-            card->apiCallback = 0;
-            result = fn_800CFA64(chan, callback);
-            goto check;
-        } else {
-            fat = fn_800CF4C0(card);
-            fileInfo->offset += card->sectorSize;
-            fileInfo->iBlock = fat[fileInfo->iBlock];
-            if ((fileInfo->iBlock < 5) || (fileInfo->iBlock >= card->cBlock)) {
-                result = -6;
-                goto after;
-            }
-            result = fn_800CDA0C(chan, card->sectorSize * fileInfo->iBlock, fn_800D2DE4);
-check:;
-            if (result < 0) {
-                goto after;
-            }
-        }
-    } else {
-after:;
-        callback = card->apiCallback;
-        card->apiCallback = 0;
-        fn_800CDC90(card, result);
-        callback(chan, result);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -10147,32 +8544,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800D2DE4(s32 chan, s32 result) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    s32 fn_800CF45C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback);
-    void fn_800D2C74(s32 chan, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    WBCardFileInfo *fileInfo;
-    card = &WB_CARDBLK[chan];
-    if (result >= 0) {
-        fileInfo = card->fileInfo;
-        result = fn_800CF45C(chan, card->sectorSize * fileInfo->iBlock, card->sectorSize, card->buffer, fn_800D2C74);
-        if (result < 0) {
-            goto after;
-        }
-    } else {
-after:;
-        callback = card->apiCallback;
-        card->apiCallback = 0;
-        fn_800CDC90(card, result);
-        callback(chan, result);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -10259,43 +8630,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D2E94(WBCardFileInfo *fileInfo, void *buf, s32 length, s32 offset, WBCardCB callback) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    s32 fn_800D2800(WBCardFileInfo *fileInfo, s32 length, s32 offset, WBCard **pcard);
-    s32 fn_800D1E74(WBCard *card, WBCardDir *ent);
-    void fn_800B48F4(void *, u32);
-    void fn_800CCC78(s32 chan, s32 result);
-    s32 fn_800CDA0C(s32 chan, u32 addr, WBCardCB callback);
-    void fn_800D2DE4(s32 chan, s32 result);
-    WBCard *card;
-    s32 result;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    result = fn_800D2800(fileInfo, length, offset, &card);
-    if (result < 0) {
-        return result;
-    }
-    if ((offset & (card->sectorSize - 1)) != 0 || (length & (card->sectorSize - 1)) != 0) {
-        return fn_800CDC90(card, -128);
-    }
-    dir = fn_800CF8C4(card);
-    ent = &dir[fileInfo->fileNo];
-    result = fn_800D1E74(card, ent);
-    if (result < 0) {
-        return fn_800CDC90(card, result);
-    }
-    fn_800B48F4(buf, (u32)length);
-    card->apiCallback = callback ? callback : fn_800CCC78;
-    card->buffer = buf;
-    result = fn_800CDA0C(fileInfo->chan, card->sectorSize * (u32)fileInfo->iBlock, fn_800D2DE4);
-    if (result < 0) {
-        fn_800CDC90(card, result);
-    }
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -10382,32 +8716,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800D2FA8(s32 chan, s32 result) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    s32 fn_800CF77C(s32 chan, u16 nBlock, WBCardCB callback);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    card = &WB_CARDBLK[chan];
-    callback = card->apiCallback;
-    card->apiCallback = 0;
-    if (result < 0) {
-        goto error;
-    }
-    result = fn_800CF77C(chan, card->startBlock, callback);
-    if (result < 0) {
-        goto error;
-    }
-    return;
-error:
-    fn_800CDC90(card, result);
-    if (callback) {
-        callback(chan, result);
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -10494,44 +8802,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D304C(s32 chan, const char *fileName, WBCardCB callback) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    s32 fn_800D209C(WBCard *card, const char *fileName, s32 *pfileNo);
-    s32 fn_800D2460(WBCard *card, s32 fileNo);
-    void *memset(void *, int, unsigned long);
-    void fn_800CCC78(s32 chan, s32 result);
-    s32 fn_800CFA64(s32 chan, WBCardCB callback);
-    void fn_800D2FA8(s32 chan, s32 result);
-    WBCard *card;
-    s32 fileNo;
-    s32 result;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    result = fn_800D209C(card, fileName, &fileNo);
-    if (result < 0) {
-        return fn_800CDC90(card, result);
-    }
-    if (fn_800D2460(card, fileNo)) {
-        return fn_800CDC90(card, -1);
-    }
-    dir = fn_800CF8C4(card);
-    ent = &dir[fileNo];
-    card->startBlock = ent->startBlock;
-    memset(ent, 0xff, sizeof(WBCardDir));
-    card->apiCallback = callback ? callback : fn_800CCC78;
-    result = fn_800CFA64(chan, fn_800D2FA8);
-    if (result < 0) {
-        fn_800CDC90(card, result);
-    }
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -10618,16 +8888,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D315C(s32 chan, const char *fileName) {
-    s32 fn_800D304C(s32 chan, const char *fileName, WBCardCB callback);
-    s32 fn_800CDEF8(s32 chan);
-    void fn_800CCC7C(void);
-    s32 result = fn_800D304C(chan, fileName, (WBCardCB)fn_800CCC7C);
-    if (result < 0) {
-        return result;
-    }
-    return fn_800CDEF8(chan);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -10714,52 +8974,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800D2468(s32 chan, s32 result) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    void *memcpy(void *, const void *, unsigned long);
-    s32 fn_800E8B1C(const void *, const void *, u32);
-    s64 OSGetTime(void);
-    s32 fn_800CFA64(s32 chan, WBCardCB callback);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    WBCardCB callback;
-    card = &WB_CARDBLK[chan];
-    callback = card->apiCallback;
-    card->apiCallback = 0;
-    if (result >= 0) {
-        dir = fn_800CF8C4(card);
-        ent = &dir[card->freeNo];
-        memcpy(ent->gameName, card->diskID, 4);
-        memcpy(ent->company, (u8 *)card->diskID + 4, 2);
-        ent->permission = 4;
-        ent->copyTimes = 0;
-        ent->startBlock = (u16)card->startBlock;
-        ent->bannerFormat = 0;
-        ent->iconAddr = -1;
-        ent->iconFormat = 0;
-        ent->iconSpeed = 0;
-        ent->commentAddr = -1;
-        ent->iconSpeed = (ent->iconSpeed & ~3) | 1;
-        card->fileInfo->offset = 0;
-        card->fileInfo->iBlock = ent->startBlock;
-        ent->time = OSGetTime() / (*(u32 *)0x800000F8 / 4);
-        result = fn_800CFA64(chan, callback);
-        if (result < 0) {
-            goto after;
-        }
-    } else {
-after:;
-        fn_800CDC90(card, result);
-        if (callback) {
-            callback(chan, result);
-        }
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -10846,71 +9060,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D2598(s32 chan, const char *fileName, u32 size, WBCardFileInfo *fileInfo, WBCardCB callback) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    u16 *fn_800CF4C0(WBCard *card);
-    void *memcpy(void *, const void *, unsigned long);
-    s32 fn_800E8B1C(const void *, const void *, u32);
-    u32 strlen(const char *);
-    char *fn_800EB720(char *, const char *, u32);
-    s32 fn_800D1D78(WBCardDir *ent, const char *fileName);
-    void fn_800CCC78(s32 chan, s32 result);
-    s32 fn_800CF664(s32 chan, u32 cBlock, WBCardCB callback);
-    void fn_800D2468(s32 chan, s32 result);
-    WBCard *card;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    u16 fileNo;
-    u16 freeNo;
-    u16 *fat;
-    s32 result;
-    if (strlen(fileName) > (u32)32) {
-        return -12;
-    }
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    if (size <= 0 || (size % card->sectorSize) != 0) {
-        return -128;
-    }
-    freeNo = (u16)-1;
-    dir = fn_800CF8C4(card);
-    for (fileNo = 0; fileNo < 127; fileNo++) {
-        ent = &dir[fileNo];
-        if (ent->gameName[0] == 0xff) {
-            if (freeNo == (u16)-1) {
-                freeNo = fileNo;
-            }
-        } else if (fn_800E8B1C(ent->gameName, card->diskID, 4) == 0 &&
-                   fn_800E8B1C(ent->company, (u8 *)card->diskID + 4, 2) == 0 &&
-                   fn_800D1D78(ent, fileName)) {
-            return fn_800CDC90(card, -7);
-        }
-    }
-    if (freeNo == (u16)-1) {
-        return fn_800CDC90(card, -8);
-    }
-    fat = fn_800CF4C0(card);
-    if (card->sectorSize * fat[3] < size) {
-        return fn_800CDC90(card, -9);
-    }
-    card->apiCallback = callback ? callback : fn_800CCC78;
-    card->freeNo = freeNo;
-    ent = &dir[freeNo];
-    ent->length = (u16)(size / card->sectorSize);
-    fn_800EB720((char *)ent->fileName, fileName, 32);
-    card->fileInfo = fileInfo;
-    fileInfo->chan = chan;
-    fileInfo->fileNo = freeNo;
-    result = fn_800CF664(chan, size / card->sectorSize, fn_800D2468);
-    if (result < 0) {
-        return fn_800CDC90(card, result);
-    }
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -10997,16 +9146,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D27B8(s32 chan, const char *fileName, u32 size, WBCardFileInfo *fileInfo) {
-    s32 fn_800D2598(s32 chan, const char *fileName, u32 size, WBCardFileInfo *fileInfo, WBCardCB callback);
-    s32 fn_800CDEF8(s32 chan);
-    void fn_800CCC7C(void);
-    s32 result = fn_800D2598(chan, fileName, size, fileInfo, (WBCardCB)fn_800CCC7C);
-    if (result < 0) {
-        return result;
-    }
-    return fn_800CDEF8(chan);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -11097,42 +9236,6 @@ typedef struct WBCard {
 #define WBT_WBCardStat
 typedef struct WBCardStat { char fileName[32]; u32 length; u32 time; u8 gameName[4]; u8 company[2]; u8 bannerFormat; u8 pad; u32 iconAddr; u16 iconFormat; u16 iconSpeed; u32 commentAddr; u32 offsets[16]; } WBCardStat;
 #endif
-s32 fn_800D339C(s32 chan, s32 fileNo, WBCardStat *stat) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    void *memcpy(void *, const void *, unsigned long);
-    void fn_800D31A4(WBCardDir *ent, WBCardStat *stat);
-    s32 fn_800D1FA8(WBCard *card, WBCardDir *ent);
-    WBCard *card;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    s32 result;
-    if (fileNo < 0 || 127 <= fileNo) {
-        return -128;
-    }
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    dir = fn_800CF8C4(card);
-    ent = &dir[fileNo];
-    result = fn_800D1FA8(card, ent);
-    if (result >= 0) {
-        memcpy(stat->gameName, ent->gameName, 4);
-        memcpy(stat->company, ent->company, 2);
-        stat->length = ent->length * (u32)card->sectorSize;
-        memcpy(stat->fileName, ent->fileName, 32);
-        stat->time = ent->time;
-        stat->bannerFormat = ent->bannerFormat;
-        stat->iconAddr = ent->iconAddr;
-        stat->iconFormat = ent->iconFormat;
-        stat->iconSpeed = ent->iconSpeed;
-        stat->commentAddr = ent->commentAddr;
-        fn_800D31A4(ent, stat);
-    }
-    return fn_800CDC90(card, result);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -11223,52 +9326,6 @@ typedef struct WBCard {
 #define WBT_WBCardStat
 typedef struct WBCardStat { char fileName[32]; u32 length; u32 time; u8 gameName[4]; u8 company[2]; u8 bannerFormat; u8 pad; u32 iconAddr; u16 iconFormat; u16 iconSpeed; u32 commentAddr; u32 offsets[16]; } WBCardStat;
 #endif
-s32 fn_800D34B0(s32 chan, void *fileNoArg, s32 statArg, void *cbArg) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCardDir *fn_800CF8C4(WBCard *card);
-    void *memcpy(void *, const void *, unsigned long);
-    void fn_800D31A4(WBCardDir *ent, WBCardStat *stat);
-    s32 fn_800D1E74(WBCard *card, WBCardDir *ent);
-    s64 OSGetTime(void);
-    s32 fn_800CFA64(s32 chan, WBCardCB callback);
-    s32 fileNo = (s32)fileNoArg;
-    WBCard *card;
-    WBCardDir *dir;
-    WBCardDir *ent;
-    s32 result;
-    WBCardCB callback = (WBCardCB)cbArg;
-    WBCardStat *stat = (WBCardStat *)statArg;
-    if (fileNo < 0 || 127 <= fileNo || (stat->iconAddr != 0xffffffff && 512 <= stat->iconAddr) ||
-        (stat->commentAddr != 0xffffffff && 8192 - 64 < (stat->commentAddr & 8191))) {
-        return -128;
-    }
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    dir = fn_800CF8C4(card);
-    ent = &dir[fileNo];
-    result = fn_800D1E74(card, ent);
-    if (result < 0) {
-        return fn_800CDC90(card, result);
-    }
-    ent->bannerFormat = stat->bannerFormat;
-    ent->iconAddr = stat->iconAddr;
-    ent->iconFormat = stat->iconFormat;
-    ent->iconSpeed = stat->iconSpeed;
-    ent->commentAddr = stat->commentAddr;
-    fn_800D31A4(ent, stat);
-    if (ent->iconAddr == 0xffffffff) {
-        ent->iconSpeed = (ent->iconSpeed & ~3) | 1;
-    }
-    ent->time = OSGetTime() / (*(u32 *)0x800000F8 / 4);
-    result = fn_800CFA64(chan, callback);
-    if (result < 0) {
-        fn_800CDC90(card, result);
-    }
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -11355,61 +9412,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D0B94(s32 chan, s32 *memSize, s32 *sectorSize) {
-    extern u32 lbl_802DF480[];
-    s32 fn_800F27B0(s32 chan);
-    u32 fn_800F33BC(s32 chan);
-    s32 EXIGetID(s32 chan, u32 dev, u32 *id);
-    s32 fn_800D0A90(u32 id);
-    extern u8 lbl_80323560[];
-    u32 id;
-    WBCard *card;
-    int enabled;
-    s32 result;
-    s32 probe;
-    if (chan < 0 || 2 <= chan) {
-        return -128;
-    }
-    if (*(u8 *)0x800030E3 & 0x80) {
-        return -3;
-    }
-    card = &WB_CARDBLK[chan];
-    enabled = OSDisableInterrupts();
-    probe = fn_800F27B0(chan);
-    if (probe == -1) {
-        result = -3;
-    } else if (probe == 0) {
-        result = -1;
-    } else if (card->attached) {
-        if (card->mountStep < 1) {
-            result = -1;
-        } else {
-            if (memSize) {
-                *memSize = card->size;
-            }
-            if (sectorSize) {
-                *sectorSize = card->sectorSize;
-            }
-            result = 0;
-        }
-    } else if (fn_800F33BC(chan) & 8) {
-        result = -2;
-    } else if (!EXIGetID(chan, 0, &id)) {
-        result = -1;
-    } else if (fn_800D0A90(id)) {
-        if (memSize) {
-            *memSize = (s32)(id & 0xfc);
-        }
-        if (sectorSize) {
-            *sectorSize = lbl_802DF480[(id & 0x00003800) >> 11];
-        }
-        result = 0;
-    } else {
-        result = -2;
-    }
-    OSRestoreInterrupts(enabled);
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -11496,13 +9498,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D0B5C(s32 chan) {
-    s32 fn_800F2730(s32 chan);
-    if (*(u8 *)0x800030E3 & 0x80) {
-        return 0;
-    }
-    return fn_800F2730(chan);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -11589,49 +9584,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800D1120(s32 chan, s32 result) {
-    s32 fn_800D0D10(s32 chan);
-    s32 fn_800D0420(WBCard *card);
-    s32 EXILock(s32, s32, void *);
-    void fn_800CCF48(s32 chan, void *context);
-    void fn_800D1440(s32 chan, s32 result);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    card = &WB_CARDBLK[chan];
-    switch (result) {
-    case 0:
-        if (++card->mountStep < 7) {
-            result = fn_800D0D10(chan);
-            if (0 <= result) {
-                return;
-            }
-        } else {
-            result = fn_800D0420(card);
-        }
-        break;
-    case 1:
-        card->unlockCallback = fn_800D1120;
-        if (!EXILock(chan, 0, fn_800CCF48)) {
-            return;
-        }
-        card->unlockCallback = 0;
-        result = fn_800D0D10(chan);
-        if (result >= 0) {
-            return;
-        }
-        break;
-    case -5:
-    case -3:
-        fn_800D1440(chan, result);
-        break;
-    }
-    callback = card->apiCallback;
-    card->apiCallback = 0;
-    fn_800CDC90(card, result);
-    callback(chan, result);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -11718,42 +9670,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-void fn_800D1588(s32 chan, s32 result) {
-    s32 fn_800CDA0C(s32 chan, u32 addr, WBCardCB callback);
-    s32 fn_800CF45C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback);
-    void *memcpy(void *, const void *, unsigned long);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    WBCardCB callback;
-    card = &WB_CARDBLK[chan];
-    if (result < 0) {
-        goto error;
-    }
-    ++card->formatStep;
-    if (card->formatStep < 5) {
-        result = fn_800CDA0C(chan, (u32)card->sectorSize * card->formatStep, fn_800D1588);
-        if (result >= 0) {
-            return;
-        }
-    } else if (card->formatStep < 2 * 5) {
-        int step = card->formatStep - 5;
-        result = fn_800CF45C(chan, (u32)card->sectorSize * step, 0x2000, (u8 *)card->workArea + (0x2000 * step), fn_800D1588);
-        if (result >= 0) {
-            return;
-        }
-    } else {
-        card->currentDir = (WBCardDir *)((u8 *)card->workArea + 1 * 0x2000);
-        memcpy(card->currentDir, (u8 *)card->workArea + 2 * 0x2000, 0x2000);
-        card->currentFat = (u16 *)((u8 *)card->workArea + 3 * 0x2000);
-        memcpy(card->currentFat, (u8 *)card->workArea + 4 * 0x2000, 0x2000);
-    }
-error:
-    callback = card->apiCallback;
-    card->apiCallback = 0;
-    fn_800CDC90(card, result);
-    callback(chan, result);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -11840,62 +9756,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800D1258(s32 chan, void *workArea, s32 detachCb, void *attachCb) {
-    u32 fn_800F33BC(s32 chan);
-    s32 fn_800F2864(s32 chan, void *cb);
-    void fn_800F2540(s32 chan, void *cb);
-    void fn_800B3EF8(void *alarm);
-    s32 EXILock(s32, s32, void *);
-    void fn_800CCF48(s32 chan, void *context);
-    void fn_800CCCB0(s32 chan, void *context);
-    void fn_800CCC78(s32 chan, s32 result);
-    void fn_800D1120(s32 chan, s32 result);
-    s32 fn_800D0D10(s32 chan);
-    WBCardCB detachCallback = (WBCardCB)detachCb;
-    WBCardCB attachCallback = (WBCardCB)attachCb;
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    int enabled;
-    if (chan < 0 || 2 <= chan) {
-        return -128;
-    }
-    if (*(u8 *)0x800030E3 & 0x80) {
-        return -3;
-    }
-    card = &WB_CARDBLK[chan];
-    enabled = OSDisableInterrupts();
-    if (card->result == -1) {
-        OSRestoreInterrupts(enabled);
-        return -1;
-    }
-    if (!card->attached && (fn_800F33BC(chan) & 0x08)) {
-        OSRestoreInterrupts(enabled);
-        return -2;
-    }
-    card->result = -1;
-    card->workArea = workArea;
-    card->extCallback = detachCallback;
-    card->apiCallback = attachCallback ? attachCallback : fn_800CCC78;
-    card->exiCallback = 0;
-    if (!card->attached && !fn_800F2864(chan, fn_800CCCB0)) {
-        card->result = -3;
-        OSRestoreInterrupts(enabled);
-        return -3;
-    }
-    card->mountStep = 0;
-    card->attached = 1;
-    fn_800F2540(chan, 0);
-    fn_800B3EF8(card->alarm);
-    card->currentDir = 0;
-    card->currentFat = 0;
-    OSRestoreInterrupts(enabled);
-    card->unlockCallback = fn_800D1120;
-    if (!EXILock(chan, 0, fn_800CCF48)) {
-        return 0;
-    }
-    card->unlockCallback = 0;
-    return fn_800D0D10(chan);
-}
 #pragma auto_inline reset
 
 #pragma push
@@ -12126,124 +9986,6 @@ typedef struct WBSramEx_v2 {
 } WBSramEx_v2;
 #endif
 #endif
-s32 fn_800D0D10(s32 chan) {
-    extern u32 lbl_802DF480[];
-    extern u32 lbl_802DF4A0[];
-    extern u16 lbl_80359610;
-    s32 EXIGetID(s32 chan, u32 dev, u32 *id);
-    s32 fn_800D0A90(u32 id);
-    s32 fn_800CD17C(s32 chan);
-    s32 fn_800CD08C(s32 chan, u8 *status);
-    s32 fn_800F2730(s32 chan);
-    s32 fn_800CE354(s32 chan, u8 *flashID);
-    void *__OSLockSramEx(void);
-    s32 __OSUnlockSramEx(s32 commit);
-    s32 fn_800CCFCC(s32 chan, s32 enable);
-    void fn_800F2540(s32 chan, void *cb);
-    void fn_800CCD88(s32 chan, void *context);
-    s32 EXIUnlock(s32 chan);
-    void DCInvalidateRange(void *addr, u32 nBytes);
-    s32 fn_800CF31C(s32 chan, u32 addr, s32 length, void *dst, WBCardCB callback);
-    void fn_800D1120(s32 chan, s32 result);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    void fn_800D1440(s32 chan, s32 result);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    u32 id;
-    u8 status;
-    s32 result;
-    WBSramEx_v2 *sram;
-    int i;
-    u8 checkSum;
-    int step;
-    card = &WB_CARDBLK[chan];
-    if (card->mountStep == 0) {
-        if (!EXIGetID(chan, 0, &id)) {
-            result = -3;
-        } else if (fn_800D0A90(id)) {
-            result = 0;
-        } else {
-            result = -2;
-        }
-        if (result < 0) {
-            goto error;
-        }
-        card->cid = id;
-        card->size = (u16)(id & 0xFC);
-        card->sectorSize = lbl_802DF480[(id & 0x00003800) >> 11];
-        card->cBlock = (u16)((card->size * 1024 * 1024 / 8) / card->sectorSize);
-        card->latency = lbl_802DF4A0[(id & 0x00000700) >> 8];
-        result = fn_800CD17C(chan);
-        if (result < 0) {
-            goto error;
-        }
-        result = fn_800CD08C(chan, &status);
-        if (result < 0) {
-            goto error;
-        }
-        if (!fn_800F2730(chan)) {
-            result = -3;
-            goto error;
-        }
-        if (!(status & 0x40)) {
-            result = fn_800CE354(chan, card->id);
-            if (result < 0) {
-                goto error;
-            }
-            checkSum = 0;
-            sram = __OSLockSramEx();
-            for (i = 0; i < 12; i++) {
-                sram->flashID[chan][i] = card->id[i];
-                checkSum += card->id[i];
-            }
-            sram->flashIDCheckSum[chan] = (u8)~checkSum;
-            __OSUnlockSramEx(1);
-            return result;
-        } else {
-            card->mountStep = 1;
-            checkSum = 0;
-            sram = __OSLockSramEx();
-            for (i = 0; i < 12; i++) {
-                checkSum += sram->flashID[chan][i];
-            }
-            __OSUnlockSramEx(0);
-            if (sram->flashIDCheckSum[chan] != (u8)~checkSum) {
-                result = -5;
-                goto error;
-            }
-        }
-    }
-    if (card->mountStep == 1) {
-        if (card->cid == 0x80000004) {
-            u16 vendorID;
-            sram = __OSLockSramEx();
-            vendorID = *(u16 *)sram->flashID[chan];
-            __OSUnlockSramEx(0);
-            if (lbl_80359610 == 0xFFFF || vendorID != lbl_80359610) {
-                result = -2;
-                goto error;
-            }
-        }
-        card->mountStep = 2;
-        result = fn_800CCFCC(chan, 1);
-        if (result < 0) {
-            goto error;
-        }
-        fn_800F2540(chan, fn_800CCD88);
-        EXIUnlock(chan);
-        DCInvalidateRange(card->workArea, 0xA000);
-    }
-    step = card->mountStep - 2;
-    result = fn_800CF31C(chan, (u32)card->sectorSize * step, 0x2000, (u8 *)card->workArea + (0x2000 * step), fn_800D1120);
-    if (result < 0) {
-        fn_800CDC90(card, result);
-    }
-    return result;
-error:
-    EXIUnlock(chan);
-    fn_800D1440(chan, result);
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -12364,41 +10106,6 @@ typedef struct WBSramEx_v2 {
 #ifndef WB_CKSUM
 #define WB_CKSUM
 #endif
-s32 fn_800CFCD8(WBCard *card) {
-    void *__OSLockSramEx(void);
-    s32 __OSUnlockSramEx(s32 commit);
-    s32 fn_800CDB98(void);
-    extern u8 lbl_80323560[];
-    WBCardID_v2 *id;
-    u16 checksum;
-    u16 checksumInv;
-    WBSramEx_v2 *sramEx;
-    s64 rand;
-    int i;
-    id = card->workArea;
-    if (id->deviceID != 0 || id->size != card->size) {
-        return -6;
-    }
-    wbCARDCheckSum(id, sizeof(WBCardID_v2) - sizeof(u32), &checksum, &checksumInv);
-    if (id->checkSum != checksum || id->checkSumInv != checksumInv) {
-        return -6;
-    }
-    rand = *(s64 *)&id->serial[12];
-    sramEx = __OSLockSramEx();
-    for (i = 0; i < 12; i++) {
-        rand = (rand * 1103515245 + 12345) >> 16;
-        if (id->serial[i] != (u8)(sramEx->flashID[card - WB_CARDBLK][i] + rand)) {
-            __OSUnlockSramEx(0);
-            return -6;
-        }
-        rand = ((rand * 1103515245 + 12345) >> 16) & 0x7FFF;
-    }
-    __OSUnlockSramEx(0);
-    if (id->encode != (u16)fn_800CDB98()) {
-        return -13;
-    }
-    return 0;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -12519,58 +10226,6 @@ typedef struct WBSramEx_v2 {
 #ifndef WB_CKSUM
 #define WB_CKSUM
 #endif
-s32 fn_800D019C(WBCard *card, int *outCurrent) {
-    void *memcpy(void *, const void *, unsigned long);
-    u16 *fat[2];
-    u16 *fatp;
-    u16 nBlock;
-    u16 cFree;
-    int i;
-    u16 checkSum;
-    u16 checkSumInv;
-    int errors;
-    int current;
-    current = errors = 0;
-    for (i = 0; i < 2; i++) {
-        fatp = fat[i] = (u16 *)((u8 *)card->workArea + (3 + i) * 0x2000);
-        wbCARDCheckSum(&fatp[2], 0x2000 - sizeof(u32), &checkSum, &checkSumInv);
-        if (fatp[0] != checkSum || fatp[1] != checkSumInv) {
-            ++errors;
-            current = i;
-            card->currentFat = 0;
-            continue;
-        }
-        cFree = 0;
-        for (nBlock = 5; nBlock < card->cBlock; nBlock++) {
-            if (fatp[nBlock] == 0) {
-                cFree++;
-            }
-        }
-        if (cFree != fatp[3]) {
-            ++errors;
-            current = i;
-            card->currentFat = 0;
-            continue;
-        }
-    }
-    if (0 == errors) {
-        if (card->currentFat == 0) {
-            if (((s16)fat[0][2] - (s16)fat[1][2]) < 0) {
-                current = 0;
-            } else {
-                current = 1;
-            }
-            card->currentFat = fat[current];
-            memcpy(fat[current], fat[current ^ 1], 0x2000);
-        } else {
-            current = (card->currentFat == fat[0]) ? 0 : 1;
-        }
-    }
-    if (outCurrent) {
-        *outCurrent = current;
-    }
-    return errors;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -12703,44 +10358,6 @@ typedef struct WBDirCheck_v2 {
 } WBDirCheck_v2;
 #endif
 #endif
-s32 fn_800CFF5C(WBCard *card, int *outCurrent) {
-    void *memcpy(void *, const void *, unsigned long);
-    WBCardDir *dir[2];
-    WBDirCheck_v2 *check[2];
-    u16 checkSum;
-    u16 checkSumInv;
-    int i;
-    int errors;
-    int current;
-    current = errors = 0;
-    for (i = 0; i < 2; i++) {
-        dir[i] = (WBCardDir *)((u8 *)card->workArea + (1 + i) * 0x2000);
-        check[i] = (WBDirCheck_v2 *)((u8 *)dir[i] + 0x1FC0);
-        wbCARDCheckSum(dir[i], 0x2000 - sizeof(u32), &checkSum, &checkSumInv);
-        if (check[i]->checkSum != checkSum || check[i]->checkSumInv != checkSumInv) {
-            ++errors;
-            current = i;
-            card->currentDir = 0;
-        }
-    }
-    if (0 == errors) {
-        if (card->currentDir == 0) {
-            if ((check[0]->checkCode - check[1]->checkCode) < 0) {
-                current = 0;
-            } else {
-                current = 1;
-            }
-            card->currentDir = dir[current];
-            memcpy(dir[current], dir[current ^ 1], 0x2000);
-        } else {
-            current = (card->currentDir == dir[0]) ? 0 : 1;
-        }
-    }
-    if (outCurrent) {
-        *outCurrent = current;
-    }
-    return errors;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -12861,126 +10478,6 @@ typedef struct WBSramEx_v2 {
 #ifndef WB_CKSUM
 #define WB_CKSUM
 #endif
-s32 fn_800D04AC(s32 chan, void *xferBytes, void *callback) {
-    s32 fn_800CDBD8(s32 chan, void *out);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    s32 fn_800CFCD8(WBCard *card);
-    s32 fn_800CFF5C(WBCard *card, int *outCurrent);
-    s32 fn_800D019C(WBCard *card, int *outCurrent);
-    void *memcpy(void *, const void *, unsigned long);
-    void *memset(void *, int, unsigned long);
-    s32 fn_800CFA64(s32 chan, void *callback);
-    s32 fn_800CF818(s32 chan, u16 *fat, void *callback);
-    WBCard *card;
-    WBCardDir *dir[2];
-    u16 *fat[2];
-    u16 *map;
-    s32 result;
-    int errors;
-    int currentFat;
-    int currentDir;
-    s32 fileNo;
-    u16 iBlock;
-    u16 cBlock;
-    u16 cFree;
-    int updateFat = 0;
-    int updateDir = 0;
-    int updateOrphan = 0;
-    if (xferBytes) {
-        *(s32 *)xferBytes = 0;
-    }
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    result = fn_800CFCD8(card);
-    if (result < 0) {
-        return fn_800CDC90(card, result);
-    }
-    errors = fn_800CFF5C(card, &currentDir);
-    errors += fn_800D019C(card, &currentFat);
-    if (1 < errors) {
-        return fn_800CDC90(card, -6);
-    }
-    dir[0] = (WBCardDir *)((u8 *)card->workArea + (1 + 0) * 0x2000);
-    dir[1] = (WBCardDir *)((u8 *)card->workArea + (1 + 1) * 0x2000);
-    fat[0] = (u16 *)((u8 *)card->workArea + (3 + 0) * 0x2000);
-    fat[1] = (u16 *)((u8 *)card->workArea + (3 + 1) * 0x2000);
-    switch (errors) {
-    case 0:
-        break;
-    case 1:
-        if (!card->currentDir) {
-            card->currentDir = dir[currentDir];
-            memcpy(dir[currentDir], dir[currentDir ^ 1], 0x2000);
-            updateDir = 1;
-        } else {
-            card->currentFat = fat[currentFat];
-            memcpy(fat[currentFat], fat[currentFat ^ 1], 0x2000);
-            updateFat = 1;
-        }
-        break;
-    }
-    map = fat[currentFat ^ 1];
-    memset(map, 0, 0x2000);
-    for (fileNo = 0; fileNo < 127; fileNo++) {
-        WBCardDir *ent;
-        ent = &card->currentDir[fileNo];
-        if (ent->gameName[0] == 0xff) {
-            continue;
-        }
-        for (iBlock = ent->startBlock, cBlock = 0; iBlock != 0xFFFF && cBlock < ent->length;
-             iBlock = card->currentFat[iBlock], ++cBlock) {
-            if (!(5 <= iBlock && iBlock < card->cBlock) || 1 < ++map[iBlock]) {
-                return fn_800CDC90(card, -6);
-            }
-        }
-        if (cBlock != ent->length || iBlock != 0xFFFF) {
-            return fn_800CDC90(card, -6);
-        }
-    }
-    cFree = 0;
-    for (iBlock = 5; iBlock < card->cBlock; iBlock++) {
-        u16 nextBlock;
-        nextBlock = card->currentFat[iBlock];
-        if (map[iBlock] == 0) {
-            if (nextBlock != 0) {
-                card->currentFat[iBlock] = 0;
-                updateOrphan = 1;
-            }
-            cFree++;
-        } else if (!(5 <= nextBlock && nextBlock < card->cBlock) && nextBlock != 0xFFFF) {
-            return fn_800CDC90(card, -6);
-        }
-    }
-    if (cFree != card->currentFat[3]) {
-        card->currentFat[3] = cFree;
-        updateOrphan = 1;
-    }
-    if (updateOrphan) {
-        wbCARDCheckSum(&card->currentFat[2], 0x2000 - sizeof(u32), &card->currentFat[0], &card->currentFat[1]);
-    }
-    memcpy(fat[currentFat ^ 1], fat[currentFat], 0x2000);
-    if (updateDir) {
-        if (xferBytes) {
-            *(s32 *)xferBytes = 0x2000;
-        }
-        return fn_800CFA64(chan, callback);
-    }
-    if (updateFat | updateOrphan) {
-        if (xferBytes) {
-            *(s32 *)xferBytes = 0x2000;
-        }
-        return fn_800CF818(chan, card->currentFat, callback);
-    }
-    fn_800CDC90(card, 0);
-    if (callback) {
-        int enabled = OSDisableInterrupts();
-        ((WBCardCB)callback)(chan, 0);
-        OSRestoreInterrupts(enabled);
-    }
-    return 0;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -13129,81 +10626,6 @@ typedef struct WBDirCheck_v2 {
 } WBDirCheck_v2;
 #endif
 #endif
-s32 fn_800D16CC(s32 chan, s32 encode, void *callback) {
-    s32 fn_800CDBD8(s32 chan, void *out);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    void *memset(void *, int, unsigned long);
-    void *__OSLockSram(void);
-    s32 __OSUnlockSram(s32 commit);
-    void *__OSLockSramEx(void);
-    s32 __OSUnlockSramEx(s32 commit);
-    s64 OSGetTime(void);
-    void fn_800CFB28(void *ptr, int length, u16 *checksum, u16 *checksumInv);
-    void fn_800B48F4(void *, u32);
-    void fn_800CCC78(s32 chan, s32 result);
-    void fn_800D1588(s32 chan, s32 result);
-    s32 fn_800CDA0C(s32 chan, u32 addr, WBCardCB callback);
-    WBCard *card;
-    WBCardID_v2 *id;
-    WBCardDir *dir;
-    u16 *fat;
-    s16 i;
-    s32 result;
-    u8 *sram;
-    WBSramEx_v2 *sramEx;
-    u16 viDTVStatus;
-    s64 time;
-    s64 rand;
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    id = (WBCardID_v2 *)card->workArea;
-    memset(id, 0xff, 0x2000);
-    viDTVStatus = *(volatile u16 *)(0xCC002000 + 55 * 2);
-    id->encode = encode;
-    sram = __OSLockSram();
-    *(u32 *)&id->serial[20] = *(u32 *)(sram + 12);
-    *(u32 *)&id->serial[24] = sram[18];
-    __OSUnlockSram(0);
-    rand = time = OSGetTime();
-    sramEx = __OSLockSramEx();
-    for (i = 0; i < 12; i++) {
-        rand = (rand * 1103515245 + 12345) >> 16;
-        id->serial[i] = (u8)(sramEx->flashID[chan][i] + rand);
-        rand = ((rand * 1103515245 + 12345) >> 16) & 0x7FFF;
-    }
-    __OSUnlockSramEx(0);
-    *(u32 *)&id->serial[28] = viDTVStatus;
-    *(s64 *)&id->serial[12] = time;
-    id->deviceID = 0;
-    id->size = card->size;
-    fn_800CFB28(id, sizeof(WBCardID_v2) - sizeof(u32), &id->checkSum, &id->checkSumInv);
-    for (i = 0; i < 2; i++) {
-        WBDirCheck_v2 *check;
-        dir = (WBCardDir *)((u8 *)card->workArea + (1 + i) * 0x2000);
-        memset(dir, 0xff, 0x2000);
-        check = (WBDirCheck_v2 *)((u8 *)dir + 0x1FC0);
-        check->checkCode = i;
-        fn_800CFB28(dir, 0x2000 - sizeof(u32), &check->checkSum, &check->checkSumInv);
-    }
-    for (i = 0; i < 2; i++) {
-        fat = (u16 *)((u8 *)card->workArea + (3 + i) * 0x2000);
-        memset(fat, 0x00, 0x2000);
-        fat[2] = (u16)i;
-        fat[3] = (u16)(card->cBlock - 5);
-        fat[4] = 5 - 1;
-        fn_800CFB28(&fat[2], 0x2000 - sizeof(u32), &fat[0], &fat[1]);
-    }
-    card->apiCallback = callback ? (WBCardCB)callback : fn_800CCC78;
-    fn_800B48F4(card->workArea, 0xA000);
-    card->formatStep = 0;
-    result = fn_800CDA0C(chan, (u32)card->sectorSize * card->formatStep, fn_800D1588);
-    if (result < 0) {
-        fn_800CDC90(card, result);
-    }
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -13655,36 +11077,6 @@ typedef struct WBCard {
 #endif
 
 #pragma auto_inline off
-s32 fn_800CDA0C(s32 chan, u32 addr, WBCardCB callback) {
-    s32 fn_800CD608(s32 chan, void *txCallback, void *exiCallback);
-    s32 fn_800F2120(s32 chan, void *buf, s32 len, s32 type);
-    s32 EXIDeselect(s32);
-    s32 EXIUnlock(s32);
-    extern u8 lbl_80323560[];
-    WBCard *card;
-    s32 result;
-    card = &WB_CARDBLK[chan];
-    card->cmd[0] = 0xf1;
-    card->cmd[1] = (u8)((addr >> 17) & 0x7f);
-    card->cmd[2] = (u8)((addr >> 9) & 0xff);
-    card->cmdlen = 3;
-    card->mode = -1;
-    card->retry = 3;
-    result = fn_800CD608(chan, 0, callback);
-    if (result == -1) {
-        result = 0;
-    } else if (result >= 0) {
-        if (!fn_800F2120(chan, card->cmd, card->cmdlen, 1)) {
-            card->exiCallback = 0;
-            result = -3;
-        } else {
-            result = 0;
-        }
-        EXIDeselect(chan);
-        EXIUnlock(chan);
-    }
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -13778,20 +11170,6 @@ static inline s32 wbCARDGetResultCode(s32 chan, WBCard *card) {
     }
     return card->result;
 }
-s32 fn_800CDEF8(s32 chan) {
-    void fn_800BA2C8(void *);
-    extern u8 lbl_80323560[];
-    WBCard *block;
-    s32 result;
-    int enabled;
-    block = &WB_CARDBLK[chan];
-    enabled = OSDisableInterrupts();
-    while ((result = wbCARDGetResultCode(chan, block)) == -1) {
-        fn_800BA2C8(block->threadQueue);
-    }
-    OSRestoreInterrupts(enabled);
-    return result;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -13882,28 +11260,6 @@ typedef struct WBCard {
 #define WBT_SerId
 typedef struct WBSerId { u8 serial[32]; } WBSerId;
 #endif
-s32 fn_800D366C(s32 chan, u64 *serialNo) {
-    s32 fn_800CDBD8(s32 chan, void *pcard);
-    s32 fn_800CDC90(WBCard *card, s32 result);
-    WBCard *card;
-    WBSerId *id;
-    int i;
-    u64 code;
-    s32 result;
-    if (!(0 <= chan && chan < 2)) {
-        return -128;
-    }
-    result = fn_800CDBD8(chan, &card);
-    if (result < 0) {
-        return result;
-    }
-    id = (WBSerId *)card->workArea;
-    for (code = 0, i = 0; i < sizeof(id->serial) / sizeof(u64); ++i) {
-        code ^= *(u64 *)&id->serial[sizeof(u64) * i];
-    }
-    *serialNo = code;
-    return fn_800CDC90(card, 0);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -14679,14 +12035,6 @@ typedef struct WBDSPTask_v2 {
 volatile u16 WBDSPRegs[32] : 0xCC005000; /* keep */
 #endif
 #define WB_DSPREGS WBDSPRegs
-void *fn_800CC29C(void *t) {
-    WBDSPTask_v2 *task = t;
-    BOOL old;
-    old = OSDisableInterrupts();
-    task->flags |= 2;
-    OSRestoreInterrupts(old);
-    return task;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -14789,21 +12137,6 @@ typedef struct WBDSPTask_v2 {
 volatile u16 WBDSPRegs[32] : 0xCC005000; /* keep */
 #endif
 #define WB_DSPREGS WBDSPRegs
-void *fn_800CC22C(WBDSPTask_v2 *task) {
-    void fn_800CCB44(void *task);
-    void fn_800CC9B8(u8 *task);
-    extern void *lbl_8035A8E8;
-    BOOL old;
-    old = OSDisableInterrupts();
-    fn_800CCB44(task);
-    task->state = 0;
-    task->flags = 1;
-    OSRestoreInterrupts(old);
-    if (task == lbl_8035A8E8) {
-        fn_800CC9B8((u8 *)task);
-    }
-    return task;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -14906,35 +12239,6 @@ typedef struct WBDSPTask_v2 {
 volatile u16 WBDSPRegs[32] : 0xCC005000; /* keep */
 #endif
 #define WB_DSPREGS WBDSPRegs
-void fn_800CC160(void) {
-    void fn_800CC3A4(char *str, ...);
-    void OSRegisterVersion(const char *);
-    void *__OSSetInterruptHandler(short type, void *handler);
-    u32 __OSUnmaskInterrupts(u32 global);
-    void fn_800CC3F4(void);
-    extern char lbl_802DF100[];
-    extern char *lbl_803595F8;
-    extern s32 lbl_8035A8D0;
-    extern void *lbl_8035A8E0, *lbl_8035A8E4, *lbl_8035A8E8, *lbl_8035A8EC;
-    BOOL old;
-    u16 tmp;
-    fn_800CC3A4(lbl_802DF100 + 72, lbl_802DF100 + 104, lbl_802DF100 + 116);
-    if (lbl_8035A8D0 == 1) {
-        return;
-    }
-    OSRegisterVersion(lbl_803595F8);
-    old = OSDisableInterrupts();
-    __OSSetInterruptHandler(7, fn_800CC3F4);
-    __OSUnmaskInterrupts(0x01000000);
-    tmp = WB_DSPREGS[5];
-    tmp = (tmp & ~0xA8) | 0x800;
-    WB_DSPREGS[5] = tmp;
-    tmp = WB_DSPREGS[5];
-    WB_DSPREGS[5] = tmp = tmp & ~0xAC;
-    lbl_8035A8E8 = lbl_8035A8E4 = lbl_8035A8EC = lbl_8035A8E0 = NULL;
-    lbl_8035A8D0 = 1;
-    OSRestoreInterrupts(old);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -15046,70 +12350,6 @@ typedef struct WBDSPTaskInfo_v2 {
 } WBDSPTaskInfo_v2;
 #endif
 #endif
-void fn_800CC818(WBDSPTaskInfo_v2 *curr, WBDSPTaskInfo_v2 *next) {
-    s32 fn_800CC114(void);
-    s32 fn_800CC124(void);
-    u32 fn_800CC134(void);
-    void fn_800CC14C(u32 arg0);
-    void fn_800CC3A4(char *str, ...);
-    if (curr != NULL) {
-        fn_800CC14C((u32)curr->dram_mmem_addr);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C(curr->dram_length);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C(curr->dram_addr);
-        while ((u32)fn_800CC114() != 0) {
-        }
-    } else {
-        fn_800CC14C(0);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C(0);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C(0);
-        while ((u32)fn_800CC114() != 0) {
-        }
-    }
-    fn_800CC14C((u32)next->iram_mmem_addr);
-    while ((u32)fn_800CC114() != 0) {
-    }
-    fn_800CC14C(next->iram_length);
-    while ((u32)fn_800CC114() != 0) {
-    }
-    fn_800CC14C(next->iram_addr);
-    while ((u32)fn_800CC114() != 0) {
-    }
-    if (next->state == 0) {
-        fn_800CC14C(next->dsp_init_vector);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C(0);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C(0);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C(0);
-        while ((u32)fn_800CC114() != 0) {
-        }
-    } else {
-        fn_800CC14C(next->dsp_resume_vector);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C((u32)next->dram_mmem_addr);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C(next->dram_length);
-        while ((u32)fn_800CC114() != 0) {
-        }
-        fn_800CC14C(next->dram_addr);
-        while ((u32)fn_800CC114() != 0) {
-        }
-    }
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -15226,158 +12466,6 @@ typedef struct WBDSPTaskInfo_v2 {
 #define WB_DSPREGS_D
 volatile u16 WBDSPRegs[32] : 0xCC005000; /* keep */
 #endif
-void fn_800CC3F4(s16 intr, void *context) {
-    s32 fn_800CC114(void);
-    s32 fn_800CC124(void);
-    u32 fn_800CC134(void);
-    void fn_800CC14C(u32 arg0);
-    void fn_800CC3A4(char *str, ...);
-    void OSClearContext(u8 *ctx);
-    void OSSetCurrentContext(u8 *ctx);
-    void fn_800CC818(WBDSPTaskInfo_v2 *curr, WBDSPTaskInfo_v2 *next);
-    void fn_800CCBE4(WBDSPTaskInfo_v2 *task);
-    extern WBDSPTaskInfo_v2 *lbl_8035A8E8;
-    extern WBDSPTaskInfo_v2 *lbl_8035A8E4;
-    extern WBDSPTaskInfo_v2 *lbl_8035A8EC;
-    extern WBDSPTaskInfo_v2 *lbl_8035A8DC;
-    extern s32 lbl_8035A8D8;
-    u8 unused[4];
-    u8 exceptionContext[0x2C8];
-    unsigned short tmp;
-    unsigned long mail;
-    tmp = WBDSPRegs[5];
-    tmp = (tmp & ~0x28) | 0x80;
-    WBDSPRegs[5] = tmp;
-    OSClearContext(exceptionContext);
-    OSSetCurrentContext(exceptionContext);
-    while ((u32)fn_800CC124() == 0) {
-    }
-    mail = fn_800CC134();
-    if ((lbl_8035A8EC->flags & (1 << (31 - 0x1E))) && (mail + 0x232F0000) == 2) {
-        mail = 0xDCD10003;
-    }
-    switch (mail) {
-    case 0xDCD10000:
-        lbl_8035A8EC->state = 1;
-        if (lbl_8035A8EC->init_cb != NULL) {
-            lbl_8035A8EC->init_cb(lbl_8035A8EC);
-        }
-        break;
-    case 0xDCD10001:
-        lbl_8035A8EC->state = 1;
-        if (lbl_8035A8EC->res_cb != NULL) {
-            lbl_8035A8EC->res_cb(lbl_8035A8EC);
-        }
-        break;
-    case 0xDCD10002:
-        if (lbl_8035A8D8) {
-            if (lbl_8035A8EC == lbl_8035A8DC) {
-                fn_800CC14C(0xCDD10003);
-                while ((u32)fn_800CC114() != 0) {
-                }
-                lbl_8035A8DC = NULL;
-                lbl_8035A8D8 = 0;
-                if (lbl_8035A8EC->res_cb != NULL) {
-                    lbl_8035A8EC->res_cb(lbl_8035A8EC);
-                }
-            } else {
-                fn_800CC14C(0xCDD10001);
-                while ((u32)fn_800CC114() != 0) {
-                }
-                fn_800CC818(lbl_8035A8EC, lbl_8035A8DC);
-                lbl_8035A8EC->state = 2;
-                lbl_8035A8EC = lbl_8035A8DC;
-                lbl_8035A8DC = NULL;
-                lbl_8035A8D8 = 0;
-            }
-        } else {
-            if (lbl_8035A8EC->next == NULL) {
-                if (lbl_8035A8EC == lbl_8035A8E8) {
-                    fn_800CC14C(0xCDD10003);
-                    while ((u32)fn_800CC114() != 0) {
-                    }
-                    if (lbl_8035A8EC->res_cb != NULL) {
-                        lbl_8035A8EC->res_cb(lbl_8035A8EC);
-                    }
-                } else {
-                    fn_800CC14C(0xCDD10001);
-                    while ((u32)fn_800CC114() != 0) {
-                    }
-                    fn_800CC818(lbl_8035A8EC, lbl_8035A8E8);
-                    lbl_8035A8EC->state = 2;
-                    lbl_8035A8EC = lbl_8035A8E8;
-                }
-            } else {
-                fn_800CC14C(0xCDD10001);
-                while ((u32)fn_800CC114() != 0) {
-                }
-                fn_800CC818(lbl_8035A8EC, lbl_8035A8EC->next);
-                lbl_8035A8EC->state = 2;
-                lbl_8035A8EC = lbl_8035A8EC->next;
-            }
-        }
-        break;
-    case 0xDCD10003:
-        if (lbl_8035A8D8) {
-            if (lbl_8035A8EC->done_cb != NULL) {
-                lbl_8035A8EC->done_cb(lbl_8035A8EC);
-            }
-            fn_800CC14C(0xCDD10001);
-            while ((u32)fn_800CC114() != 0) {
-            }
-            fn_800CC818(NULL, lbl_8035A8DC);
-            fn_800CCBE4(lbl_8035A8EC);
-            lbl_8035A8EC = lbl_8035A8DC;
-            lbl_8035A8DC = NULL;
-            lbl_8035A8D8 = 0;
-        } else {
-            if (lbl_8035A8EC->next == NULL) {
-                if (lbl_8035A8EC == lbl_8035A8E8) {
-                    if (lbl_8035A8EC->done_cb != NULL) {
-                        lbl_8035A8EC->done_cb(lbl_8035A8EC);
-                    }
-                    fn_800CC14C(0xCDD10002);
-                    while ((u32)fn_800CC114() != 0) {
-                    }
-                    lbl_8035A8EC->state = 3;
-                    fn_800CCBE4(lbl_8035A8EC);
-                } else {
-                    if (lbl_8035A8EC->done_cb != NULL) {
-                        lbl_8035A8EC->done_cb(lbl_8035A8EC);
-                    }
-                    fn_800CC14C(0xCDD10001);
-                    while ((u32)fn_800CC114() != 0) {
-                    }
-                    lbl_8035A8EC->state = 3;
-                    fn_800CC818(NULL, lbl_8035A8E8);
-                    lbl_8035A8EC = lbl_8035A8E8;
-                    fn_800CCBE4(lbl_8035A8E4);
-                }
-            } else {
-                if (lbl_8035A8EC->done_cb != NULL) {
-                    lbl_8035A8EC->done_cb(lbl_8035A8EC);
-                }
-                fn_800CC14C(0xCDD10001);
-                while ((u32)fn_800CC114() != 0) {
-                }
-                lbl_8035A8EC->state = 3;
-                fn_800CC818(NULL, lbl_8035A8EC->next);
-                lbl_8035A8EC = lbl_8035A8EC->next;
-                fn_800CCBE4(lbl_8035A8EC->prev);
-            }
-        }
-        break;
-    case 0xDCD10004:
-        if (lbl_8035A8EC->req_cb != NULL) {
-            lbl_8035A8EC->req_cb(lbl_8035A8EC);
-        }
-        break;
-    default:
-        break;
-    }
-    OSClearContext(exceptionContext);
-    OSSetCurrentContext((u8 *)context);
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -15489,36 +12577,6 @@ typedef struct WBDSPTaskInfo_v2 {
 } WBDSPTaskInfo_v2;
 #endif
 #endif
-void fn_800CCBE4(WBDSPTaskInfo_v2 *task) {
-    s32 fn_800CC114(void);
-    s32 fn_800CC124(void);
-    u32 fn_800CC134(void);
-    void fn_800CC14C(u32 arg0);
-    void fn_800CC3A4(char *str, ...);
-    extern WBDSPTaskInfo_v2 *lbl_8035A8E8;
-    extern WBDSPTaskInfo_v2 *lbl_8035A8E4;
-    extern WBDSPTaskInfo_v2 *lbl_8035A8EC;
-    task->flags = 0;
-    task->state = 3;
-    if (lbl_8035A8E8 == task) {
-        if (task->next != NULL) {
-            lbl_8035A8E8 = task->next;
-            task->next->prev = NULL;
-        } else {
-            lbl_8035A8E8 = lbl_8035A8E4 = lbl_8035A8EC = NULL;
-        }
-        return;
-    }
-    if (lbl_8035A8E4 == task) {
-        lbl_8035A8E4 = task->prev;
-        task->prev->next = NULL;
-        lbl_8035A8EC = lbl_8035A8E8;
-        return;
-    }
-    lbl_8035A8EC = task->next;
-    task->prev->next = task->next;
-    task->next->prev = task->prev;
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -15609,10 +12667,6 @@ typedef struct WBCard {
 #define WB_DSPREGS_D
 volatile u16 WBDSPRegs[32] : 0xCC005000; /* keep */
 #endif
-void fn_800CC14C(u32 mail) {
-    WBDSPRegs[0] = mail >> 16;
-    WBDSPRegs[1] = mail & 0xFFFF;
-}
 #pragma auto_inline reset
 
 #pragma push
@@ -15803,9 +12857,6 @@ typedef struct WBCard {
 #define WB_DSPREGS_D
 volatile u16 WBDSPRegs[32] : 0xCC005000; /* keep */
 #endif
-int fn_800CC134(void) {
-    return (WBDSPRegs[2] << 16) | WBDSPRegs[3];
-}
 #pragma auto_inline reset
 
 #ifndef WB_PRELUDE
@@ -15904,28 +12955,6 @@ typedef struct WBPanTab_v2 {
 } WBPanTab_v2;
 #endif
 #endif
-void fn_800C9F0C(s32 *arg0) {
-    extern u8 lbl_802DE540[];
-    extern s32 lbl_8035A8C8;
-    WBPanTab_v2 *t = (WBPanTab_v2 *)lbl_802DE540;
-    s32 left = arg0[5];
-    s32 right = arg0[6];
-    s32 invLeft = 127 - left;
-    s32 invRight = 127 - right;
-    if ((u32)lbl_8035A8C8 == 3) {
-        arg0[8] = t->pan16[left];
-        arg0[9] = t->pan16[invLeft];
-        arg0[10] = t->pan16[invRight];
-        arg0[11] = t->pan16[right];
-        arg0[12] = t->pan16b[invLeft];
-        arg0[13] = t->pan16b[left];
-    } else {
-        arg0[8] = t->pan32[left];
-        arg0[9] = t->pan32[invLeft];
-        arg0[10] = t->pan32[invRight];
-        arg0[11] = t->pan32[right];
-    }
-}
 #pragma auto_inline reset
 
 #pragma push
