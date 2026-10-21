@@ -249,12 +249,3 @@ void __AXProcessAux(void) {
     __AXAuxCpuReadWritePosition %= 3;
 }
 
-void AXRegisterAuxACallback(void (*callback)(void*, void*), void* context) {
-    __AXCallbackAuxA = callback;
-    __AXContextAuxA = context;    
-}
-
-void AXRegisterAuxBCallback(void (*callback)(void*, void*), void* context) {
-    __AXCallbackAuxB = callback;
-    __AXContextAuxB = context;    
-}

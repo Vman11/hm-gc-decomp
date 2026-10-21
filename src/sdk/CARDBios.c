@@ -4196,6 +4196,7 @@ const char *lbl_80359600 = "<< Dolphin SDK - CARD\trelease build: Apr 17 2003 12
 struct { void *func; u32 priority; void *next; void *prev; } lbl_802DF308[1] = { { fn_800CDF90, 127, 0, 0 } };
 u8 lbl_80323780[0x20];
 u8 lbl_80323560[0x220];
+u32 __CARDBiosSbssPad; /* the original .sbss is 8 bytes (globals: reverse definition order) */
 u16 lbl_8035A8F0;
 
 #pragma auto_inline off

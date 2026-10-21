@@ -1,5 +1,6 @@
 /* AXVPB.c (Dolphin SDK 2003) : 0x800C8D2C - 0x800C9EC4 of auto/text_800B2E70. Based on dolsdk2001 src/ax/AXVPB.c. */
 #include "common.h"
+extern const f32 lbl_803630C0;
 #define ATTRIBUTE_ALIGN(num) __attribute__((aligned(num)))
 typedef s64 OSTime;
 
@@ -911,7 +912,7 @@ void AXSetVoiceSrcRatio(AXVPB * p, float ratio) {
     int old;
 
     old = OSDisableInterrupts();
-    r = 65536.0f * ratio;
+    r = lbl_803630C0 * ratio; /* 65536.0f, kept in the shared .sdata2 pool by the split */
     if (r > 0x40000) {
         r = 0x40000;
     }

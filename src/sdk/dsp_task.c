@@ -1,12 +1,25 @@
-#include <stddef.h>
-
-#include <dolphin.h>
-#include <dolphin/hw_regs.h>
+#define __DSP_debug_printf fn_800CC3A4
 #define __DSPHandler fn_800CC3F4
 #define __DSP_exec_task fn_800CC818
 #define __DSP_boot_task fn_800CC9B8
 #define __DSP_insert_task fn_800CCB44
 #define __DSP_remove_task fn_800CCBE4
+#define DSPCheckMailToDSP fn_800CC114
+#define DSPCheckMailFromDSP fn_800CC124
+#define DSPReadMailFromDSP fn_800CC134
+#define DSPSendMailToDSP fn_800CC14C
+#define __DSP_curr_task lbl_8035A8EC
+#define __DSP_first_task lbl_8035A8E8
+#define __DSP_last_task lbl_8035A8E4
+#define __DSP_tmp_task lbl_8035A8E0
+#define __DSP_rude_task lbl_8035A8DC
+#define __DSP_rude_task_pending lbl_8035A8D8
+#define __DSPVersion lbl_803595F8
+#define __DSP_init_flag lbl_8035A8D0
+#include <stddef.h>
+
+#include <dolphin.h>
+#include <dolphin/hw_regs.h>
 
 /* ---- __dsp.h ---- */
 extern DSPTaskInfo *__DSP_curr_task;
@@ -377,3 +390,5 @@ void __DSP_remove_task(DSPTaskInfo *task)
     task->prev->next = task->next;
     task->next->prev = task->prev;
 }
+/* string of __DSP_add_task (stripped from the game, its string remains in .data) */
+static char __DSPAddTaskMsg[] = "__DSP_add_task() : Added task    : 0x%08X\n";

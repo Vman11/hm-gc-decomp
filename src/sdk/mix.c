@@ -1,6 +1,8 @@
 #include <dolphin.h>
 #include <dolphin/mix.h>
 #define __MIXSetPan fn_800C9F0C
+#define AISetStreamVolLeft fn_800C4950
+#define AISetStreamVolRight fn_800C497C
 #define MIXInit fn_800C9FC8
 #define MIXSetSoundMode fn_800CA090
 #define MIXGetSoundMode fn_800CA098
@@ -339,18 +341,19 @@ u8 __MIXAIVolumeTable[50] = {
     0xE3, 0xFF
 };
 
-static MIXChannel __MIXChannel[64];
+MIXChannel __MIXChannel[64];
 
-static int __MIXDvdStreamAttenCurrent;
-static int __MIXDvdStreamAttenUser;
-static u32 __MIXSoundMode;
+/* globals in .sbss are laid out in reverse definition order */
+u32 __MIXSoundMode;
+int __MIXDvdStreamAttenUser;
+int __MIXDvdStreamAttenCurrent;
 
 // prototypes
 static u16 __MIXGetVolume(int db);
 static int __MIXGetPanL(int pan);
 static int __MIXGetPanR(int pan);
 static void __MIXResetChannel(MIXChannel* channel);
-static void __MIXSetPan(MIXChannel* channel);
+void __MIXSetPan(MIXChannel* channel);
 static int __MIXClampPan(int pan);
 
 static inline u16 __MIXGetVolume(int db_) {
@@ -364,7 +367,7 @@ static inline u16 __MIXGetVolume(int db_) {
     return __MIXVolumeTable[db + 0x388];
 }
 
-static void __MIXSetPan(MIXChannel* channel) {
+void __MIXSetPan(MIXChannel* channel) {
     int pan, span;
     int ipan, ispan;
 
