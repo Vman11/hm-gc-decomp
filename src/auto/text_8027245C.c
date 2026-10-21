@@ -11,19 +11,25 @@ typedef struct {
     s32 unk1E8;
 } UnkStruct8027245C;
 
-void __ct__9C8027245CFv(UnkStruct8027245C* arg0) {
-    u32 i;
-
-    for (i = 0; i < 60; i++) {
-        arg0->unk4[i] = 0;
-        arg0->unkF4[i] = 0;
-    }
-    arg0->unk1E8 = 0;
-    arg0->unk0 = 0;
-    arg0->unk1E4 = 0;
-}
 
 void fn_802724F8(s32 arg0) {
     lbl_8035B808 = arg0;
 }
 
+typedef struct X_8027245C X_8027245C;
+typedef struct T_8027245C { s32 n; X_8027245C *a[60]; u32 k[60]; void *mgr; s32 x; } T_8027245C;
+
+static inline void clr_8027245C(T_8027245C *t) {
+    u32 i;
+    for (i = 0; i < 60; i++) {
+        t->a[i] = 0;
+        t->k[i] = 0;
+    }
+    t->x = 0;
+    t->n = 0;
+    t->mgr = 0;
+}
+
+void __ct__9C8027245CFv(T_8027245C *t) {
+    clr_8027245C(t);
+}

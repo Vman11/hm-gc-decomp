@@ -1,33 +1,30 @@
 /* Functions from 0x80210E48 to 0x80210F20, found by decomp-toolkit. */
 #include "common.h"
 
-char *fn_80210E48(u32 arg0) {
- struct StringData { char first[12]; char rest[0x244]; };
- extern struct StringData lbl_802A6ED0;
- struct StringData *base = &lbl_802A6ED0;
- switch (arg0) {
- case 0: return base->first;
- case 1: return (char *)base + 0xc;
- case 2: return (char *)base + 0x28;
- case 3: return (char *)base + 0x4c;
- case 4: return (char *)base + 0x5c;
- case 5: return (char *)base + 0x70;
- case 6: return (char *)base + 0x88;
- case 7: return (char *)base + 0xac;
- case 8: return (char *)base + 0xd0;
- case 9: return (char *)base + 0xf0;
- case 10: return (char *)base + 0x104;
- case 11: return (char *)base + 0x128;
- case 12: return (char *)base + 0x154;
- case 13: return (char *)base + 0x170;
- case 14: return (char *)base + 0x1a4;
- case 15: return (char *)base + 0x1bc;
- case 16: return (char *)base + 0x1d0;
- case 17: return (char *)base + 0x1e0;
- case 18: return (char *)base + 0x1f4;
- case 19: return (char *)base + 0x208;
- case 20: return (char *)base + 0x224;
- case 21:
- default: return (char *)base + 0x23c;
- }
+const char *fn_80210E48(u32 n) {
+    switch (n) {
+    case 0: return "no error";
+    case 1: return "file or directory not found";
+    case 2: return "error opening the specified file";
+    case 3: return "general error";
+    case 4: return "media not formatted";
+    case 5: return "media format incorrect";
+    case 6: return "buffer supplied was insufficient";
+    case 7: return "asynchronous operation is pending";
+    case 8: return "file pointer is out of bounds";
+    case 9: return "access violation";
+    case 10: return "write was only partially completed";
+    case 11: return "memory card error (is the card attached?)";
+    case 12: return "memory card is not attached";
+    case 13: return "memory card file system has no save game specified";
+    case 14: return "device is out of space";
+    case 15: return "bad file descriptor";
+    case 16: return "media not ready";
+    case 17: return "media is corrupt";
+    case 18: return "media is invalid";
+    case 19: return "feature is unimplemented";
+    case 20: return "feature is unsupported";
+    case 21:
+    default: return "<unspecified error>";
+    }
 }
