@@ -7779,7 +7779,11 @@ sdk/OSMutex.c:
 	.text       start:0x800B7D84 end:0x800B7DF4
 
 auto/text_800B7DF4.c:
-	.text       start:0x800B7DF4 end:0x800B8994
+	.text       start:0x800B7DF4 end:0x800B8608
+
+sdk/OSResetSW.c:
+	.text       start:0x800B8608 end:0x800B8994
+	.sbss       start:0x8035A5C8 end:0x8035A5E8
 
 sdk/OSRtc.c:
 	.text       start:0x800B8994 end:0x800B95A0

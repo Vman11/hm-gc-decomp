@@ -1392,6 +1392,7 @@ config.libs = [
             Object(NonMatching, "auto/text_800B7AAC.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/OSMutex.c", mw_version="GC/1.2.5n"),
             Object(NonMatching, "auto/text_800B7DF4.c", mw_version="GC/1.2.5n"),
+            Object(Matching, "sdk/OSResetSW.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/OSRtc.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/OSSync.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/OSThread.c", mw_version="GC/1.2.5n"),
