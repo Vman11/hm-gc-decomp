@@ -1456,7 +1456,7 @@ config.libs = [
             Object(NonMatching, "sdk/GXTransform.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/GXPerf.c", mw_version="GC/1.2.5n"),
             Object(NonMatching, "auto/jt_802E00D4.c"),
-            Object(NonMatching, "auto/text_800DAA80.c"),
+            Object(NonMatching, "auto/text_800DAA80.c", extra_cflags=["-inline noauto"]),
             Object(NonMatching, "auto/jt_802E0198.c"),
             Object(Matching, "auto/text_800E1DA8.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_800E1DF0.c"),

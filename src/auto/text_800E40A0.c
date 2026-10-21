@@ -1869,11 +1869,11 @@ void *__FileWrite(void *file, const void *buf, u32 len) {
     return (fwrite(buf, 1, len, file) == len) ? file : 0;
 }
 
-char *longlong2str_800EA640(long long num, char *buff, print_format format);
-char *long2str_800EA91C(long num, char *buff, print_format format);
+char *longlong2str(long long num, char *buff, print_format format);
+char *long2str(long num, char *buff, print_format format);
 char *float2str(double num, char *buff, print_format format);
 char *double2hex(char *buff, print_format format, double x);
-char *parse_format_800EAB3C(char *format, va_list args, print_format *out);
+char *parse_format(char *format, va_list args, print_format *out);
 #pragma push
 #pragma use_lmw_stmw on
 int __pformatter(void *(*WriteProc)(void *, const char *, u32), void *WriteProcArg, const char *format_str, va_list arg) {
@@ -1910,7 +1910,7 @@ int __pformatter(void *(*WriteProc)(void *, const char *, u32), void *WriteProcA
         }
 
         format_ptr = curr_format;
-        format_ptr = parse_format_800EAB3C((char *)format_ptr, arg, &format);
+        format_ptr = parse_format((char *)format_ptr, arg, &format);
 
         switch (format.conversion_char) {
         case 'd':
@@ -1932,11 +1932,11 @@ int __pformatter(void *(*WriteProc)(void *, const char *, u32), void *WriteProcA
             }
 
             if (format.argument_options == 4) {
-                if (!(buff_ptr = longlong2str_800EA640(long_long_num, buff + 512, format))) {
+                if (!(buff_ptr = longlong2str(long_long_num, buff + 512, format))) {
                     goto conversion_error;
                 }
             } else {
-                if (!(buff_ptr = long2str_800EA91C(long_num, buff + 512, format))) {
+                if (!(buff_ptr = long2str(long_num, buff + 512, format))) {
                     goto conversion_error;
                 }
             }
@@ -1965,11 +1965,11 @@ int __pformatter(void *(*WriteProc)(void *, const char *, u32), void *WriteProcA
             }
 
             if (format.argument_options == 4) {
-                if (!(buff_ptr = longlong2str_800EA640(long_long_num, buff + 512, format))) {
+                if (!(buff_ptr = longlong2str(long_long_num, buff + 512, format))) {
                     goto conversion_error;
                 }
             } else {
-                if (!(buff_ptr = long2str_800EA91C(long_num, buff + 512, format))) {
+                if (!(buff_ptr = long2str(long_num, buff + 512, format))) {
                     goto conversion_error;
                 }
             }
@@ -2383,7 +2383,7 @@ void fn_800EA1DC(decimal *dec, int new_length) {
     dec->sig.length = new_length;
 }
 
-static char *long2str_800EA91C(long, char *, print_format);
+static char *long2str(long, char *, print_format);
 char *fn_800EB764(char *, const char *);
 extern const char lbl_8029C148[];
 #pragma push
@@ -2433,7 +2433,7 @@ char *double2hex(char *buff, print_format format, double x) {
     exp_format.conversion_char = 'd';
     exp_format.field_width = 0;
     exp_format.precision = 1;
-    p = long2str_800EA91C((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exp_format);
+    p = long2str((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exp_format);
     if (format.conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
     for (i = format.precision; i >= 1; --i) {
@@ -2456,7 +2456,7 @@ char *double2hex(char *buff, print_format format, double x) {
     return p;
 }
 #pragma pop
-static char *longlong2str_800EA640(long long num, char *buff, print_format format) {
+static char *longlong2str(long long num, char *buff, print_format format) {
     unsigned long long unsigned_num, base;
     char *p;
     int n, digit;
@@ -2500,7 +2500,7 @@ static char *longlong2str_800EA640(long long num, char *buff, print_format forma
     return p;
 }
 
-static char *long2str_800EA91C(long num, char *buff, print_format format) {
+static char *long2str(long num, char *buff, print_format format) {
     unsigned long unsigned_num, base;
     char *p;
     int n, digit;
@@ -2600,7 +2600,7 @@ static char *long2str_800EA91C(long num, char *buff, print_format format) {
 void *__va_arg(va_list, int);
 #pragma push
 #pragma use_lmw_stmw off
-char *parse_format_800EAB3C(char *format, va_list args, print_format *out) {
+char *parse_format(char *format, va_list args, print_format *out) {
 print_format f;
 int c = *(format + 1);
 int flag;

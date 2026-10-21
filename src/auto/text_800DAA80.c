@@ -747,6 +747,19 @@ s32 fn_800DB370(TrkBuf *buf, u32 *data) {
     return err;
 }
 
+static inline s32 TRKReadBuffer_nz(TrkBuf *buf, void *data, u32 length) {
+    extern void *fn_80003488(void *, const void *, u32);
+    s32 error = 0;
+    u32 bytesLeft;
+    bytesLeft = buf->count - buf->pos;
+    if (length > bytesLeft) {
+        error = 0x302;
+        length = bytesLeft;
+    }
+    fn_80003488(data, buf->data + buf->pos, length);
+    buf->pos += length;
+    return error;
+}
 s32 fn_800DB438(TrkBuf *buf, u16 *data) {
     extern s32 gTRKBigEndian[];
     s32 err;
@@ -758,7 +771,7 @@ s32 fn_800DB438(TrkBuf *buf, u16 *data) {
     } else {
         bigEndianData = swapBuffer;
     }
-    err = TRKReadBuffer_inline(buf, (void *)bigEndianData, sizeof(*data));
+    err = TRKReadBuffer_nz(buf, (void *)bigEndianData, sizeof(*data));
     if (!gTRKBigEndian[0] && err == 0) {
         byteData = (u8 *)data;
         byteData[0] = bigEndianData[1];
@@ -768,7 +781,7 @@ s32 fn_800DB438(TrkBuf *buf, u16 *data) {
 }
 
 s32 fn_800DB4F0(TrkBuf *buf, u8 *data) {
-    return TRKReadBuffer_inline(buf, data, 1);
+    return TRKReadBuffer_nz(buf, data, 1);
 }
 
 s32 fn_800DB570(TrkBuf *buf, u32 *data, s32 count) {
@@ -988,7 +1001,7 @@ TrkBuf *TRKGetBuffer(s32 idx) {
 s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg) {
 #pragma push
 #pragma use_lmw_stmw on
-    extern void fn_800DC0AC(const char *);
+    extern BOOL fn_800DC0AC(const char *);
     extern char lbl_8029BDF8[];
     TrkBuf *buf;
     s32 error = 0x300;
@@ -1192,7 +1205,8 @@ void usr_put_initialize(void) {
 
 }
 
-void fn_800DC0AC(const char *s) {
+static inline BOOL TRKPutsDone(void) { return FALSE; }
+BOOL fn_800DC0AC(const char *s) {
 #pragma push
 #pragma dont_inline off
     BOOL done;
@@ -1206,10 +1220,11 @@ void fn_800DC0AC(const char *s) {
         buf[0] = c;
         buf[1] = '\0';
         fn_800DEA14(FALSE);
-        OSReport(buf);
+        { extern void OSReport(); OSReport(buf); }
         fn_800DEA14(old);
         done = TRKPutsDone();
     }
+    return done;
 }
 
 
@@ -1790,122 +1805,141 @@ if (buf->pos < 0x880) { buf->data[buf->pos++] = b; buf->count++; }
 } else { n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); }
 }
 
-void fn_800DD584(TrkBuf *buf) {
-u8 cmd; u8 opt; u16 length; u32 address; u32 size; u8 data[0x800];
-s32 err; s32 n; s32 ok; s8 b;
+static inline void TRKMessageIntoReply(TrkBuf *buf, u8 ackCmd, u8 errSentInAck) {
+    fn_800DBAD0(buf, 1);
+    TRKAppendBuffer1_ui8(buf, ackCmd);
+    TRKAppendBuffer1_ui8(buf, errSentInAck);
+}
 
-if ((u32)buf->count <= 8) { fn_800DBAD0(buf, 1);
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; } n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); return; }
-fn_800DBAA0(buf, 0);
-err = fn_800DB4F0(buf, &cmd);
-if (err == 0) err = fn_800DB4F0(buf, &opt);
-if (err == 0) err = fn_800DB438(buf, &length);
-if (err == 0) err = fn_800DB370(buf, &address);
-if (opt & 2) { fn_800DBAD0(buf, 1);
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x12; buf->count++; } n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); return; }
-if (buf->count != length + 8 || length > 0x800) { fn_800DBAD0(buf, 1);
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x11; buf->count++; } n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); return; }
-if (err == 0) {
-size = length;
-err = fn_800DB970(buf, data, length);
-if (err == 0) err = fn_800E0C4C(data, address, &size, ((opt & 8) == 0), 0);
-length = size;
+static inline s32 TRKSendACK(TrkBuf *buf) {
+    s32 err;
+    s32 ackTries = 3;
+    do {
+        err = fn_800DAF24(buf);
+        --ackTries;
+    } while (err != 0 && ackTries > 0);
+    return err;
 }
-if (err == 0) { fn_800DBAD0(buf, 1);
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0; buf->count++; } }
-if (err == 0) err = fn_800DB8A8(buf, length);
-if (err != 0) {
-switch (err) {
-case 0x701: b=0x13; break;
-case 0x700:
-case 0x702: b=0x15; break;
-case 0x704: b=0x21; break;
-case 0x705: b=0x22; break;
-case 0x706: b=0x20; break;
-default: b=3; break;
+
+static inline s32 TRKStandardACK(TrkBuf *buf, u8 commandID, u8 replyError) {
+    TRKMessageIntoReply(buf, commandID, replyError);
+    return TRKSendACK(buf);
 }
-fn_800DBAD0(buf, 1);
-if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-if (buf->pos < 0x880) { buf->data[buf->pos++] = b; buf->count++; } n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
-} else { n = 3; do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0); }
+
+void fn_800DD584(void *arg) {
+    TrkBuf *b = arg;
+    u8 command;
+    u8 options;
+    u16 length_temp;
+    u32 start;
+    u32 length;
+    u8 buf[0x800];
+    s32 error;
+    u8 replyError;
+
+    if ((u32)b->count <= 8) {
+        TRKStandardACK(b, 0x80, 2);
+        return;
+    }
+
+    fn_800DBAA0(b, 0);
+    error = fn_800DB4F0(b, &command);
+    if (error == 0) error = fn_800DB4F0(b, &options);
+    if (error == 0) error = fn_800DB438(b, &length_temp);
+    if (error == 0) error = fn_800DB370(b, &start);
+
+    if (options & 2) {
+        TRKStandardACK(b, 0x80, 0x12);
+        return;
+    }
+
+    if (b->count != length_temp + 8 || length_temp > 0x800) {
+        TRKStandardACK(b, 0x80, 0x11);
+        return;
+    }
+
+    if (error == 0) {
+        length = length_temp;
+        error = fn_800DB970(b, buf, length);
+        if (error == 0) {
+            error = fn_800E0C4C(buf, start, &length, (options & 8) ? 0 : 1, 0);
+        }
+        length_temp = length;
+    }
+
+    if (error == 0) TRKMessageIntoReply(b, 0x80, 0);
+
+    if (error == 0) error = fn_800DB8A8(b, length_temp);
+
+    if (error != 0) {
+        switch (error) {
+        case 0x700:
+        case 0x702: replyError = 0x15; break;
+        case 0x701: replyError = 0x13; break;
+        case 0x704: replyError = 0x21; break;
+        case 0x705: replyError = 0x22; break;
+        case 0x706: replyError = 0x20; break;
+        default: replyError = 3; break;
+        }
+        TRKStandardACK(b, 0x80, replyError);
+    } else {
+        TRKSendACK(b);
+    }
 }
 
 void fn_800DD9A4(void *arg) {
 #pragma push
-#pragma opt_propagation on
-    TrkBuf *buf = arg;
-    u8 cmd;
-    u8 opt;
-    u16 length;
-    u32 address;
-    u32 count;
-    u8 data[0x800];
-    s32 ok;
-    s32 err;
-    s32 n;
-    s32 b;
-    s32 access;
-    if ((u32)buf->count != 8) {
-        fn_800DBAD0(buf, 1);
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = 2; buf->count++; }
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+    TrkBuf *b = arg;
+    u8 command;
+    u8 options;
+    u16 length_temp;
+    u32 start;
+    u32 length;
+    u8 buf[0x800];
+    s32 error;
+    u8 replyError;
+
+    if ((u32)b->count != 8) {
+        TRKStandardACK(b, 0x80, 2);
         return;
     }
-    fn_800DBAA0(buf, 0);
-    err = fn_800DB4F0(buf, &cmd);
-    if (err == 0) err = fn_800DB4F0(buf, &opt);
-    if (err == 0) err = fn_800DB438(buf, &length);
-    if (err == 0) err = fn_800DB370(buf, &address);
-    if (opt & 2) {
-        fn_800DBAD0(buf, 1);
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x12; buf->count++; }
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+    fn_800DBAA0(b, 0);
+    error = fn_800DB4F0(b, &command);
+    if (error == 0) error = fn_800DB4F0(b, &options);
+    if (error == 0) error = fn_800DB438(b, &length_temp);
+    if (error == 0) error = fn_800DB370(b, &start);
+
+    if (options & 2) {
+        TRKStandardACK(b, 0x80, 0x12);
         return;
     }
-    if (length > 0x800) {
-        fn_800DBAD0(buf, 1);
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x11; buf->count++; }
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+    if (length_temp > 0x800) {
+        TRKStandardACK(b, 0x80, 0x11);
         return;
     }
-    fn_800DBAD0(buf, 1);
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0; buf->count++; }
-    if (err == 0) {
-        access = ((opt >> 3) & 1) ^ 1;
-        count = length;
-        err = fn_800E0C4C(data, address, &count, access, 1);
-        length = count;
-        if (err == 0) err = fn_800DB8A8(buf, length);
-        if (err == 0) err = fn_800DB9FC(buf, data, count);
+
+    TRKMessageIntoReply(b, 0x80, 0);
+
+    if (error == 0) {
+        length = length_temp;
+        error = fn_800E0C4C(buf, start, &length, (options & 8) ? 0 : 1, 1);
+        length_temp = length;
+        if (error == 0) error = fn_800DB8A8(b, length_temp);
+        if (error == 0) error = fn_800DB9FC(b, buf, length);
     }
-    if (err != 0) {
-        switch (err) {
-        case 0x702: b = 0x15; break;
-        case 0x700: b = 0x13; break;
-        case 0x704: b = 0x21; break;
-        case 0x705: b = 0x22; break;
-        case 0x706: b = 0x20; break;
-        default: b = 3; break;
+
+    if (error != 0) {
+        switch (error) {
+        case 0x702: replyError = 0x15; break;
+        case 0x700: replyError = 0x13; break;
+        case 0x704: replyError = 0x21; break;
+        case 0x705: replyError = 0x22; break;
+        case 0x706: replyError = 0x20; break;
+        default: replyError = 3; break;
         }
-        fn_800DBAD0(buf, 1);
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = 0x80; buf->count++; }
-        if (buf->pos < 0x880) { buf->data[buf->pos++] = b; buf->count++; }
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        TRKStandardACK(b, 0x80, replyError);
     } else {
-        n = 3;
-        do { ok = fn_800DAF24(buf); n--; } while (ok != 0 && n > 0);
+        TRKSendACK(b);
     }
 }
 
@@ -2162,13 +2196,7 @@ s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
     error = fn_800DBBA0(&bufferId, &buffer);
     if (error == 0) {
         TrkBuf *b = buffer;
-        if (b->pos >= 0x880) {
-            err = 0x301;
-        } else {
-            b->data[b->pos++] = 0xD4;
-            err = 0;
-            b->count++;
-        }
+        err = TRKAppendBuffer1_ui8(b, 0xD4);
         error = err;
     }
     if (error == 0) {
@@ -2179,13 +2207,7 @@ s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
     }
     if (error == 0) {
         TrkBuf *b = buffer;
-        if (b->pos >= 0x880) {
-            err = 0x301;
-        } else {
-            b->data[b->pos++] = mode;
-            err = 0;
-            b->count++;
-        }
+        err = TRKAppendBuffer1_ui8(b, mode);
         error = err;
     }
     if (error == 0) {
@@ -2221,15 +2243,7 @@ s32 fn_800DEBC0(u32 replyError, u8 *ioResult) {
 
     error = fn_800DBBA0(&bufferId, &buffer);
     if (error == 0) {
-        b = buffer;
-        if (b->pos >= 0x880) {
-            err = 0x301;
-        } else {
-            b->data[b->pos++] = 0xD3;
-            err = 0;
-            b->count++;
-        }
-        error = err;
+        error = TRKAppendBuffer1_ui8(buffer, 0xD3);
     }
     if (error == 0) {
         error = fn_800DB7D0(buffer, replyError);
@@ -2263,25 +2277,13 @@ s32 fn_800DECE0(char *path, u8 mode, u32 *handle, u8 *ioResult) {
     if (error == 0) {
         s32 err;
         TrkBuf *b = buffer;
-        if (b->pos >= 0x880) {
-            err = 0x301;
-        } else {
-            b->data[b->pos++] = 0xD2;
-            err = 0;
-            b->count++;
-        }
+        err = TRKAppendBuffer1_ui8(b, 0xD2);
         error = err;
     }
     if (error == 0) {
         s32 err;
         TrkBuf *b = buffer;
-        if (b->pos >= 0x880) {
-            err = 0x301;
-        } else {
-            b->data[b->pos++] = mode;
-            err = 0;
-            b->count++;
-        }
+        err = TRKAppendBuffer1_ui8(b, mode);
         error = err;
     }
     if (error == 0) {
@@ -2418,13 +2420,7 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
                 cmd = 0xD1;
             }
             b = buffer;
-            if (b->pos >= 0x880) {
-                err = 0x301;
-            } else {
-                b->data[b->pos++] = cmd;
-                err = 0;
-                b->count++;
-            }
+            err = TRKAppendBuffer1_ui8(b, cmd);
             error = err;
         }
 
@@ -2515,14 +2511,7 @@ s32 fn_800DF308(u8 cmd) {
 
     result = fn_800DBBA0(&msgID, &buf);
     if (result == 0) {
-        TrkBuf *b = buf;
-        if (b->pos >= 0x880) {
-            err = 0x301;
-        } else {
-            b->data[b->pos++] = cmd;
-            err = 0;
-            b->count++;
-        }
+        err = TRKAppendBuffer1_ui8(buf, cmd);
         if (err == 0) {
             if (cmd == 0x90) {
                 fn_800DFC6C(buf);
@@ -3103,7 +3092,7 @@ s32 fn_800E0D98(u32 address, u32 length, u8 access) {
     u32 end;
     s32 error;
     u32 i;
-    end = (length + address) - 1;
+    end = address + (length - 1);
     error = 0x700;
     if (end < address) return 0x700;
     for (i = 0; i < 1; i++) {
