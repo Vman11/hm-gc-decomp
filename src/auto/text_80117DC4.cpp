@@ -3,16 +3,45 @@
 #include "common.h"
 
 extern "C" {
+extern u8 __vt__9C800F5578[];
+void __ct__9C800F6BDCFv(void *);
+void __dt__9C800FB424Fv(void *, s16);
+}
 
-class C800FB424 { public: u8 d[292]; ~C800FB424(); };
-class C800F5578 : public C800FB424 { public: C800F5578(); virtual void vfx(); u8 rest[1396]; ~C800F5578() {} };
+/* The object's real ctor (0x800F6BDC) and inline dtor (0x800F5578, weak copy emitted here for the extab) carry
+ * different synthetic class names, so both are reached through their literal symbols. */
+class C800F5578 {
+public:
+    u8 d[0x124];
+    u8 *vt;
+    u8 rest[1396];
+    C800F5578() { __ct__9C800F6BDCFv(this); }
+    ~C800F5578() { vt = __vt__9C800F5578; __dt__9C800FB424Fv(this, 0); }
+};
 class C8011C224 { public: u8 d[0x70]; C8011C224(); ~C8011C224(); };
 struct R { u8 pad[0x124]; virtual void p0(); virtual void p1(); virtual void setup(void *, s32, void *); virtual void p3(); virtual void err(s32); virtual u32 next(); };
 struct P { u8 pad[0x10]; virtual void p0(); virtual void clr(); C8011C224 *arr; void *v; };
 struct Nm { u8 d[8]; };
-extern "C" { u32 fn_800FADA8(R *); void fn_800FB064(R *, void *); void fn_800FB000(R *, s32); void fn_800FAEA0(R *); void fn_800604C4(s32, s32, s32, s32); void fn_800F7EC0(void *); void fn_800F7E98(void); void fn_800F8E38(P *, u32); void fn_8011C28C(void *, P *, void *); void fn_800F87F0(P *, void *, void *); void fn_8011BDB0(C8011C224 *, void *, R *); void fn_800F5F40(void *, void *, void *, s32); extern void *lbl_8035AB18; extern u8 lbl_802E3128[]; extern u8 lbl_802E31F0[]; extern void *lbl_80359718; }
 
-extern "C" void fn_80117DC4(P *p, void *x, R *r) {
+extern "C" {
+u32 fn_800FADA8(R *);
+void fn_800FB064(R *, void *);
+void fn_800FB000(R *, s32);
+void fn_800FAEA0(R *);
+void fn_800604C4(s32, s32, s32, s32);
+void fn_800F7EC0(void *);
+void fn_800F7E98(void);
+void fn_800F8E38(P *, u32);
+void fn_8011C28C(void *, P *, void *);
+void fn_800F87F0(P *, void *, void *);
+void fn_8011BDB0(C8011C224 *, void *, R *);
+void fn_800F5F40(void *, void *, void *, s32);
+extern void *lbl_8035AB18;
+extern u8 lbl_802E3128[];
+extern u8 lbl_802E31F0[];
+extern void *lbl_80359718;
+
+void fn_80117DC4(P *p, void *x, R *r) {
     Nm nm;
     Nm key;
     C800F5578 obj;

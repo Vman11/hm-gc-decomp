@@ -1,23 +1,14 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
-
 extern "C" {
+typedef struct { u32 v[3]; } T12_8015FA20;
+void fn_80217880(void *, void *);
+void fn_80132BC0(void *, u32, void *);
 
-void fn_80132BC0(int, int, int);
-void fn_80217880(int, int);
-
-typedef struct { u32 w0, w1; } Copy8;
-
-void fn_8015FA20(s32 param_1, u32 param_2, s32 param_3) {
-    u32 uVar1;
-
-    *(Copy8 *)(param_1 + 0x58) = *(Copy8 *)(param_3 + 0x58);
-    *(u32 *)(param_1 + 0x60) = *(u32 *)(param_3 + 0x60);
-    *(u16 *)(param_1 + 0x4c) = *(u16 *)(param_3 + 0x4c);
-    *(u32 *)(param_1 + 0x50) = *(u32 *)(param_3 + 0x50);
-    fn_80217880((int)(param_1 + 0x3c), (int)(param_3 + 0x3c));
-    fn_80132BC0((int)(param_1), (int)(param_2), (int)(param_3));
+void fn_8015FA20(u8 *p, u32 a, u8 *q) {
+    *(T12_8015FA20 *)(p + 0x58) = *(T12_8015FA20 *)(q + 0x58);
+    *(u16 *)(p + 0x4c) = *(u16 *)(q + 0x4c);
+    *(u32 *)(p + 0x50) = *(u32 *)(q + 0x50);
+    fn_80217880(p + 0x3c, q + 0x3c);
+    fn_80132BC0(p, a, q);
 }
-
-} /* extern "C" */
+}

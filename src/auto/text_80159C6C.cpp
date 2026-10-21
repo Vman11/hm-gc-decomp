@@ -8,31 +8,32 @@ extern u8 __vt__9C80159C0C[];
 extern u32 lbl_8035ACD8;
 void fn_800604C4(int, int, int, int);
 void fn_800F7E98(void);
-void fn_800F7EC0(int);
-u32 __nw__FUl(int);
-void __ct__9C8013919CFv(void);
+void fn_800F7EC0(u32);
 
-extern "C" {
-}
+struct C8013919C {
+    C8013919C();
+};
 
+struct C80159C6C : C8013919C {
+    u8 b[0xf8];
+    C80159C6C() {
+        *(u8 **)(b + 0xf4) = __vt__9C80159C0C;
+    }
+};
 
-extern "C" u32 fn_80159C6C(void) {
-    u32 iVar1;
+C80159C6C *fn_80159C6C(void) {
+    C80159C6C *p;
 
     if (lbl_8035ACD8 == 0) {
-        fn_800604C4((int)(0xfffffffe), (int)(0), (int)(0), (int)(0));
+        fn_800604C4(-2, 0, 0, 0);
     }
-    fn_800F7EC0((int)(lbl_8035ACD8));
-    iVar1 = __nw__FUl((int)(0xf8));
-    if (iVar1 != 0) {
-        __ct__9C8013919CFv();
-        *(u8 **)(iVar1 + 0xf4) = __vt__9C80159C0C;
-    }
+    fn_800F7EC0(lbl_8035ACD8);
+    p = new C80159C6C;
     fn_800F7E98();
-    if (iVar1 == 0) {
-        fn_800604C4((int)(0xfffffffc), (int)(0), (int)(0), (int)(0));
+    if (p == 0) {
+        fn_800604C4(-4, 0, 0, 0);
     }
-    return iVar1;
+    return p;
 }
 
 } /* extern "C" */

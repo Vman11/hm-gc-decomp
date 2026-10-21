@@ -7,33 +7,33 @@ extern "C" {
 extern u8 lbl_802CF058[];
 extern u32 lbl_8035AFCC;
 void fn_800F7E98(void);
-void fn_801BBC04(void);
-
-extern "C" {
+void fn_801BBC04(void *);
 void fn_800604C4(int, int, int, int);
-void fn_800F7EC0(int);
-}
-struct Pod_18c { char b[0x18c]; };
+void fn_800F7EC0(u32);
 
-extern "C" u32 fn_8009F350(void) {
-    u32 iVar1;
+struct C8009F350 {
+    u8 b[0x18c];
+    C8009F350() {
+        fn_801BBC04(this);
+        *(u8 **)(b + 0x80) = lbl_802CF058;
+        b[0x174] = 0;
+        b[0x17c] = 0;
+    }
+};
+
+u32 fn_8009F350(void) {
+    C8009F350 *p;
 
     if (lbl_8035AFCC == 0) {
-        fn_800604C4((int)(0xfffffffe), (int)(0), (int)(0), (int)(0));
+        fn_800604C4(-2, 0, 0, 0);
     }
-    fn_800F7EC0((int)(lbl_8035AFCC));
-    iVar1 = (u32) new Pod_18c;
-    if (iVar1 != 0) {
-        fn_801BBC04();
-        *(u8 **)(iVar1 + 0x80) = lbl_802CF058;
-        *(u8 *)(iVar1 + 0x174) = 0;
-        *(u8 *)(iVar1 + 0x17c) = 0;
-    }
+    fn_800F7EC0(lbl_8035AFCC);
+    p = new C8009F350;
     fn_800F7E98();
-    if (iVar1 == 0) {
-        fn_800604C4((int)(0xfffffffc), (int)(0), (int)(0), (int)(0));
+    if (p == 0) {
+        fn_800604C4(-4, 0, 0, 0);
     }
-    return iVar1;
+    return (u32)p;
 }
 
 } /* extern "C" */
