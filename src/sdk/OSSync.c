@@ -113,8 +113,7 @@ int __to_gm_time(void);
 void __OSSystemCallVectorStart();
 void __OSSystemCallVectorEnd();
 
-#define SystemCallVector fn_800B95A0
-asm void SystemCallVector(void) {
+static asm void SystemCallVector(void) {
 entry __OSSystemCallVectorStart
     nofralloc
     mfspr r9, HID0

@@ -5,7 +5,7 @@
 extern "C" {
 
 extern f64 lbl_80365028;
-s32 fn_800E2584(f32);
+s32 __cvt_fp2unsigned(f32);
 void fn_8010EF08(void *, s32);
 void fn_8010EEE4(void *, s32);
 
@@ -13,7 +13,7 @@ void fn_801C9574(u8 *p) {
     s32 r;
     s32 d;
     if (lbl_80365028 != *(f32 *)(p + 460)) {
-        r = fn_800E2584(*(f32 *)(p + 468) / *(f32 *)(p + 460));
+        r = __cvt_fp2unsigned(*(f32 *)(p + 468) / *(f32 *)(p + 460));
     } else {
         r = 0;
     }

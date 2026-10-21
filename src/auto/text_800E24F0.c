@@ -4,7 +4,7 @@
 
 
 extern const double lbl_8029BF20[];
-unsigned fn_800E2584(double d) {
+unsigned __cvt_fp2unsigned(double d) {
 unsigned result = 0;
 if (!(d < 0.0)) {
 result--;

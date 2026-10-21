@@ -223,7 +223,7 @@ typedef struct SramControlBlock {
     s32 locked;
     s32 sync;
 } SramControlBlock;
-extern s32 fn_800E2584();
+extern s32 __cvt_fp2unsigned();
 extern f32 lbl_80363088;
 extern f32 lbl_80363068;
 extern u8 lbl_802D8F60[];
@@ -349,7 +349,7 @@ extern char* FstStringStart_8035A660;
 #define nextDir(i) (FstStart_8035A65C[i].nextEntryOrLength)
 
 extern f32 lbl_80363088;
-s32 fn_800E2584(void);
+s32 __cvt_fp2unsigned(void);
 
 typedef struct TRKExceptionStatus {
     u32 exceptionAddress;
@@ -609,12 +609,12 @@ extern f32 lbl_80363080;
 
 
 
-extern s32 fn_800E2584();
+extern s32 __cvt_fp2unsigned();
 
 extern f32 lbl_8035A608;
 extern f32 lbl_80363088;
 extern u16 lbl_802D9DD8[];
-s32 fn_800E2584(void);
+s32 __cvt_fp2unsigned(void);
 
 extern f32 lbl_8035A60C;
 

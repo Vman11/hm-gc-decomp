@@ -4,7 +4,7 @@ extern "C" {
 
 extern const f32 lbl_80365A20;
 extern const f32 lbl_80365A08;
-u32 fn_800E2584(f32);
+u32 __cvt_fp2unsigned(f32);
 s32 fn_802796A8(u8 *);
 void fn_8027A538(u8 *, u32, u32);
 struct V80221978 { u8 vptr_pad[0x60]; virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void m8(); virtual void p9(); virtual void p10(); virtual void m11(); };
@@ -34,7 +34,7 @@ void fn_80221978(u8 *param_1) {
                 }
             }
             if (*(f32 *)(param_1 + 0x20) > lbl_80365A08) {
-                fn_8027A538(*(u8 **)(param_1 + 0x64), *(u32 *)(param_1 + 0x24), fn_800E2584(lbl_80365A20 * *(f32 *)(param_1 + 0x20)));
+                fn_8027A538(*(u8 **)(param_1 + 0x64), *(u32 *)(param_1 + 0x24), __cvt_fp2unsigned(lbl_80365A20 * *(f32 *)(param_1 + 0x20)));
             }
             ((V80221978 *)param_1)->m11();
         }

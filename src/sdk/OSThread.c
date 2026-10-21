@@ -164,7 +164,7 @@
 #define GXGetGPFifo fn_800D51D8
 #define TokenCB lbl_8035A940
 #define __GXSetVAT fn_800D5DE8
-#define __cvt_fp2unsigned fn_800E2584
+#define __cvt_fp2unsigned __cvt_fp2unsigned
 #define GX2HWFiltConv lbl_80359668
 #define GXTexImage0Ids lbl_80359640
 #define GXTexImage1Ids lbl_80359648

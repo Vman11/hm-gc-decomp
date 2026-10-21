@@ -223,7 +223,7 @@ typedef struct SramControlBlock {
     s32 locked;
     s32 sync;
 } SramControlBlock;
-extern s32 fn_800E2584();
+extern s32 __cvt_fp2unsigned();
 extern f32 lbl_80363088;
 extern f32 lbl_80363068;
 extern u8 lbl_802D8F60[];
@@ -349,7 +349,7 @@ extern char* FstStringStart_8035A660;
 #define nextDir(i) (FstStart_8035A65C[i].nextEntryOrLength)
 
 extern f32 lbl_80363088;
-s32 fn_800E2584(void);
+s32 __cvt_fp2unsigned(void);
 
 typedef struct TRKExceptionStatus {
     u32 exceptionAddress;
@@ -823,13 +823,13 @@ void fn_800BBC30(UnkStep* arg0) {
     }
 }
 
-extern s32 fn_800E2584();
+extern s32 __cvt_fp2unsigned();
 void fn_800BBC8C(Anim *a) {
     f32 d;
     a->t = a->t + a->speed;
     if (a->t >= lbl_80363088) {
         a->t = a->t - a->t;
-        a->idx = a->idx + fn_800E2584();
+        a->idx = a->idx + __cvt_fp2unsigned();
         a->idx = a->idx % a->count;
         a->prev = a->cur;
         a->cur = a->data[a->idx];
@@ -841,7 +841,7 @@ void fn_800BBC8C(Anim *a) {
 extern f32 lbl_8035A608;
 extern f32 lbl_80363088;
 extern u16 lbl_802D9DD8[];
-s32 fn_800E2584(void);
+s32 __cvt_fp2unsigned(void);
 void fn_800BBD40(f32 arg0) {
     lbl_8035A608 = arg0;
 }
