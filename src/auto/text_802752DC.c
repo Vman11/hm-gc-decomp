@@ -6839,3 +6839,154 @@ ret0:
 }
 #undef F
 #undef P
+
+typedef struct { u8 pad[184]; u32 x184; u32 a188[2]; u32 a196[2]; } wCB_78234;
+extern s32 wCa_802F385C_78234[] asm("lbl_802F385C");
+u32 wC_802752DC_78234(u32, u32, u32) asm("fn_802752DC");
+void wC_8027D050_78234(u32) asm("fn_8027D050");
+void wC_80276E38_78234(u8 *) asm("fn_80276E38");
+s32 wC_802753F0_78234(void) asm("fn_802753F0");
+u32 wC_80275394_78234(u32, u32, u32) asm("fn_80275394");
+s32 wC_80283DFC_78234(s32, void *) asm("fn_80283DFC");
+void wC_80283F38_78234(s32, void *) asm("fn_80283F38");
+void wC_8028405C_78234(void) asm("fn_8028405C");
+u32 wC_strlen_78234(const char *) asm("strlen");
+void wC_8027F738_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_8027F738");
+void wC_8027E5FC_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_8027E5FC");
+void wC_80281DAC_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_80281DAC");
+void wC_80280860_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_80280860");
+void wC_8028290C_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_8028290C");
+void wC_80282A30_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_80282A30");
+void wC_802829C4_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_802829C4");
+void wC_80282B08_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_80282B08");
+void wC_80282A9C_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_80282A9C");
+void wC_80282B74_78234(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32) asm("fn_80282B74");
+
+#define F(o) (*(u32 *)(b + (o)))
+s32 fn_80278234(u8 *b, u8 *dest, s32 pitch, u32 height, u32 a7, u32 a8, u32 sx, u32 sy, u32 w, u32 h, u32 flags) {
+    s32 skipped = 0;
+    if (b == 0 || dest == 0) {
+        return 0;
+    }
+    sx = wC_802752DC_78234(sx, F(596), F(0));
+    w = wC_802752DC_78234(w, F(596), F(0));
+    sy = wC_802752DC_78234(sy, F(600), F(4));
+    h = wC_802752DC_78234(h, F(600), F(4));
+    if (sx >= F(596)) {
+        sx = F(596);
+    }
+    if (sy >= F(600)) {
+        sy = F(600);
+    }
+    if (sx + w > F(596)) {
+        w = F(596) - sx;
+    }
+    if (sy + h > F(600)) {
+        h = F(600) - sy;
+    }
+    if (w == 0 || h == 0 || F(776) != 0) {
+        return F(776);
+    }
+    F(312) = 1;
+    flags |= F(32) & 0x70030000;
+    wC_8027D050_78234(flags & 15);
+    if (pitch < 0) {
+        dest += -pitch * (height - a8 - 1);
+        a8 = 0;
+    }
+    if (F(760) != 0 && F(20) != 0 && F(252) == 0) {
+        u32 t, r;
+        wC_80276E38_78234(b);
+        t = wC_802753F0_78234();
+        r = wC_802752DC_78234((F(624) - F(644)) * 1000, F(24), F(20));
+        r = wC_80275394_78234(r, *(u32 *)(*(u8 **)(b + 768) + 104), 16);
+        t -= F(640) + F(824);
+        if (t >= r) {
+            t -= r;
+            if (t > F(648)) {
+                if (++F(820) > 3) {
+                    F(820) = skipped;
+                    goto draw;
+                }
+                if ((flags & 0x80000) || (F(32) & 0x80000)) {
+                    skipped = 1;
+                    goto draw;
+                }
+                F(312) = 0;
+                F(772) = 1;
+                F(780)++;
+                return 1;
+            }
+            F(820) = skipped;
+        }
+        F(772) = 0;
+    }
+draw:
+    if (F(264) == 0 && F(304) == 0 && ((F(344) + 1) * 100) / (F(340) + 1) <= 74) {
+        if (wC_80283DFC_78234(wCa_802F385C_78234[0], b + 524) != 0) {
+            (*(void (**)(u8 *))(b + 288))(b + 272);
+            wC_80283F38_78234(wCa_802F385C_78234[0], b + 524);
+        } else if (!(F(32) & 0x8000000)) {
+            wC_8028405C_78234();
+        }
+    }
+    F(744) = flags;
+    if ((s32)flags < 0) {
+    sw1:
+        switch (flags & 15) {
+        case 5:
+            if (F(196) != 0) {
+                wC_8027F738_78234((u32)dest, a7, a8, pitch, ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), ((wCB_78234 *)b)->a196[((wCB_78234 *)b)->x184], flags);
+                break;
+            }
+        case 3:
+            wC_8027E5FC_78234((u32)dest, a7, a8, pitch, ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), flags);
+            break;
+        case 7:
+            if (F(196) != 0) {
+                wC_80281DAC_78234((u32)dest, a7, a8, pitch, ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), ((wCB_78234 *)b)->a196[((wCB_78234 *)b)->x184], flags);
+                break;
+            }
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+            wC_80280860_78234((u32)dest, a7, a8, pitch, ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), flags);
+            break;
+        case 13:
+            wC_8028290C_78234((u32)dest, a7, a8, pitch, ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), flags);
+            break;
+        }
+    } else {
+        if (wC_strlen_78234(*(char **)(b + 220)) >= F(228)) {
+            goto sw1;
+        }
+        switch (flags & 15) {
+        case 5:
+            if (F(196) != 0) {
+                wC_80282A30_78234((u32)dest, a7, a8, pitch, F(220), F(224), ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), ((wCB_78234 *)b)->a196[((wCB_78234 *)b)->x184], flags);
+                break;
+            }
+        case 3:
+            wC_802829C4_78234((u32)dest, a7, a8, pitch, F(220), F(224), ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), flags);
+            break;
+        case 7:
+            if (F(196) != 0) {
+                wC_80282B08_78234((u32)dest, a7, a8, pitch, F(220), F(224), ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), ((wCB_78234 *)b)->a196[((wCB_78234 *)b)->x184], flags);
+                break;
+            }
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+            wC_80282A9C_78234((u32)dest, a7, a8, pitch, F(220), F(224), ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), flags);
+            break;
+        case 13:
+            wC_80282B74_78234((u32)dest, a7, a8, pitch, F(220), F(224), ((wCB_78234 *)b)->a188[((wCB_78234 *)b)->x184], sx, sy, w, h, F(204), F(208), flags);
+            break;
+        }
+    }
+    F(312) = 0;
+    return skipped;
+}
+#undef F

@@ -236,17 +236,6 @@ static inline int __tolower_dec(int c) {
     return (c == -1 ? -1 : lbl_802E06C8[c]);
 }
 
-static inline int __fpclassifyd_dec(double x) {
-    switch (*(int *)&x & 0x7ff00000) {
-    case 0x7ff00000:
-        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 1;
-        return 2;
-    case 0:
-        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 5;
-        return 3;
-    }
-    return 4;
-}
 
 static void __rounddec(decimal *d, int digits) {
     if (digits > 0 && digits < d->sig.length) {
@@ -5123,3 +5112,125 @@ u32 fn_800EC990(int base, int max_width, int (*ReadProc)(void *, int, int), void
 #undef su_toupper
 #undef fetch
 #undef unfetch
+
+#ifndef SIREGS /* standalone judging only: the unit already defines these */
+typedef struct decimal {
+    char sign;
+    char unk1;
+    short exp;
+    struct {
+        unsigned char length;
+        unsigned char text[36];
+        unsigned char unused;
+    } sig;
+} decimal;
+
+static inline int __fpclassifyd_dec(double x) {
+    switch (*(int *)&x & 0x7ff00000) {
+    case 0x7ff00000:
+        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 1;
+        return 2;
+    case 0:
+        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 5;
+        return 3;
+    }
+    return 4;
+}
+#endif
+
+unsigned long long fn_800E2B94(double);
+
+static inline int __count_trailing_zerol(unsigned long x) {
+    int result = 0;
+    int bits_not_checked = sizeof(unsigned long) * 8;
+    int n = sizeof(unsigned long) * 8 / 2;
+    unsigned long mask = 0xFFFF;
+    int sh = n;
+    while (bits_not_checked) {
+        if ((x & mask) == 0) {
+            result += sh;
+            x >>= sh;
+            bits_not_checked -= sh;
+        } else if (mask == 1) {
+            break;
+        }
+        if (n > 1) n /= 2;
+        if (mask > 1) {
+            mask >>= n;
+            sh -= n;
+        }
+    }
+    return result;
+}
+
+static inline int __count_trailing_zero(double x) {
+    unsigned long *l = (unsigned long *)&x;
+    if (l[1] != 0) return __count_trailing_zerol(l[1]);
+    return (int)(32 + __count_trailing_zerol(l[0] | 0x00100000));
+}
+
+static inline void __ull2dec(decimal *result, unsigned long long val) {
+    result->sign = 0;
+    if (val == 0) {
+        result->exp = 0;
+        result->sig.length = 1;
+        result->sig.text[0] = 0;
+        return;
+    }
+    result->sig.length = 0;
+    for (; val != 0; val /= 10) {
+        result->sig.text[result->sig.length++] = (unsigned char)(val % 10);
+    }
+    {
+        unsigned char *i = result->sig.text;
+        unsigned char *j = result->sig.text + result->sig.length;
+        for (; i < --j; ++i) {
+            unsigned char t = *i;
+            *i = *j;
+            *j = t;
+        }
+    }
+    result->exp = result->sig.length - 1;
+}
+
+extern const double lbl_803631A0;
+#pragma push
+#pragma use_lmw_stmw on
+void fn_800E5B48(decimal *d, double x) {
+    char sign = (char)(*(unsigned long *)&x >> 31);
+
+    if (lbl_803631A0 == x) {
+        d->sign = sign;
+        d->exp = 0;
+        d->sig.length = 1;
+        d->sig.text[0] = 0;
+        return;
+    }
+
+    if (__fpclassifyd_dec(x) <= 2) {
+        d->sign = sign;
+        d->exp = 0;
+        d->sig.length = 1;
+        d->sig.text[0] = (__fpclassifyd_dec(x) == 1) ? 'N' : 'I';
+        return;
+    }
+
+    if (sign) {
+        x = -x;
+    }
+
+    {
+        int exp;
+        double frac = fn_800EFFC0(x, &exp);
+        long num_bits_extract = 53 - __count_trailing_zero(frac);
+        decimal int_d, pow2_d;
+        double int_x;
+
+        fn_800E6504(&pow2_d, exp - num_bits_extract);
+        fn_800F0210(fn_800F004C(frac, num_bits_extract), &int_x);
+        __ull2dec(&int_d, fn_800E2B94(int_x));
+        fn_800E7C88(d, &int_d, &pow2_d);
+        d->sign = sign;
+    }
+}
+#pragma pop
