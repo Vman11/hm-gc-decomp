@@ -445,8 +445,8 @@ void VIInit(void) {
     ImportAdjustingValues();
     dspCfg = __VIRegs[1];
     tvInBootrom = *(u32 *)0x800000CC;
-    HorVer.nonInter = (dspCfg >> 2) & 1;
-    HorVer.tv = (dspCfg >> 8) & 3;
+    HorVer.nonInter = (s32)((dspCfg >> 2U) & 1);
+    HorVer.tv = ((u32)(dspCfg) & 0x300) >> 8;
     if ((tvInBootrom == 1) && (HorVer.tv == 0)) {
         HorVer.tv = 5;
     }
@@ -636,8 +636,7 @@ static inline void setHorizontalRegs(VITiming *tm, u16 dispPosX, u16 dispSizeX) 
     MARK_CHANGED(4);
 }
 
-static void setVerticalRegs(u16 dispPosY, u16 dispSizeY, u8 equ, u16 acv, u16 prbOdd, u16 prbEven, u16 psbOdd,
-                            u16 psbEven, BOOL black) {
+static void setVerticalRegs(u16 dispPosY, u16 dispSizeY, u8 equ, u16 acv, u16 prbOdd, u16 prbEven, u16 psbOdd, u16 psbEven, BOOL black) {
     u16 actualPrbOdd;
     u16 actualPrbEven;
     u16 actualPsbOdd;
@@ -653,18 +652,21 @@ static void setVerticalRegs(u16 dispPosY, u16 dispSizeY, u8 equ, u16 acv, u16 pr
         c = 2;
         d = 1;
     }
-    if (dispPosY % 2 == 0) {
-        actualPrbOdd = prbOdd + d * dispPosY;
-        actualPsbOdd = psbOdd + d * ((c * acv - dispSizeY) - dispPosY);
-        actualPrbEven = prbEven + d * dispPosY;
-        actualPsbEven = psbEven + d * ((c * acv - dispSizeY) - dispPosY);
+
+    if ((dispPosY % 2) == 0) {
+        actualPrbOdd = prbOdd + (d * dispPosY);
+        actualPsbOdd = psbOdd + (d * (((c * acv) - dispSizeY) - dispPosY));
+        actualPrbEven = prbEven + (d * dispPosY);
+        actualPsbEven = psbEven + (d * (((c * acv) - dispSizeY) - dispPosY));
     } else {
-        actualPrbOdd = prbEven + d * dispPosY;
-        actualPsbOdd = psbEven + d * ((c * acv - dispSizeY) - dispPosY);
-        actualPrbEven = prbOdd + d * dispPosY;
-        actualPsbEven = psbOdd + d * ((c * acv - dispSizeY) - dispPosY);
+        actualPrbOdd = prbEven + (d * dispPosY);
+        actualPsbOdd = psbEven + (d * (((c * acv) - dispSizeY) - dispPosY));
+        actualPrbEven = prbOdd + (d * dispPosY);
+        actualPsbEven = psbOdd + (d * (((c * acv) - dispSizeY) - dispPosY));
     }
+
     actualAcv = dispSizeY / c;
+
     if (black) {
         actualPrbOdd += 2 * actualAcv - 2;
         actualPsbOdd += 2;
@@ -672,15 +674,16 @@ static void setVerticalRegs(u16 dispPosY, u16 dispSizeY, u8 equ, u16 acv, u16 pr
         actualPsbEven += 2;
         actualAcv = 0;
     }
+
     regs[0] = equ | (actualAcv << 4);
     MARK_CHANGED(0);
-    regs[7] = actualPrbOdd;
+    regs[7] = (u16)(u32)actualPrbOdd;
     MARK_CHANGED(7);
-    regs[6] = actualPsbOdd;
+    regs[6] = (u16)(u32)actualPsbOdd;
     MARK_CHANGED(6);
-    regs[9] = actualPrbEven;
+    regs[9] = (u16)(u32)actualPrbEven;
     MARK_CHANGED(9);
-    regs[8] = actualPsbEven;
+    regs[8] = (u16)(u32)actualPsbEven;
     MARK_CHANGED(8);
 }
 
