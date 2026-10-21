@@ -1,3 +1,4 @@
+#define OSWakeupThread fn_800BA3B4
 #include <dolphin.h>
 #include <dolphin/os.h>
 

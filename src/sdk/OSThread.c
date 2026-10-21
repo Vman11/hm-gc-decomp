@@ -164,7 +164,6 @@
 #define GXGetGPFifo fn_800D51D8
 #define TokenCB lbl_8035A940
 #define __GXSetVAT fn_800D5DE8
-#define __cvt_fp2unsigned __cvt_fp2unsigned
 #define GX2HWFiltConv lbl_80359668
 #define GXTexImage0Ids lbl_80359640
 #define GXTexImage1Ids lbl_80359648
@@ -410,6 +409,7 @@ static OSContext IdleContext;
 static volatile u32 RunQueueBits;
 static volatile int RunQueueHint;
 static s32 Reschedule;
+static u32 __OSThreadSbssPad; /* the original .sbss is 0x10 bytes */
 
 #define ALIGN4(val) (((val) + 0x3) & ~0x3)
 #define ALIGN8(val) (((val) + 0x7) & ~0x7)
@@ -429,6 +429,7 @@ static void OSSetCurrentThread(OSThread* thread);
 
 static void DefaultSwitchThreadCallback(OSThread* from, OSThread* to) {}
 static OSSwitchThreadCallback SwitchThreadCallback = DefaultSwitchThreadCallback;
+static u32 __OSThreadSdataPad[1] = { 0 }; /* the original .sdata is 8 bytes */
 
 static inline void OSSetCurrentThread(OSThread* thread) {
     SwitchThreadCallback(__OSCurrentThread, thread);

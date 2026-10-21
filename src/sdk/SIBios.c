@@ -1,3 +1,4 @@
+#define __PADFixBits lbl_8035A9D8
 #include "common.h"
 typedef s64 OSTime;
 typedef struct OSContext OSContext;

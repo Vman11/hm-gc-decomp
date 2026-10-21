@@ -183,7 +183,6 @@
 #define GXGetGPFifo fn_800D51D8
 #define TokenCB lbl_8035A940
 #define __GXSetVAT fn_800D5DE8
-#define __cvt_fp2unsigned __cvt_fp2unsigned
 #define GX2HWFiltConv lbl_80359668
 #define GXTexImage0Ids lbl_80359640
 #define GXTexImage1Ids lbl_80359648
@@ -804,6 +803,8 @@ void __GXVerifyXF(void);
 #endif
 
 
+/* 256.0f: the original names this .sdata2 constant (8 bytes) */
+const f32 lbl_803630F0[2] = { 256.0f, 0.0f };
 GXRenderModeObj GXNtsc240Ds = {
     1,
     640, 240, 240,
@@ -1009,7 +1010,7 @@ u32 GXSetDispCopyYScale(f32 vscale) {
 
     ASSERTMSGLINE(1559, vscale >= 1.0f, "GXSetDispCopyYScale: Vertical scale must be >= 1.0");
 
-    iScale = (u32) (256.0f / vscale) & 0x1FF;
+    iScale = (u32) (lbl_803630F0[0] / vscale) & 0x1FF;
     enable = (iScale != 256);
 
     reg = 0;
