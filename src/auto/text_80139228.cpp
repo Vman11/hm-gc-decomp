@@ -33,16 +33,16 @@ extern "C" u32 fn_80139228(R *r, u32 *a, u32 *b) {
             f |= lbl_803641E4;
             *a = fn_800FB33C(r);
             break;
-        case 95:
+        case 68:
             f |= lbl_803641E8;
             break;
-        case 68:
+        case 69:
             f |= lbl_803641EC;
             break;
-        case 69:
+        case 70:
             f |= lbl_803641F0;
             break;
-        case 70:
+        case 95:
             f |= lbl_803641F4;
             break;
         case 71:
