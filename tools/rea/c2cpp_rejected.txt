@@ -56,7 +56,6 @@ auto/text_8010A7D8
 auto/text_8010A94C
 auto/text_8010AAC0
 auto/text_8010AC34
-auto/text_8010CF00
 auto/text_80115044
 auto/text_80118280
 auto/text_8011B6B0
