@@ -6990,3 +6990,27 @@ draw:
     return skipped;
 }
 #undef F
+
+extern u8 wCa_80301B20_8290C[] asm("lbl_80301B20");
+void wC_8027BFB8_8290C(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, void *) asm("fn_8027BFB8");
+
+void fn_8028290C(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9, u32 a10, u32 a11) {
+    if ((a0 & 3) == 2) {
+        a1++;
+        a0 &= ~3;
+    }
+    if (a1 & 1) {
+        if (a5 & 1) {
+            a5++;
+        }
+        a1++;
+        a7--;
+    } else if (a5 & 1) {
+        a5++;
+        a7--;
+    }
+    if (a7 & 1) {
+        a7--;
+    }
+    wC_8027BFB8_8290C(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, 0, wCa_80301B20_8290C);
+}
