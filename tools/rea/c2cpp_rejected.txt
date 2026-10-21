@@ -183,7 +183,6 @@ auto/text_80202B48
 auto/text_80207028
 auto/text_8020B114
 auto/text_8020BC10
-auto/text_8020BC60
 auto/text_8020CE94
 auto/text_8020EE2C
 auto/text_80210E48

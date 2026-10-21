@@ -28930,7 +28930,7 @@ auto/text_8020BC10.cpp:
 	extabindex  start:0x80026960 end:0x8002696C
 	.text       start:0x8020BC10 end:0x8020BC60
 
-auto/text_8020BC60.c:
+auto/text_8020BC60.cpp:
 	extab       start:0x80013D10 end:0x80013D18
 	extabindex  start:0x8002696C end:0x80026978
 	.text       start:0x8020BC60 end:0x8020BCBC
