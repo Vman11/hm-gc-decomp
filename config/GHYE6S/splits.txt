@@ -8014,6 +8014,7 @@ auto/text_800D3730.c:
 
 sdk/GXFifo.c:
 	.text       start:0x800D4AA8 end:0x800D5488
+	.sbss       start:0x8035A920 end:0x8035A940
 
 sdk/GXAttr.c:
 	.text       start:0x800D5488 end:0x800D61DC

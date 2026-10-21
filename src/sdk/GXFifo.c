@@ -158,8 +158,6 @@
 #define DrawDoneCB lbl_8035A944
 #define FinishQueue lbl_8035A94C
 #define TokenCB lbl_8035A940
-#define __GXSetVAT fn_800D5DE8
-#define __cvt_fp2unsigned __cvt_fp2unsigned
 #define GX2HWFiltConv lbl_80359668
 #define GXTexImage0Ids lbl_80359640
 #define GXTexImage1Ids lbl_80359648
@@ -173,7 +171,6 @@
 #define GXMpal480IntDf lbl_802DFB6C
 #define GXNtsc480IntDf lbl_802DF950
 #define GXPal528IntDf lbl_802DFD10
-#define GXSetArray fn_800D5E84
 #define GXSetChanAmbColor fn_800D7A88
 #define GXSetChanCtrl fn_800D7CA4
 #define GXSetChanMatColor fn_800D7B78
@@ -182,6 +179,29 @@
 #define calledOnce lbl_8035A918
 #define peCount lbl_8035A908
 #define time lbl_8035A910
+#define AlarmQueue AlarmQueue_8035A560
+#define __OSTimeToSystemTime fn_800BA5E8
+#define EXIImmEx fn_800F2120
+#define Scb Scb_803078A0
+#define OSGetCurrentContext fn_800B4F6C
+#define OSGetStackPointer fn_800B50D0
+#define OSSaveContext fn_800B4F78
+#define Reschedule Reschedule_8035A5F0
+#define RunQueue RunQueue_803078F8
+#define RunQueueBits RunQueueBits_8035A5E8
+#define RunQueueHint RunQueueHint_8035A5EC
+#define SwitchThreadCallback SwitchThreadCallback_80359558
+#define __OSUnlockAllMutex fn_800B7D84
+#define __OSFpscrEnableBits lbl_80359540
+#define InterruptHandlerTable InterruptHandlerTable_8035A590
+#define InterruptPrioTable lbl_802D8A40
+#define LeapYearDays lbl_802D8AB0
+#define YearDays lbl_802D8A80
+#define Down lbl_8035A5CC
+#define HoldDown lbl_8035A5E0
+#define HoldUp lbl_8035A5D8
+#define LastState lbl_8035A5D0
+#define ResetCallback lbl_8035A5C8
 #include <stddef.h>
 #include <dolphin/base/PPCArch.h>
 #include <dolphin/gx.h>
@@ -1193,8 +1213,8 @@ volatile void* GXRedirectWriteGatherPipe(void* ptr) {
     CPUFifo->wrPtr = OSPhysicalToCached(GX_GET_PI_REG(5) & 0xFBFFFFFF);
     GX_SET_PI_REG(3, 0);
     GX_SET_PI_REG(4, 0x04000000);
-    SET_REG_FIELD(LINE(1527, 1527, 1584), reg, 21, 5, ((u32)ptr & 0x3FFFFFFF) >> 5);
-    reg &= 0xFBFFFFFF;
+    SET_REG_FIELD(0, reg, 21, 5, ((u32)ptr & 0x3FFFFFFF) >> 5);
+    SET_REG_FIELD(0, reg, 1, 26, 0);
     GX_SET_PI_REG(5, reg);
 
     PPCSync();
@@ -1224,8 +1244,8 @@ void GXRestoreWriteGatherPipe(void) {
     PPCMtwpar((u32)OSUncachedToPhysical((void *)GXFIFO_ADDR));
     GX_SET_PI_REG(3, (u32)CPUFifo->base & 0x3FFFFFFF);
     GX_SET_PI_REG(4, (u32)CPUFifo->top & 0x3FFFFFFF);
-    SET_REG_FIELD(1578, reg, 21, 5, ((u32)CPUFifo->wrPtr & 0x3FFFFFFF) >> 5);
-    reg &= 0xFBFFFFFF;
+    SET_REG_FIELD(0, reg, 21, 5, ((u32)CPUFifo->wrPtr & 0x3FFFFFFF) >> 5);
+    SET_REG_FIELD(0, reg, 1, 26, 0);
     GX_SET_PI_REG(5, reg);
     if (CPGPLinked) {
         __GXWriteFifoIntReset(1, 1);
