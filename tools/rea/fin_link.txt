@@ -10,6 +10,9 @@ auto/text_800919A4
 auto/text_800E1DA8
 auto/text_80129C48
 auto/text_8012F548
+auto/text_8010C4D0
+auto/text_8012F548
+auto/text_8013B200
 auto/text_80186B30
 auto/text_8019DCDC
 auto/text_801B2DF8
@@ -19,3 +22,4 @@ auto/text_80200820
 auto/text_802120C0
 auto/text_802455A0
 auto/text_8026848C
+auto/text_801CCF18
