@@ -527,60 +527,13 @@ extern void ICInvalidateRange(void *, u32);
 
 #pragma push
 #pragma auto_inline off
-u64 OSGetTime(void) {
-    u32 high1;
-    u32 low;
-    u32 high2;
-
-    do {
-        high1 = __mftbu();
-        low = __mftb();
-        high2 = __mftbu();
-    } while (high1 != high2);
-    return ((u64)high1 << 32) | low;
-}
 #pragma pop
 
 
-u64 __OSGetSystemTime(void) {
-    u32 enabled;
-    u64 time;
 
-    enabled = OSDisableInterrupts();
-    time = OSGetTime();
-    time += *(volatile u64*)0x800030D8;
-    OSRestoreInterrupts(enabled);
-    return time;
-}
-
-long long fn_800BA5E8(long long arg0) {
-    long long result;
-    OSDisableInterrupts();
-    result = *(long long *)0x800030D8 + arg0;
-    OSRestoreInterrupts();
-    return result;
-}
 
 extern s32 lbl_802D8A80[];
 extern s32 lbl_802D8AB0[];
-void fn_800BA640(s32 days, s32* td) {
-    s32 year;
-    s32 n;
-    s32 month;
-    s32* p_days;
-
-    td[6] = (days + 6) % 7;
-    for (year = days / 365; days < (n = year * 365 + (year < 1 ? 0 : (year + 3) / 4 - (year - 1) / 100 + (year - 1) / 400)); year--) {
-    }
-    days -= n;
-    td[5] = year;
-    td[7] = days;
-    p_days = ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) ? lbl_802D8AB0 : lbl_802D8A80;
-    for (month = 12; days < p_days[--month];) {
-    }
-    td[4] = month;
-    td[3] = days - p_days[month] + 1;
-}
 
 void InitMetroTRK_BBA(void) {
 
@@ -2365,11 +2318,6 @@ void fn_800B7700(void);
 
 
 
-asm u32 OSGetTick(void) {
-    nofralloc
-    mftb r3
-    blr
-}
 
 
 

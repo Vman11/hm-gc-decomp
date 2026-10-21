@@ -7794,9 +7794,13 @@ sdk/OSThread.c:
 	.sdata      start:0x80359558 end:0x80359560
 	.sbss       start:0x8035A5E8 end:0x8035A5F8
 
-auto/text_800BA564.c:
-	.text       start:0x800BA564 end:0x800BC1C8
-	.data       start:0x802D8A80 end:0x802D9E38
+sdk/OSTime.c:
+	.text       start:0x800BA564 end:0x800BA9E0
+	.data       start:0x802D8A80 end:0x802D8AE0
+
+auto/text_800BA9E0.c:
+	.text       start:0x800BA9E0 end:0x800BC1C8
+	.data       start:0x802D8AE0 end:0x802D9E38
 
 sdk/dvdlow.c:
 	.text       start:0x800BC1C8 end:0x800BD00C
