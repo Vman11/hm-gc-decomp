@@ -106,6 +106,7 @@ static s32 __AXOutSBuffer[160] ATTRIBUTE_ALIGN(32);
 static u16 ax_dram_image[8192] ATTRIBUTE_ALIGN(32);
 static DSPTaskInfo task;
 static AXPROFILE __AXLocalProfile;
+static u8 __AXOutBssPad[0x18]; /* the original .bss is 0x4AA0 bytes */
 
 static volatile u32 __AXOutFrame;
 static volatile u32 __AXAiDmaFrame;

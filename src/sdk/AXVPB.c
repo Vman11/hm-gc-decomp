@@ -281,6 +281,7 @@ static u32 __AXMainMixCycles[16] = {0, 760, 760, 1470, 760, 1520, 1520, 2230, 0,
 static u32 __AXAuxMixCycles[32] = {0,    760,  760,  1470, 0,    1265, 1265, 2470, 760,  1520, 1520,
                                    2230, 760,  2025, 2025, 3230, 0,    760,  760,  1470, 0,    1265,
                                    1265, 2470, 1265, 2025, 2025, 2735, 1265, 2530, 2530, 3735};
+static u32 __AXZeroCycles[5] = {0, 0, 0, 0, 0}; /* 0x14 zero bytes present in the original .data */
 
 static AXPB __AXPB[AX_MAX_VOICES] ATTRIBUTE_ALIGN(32);
 static AXPBITDBUFFER __AXITD[AX_MAX_VOICES] ATTRIBUTE_ALIGN(32);

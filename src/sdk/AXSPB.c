@@ -30,6 +30,7 @@ typedef struct _AXSPB {
     /* 0x30 */ u16 dpopBSHi;
     /* 0x32 */ u16 dpopBSLo;
     /* 0x34 */ s16 dpopBSDelta;
+    /* 0x36 */ u16 _pad[5];
 } AXSPB;
 typedef struct _AXPBDPOP {
     /* 0x00 */ s16 aL;
@@ -55,7 +56,9 @@ void DCFlushRange(void *addr, u32 nBytes);
 #define __AXDepopVoice fn_800C8C98
 
 // .bss
-static AXSPB __AXStudio ATTRIBUTE_ALIGN(32);
+/* global + 0x40 bytes like the original object (other code references lbl_80310520) */
+#define __AXStudio lbl_80310520
+AXSPB __AXStudio;
 
 // .sbss
 static long __AXSpbAL;
@@ -67,6 +70,7 @@ static long __AXSpbAAS;
 static long __AXSpbABL;
 static long __AXSpbABR;
 static long __AXSpbABS;
+static long __AXSpbUnused; /* 10th .sbss word present in the original object */
 
 u32 __AXGetStudio(void) {
     return (u32)&__AXStudio;
@@ -106,7 +110,7 @@ void __AXPrintStudio(void) {
     __AXDepopFade(&__AXSpbABL, (void*)&__AXStudio.dpopBLHi, &__AXStudio.dpopBLDelta);
     __AXDepopFade(&__AXSpbABR, (void*)&__AXStudio.dpopBRHi, &__AXStudio.dpopBRDelta);
     __AXDepopFade(&__AXSpbABS, (void*)&__AXStudio.dpopBSHi, &__AXStudio.dpopBSDelta);
-    DCFlushRange(&__AXStudio, sizeof(__AXStudio));
+    DCFlushRange(&__AXStudio, 0x36);
 }
 
 void __AXSPBInit(void) {
