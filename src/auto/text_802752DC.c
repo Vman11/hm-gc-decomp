@@ -255,11 +255,6 @@ s32 fn_802753F0(void) {
     return (u32)(((u64)now * 0xCF2049A1ULL) >> 47) + t;
 }
 
-void fn_8027550C(u32 *dst) {
- s32 high1, low, high2;
- do { high1 = __mfspr(269); low = __mfspr(268); high2 = __mfspr(269); } while (high1 != high2);
- dst[0] = high1; dst[1] = low;
-}
 
 u32 fn_80275578(u32 hi, u32 lo, u32 d) {
     u64 n;
@@ -746,19 +741,9 @@ void fn_80277020(s32 n, u32 *arr, s32 k, s32 *outIdx, s32 *outFlag) {
     *outIdx = idx;
 }
 
-void fn_80277114(u8 *arg0) {
-    fn_80283E90(lbl_802F385C, arg0 + 0xFC);
-}
 
 void fn_80277198(void) { fn_8028405C(); }
 
-u32 fn_802771B8(u32* arg0, u32 arg1) {
-    u32 v = arg0[-1];
-    if (v == arg1) {
-        return 0;
-    }
-    return ~v;
-}
 
 void fn_802771D4(u8* arg0, s32 arg1) {
     u8* p = arg0 - 0x34C;
@@ -1013,19 +998,7 @@ u8 *fn_8027A710(void) {
     return lbl_802F3898;
 }
 
-s32 fn_8027A71C(void *arg0, s32 arg1) {
-    if (arg0 == NULL) {
-        return 0;
-    }
-    return M2C_FIELD(arg0, s32 **, 0x264)[arg1];
-}
 
-s32 fn_8027A73C(void *arg0, s32 arg1) {
-    if (arg0 == NULL) {
-        return 0;
-    }
-    return M2C_FIELD(arg0, s32 **, 0x260)[arg1];
-}
 
 s32 fn_8027A908(void *arg0, s8 *arg1) {
     s32 *sp10;
@@ -4485,4 +4458,146 @@ void fn_80283FB0(void *a, void *b) {
 void fn_80284028(void *a, void *b) {
     fn_80283FE4(a);
     fn_80283FE4(b);
+}
+
+extern s32 wCa_802F3894[] asm("lbl_802F3894");
+
+void fn_80276FC0(s32 v) {
+    wCa_802F3894[0] = v;
+}
+
+extern s32 wCa_802F386C[] asm("lbl_802F386C");
+
+void fn_80276FCC(s32 v) {
+    wCa_802F386C[0] = v;
+}
+
+extern void *wCa_802F385C[];
+
+void fn_80277140(u8 *p) {
+    fn_80283DFC(wCa_802F385C[0], p + 252);
+}
+
+
+void fn_8027716C(u8 *p) {
+    fn_80283F38(wCa_802F385C[0], p + 252);
+}
+
+
+void fn_8027A4BC(u8 *p) {
+    if (*(s32 *)(p + 760) != 0) {
+        fn_80276B84(p);
+    }
+}
+
+u32 fn_8027A75C(u8 *p, s32 i) {
+    if (p != 0) {
+        return (*(u32 **)(p + 616))[i];
+    }
+    return 0;
+}
+
+extern s32 wCa_802F7298[] asm("lbl_802F7298");
+extern s32 wCa_802F729C[] asm("lbl_802F729C");
+
+void fn_8027B6C0(s32 a, s32 b) {
+    wCa_802F7298[0] = a;
+    wCa_802F729C[0] = b;
+}
+
+
+void fn_8028389C(void *p) {
+    fn_8027B790(p);
+}
+
+extern s32 wCa_80301D20[] asm("lbl_80301D20");
+
+s32 fn_80287804(void) {
+    return wCa_80301D20[0];
+}
+
+extern u8 lbl_802AB2C0[];
+
+void fn_802901C0(void *a, void *b, void *c, s32 d) {
+    fn_8028F9D8(a, b, c, lbl_802AB2C0 + d * 256);
+}
+
+void fn_8028FDB4(void *, void *, void *, void *);
+
+void fn_802901F0(void *a, void *b, void *c, s32 d) {
+    fn_8028FDB4(a, b, c, lbl_802AB2C0 + d * 256);
+}
+
+void fn_80275498(u32 *out) {
+    u32 t[2];
+    register u32 *p asm("r9") = t;
+    asm volatile("1:\n\tmftbu 8\n\tmftb 10\n\tmftbu 11\n\tcmpw 8,11\n\tbne 1b\n\tstw 8,0(%0)\n\tstw 10,4(%0)"
+                 : : "b"(p) : "r8", "r10", "r11", "memory");
+    *out = p[1];
+}
+
+u32 fn_802754CC(u32 *out) {
+    u32 t[2];
+    register u32 *o asm("r11") = out;
+    register u32 *p asm("r9") = t;
+    asm volatile("1:\n\tmftbu 8\n\tmftb 10\n\tmftbu 0\n\tcmpw 8,0\n\tbne 1b\n\tstw 8,0(%0)\n\tstw 10,4(%0)"
+                 : : "b"(p), "r"(o) : "r0", "r8", "r10", "memory");
+    return *o = p[1] - *o;
+}
+
+void fn_8027550C(u32 *dst) {
+    asm volatile("1:\n\tmftbu 11\n\tmftb 9\n\tmftbu 0\n\tcmpw 11,0\n\tbne 1b\n\tstw 11,0(%0)\n\tstw 9,4(%0)"
+                 : : "b"(dst) : "r0", "r9", "r11", "memory");
+}
+
+void fn_8027562C(u32 *dst) {
+    asm volatile("1:\n\tmftbu 11\n\tmftb 9\n\tmftbu 0\n\tcmpw 11,0\n\tbne 1b\n\tstw 11,0(%0)\n\tstw 9,4(%0)"
+                 : : "b"(dst) : "r0", "r9", "r11", "memory");
+}
+
+extern void *wCa_802F385C[] asm("lbl_802F385C");
+
+void fn_80277114(u8 *p) {
+    fn_80283E90(wCa_802F385C[0], p + 252);
+}
+
+s32 fn_802771B8(s32 *p, s32 b) {
+    s32 v = p[-1];
+    if (v != b) {
+        return ~v;
+    }
+    return 0;
+}
+
+s32 fn_8027A71C(u8 *p, s32 i) {
+    if (p != 0) {
+        return (*(s32 **)(p + 612))[i];
+    }
+    return 0;
+}
+
+s32 fn_8027A73C(u8 *p, s32 i) {
+    if (p != 0) {
+        return (*(s32 **)(p + 608))[i];
+    }
+    return 0;
+}
+
+void fn_8027552C(u64 *p) {
+    u64 t;
+    register u32 *q asm("r9") = (u32 *)&t;
+    asm volatile("1:\n\tmftbu 10\n\tmftb 11\n\tmftbu 0\n\tcmpw 10,0\n\tbne 1b\n\tstw 10,0(%0)\n\tstw 11,4(%0)"
+                 : : "b"(q) : "r0", "r10", "r11", "memory");
+    *p = t - *p;
+}
+
+
+void fn_8027A8BC(u8 *p) {
+    if (p != 0) {
+        if (*(void **)(p + 20) != 0) {
+            fn_8028389C(*(void **)(p + 20));
+            *(void **)(p + 20) = 0;
+        }
+        fn_8027B790(p);
+    }
 }
