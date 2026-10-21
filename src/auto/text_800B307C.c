@@ -390,28 +390,9 @@ extern s32 __OSArenaHi_8035A578;
 
 
 #pragma scheduling on
-void DBInit(void) {
-    extern s32 DBVerbose;
-    extern void __DBExceptionDestination(void);
-    __DBInterface = (DBInterface*)0x80000040;
-    *(u32*)0x80000048 = (u32)__DBExceptionDestination + 0x80000000;
-    DBVerbose = 1;
-}
-void fn_800B2FB8(void) {
-    u32* contextAddr = (u32*)0x00C0;
-    void* context = (void*)(0x80000000 + *contextAddr);
-    OSReport("DBExceptionDestination\n");
-    OSDumpContext(context);
-    PPCHalt();
-}
 
 
-u32 __DBIsExceptionMarked(u8 exception) {
-    return __DBInterface->exceptionMask & (1 << exception);
-}
 
-void DBPrintf(char* str, ...) {
-}
 
 #pragma push
 #pragma peephole off
@@ -2283,13 +2264,6 @@ void fn_800B7700(void);
 
 
 
-asm void __DBExceptionDestination(void) {
-    nofralloc
-    mfmsr r3
-    ori r3, r3, 48
-    mtmsr r3
-    b fn_800B2FB8
-}
 
 
 volatile u16 __DSPRegsA[32] : 0xCC005000;
