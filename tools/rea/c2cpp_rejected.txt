@@ -22,7 +22,6 @@ auto/text_80064938
 auto/text_80064998
 auto/text_800649F8
 auto/text_80064A58
-auto/text_80070B70
 auto/text_80070CC0
 auto/text_80078B94
 auto/text_8007C5AC
@@ -39,7 +38,6 @@ auto/text_800948A8
 auto/text_8009525C
 auto/text_80095DD4
 auto/text_80098F48
-auto/text_8009C44C
 auto/text_8009CFD4
 auto/text_8009DAD0
 auto/text_8009DC2C
@@ -60,7 +58,6 @@ auto/text_8010AAC0
 auto/text_8010AC34
 auto/text_8010CF00
 auto/text_80115044
-auto/text_801178EC
 auto/text_80118280
 auto/text_8011B6B0
 auto/text_8011DD04
@@ -161,7 +158,6 @@ auto/text_801CEAB0
 auto/text_801DDC8C
 auto/text_801DE528
 auto/text_801E18F4
-auto/text_801E44C8
 auto/text_801E5BA4
 auto/text_801ECD58
 auto/text_801EE07C
@@ -204,7 +200,6 @@ auto/text_8023CE38
 auto/text_8023E8EC
 auto/text_8024279C
 auto/text_80249F58
-auto/text_8024FB58
 auto/text_80252244
 auto/text_80258E38
 auto/text_80268178

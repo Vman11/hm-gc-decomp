@@ -1,1 +1,5 @@
-auto/text_8020BC60
+auto/text_80070B70
+auto/text_8009C44C
+auto/text_801178EC
+auto/text_801E44C8
+auto/text_8024FB58
