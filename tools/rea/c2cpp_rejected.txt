@@ -7,6 +7,7 @@ auto/text_80046E50
 auto/text_8004DCC0
 auto/text_8004ED84
 auto/text_800501FC
+auto/text_80051B50
 auto/text_80052028
 auto/text_80054790
 auto/text_8005B198
@@ -49,6 +50,7 @@ auto/text_800AE8E4
 auto/text_800B0D7C
 auto/text_800B0F9C
 auto/text_800F5578
+auto/text_800F7614
 auto/text_80104068
 auto/text_801052F0
 auto/text_8010A664
@@ -141,6 +143,7 @@ auto/text_801B30E0
 auto/text_801B31E0
 auto/text_801B36E4
 auto/text_801B3E98
+auto/text_801BA138
 auto/text_801BD4C8
 auto/text_801BD558
 auto/text_801BD864

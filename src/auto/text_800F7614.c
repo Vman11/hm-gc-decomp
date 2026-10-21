@@ -48,24 +48,50 @@ s32 fn_800F7640(UnkHeap800F7520* arg0) {
     return max & ~63;
 }
 
-void fn_800F7670(UnkManager800F7670* arg0, UnkHeap800F7520* arg1, UnkHeap800F7520* arg2) {
-    UnkHeap800F7520* p;
-    u32 generation;
-    u32 value;
+typedef struct Heap800F7670 {
+    void* unk0;
+    void* unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    u32 unk24;
+} Heap800F7670;
+
+typedef struct Mgr800F7670 {
+    u32 unk0[3];
+    Heap800F7670 entries[16];
+    u32 unk28C;
+} Mgr800F7670;
+
+static inline void Replace800F7670(Mgr800F7670 *m, Heap800F7670 *a, Heap800F7670 *b) {
+    Heap800F7670 *end;
+    Heap800F7670 *p;
     u32 i;
-    do {
-        ++arg0->unk28C;
-        for (p = arg0->entries; p < arg0->entries + 16; ++p) {
-            if (arg0->unk28C == (u32)p->unk24) break;
-        }
-    } while (p < arg0->entries + 16);
-    generation = arg0->unk28C;
-    value = arg1->unk24;
+    u32 value;
+    u32 gen;
+    gen = m->unk28C;
+    value = a->unk24;
+    end = m->entries + 16;
     for (i = 0; i < 2; ++i) {
-        for (p = arg0->entries; p < arg0->entries + 16; ++p) {
-            if (value == (u32)p->unk24) p->unk24 = generation;
+        for (p = m->entries; p < end; ++p) {
+            if (value == p->unk24) p->unk24 = gen;
         }
-        value = arg2->unk24;
+        value = b->unk24;
     }
 }
-
+void fn_800F7670(Mgr800F7670* arg0, Heap800F7670* arg1, Heap800F7670* arg2) {
+    Heap800F7670* end;
+    Heap800F7670* p;
+    end = arg0->entries + 16;
+    do {
+        ++arg0->unk28C;
+        for (p = arg0->entries; p < end; ++p) {
+            if (arg0->unk28C == p->unk24) break;
+        }
+    } while (p < end);
+    Replace800F7670(arg0, arg1, arg2);
+}
