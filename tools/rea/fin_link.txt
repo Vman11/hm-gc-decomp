@@ -1,11 +1,8 @@
 auto/text_800447E8
 auto/text_800501FC
 auto/text_80052028
-auto/text_80070B70
 auto/text_8008CA0C
 auto/text_80090C68
 auto/text_800919A4
-auto/text_8009C44C
-auto/text_801178EC
-auto/text_801E44C8
-auto/text_8024FB58
+auto/text_80165F70
+auto/text_8024279C
