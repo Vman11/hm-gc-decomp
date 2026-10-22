@@ -1444,6 +1444,89 @@ int fn_800B67FC(u16 code) {
     return 0;
 }
 
+static inline u16 wbOSGetFontEncode(void) {
+    if (lbl_80359550 <= 1) {
+        return lbl_80359550;
+    }
+    switch (*(int *)0x800000CC) {
+    case 0:
+        lbl_80359550 = (__VIRegsA[0x37] & 2) ? 1 : 0;
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    default:
+        lbl_80359550 = 0;
+    }
+    return lbl_80359550;
+}
+
+static inline BOOL wbIsSjisLeadByte(u8 c) {
+    return (0x81 <= c && c <= 0x9F) || (0xE0 <= c && c <= 0xFC);
+}
+
+char *fn_800B6F24(char *string, void *image, int pos, int stride, s32 *width) {
+    extern u8 *lbl_8035A580;
+    extern u8 *lbl_8035A588;
+    extern s32 lbl_8035A58C;
+    u8 *dst;
+    int row;
+    int column;
+    int x;
+    u8 *src;
+    int sheet;
+    u16 code;
+    int y;
+    int numChars;
+    int offsetSrc;
+    u8 *colorIndex;
+    int fontCode;
+    int offsetDst;
+    u8 *imageSrc;
+
+    code = *(u8 *)string;
+    if (code == 0) {
+        return string;
+    }
+    string++;
+    if (wbOSGetFontEncode() == 1 && wbIsSjisLeadByte(code) && *string != 0) {
+        code = (code << 8) | *(u8 *)string;
+        string++;
+    }
+    colorIndex = lbl_8035A580 + 44;
+    fontCode = fn_800B67FC(code);
+    sheet = fontCode / lbl_8035A58C;
+    numChars = fontCode - sheet * lbl_8035A58C;
+    row = numChars / *(u16 *)(lbl_8035A580 + 26);
+    column = numChars - row * *(u16 *)(lbl_8035A580 + 26);
+    row *= *(u16 *)(lbl_8035A580 + 18);
+    column *= *(u16 *)(lbl_8035A580 + 16);
+    imageSrc = lbl_8035A580 + *(u32 *)(lbl_8035A580 + 36);
+    imageSrc += (sheet * *(u32 *)(lbl_8035A580 + 20)) >> 1;
+    for (y = 0; y < *(u16 *)(lbl_8035A580 + 18); y++) {
+        for (x = 0; x < *(u16 *)(lbl_8035A580 + 16); x++) {
+            src = imageSrc + (((*(u16 *)(lbl_8035A580 + 30) / 8) * 32) / 2) * ((row + y) / 8);
+            src += ((column + x) / 8) * 16;
+            src += ((row + y) % 8) * 2;
+            src += ((column + x) % 8) / 4;
+            offsetSrc = (column + x) % 4;
+            dst = (u8 *)image + ((y / 8) * (((stride * 4) / 8) * 32));
+            dst += (((pos + x) / 8) * 32);
+            dst += ((y % 8) * 4);
+            dst += ((pos + x) % 8) / 2;
+            offsetDst = (pos + x) % 2;
+            *dst |= colorIndex[*src >> (6 - (offsetSrc * 2)) & 3] & ((offsetDst != 0) ? 0x0F : 0xF0);
+        }
+    }
+    if (width) {
+        *width = lbl_8035A588[fontCode];
+    }
+    return string;
+}
+
+
 volatile u16 __MEMRegsB[64] : 0xCC004000;
 
 
