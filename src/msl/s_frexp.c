@@ -1,23 +1,38 @@
+/* fdlibm s_frexp.c */
 #include "common.h"
 
+typedef union DoubleShape_fx {
+    double value;
+    struct {
+        unsigned int hi;
+        unsigned int lo;
+    } parts;
+} DoubleShape_fx;
 
-double fn_800EFFC0(double x, int *eptr) {
-    extern double lbl_80363688;
-    int hx, ix, lx;
-    hx = *(int *)&x;
-    ix = 0x7fffffff & hx;
-    lx = *(1 + (int *)&x);
-    *eptr = 0;
-    if (ix >= 0x7ff00000 || ((ix | lx) == 0)) return x;
-    if (ix < 0x00100000) {
-        double two54 = lbl_80363688;
-        *eptr = -54;
-        x *= two54;
-        hx = *(int *)&x;
-        ix = hx & 0x7fffffff;
+static const double two54 = 1.80143985094819840000e+16;
+
+double fn_800EFFC0(double x, int *exponent) {
+    DoubleShape_fx shape;
+    int hx;
+    int ix;
+    int lx;
+
+    shape.value = x;
+    hx = shape.parts.hi;
+    ix = hx & 0x7fffffff;
+    lx = shape.parts.lo;
+    *exponent = 0;
+    if (ix >= 0x7ff00000 || ((ix | lx) == 0)) {
+        return shape.value;
     }
-    *eptr += (ix >> 20) - 1022;
+    if (ix < 0x00100000) {
+        x *= two54; shape.value = x;
+        hx = shape.parts.hi;
+        ix = hx & 0x7fffffff;
+        *exponent = -54;
+    }
+    *exponent += (ix >> 20) - 1022;
     hx = (hx & 0x800fffff) | 0x3fe00000;
-    *(int *)&x = hx;
-    return x;
+    shape.parts.hi = hx;
+    return shape.value;
 }

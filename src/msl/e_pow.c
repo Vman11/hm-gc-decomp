@@ -1,214 +1,316 @@
+/* fdlibm e_pow.c (MSL: errno, __float_nan, ldexp for scalbn, inline sqrt) */
 #include "common.h"
-double fn_800F004C(double, int);
+#define f64 double
+#define s32 int
+#define u32 unsigned int
+#define __HI(x) *(s32*)&x
+#define __LO(x) *(1 + (s32*)&x)
+#define EDOM 33
+extern float lbl_803596B0[];
+#define NAN (*(float*)lbl_803596B0)
+extern int lbl_8035A978;
+#define errno lbl_8035A978
 extern float lbl_803596B4[];
-extern s32 lbl_8035A978;
-extern double lbl_8029C578[];
-extern double lbl_803633D8, lbl_803633E0, lbl_803633E8, lbl_803633F0, lbl_803633F8;
-extern double lbl_80363400, lbl_80363408, lbl_80363410, lbl_80363418, lbl_80363420, lbl_80363428;
-extern double lbl_80363430, lbl_80363438, lbl_80363440, lbl_80363448, lbl_80363450, lbl_80363458;
-extern double lbl_80363460, lbl_80363468, lbl_80363470, lbl_80363478, lbl_80363480, lbl_80363488, lbl_80363490;
-extern double lbl_80363498, lbl_803634A0, lbl_803634A8, lbl_803634B0, lbl_803634B8, lbl_803634C0, lbl_803634C8, lbl_803634D0, lbl_803634D8;
+#define INFINITY (*(float*)lbl_803596B4)
+static inline double sqrt(double x) {
+    if (x > 0.0) {
+        double guess = __frsqrte(x);
+        guess = .5 * guess * (3.0 - guess * guess * x);
+        guess = .5 * guess * (3.0 - guess * guess * x);
+        guess = .5 * guess * (3.0 - guess * guess * x);
+        guess = .5 * guess * (3.0 - guess * guess * x);
+        return x * guess;
+    } else if (x == 0.0) {
+        return 0;
+    } else if (x) {
+        return NAN;
+    }
+    return INFINITY;
+}
+inline double fabs(double x) { return __fabs(x); }
 double fn_800F004C(double x, int n);
+#define ldexp fn_800F004C
+static const f64
+bp[] = { 1.0, 1.5 },
+dp_h[] = { 0.0, 5.84962487220764160156e-01 },
+dp_l[] = { 0.0, 1.35003920212974897128e-08 },
+pow_zero = 0.0,
+two = 2.0,
+two53 = 9007199254740992.0,
+huge = 1.0e300,
+tiny = 1.0e-300,
+L1 = 5.99999999999994648725e-01,
+L2 = 4.28571428578550184252e-01,
+L3 = 3.33333329818377432918e-01,
+L4 = 2.72728123808534006489e-01,
+L5 = 2.30660745775561754067e-01,
+L6 = 2.06975017800338417784e-01,
+P1 = 1.66666666666666019037e-01,
+P2 = -2.77777777770155933842e-03,
+P3 = 6.61375632143793436117e-05,
+P4 = -1.65339022054652515390e-06,
+P5 = 4.13813679705723846039e-08,
+lg2 = 6.93147180559945286227e-01,
+lg2_h = 6.93147182464599609375e-01,
+lg2_l = -1.90465429995776804525e-09,
+ovt = 8.0085662595372944372e-0017,
+cp = 9.61796693925975554329e-01,
+cp_h = 9.61796700954437255859e-01,
+cp_l = -7.02846165095275826516e-09,
+ivln2 = 1.44269504088896338700e+00,
+ivln2_h = 1.44269502162933349609e+00,
+ivln2_l = 1.92596299112661746887e-08;
 
-extern double lbl_8029C578[];
-extern double lbl_803633D8, lbl_803633E0, lbl_803633E8, lbl_803633F0, lbl_803633F8;
-extern double lbl_80363400, lbl_80363408, lbl_80363410, lbl_80363418, lbl_80363420, lbl_80363428;
-extern double lbl_80363430, lbl_80363438, lbl_80363440, lbl_80363448, lbl_80363450, lbl_80363458;
-extern double lbl_80363460, lbl_80363468, lbl_80363470, lbl_80363478, lbl_80363480, lbl_80363488, lbl_80363490;
-extern double lbl_80363498, lbl_803634A0, lbl_803634A8, lbl_803634B0, lbl_803634B8, lbl_803634C0, lbl_803634C8, lbl_803634D0, lbl_803634D8;
-double fn_800EDBD0(double x, double y) {
-    struct powtab { double bp[2], dp_h[2], dp_l[2]; };
-    extern float lbl_803596B0[], lbl_803596B4[];
-    extern double fn_800F004C(double, int);
-    struct powtab *tab = (struct powtab *)lbl_8029C578;
-    double z,ax,z_h,z_l,p_h,p_l;
-    double y1,t1,t2,r,s,t,u,v,w;
-    int i,j,k,yisint,n;
-    int hx,hy,ix,iy;
-    unsigned lx,ly;
+/* `one` is a literal here; i0 reads bp[0] (also 1.0), so no separate pool entry */
+#define one 1.0
+f64 fn_800EDBD0(f64 x, f64 y)
+{
+    f64 z, ax, z_h, z_l, p_h, p_l;
+    f64 y1, t1, t2, r, s, t, u, v, w;
+    int i0, i1, i, j, k, yisint, n;
+    int hx, hy, ix, iy;
+    unsigned lx, ly;
 
-    hx = *(int*)&x; lx = *(1+(unsigned*)&x);
-    hy = *(int*)&y; ly = *(1+(unsigned*)&y);
-    ix = hx&0x7fffffff; iy = hy&0x7fffffff;
+    i0 = ((*(s32*)&bp[0]) >> 29) ^ 1;
+    i1 = 1 - i0;
+    hx = __HI(x);
+    lx = __LO(x);
+    hy = __HI(y);
+    ly = __LO(y);
+    ix = hx & 0x7FFFFFFF;
+    iy = hy & 0x7FFFFFFF;
 
-    if((iy|ly)==0) return lbl_803633D8;
+    /* y==zero: x**0 = 1 */
+    if ((iy | ly) == 0) {
+        return one;
+    }
 
-    if(ix > 0x7ff00000 || ((ix==0x7ff00000)&&(lx!=0)) ||
-       iy > 0x7ff00000 || ((iy==0x7ff00000)&&(ly!=0)))
-        return x+y;
+    /* +-NaN return x+y */
+    if (ix > 0x7FF00000 || ((ix == 0x7FF00000) && (lx != 0)) ||
+        iy > 0x7FF00000 || ((iy == 0x7FF00000) && (ly != 0))) {
+        return x + y;
+    }
 
+    /* determine if y is an odd int when x < 0 */
     yisint = 0;
-    if(hx<0) {
-        if(iy>=0x43400000) yisint = 2;
-        else if(iy>=0x3ff00000) {
-            k = (iy>>20)-0x3ff;
-            if(k>20) {
-                j = ly>>(52-k);
-                if((j<<(52-k))==ly) yisint = 2-(j&1);
-            } else if(ly==0) {
-                j = iy>>(20-k);
-                if((j<<(20-k))==iy) yisint = 2-(j&1);
+    if (hx < 0) {
+        if (iy >= 0x43400000) {
+            yisint = 2;
+        } else if (iy >= 0x3FF00000) {
+            k = (iy >> 20) - 0x3FF;
+            if (k > 20) {
+                j = ly >> (52 - k);
+                if ((j << (52 - k)) == ly) {
+                    yisint = 2 - (j & 1);
+                }
+            } else if (ly == 0) {
+                j = iy >> (20 - k);
+                if ((j << (20 - k)) == iy) {
+                    yisint = 2 - (j & 1);
+                }
             }
         }
     }
 
-    if(ly==0) {
-        if (iy==0x7ff00000) {
-            if(((ix-0x3ff00000)|lx)==0)
+    /* special value of y */
+    if (ly == 0) {
+        if (iy == 0x7FF00000) {
+            if (((ix - 0x3FF00000) | lx) == 0) {
                 return y - y;
-            else if (ix >= 0x3ff00000)
-                return (hy>=0)? y: lbl_803633E0;
-            else
-                return (hy<0)?-y: lbl_803633E0;
+            } else if (ix >= 0x3FF00000) {
+                return (hy >= 0) ? y : pow_zero;
+            } else {
+                return (hy < 0) ? -y : pow_zero;
+            }
         }
-        if(iy==0x3ff00000) {
-            if(hy<0) return lbl_803633D8/x; else return x;
+        if (iy == 0x3FF00000) {
+            if (hy < 0) {
+                return one / x;
+            } else {
+                return x;
+            }
         }
-        if(hy==0x40000000) return x*x;
-        if(hy==0x3fe00000) {
-            if(hx>=0) {
-                double guess;
-                if (x > lbl_803633E0) {
-                    guess = __frsqrte(x);
-                    guess = lbl_803633E8 * guess * (lbl_803633F0 - x * (guess * guess));
-                    guess = lbl_803633E8 * guess * (lbl_803633F0 - x * (guess * guess));
-                    guess = lbl_803633E8 * guess * (lbl_803633F0 - x * (guess * guess));
-                    guess = lbl_803633E8 * guess * (lbl_803633F0 - x * (guess * guess));
-                    return x * guess;
-                } else if (x == lbl_803633E0) return lbl_803633E0;
-                else if (x != lbl_803633E0) return lbl_803596B0[0];
-                return lbl_803596B4[0];
+        if (hy == 0x40000000) {
+            return x * x;
+        }
+        if (hy == 0x3FE00000) {
+            if (hx >= 0) {
+                return sqrt(x);
             }
         }
     }
 
-    ax = __fabs(x);
-    if(lx==0) {
-        if(ix==0x7ff00000||ix==0||ix==0x3ff00000){
+    ax = fabs(x);
+    /* special value of x */
+    if (lx == 0) {
+        if (ix == 0x7FF00000 || ix == 0 || ix == 0x3FF00000) {
             z = ax;
-            if(hy<0) z = lbl_803633D8/z;
-            if(hx<0) {
-                if(((ix-0x3ff00000)|yisint)==0) {
-                    z = (z-z)/(z-z);
-                } else if(yisint==1)
+            if (hy < 0) {
+                z = one / z;
+            }
+            if (hx < 0) {
+                if (((ix - 0x3FF00000) | yisint) == 0) {
+                    z = (z - z) / (z - z);
+                } else if (yisint == 1) {
                     z = -z;
+                }
             }
             return z;
         }
     }
 
-    n = (hx>>31)+1;
-
-    if((n|yisint)==0) {
-        lbl_8035A978 = 33;
-        return lbl_803596B0[0];
+    /* (x<0)**(non-int) is NaN */
+    if ((((hx >> 31) + 1) | yisint) == 0) {
+        errno = EDOM;
+        return NAN;
     }
 
-    if(iy>0x41e00000) {
-        if(iy>0x43f00000){
-            if(ix<=0x3fefffff) return (hy<0)? lbl_803633F8:lbl_803633E0;
-            if(ix>=0x3ff00000) return (hy>0)? lbl_803633F8:lbl_803633E0;
+    /* |y| is huge */
+    if (iy > 0x41E00000) {
+        if (iy > 0x43F00000) {
+            if (ix <= 0x3FEFFFFF) {
+                return (hy < 0) ? huge * huge : tiny * tiny;
+            }
+            if (ix >= 0x3FF00000) {
+                return (hy > 0) ? huge * huge : tiny * tiny;
+            }
         }
-        if(ix<0x3fefffff) return (hy<0)? lbl_803633F8:lbl_803633E0;
-        if(ix>0x3ff00000) return (hy>0)? lbl_803633F8:lbl_803633E0;
-        t = x-lbl_803633D8;
-        w = (t*t)*(lbl_803633E8-t*(lbl_80363400-t*lbl_80363408));
-        u = lbl_80363410*t;
-        v = t*lbl_80363418-w*lbl_80363420;
-        t1 = u+v;
-        *(1+(int*)&t1) = 0;
-        t2 = v-(t1-u);
+        /* over/underflow if x is not close to one */
+        if (ix < 0x3FEFFFFF) {
+            return (hy < 0) ? huge * huge : tiny * tiny;
+        }
+        if (ix > 0x3FF00000) {
+            return (hy > 0) ? huge * huge : tiny * tiny;
+        }
+        t = x - 1;
+        w = (t * t) * (0.5 - t * (0.3333333333333333333333 - t * 0.25));
+        u = ivln2_h * t;
+        v = t * ivln2_l - w * ivln2;
+        t1 = u + v;
+        __LO(t1) = 0;
+        t2 = v - (t1 - u);
     } else {
-        double ss,s2,s_h,s_l,t_h,t_l;
+        f64 s2, s_h, s_l, t_h, t_l;
         n = 0;
-        if(ix<0x00100000)
-            {ax *= lbl_80363428; n -= 53; ix = *(int*)&ax; }
-        n += ((ix)>>20)-0x3ff;
-        j = ix&0x000fffff;
-        ix = j|0x3ff00000;
-        if(j<=0x3988E) k=0;
-        else if(j<0xBB67A) k=1;
-        else {k=0;n+=1;ix -= 0x00100000;}
-        *(int*)&ax = ix;
+        /* take care subnormal number */
+        if (ix < 0x00100000) {
+            ax *= two53;
+            n -= 53;
+            ix = __HI(ax);
+        }
+        n += ((ix) >> 20) - 0x3FF;
+        j = ix & 0x000FFFFF;
+        /* determine interval */
+        ix = j | 0x3FF00000;
+        if (j <= 0x3988E) {
+            k = 0;
+        } else if (j < 0xBB67A) {
+            k = 1;
+        } else {
+            k = 0;
+            n += 1;
+            ix -= 0x00100000;
+        }
+        __HI(ax) = ix;
 
-        u = ax-tab->bp[k];
-        v = lbl_803633D8/(ax+tab->bp[k]);
-        ss = u*v;
-        s_h = ss;
-        *(1+(int*)&s_h) = 0;
-        t_h = lbl_803633E0;
-        *(int*)&t_h = ((ix>>1)|0x20000000)+0x00080000+(k<<18);
-        t_l = ax - (t_h-tab->bp[k]);
-        s_l = v*((u-s_h*t_h)-s_h*t_l);
-        s2 = ss*ss;
-        r = s2*s2*(lbl_80363430+s2*(lbl_80363438+s2*(lbl_80363440+s2*(lbl_80363448+s2*(lbl_80363450+s2*lbl_80363458)))));
-        r += s_l*(s_h+ss);
-        s2 = s_h*s_h;
-        t_h = lbl_803633F0+s2+r;
-        *(1+(int*)&t_h) = 0;
-        t_l = r-((t_h-lbl_803633F0)-s2);
-        u = s_h*t_h;
-        v = s_l*t_h+t_l*ss;
-        p_h = u+v;
-        *(1+(int*)&p_h) = 0;
-        p_l = v-(p_h-u);
-        z_h = lbl_80363460*p_h;
-        z_l = lbl_80363468*p_h+p_l*lbl_80363470+tab->dp_l[k];
-        t = (double)n;
-        t1 = (((z_h+z_l)+tab->dp_h[k])+t);
-        *(1+(int*)&t1) = 0;
-        t2 = z_l-(((t1-t)-tab->dp_h[k])-z_h);
+        /* compute s = s_h+s_l = (x-1)/(x+1) or (x-1.5)/(x+1.5) */
+        u = ax - bp[k];
+        v = one / (ax + bp[k]);
+        s = u * v;
+        s_h = s;
+        __LO(s_h) = 0;
+        /* t_h=ax+bp[k] High */
+        t_h = pow_zero;
+        __HI(t_h) = ((ix >> 1) | 0x20000000) + 0x00080000 + (k << 18);
+        t_l = ax - (t_h - bp[k]);
+        s_l = v * ((u - s_h * t_h) - s_h * t_l);
+        /* compute log(ax) */
+        s2 = s * s;
+        r = s2 * s2 * (L1 + s2 * (L2 + s2 * (L3 + s2 * (L4 + s2 * (L5 + s2 * L6)))));
+        r += s_l * (s_h + s);
+        s2 = s_h * s_h;
+        t_h = 3.0 + s2 + r;
+        __LO(t_h) = 0;
+        t_l = r - ((t_h - 3.0) - s2);
+        /* u+v = s*(1+...) */
+        u = s_h * t_h;
+        v = s_l * t_h + t_l * s;
+        /* 2/(3log2)*(s+...) */
+        p_h = u + v;
+        __LO(p_h) = 0;
+        p_l = v - (p_h - u);
+        z_h = cp_h * p_h;
+        z_l = cp_l * p_h + p_l * cp + dp_l[k];
+        /* log2(ax) = (s+..)*2/(3*log2) = n + dp_h + z_h + z_l */
+        t = (f64)n;
+        t1 = (((z_h + z_l) + dp_h[k]) + t);
+        __LO(t1) = 0;
+        t2 = z_l - (((t1 - t) - dp_h[k]) - z_h);
     }
 
-    s = lbl_803633D8;
-    if((n|(yisint-1))==0)
-        s = lbl_80363478;
+    s = one; /* s (sign of result -ve**odd) = -1 else = 1 */
+    if ((((hx >> 31) + 1) | (yisint - 1)) == 0) {
+        s = -one;
+    }
 
+    /* split up y into y1+y2 and compute (y1+y2)*(t1+t2) */
     y1 = y;
-    *(1+(int*)&y1) = 0;
-    p_l = (y-y1)*t1+y*t2;
-    p_h = y1*t1;
-    z = p_l+p_h;
-    j = *(int*)&z;
-    i = *(1+(int*)&z);
-    if (j>=0x40900000) {
-        if(((j-0x40900000)|i)!=0)
-            return s*lbl_80363480*lbl_80363480;
-        else {
-            if(p_l+lbl_80363488>z-p_h) return s*lbl_80363480*lbl_80363480;
+    __LO(y1) = 0;
+    p_l = (y - y1) * t1 + y * t2;
+    p_h = y1 * t1;
+    z = p_l + p_h;
+    j = __HI(z);
+    i = __LO(z);
+    if (j >= 0x40900000) {
+        if (((j - 0x40900000) | i) != 0) {
+            return s * huge * huge;
+        } else {
+            if (p_l + ovt > z - p_h) {
+                return s * huge * huge;
+            }
         }
-    } else if((j&0x7fffffff)>=0x4090cc00 ) {
-        if(((j-0xc090cc00)|i)!=0)
-            return s*lbl_80363490*lbl_80363490;
-        else {
-            if(p_l<=z-p_h) return s*lbl_80363490*lbl_80363490;
+    } else if ((j & 0x7FFFFFFF) >= 0x4090CC00) {
+        if (((j - 0xC090CC00) | i) != 0) {
+            return s * tiny * tiny;
+        } else {
+            if (p_l <= z - p_h) {
+                return s * tiny * tiny;
+            }
         }
     }
-    i = j&0x7fffffff;
-    k = (i>>20)-0x3ff;
+    /*
+     * compute 2**(p_h+p_l)
+     */
+    i = j & 0x7FFFFFFF;
+    k = (i >> 20) - 0x3FF;
     n = 0;
-    if(i>0x3fe00000) {
-        n = j+(0x00100000>>(k+1));
-        k = ((n&0x7fffffff)>>20)-0x3ff;
-        t = lbl_803633E0;
-        *(int*)&t = (n&~(0x000fffff>>k));
-        n = ((n&0x000fffff)|0x00100000)>>(20-k);
-        if(j<0) n = -n;
+    if (i > 0x3FE00000) {
+        n = j + (0x00100000 >> (k + 1));
+        k = ((n & 0x7FFFFFFF) >> 20) - 0x3FF;
+        t = pow_zero;
+        __HI(t) = (n & ~(0x000FFFFF >> k));
+        n = ((n & 0x000FFFFF) | 0x00100000) >> (20 - k);
+        if (j < 0) {
+            n = -n;
+        }
         p_h -= t;
     }
-    t = p_l+p_h;
-    *(1+(int*)&t) = 0;
-    u = t*lbl_80363498;
-    v = (p_l-(t-p_h))*lbl_803634A0+t*lbl_803634A8;
-    z = u+v;
-    w = v-(z-u);
-    t = z*z;
-    t1 = z - t*(lbl_803634B0+t*(lbl_803634B8+t*(lbl_803634C0+t*(lbl_803634C8+t*lbl_803634D0))));
-    r = (z*t1)/(t1-lbl_803634D8)-(w+z*w);
-    z = lbl_803633D8-(r-z);
-    j = *(int*)&z;
-    j += (n<<20);
-    if((j>>20)<=0) z = fn_800F004C(z,-n);
-    else *(int*)&z += (n<<20);
-    return s*z;
+    t = p_l + p_h;
+    __LO(t) = 0;
+    u = t * lg2_h;
+    v = (p_l - (t - p_h)) * lg2 + t * lg2_l;
+    z = u + v;
+    w = v - (z - u);
+    t = z * z;
+    t1 = z - t * (P1 + t * (P2 + t * (P3 + t * (P4 + t * P5))));
+    r = (z * t1) / (t1 - two) - (w + z * w);
+    z = one - (r - z);
+    j = __HI(z);
+    j += (n << 20);
+    if ((j >> 20) <= 0) {
+        z = ldexp(z, n);
+    } else {
+        __HI(z) += (n << 20);
+    }
+    return s * z;
 }
