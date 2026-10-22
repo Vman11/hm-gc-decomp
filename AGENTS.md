@@ -119,6 +119,8 @@ Many NonMatching units have every function at 100% and only fail the unit check 
   string pool in `.rodata`) were one TU. Merge them and give the merged unit that range.
 - **Mislabeled switch cases**: when only the jump table differs, the case labels can be attached to the wrong
   blocks (e.g. globals shifted by one case); the code bytes still match.
+- **A failed link leaves the old main.dol in place**, so `sha1sum -c` still says OK. Check that ninja exited 0
+  before trusting the sha (or delete `build/GHYE6S/main.dol` first).
 - **Linker hangs forever** (`mwldeppc` at 100% CPU; a normal link takes about 15 s): an object whose `.text` starts with
   a global function and a global label at offset 0 (e.g. `SystemCallVector` and `__OSSystemCallVectorStart` in
   OSSync). Make the function `scope:local` in symbols.txt. To find the culprit, link with `timeout` while leaving out
