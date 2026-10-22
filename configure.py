@@ -1463,7 +1463,7 @@ config.libs = [
             Object(Matching, "sdk/GXTev.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/GXPixel.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/GXDisplayList.c", mw_version="GC/1.2.5n"),
-            Object(NonMatching, "sdk/GXTransform.c", mw_version="GC/1.2.5n"),
+            Object(Matching, "sdk/GXTransform.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/GXPerf.c", mw_version="GC/1.2.5n"),
             Object(NonMatching, "auto/jt_802E00D4.c"),
             Object(NonMatching, "auto/text_800DAA80.c", extra_cflags=["-inline noauto"]),

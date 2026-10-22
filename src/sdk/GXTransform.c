@@ -867,6 +867,16 @@ void GXSetProjectionv(const f32* ptr) {
     __GXData->bpSentNot = 1;
 }
 
+void GXGetProjectionv(f32* ptr) {
+    ptr[0] = (u32)__GXData->projType != GX_PERSPECTIVE ? 1.0f : 0.0f;
+    ptr[1] = __GXData->projMtx[0];
+    ptr[2] = __GXData->projMtx[1];
+    ptr[3] = __GXData->projMtx[2];
+    ptr[4] = __GXData->projMtx[3];
+    ptr[5] = __GXData->projMtx[4];
+    ptr[6] = __GXData->projMtx[5];
+}
+
 #define qr0 0
 
 static inline void WriteMTXPS4x3(const register f32 mtx[3][4], register volatile f32* dest) {
@@ -1066,6 +1076,8 @@ void GXLoadTexMtxImm(const f32 mtx[][4], u32 id, GXTexMtxType type) {
 #endif
 }
 
+#pragma push
+#pragma fp_contract off
 void __GXSetViewport(void) {
     f32 sx;
     f32 sy;
@@ -1076,11 +1088,12 @@ void __GXSetViewport(void) {
     f32 zmin;
     f32 zmax;
     u32 reg;
+    f32 half = 0.5f;
 
-    sx = __GXData->vpWd * 0.5f;
-    sy = -__GXData->vpHt * 0.5f;
+    sx = __GXData->vpWd * half;
+    sy = -__GXData->vpHt * half;
     ox = 342.0f + (__GXData->vpLeft + sx);
-    oy = 342.0f + (__GXData->vpTop + (__GXData->vpHt * 0.5f));
+    oy = 342.0f + (__GXData->vpTop + (__GXData->vpHt * half));
 
     zmin = __GXData->vpNearz * __GXData->zScale;
     zmax = __GXData->vpFarz * __GXData->zScale;
@@ -1098,6 +1111,7 @@ void __GXSetViewport(void) {
     GX_WRITE_XF_REG_F(30, oy);
     GX_WRITE_XF_REG_F(31, oz);
 }
+#pragma pop
 
 static inline void GXSetViewportJitter(f32 left, f32 top, f32 wd, f32 ht, f32 nearz, f32 farz, u32 field) {
     CHECK_GXBEGIN(903, "GXSetViewport");  // not the correct function name

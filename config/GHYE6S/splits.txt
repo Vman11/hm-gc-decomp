@@ -8116,6 +8116,7 @@ sdk/GXDisplayList.c:
 
 sdk/GXTransform.c:
 	.text       start:0x800D9CC8 end:0x800DA228
+	.sdata2     start:0x80363188 end:0x803631A0
 
 sdk/GXPerf.c:
 	.text       start:0x800DA228 end:0x800DAA80
