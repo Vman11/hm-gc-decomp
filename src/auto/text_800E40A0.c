@@ -5196,6 +5196,18 @@ static inline void __ull2dec(decimal *result, unsigned long long val) {
 extern const double lbl_803631A0;
 #pragma push
 #pragma use_lmw_stmw on
+#pragma dont_inline off
+static inline int __fpclassifyd_n2d(double x) {
+    switch (*(int *)&x & 0x7ff00000) {
+    case 0x7ff00000:
+        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 1;
+        return 2;
+    case 0:
+        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 5;
+        return 3;
+    }
+    return 4;
+}
 void fn_800E5B48(decimal *d, double x) {
     char sign = (char)(*(unsigned long *)&x >> 31);
 
@@ -5207,11 +5219,11 @@ void fn_800E5B48(decimal *d, double x) {
         return;
     }
 
-    if (__fpclassifyd_dec(x) <= 2) {
+    if (__fpclassifyd_n2d(x) <= 2) {
         d->sign = sign;
         d->exp = 0;
         d->sig.length = 1;
-        d->sig.text[0] = (__fpclassifyd_dec(x) == 1) ? 'N' : 'I';
+        d->sig.text[0] = (__fpclassifyd_n2d(x) == 1) ? 'N' : 'I';
         return;
     }
 
