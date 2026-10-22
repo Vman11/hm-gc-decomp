@@ -7961,8 +7961,8 @@ u8 *fn_80277218(void *name, u32 flags) {
         wD7218_plan(b + 0xc4, B(0xcc) * B(0xd0));
         if (!notfirst) wD7218_plan(b + 0xc8, B(0xcc) * B(0xd0));
     }
-    if (!notfirst) wD7218_plan(b + 0xc0, B(0xd4) * B(0xd8) * 2 + B(0xcc) * B(0xd0));
-    B(0xbc) = (u32)wD7218_alloc(b, B(0xd4) * B(0xd8) * 2 + B(0xcc) * B(0xd0));
+    if (!notfirst) wD7218_plan(b + 0xc0, B(0xcc) * B(0xd0) + B(0xd4) * B(0xd8) * 2);
+    B(0xbc) = (u32)wD7218_alloc(b, B(0xcc) * B(0xd0) + B(0xd4) * B(0xd8) * 2);
     if (B(0xbc) == 0) {
     freefail:
         wD7218_free(b);
@@ -8021,8 +8021,9 @@ u8 *fn_80277218(void *name, u32 flags) {
     B(0x2b8) = wD7218_now() - B(0x2b8);
     *(s32 *)(B(0x300) + 0x68) = 0x10000;
     B(0x2f8) = 0;
-    if (B(0xf0) != 0 && wD7218_tracknum[0] != 0) {
-        u32 n = wD7218_tracknum[0];
+    {
+        u32 n;
+        if (B(0xf0) != 0 && (n = wD7218_tracknum[0]) != 0)
         for (i = 0; i < n; i++) {
             s32 j;
             for (j = 0; j < (s32)B(0xf0); j++) {
@@ -8052,11 +8053,13 @@ u8 *fn_80277218(void *name, u32 flags) {
                 if (*(s32 *)(TRK + 0x58) == 0) *(s32 *)(TRK + 0x58) = -1;
                 T(0x28) = (((u32 *)B(0x260))[((s32 *)B(0x25c))[i]] + 0xff) & ~0xff;
                 T(0x2c) = (u32)wD7218_alloc(b, T(0x28));
-                if (T(0x2c) == 0) {
-                    ((wDOne_77218)T(0x1c))(TRK);
+                {
+                u8 *p = TRK;
+                if (*(u32 *)(p + 0x2c) == 0) {
+                    ((wDOne_77218) * (u32 *)(p + 0x1c))(p);
                 } else {
                     wD7218_sndcount[0]++;
-                    T(0x44) = (((FL >> 27) & 8) + 8) == 8;
+                    *(u32 *)(p + 0x44) = (((FL >> 27) & 8) + 8) == 8;
                     T(0x30) = T(0x2c) + T(0x28);
                     T(0x34) = T(0x2c);
                     T(0x38) = T(0x2c);
@@ -8065,6 +8068,7 @@ u8 *fn_80277218(void *name, u32 flags) {
                     T(0x3c) = wD7218_sndfmt(FL & 0xffff, ((FL >> 29) & 1) + 1, ((s32)FL >= 0 && (FL & 0x10000000)) ? 1 : 0);
                     T(0x48) = B(0x8) - (B(0x2bc) * 3) / (B(0x2c0) * 4);
                     T(0x40) = 0;
+                }
                 }
             }
         }
@@ -8077,8 +8081,9 @@ u8 *fn_80277218(void *name, u32 flags) {
         }
     }
     if (B(0x2f8) != 0) {
+        s32 tm = wD7218_timer[0];
         B(0x2a0) = 1;
-        if (wD7218_timer[0] == 0) {
+        if (tm == 0) {
             wD7218_timer[0] = wD7218_timeropen(-13);
             wD7218_timerinit();
         }
