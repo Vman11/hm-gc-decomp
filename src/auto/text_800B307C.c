@@ -2008,6 +2008,43 @@ asm void fn_800B39AC(void) {
 }
 
 #pragma push
+static void ClearArena(void) {
+    extern u32 OSGetResetCode(void);
+    extern void *OSGetArenaLo(void);
+    extern void *OSGetArenaHi(void);
+    extern u32 __OSSavedRegionStart;
+    extern u32 __OSSavedRegionEnd;
+
+    if (OSGetResetCode() != 0x80000000) {
+        __OSSavedRegionStart = 0;
+        __OSSavedRegionEnd = 0;
+        memset(OSGetArenaLo(), 0, (u32)OSGetArenaHi() - (u32)OSGetArenaLo());
+        return;
+    }
+    {
+        u32 end;
+        u32 start;
+        start = *(u32 *)0x812FDFF0;
+        end = *(u32 *)0x812FDFEC;
+        __OSSavedRegionStart = start;
+        __OSSavedRegionEnd = end;
+        if (start == 0) {
+            memset(OSGetArenaLo(), 0, (u32)OSGetArenaHi() - (u32)OSGetArenaLo());
+            return;
+        }
+    }
+    if ((u32)OSGetArenaLo() < __OSSavedRegionStart) {
+        if ((u32)OSGetArenaHi() <= __OSSavedRegionStart) {
+            memset(OSGetArenaLo(), 0, (u32)OSGetArenaHi() - (u32)OSGetArenaLo());
+            return;
+        }
+        memset(OSGetArenaLo(), 0, __OSSavedRegionStart - (u32)OSGetArenaLo());
+        if ((u32)OSGetArenaHi() > __OSSavedRegionEnd) {
+            memset((void *)__OSSavedRegionEnd, 0, (u32)OSGetArenaHi() - __OSSavedRegionEnd);
+        }
+    }
+}
+
 #pragma peephole off
 extern u16 DriveInfo_80307500[];
 
