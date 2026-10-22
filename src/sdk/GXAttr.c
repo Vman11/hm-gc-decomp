@@ -1127,20 +1127,24 @@ void GXSetVtxAttrFmtv(GXVtxFmt vtxfmt, const GXVtxAttrFmtList* list) {
     __GXData->dirtyVAT |= (u8)(1 << (u8)vtxfmt);
 }
 
+static inline void wA_WriteVatRegs(s32 idx) {
+    GX_WRITE_U8(8);
+    GX_WRITE_U8(idx | 0x70);
+    GX_WRITE_U32(__GXData->vatA[idx]);
+    GX_WRITE_U8(8);
+    GX_WRITE_U8(idx | 0x80);
+    GX_WRITE_U32(__GXData->vatB[idx]);
+    GX_WRITE_U8(8);
+    GX_WRITE_U8(idx | 0x90);
+    GX_WRITE_U32(__GXData->vatC[idx]);
+}
+
 void __GXSetVAT(void) {
     u8 i;
 
     for (i = 0; i < 8; i++) {
         if (__GXData->dirtyVAT & (1 << i)) {
-            GX_WRITE_U8(8);
-            GX_WRITE_U8(i | 0x70);
-            GX_WRITE_U32(__GXData->vatA[i]);
-            GX_WRITE_U8(8);
-            GX_WRITE_U8(i | 0x80);
-            GX_WRITE_U32(__GXData->vatB[i]);
-            GX_WRITE_U8(8);
-            GX_WRITE_U8(i | 0x90);
-            GX_WRITE_U32(__GXData->vatC[i]);
+            wA_WriteVatRegs(i);
         }
     }
     __GXData->dirtyVAT = 0;
