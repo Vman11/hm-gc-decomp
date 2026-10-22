@@ -1,5 +1,6 @@
 /* MSL_C alloc.c */
 #include "common.h"
+void fn_800E4114(int size);
 void __begin_critical_region(int region);
 void __end_critical_region(int region);
 void fn_800E43C8(void *pool, void *ptr);

@@ -1,5 +1,6 @@
 /* MSL_C printf.c */
 #include "common.h"
+void *memcpy(void *, const void *, u32);
 extern u8 lbl_802E05C8[];
 typedef struct {
     unsigned char justification_options;

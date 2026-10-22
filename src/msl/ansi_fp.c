@@ -1,5 +1,7 @@
 /* MSL_C ansi_fp.c */
 #include "common.h"
+double fn_800EFFC0(double x, int *eptr);
+double fn_800F0210(double x, double *iptr);
 extern u8 lbl_802E05C8[];
 extern unsigned char lbl_802E06C8[];
 typedef struct decimal {
@@ -206,7 +208,6 @@ static inline void __ull2dec(decimal *result, unsigned long long val) {
     }
     result->exp = result->sig.length - 1;
 }
-extern const double lbl_803631A0;
 static inline int __fpclassifyd_n2d(double x) {
     switch (*(int *)&x & 0x7ff00000) {
     case 0x7ff00000:
@@ -323,7 +324,7 @@ double fn_800E4924(const decimal *d) {
 
         if (__fpclassifyd_dec(first_guess) == 2) {
             decimal max;
-            __str2dec(&max, lbl_8029C060, 308);
+            __str2dec(&max, "179769313486231580793729011405303420", 308);
             if (__less_dec(&max, &dec)) {
                 goto done;
             }
@@ -427,7 +428,7 @@ void fn_800E59A4(const decform *f, double x, decimal *d) {
 void fn_800E5B48(decimal *d, double x) {
     char sign = (char)(*(unsigned long *)&x >> 31);
 
-    if (lbl_803631A0 == x) {
+    if (0.0 == x) {
         d->sign = sign;
         d->exp = 0;
         d->sig.length = 1;
@@ -465,80 +466,90 @@ void fn_800E5B48(decimal *d, double x) {
 
 #pragma push
 #pragma dont_inline off
-void fn_800E5EFC(decimal *result, const decimal *x, const decimal *y) {
-    unsigned char *b, *i;
-    const unsigned char *yb, *j, *end;
-    int offset, length, n;
-    *result = *x;
-    if (y->sig.text[0] == 0) return;
-    length = result->sig.length;
-    if (length < y->sig.length) length = y->sig.length;
-    offset = result->exp - y->exp;
-    length += offset;
-    if (length > 36) length = 36;
-    while (result->sig.length < length)
-        result->sig.text[result->sig.length++] = 0;
-    b = result->sig.text;
-    i = b + length;
-    n = y->sig.length + offset;
-    if (n < length) i = b + n;
-    yb = y->sig.text;
-    j = yb + (i - b - offset);
-    end = j;
-    while (i > b && j > yb) {
-        if (*--i < *--j) {
+void fn_800E5EFC(decimal *z, const decimal *x, const decimal *y) {
+    int zlen, dexp;
+    unsigned char *ib, *i, *ie;
+    unsigned char const *jb, *j, *jn;
+
+    *z = *x;
+    if (y->sig.text[0] == 0)
+        return;
+    zlen = z->sig.length;
+    if (zlen < y->sig.length)
+        zlen = y->sig.length;
+    dexp = z->exp - y->exp;
+    zlen += dexp;
+    if (zlen > 36)
+        zlen = 36;
+    while (z->sig.length < zlen)
+        z->sig.text[z->sig.length++] = 0;
+    ib = z->sig.text;
+    i = ib + zlen;
+    if (y->sig.length + dexp < zlen)
+        i = ib + (y->sig.length + dexp);
+    jb = y->sig.text;
+    j = jb + (i - ib - dexp);
+    jn = j;
+    while (i > ib && j > jb) {
+        --i;
+        --j;
+        if (*i < *j) {
             unsigned char *k = i - 1;
-            while (*k == 0) --k;
+            while (*k == 0)
+                --k;
             while (k != i) {
                 --*k;
-                *++k += 10;
+                ++k;
+                *k += 10;
             }
         }
         *i -= *j;
     }
-    n = end - yb;
-    if (n < y->sig.length) {
-        int round = 0;
-        if (*end < 5) round = 1;
-        else if (*end == 5) {
-            const unsigned char *e = y->sig.text + y->sig.length;
-            i = (unsigned char *)end + 1;
-            while (i < e) {
-                if (*i != 0) goto normalize;
-                ++i;
-            }
-            i = b + (n + offset - 1);
-            if (*i & 1) round = 1;
+    if (jn - jb < y->sig.length) {
+        int round_down = 0;
+        if (*jn < 5)
+            round_down = 1;
+        else if (*jn == 5) {
+            unsigned char const *je = y->sig.text + y->sig.length;
+            for (j = jn + 1; j < je; ++j)
+                if (*j != 0)
+                    goto done;
+            i = ib + (jn - jb) + dexp - 1;
+            if (*i & 1)
+                round_down = 1;
         }
-        if (round) {
+        if (round_down) {
             if (*i < 1) {
                 unsigned char *k = i - 1;
-                while (*k == 0) --k;
+                while (*k == 0)
+                    --k;
                 while (k != i) {
                     --*k;
-                    *++k += 10;
+                    ++k;
+                    *k += 10;
                 }
             }
             --*i;
         }
     }
-normalize:
-    i = b;
-    while (*i == 0) ++i;
-    if (i > b) {
-        unsigned char count = i - b;
-        unsigned char *e;
-        result->exp -= count;
-        e = b + result->sig.length;
-        while (i < e) *b++ = *i++;
-        result->sig.length -= count;
+done:
+    for (i = ib; *i == 0; ++i) {
     }
-    b = result->sig.text;
-    i = b + result->sig.length;
-    while (i > b) {
-        if (*--i != 0) break;
+    if (i > ib) {
+        unsigned char dl = (unsigned char)(i - ib);
+        z->exp -= dl;
+        ie = ib + z->sig.length;
+        for (; i < ie; ++i, ++ib)
+            *ib = *i;
+        z->sig.length -= dl;
     }
-    result->sig.length = i - b + 1;
+    ib = z->sig.text;
+    for (i = ib + z->sig.length; i > ib;) {
+        --i;
+        if (*i != 0)
+            break;
+    }
+    z->sig.length = (unsigned char)(i - ib + 1);
 }
 #pragma pop
 
@@ -590,67 +601,67 @@ void fn_800E6504(decimal *result, long exp) {
 
     switch (exp) {
     case -64:
-        __str2dec(result, lbl_8029C060 + 0x25, -20);
+        __str2dec(result, "542101086242752217003726400434970855712890625", -20);
         return;
     case -53:
-        __str2dec(result, lbl_8029C060 + 0x53, -16);
+        __str2dec(result, "11102230246251565404236316680908203125", -16);
         return;
     case -32:
-        __str2dec(result, lbl_8029C060 + 0x7A, -10);
+        __str2dec(result, "23283064365386962890625", -10);
         return;
     case -16:
-        __str2dec(result, lbl_8029C060 + 0x92, -5);
+        __str2dec(result, "152587890625", -5);
         return;
     case -8:
-        __str2dec(result, lbl_8029C060 + 0x9F, -3);
+        __str2dec(result, "390625", -3);
         return;
     case -7:
-        __str2dec(result, lbl_8029C060 + 0xA6, -3);
+        __str2dec(result, "78125", -3);
         return;
     case -6:
-        __str2dec(result, lbl_8029C060 + 0xAC, -2);
+        __str2dec(result, "15625", -2);
         return;
     case -5:
-        __str2dec(result, lbl_8029C060 + 0xB2, -2);
+        __str2dec(result, "3125", -2);
         return;
     case -4:
-        __str2dec(result, lbl_8029C060 + 0xB7, -2);
+        __str2dec(result, "625", -2);
         return;
     case -3:
-        __str2dec(result, lbl_8029C060 + 0xBB, -1);
+        __str2dec(result, "125", -1);
         return;
     case -2:
-        __str2dec(result, lbl_8029C060 + 0xBF, -1);
+        __str2dec(result, "25", -1);
         return;
     case -1:
-        __str2dec(result, lbl_8029C060 + 0xC2, -1);
+        __str2dec(result, "5", -1);
         return;
     case 0:
-        __str2dec(result, lbl_8029C060 + 0xC4, 0);
+        __str2dec(result, "1", 0);
         return;
     case 1:
-        __str2dec(result, lbl_8029C060 + 0xC6, 0);
+        __str2dec(result, "2", 0);
         return;
     case 2:
-        __str2dec(result, lbl_8029C060 + 0xC8, 0);
+        __str2dec(result, "4", 0);
         return;
     case 3:
-        __str2dec(result, lbl_8029C060 + 0xCA, 0);
+        __str2dec(result, "8", 0);
         return;
     case 4:
-        __str2dec(result, lbl_8029C060 + 0xCC, 1);
+        __str2dec(result, "16", 1);
         return;
     case 5:
-        __str2dec(result, lbl_8029C060 + 0xCF, 1);
+        __str2dec(result, "32", 1);
         return;
     case 6:
-        __str2dec(result, lbl_8029C060 + 0xD2, 1);
+        __str2dec(result, "64", 1);
         return;
     case 7:
-        __str2dec(result, lbl_8029C060 + 0xD5, 2);
+        __str2dec(result, "128", 2);
         return;
     case 8:
-        __str2dec(result, lbl_8029C060 + 0xD9, 2);
+        __str2dec(result, "256", 2);
         return;
     }
     fn_800E6504(&x2, ((long)((0x80000000UL & exp) >> 31) + exp) >> 1);
@@ -658,9 +669,9 @@ void fn_800E6504(decimal *result, long exp) {
     if (exp & 1) {
         temp = *result;
         if (exp > 0) {
-            __str2dec(&x2, lbl_8029C060 + 0xC6, 0);
+            __str2dec(&x2, "2", 0);
         } else {
-            __str2dec(&x2, lbl_8029C060 + 0xC2, -1);
+            __str2dec(&x2, "5", -1);
         }
         fn_800E7C88(result, &temp, &x2);
     }
