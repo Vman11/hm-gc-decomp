@@ -1,7 +1,7 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
 #include "trk_priv.h"
-#include "trk_ppc_inline.h"
+#define TRK_PPC_INLINE_H /* its nop tables are not part of this object */
 /* Typed views used so the same C matches with GC/1.2.5n (the SDK's compiler) and GC/1.3.2. */
 typedef struct GXDataCP { u16 vNumNot; u16 bpSentNot; u16 vNum; u16 vLim; u32 cpEnable; u32 cpStatus; u32 cpClr; } GXDataCP;
 typedef struct GXData7 { u8 pad[0x1EC]; u32 r1EC; u8 pad1F0[0xC]; u32 r1FC; } GXData7;
@@ -427,26 +427,7 @@ u64 __OSGetSystemTime(void);
 #pragma dont_inline on
 #pragma peephole off
 #pragma pop
-static HeapCell *DLAddFront(HeapCell *list, HeapCell *cell) {
-    cell->next = list;
-    cell->prev = NULL;
-    if (list) {
-        list->prev = cell;
-    }
-    return cell;
-}
 
-static HeapCell *DLExtract(HeapCell *list, HeapCell *cell) {
-    if (cell->next) {
-        cell->next->prev = cell->prev;
-    }
-    if (cell->prev == NULL) {
-        return cell->next;
-    } else {
-        cell->prev->next = cell->next;
-    }
-    return list;
-}
 
 
 
@@ -1119,7 +1100,6 @@ extern u8 lbl_80359668[8];
 
 extern u8 lbl_80327F90[];
 
-#include "trk_ppc_inline.h"
 
 void PPCMtmsr(u32 msr);
 
