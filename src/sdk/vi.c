@@ -772,7 +772,7 @@ void VIConfigure(const GXRenderModeObj *rm) {
     if (HorVer.tv == 4 || HorVer.tv == 5 || HorVer.tv == 6) {
         regDspCfg = (regDspCfg & ~0x300);
     } else {
-        regDspCfg = (u16)(regDspCfg & ~0x300) | (u16)(HorVer.tv << 8);
+        regDspCfg = ((u32)regDspCfg & ~0x300) | ((u32)HorVer.tv << 8);
     }
     regs[1] = regDspCfg;
     MARK_CHANGED(1);
