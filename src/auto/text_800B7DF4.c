@@ -427,26 +427,6 @@ u64 __OSGetSystemTime(void);
 #pragma dont_inline on
 #pragma peephole off
 #pragma pop
-static HeapCell *DLAddFront(HeapCell *list, HeapCell *cell) {
-    cell->next = list;
-    cell->prev = NULL;
-    if (list) {
-        list->prev = cell;
-    }
-    return cell;
-}
-
-static HeapCell *DLExtract(HeapCell *list, HeapCell *cell) {
-    if (cell->next) {
-        cell->next->prev = cell->prev;
-    }
-    if (cell->prev == NULL) {
-        return cell->next;
-    } else {
-        cell->prev->next = cell->next;
-    }
-    return list;
-}
 
 
 
@@ -505,6 +485,7 @@ u32 wbRegionStart : 0x812FDFF0;
 u32 wbRegionEnd : 0x812FDFEC;
 u32 wbOSResetCode : 0x817FFFFC;
 u32 wbOSResetCode2 : 0x817FFFF8;
+u8 wbFlag30E2 : 0x800030E2;
 
 #pragma push
 #pragma peephole off
@@ -546,9 +527,9 @@ void __OSReboot(u32 resetCode, BOOL forceMenu) {
 
     header = lbl_80307880;
     OSDisableInterrupts();
-    *(u32 *)0x817FFFFC = 0;
-    *(u32 *)0x817FFFF8 = 0;
-    *(u8 *)0x800030E2 = 1;
+    wbOSResetCode = 0;
+    wbOSResetCode2 = 0;
+    wbFlag30E2 = 1;
     wbRegionStart = lbl_8035A5A8;
     wbRegionEnd = lbl_8035A5AC;
     OSClearContext(exceptionContext);
@@ -590,8 +571,9 @@ void __OSReboot(u32 resetCode, BOOL forceMenu) {
         }
     }
 
-    length = (*(u32 *)(header + 24) + 31) & ~31;
-    fn_800BF658(dvdCmd3, (void *)0x81300000, length, *(u32 *)(header + 20) + 32 + 0x2440, NULL, 0);
+    { u32 offset = *(u32 *)(header + 20) + 0x20;
+    length = (*(u32 *)(header + 24) + 0x1F) & ~0x1F;
+    fn_800BF658(dvdCmd3, (void *)0x81300000, length, offset + 0x2440, NULL, 0); }
     start = OSGetTime();
     while (fn_800BFAA8(dvdCmd3)) {
         if (!fn_800BFF54() || OSGetTime() - start > (s64)(wbBusClock / 4)) {
