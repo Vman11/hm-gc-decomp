@@ -8,7 +8,7 @@ extern f32 lbl_80366054;
 extern f32 lbl_80366044;
 extern f32 lbl_80366058;
 extern f32 lbl_8036605C;
-u32 fn_800EB1B4(void);
+u32 rand(void);
 f64 fn_800EFDA4(f64);
 
 typedef struct { f32 x0; f32 x4; f32 x8; f32 xC; } S;
@@ -16,7 +16,7 @@ typedef struct { f32 x0; f32 x4; f32 x8; f32 xC; } S;
 static inline u32 RandN(u32 n) {
     u32 r = 0;
     if (n != 0) {
-        r = fn_800EB1B4() % n;
+        r = rand() % n;
     }
     return r;
 }

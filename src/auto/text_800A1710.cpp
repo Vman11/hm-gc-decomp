@@ -26,7 +26,7 @@ typedef struct S800A1710 {
 extern f32 lbl_80361BF4;
 extern N800A1710 lbl_80361BD4;
 void fn_80107F3C(O800A1710 *, V800A1710 *);
-u32 fn_800EB1B4(void);
+u32 rand(void);
 void fn_800F6E88(N800A1710 *, N800A1710 *);
 s32 fn_800F6CD0(N800A1710 *, N800A1710 *);
 void fn_802410CC(S800A1710 *, N800A1710 *, s32);
@@ -65,7 +65,7 @@ void fn_800A1710(S800A1710 *p) {
     }
     n = p->f18C->f0->f10;
     if (n != 0) {
-        r = fn_800EB1B4();
+        r = rand();
         fn_800F6E88(&name, &p->f18C->fC[r % n]);
         if (fn_800F6CD0(&name, &lbl_80361BD4) == 0) {
             fn_802410CC(p, &name, 0);

@@ -27,7 +27,7 @@ void fn_800F7EC0(void *);
 void fn_800F7E98(void);
 u32 strlen(const char *);
 void *__nwa__FUl(u32);
-void fn_800EB764(char *dst, char *src);
+void strcpy(char *dst, char *src);
 void fn_801FC3F8(u8 *p, void *q, u32 x);
 void fn_802079F0(void *a, s32 b);
 void fn_80215BFC(C80215F50 *f);
@@ -55,7 +55,7 @@ void fn_801FC2AC(u8 *p, void *q, char *name)
     if (*(char **)(p + 28) == 0) {
         fn_800604C4(-4, 0, 0, 0);
     }
-    fn_800EB764(*(char **)(p + 28), s);
+    strcpy(*(char **)(p + 28), s);
     fn_801FC3F8(p, q, f.x2c);
     fn_802079F0(f.x24, 0);
     fn_80215BFC(&f);

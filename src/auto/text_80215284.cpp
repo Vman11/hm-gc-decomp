@@ -24,9 +24,9 @@ struct Holder80210ABC {
 };
 extern void *lbl_8035B1F8;
 extern const char lbl_80365890[2];
-void fn_800EB764(char *dst, char *src);
-char *fn_800EB4C8(char *s, s32 c);
-void fn_800EB6F4(char *dst, const char *src);
+void strcpy(char *dst, char *src);
+char *strrchr(char *s, s32 c);
+void strcat(char *dst, const char *src);
 Mgr80210ABC *fn_8021616C(void *a);
 s32 fn_802160B8(void *a, char *path, Mgr80210ABC **out);
 
@@ -35,14 +35,14 @@ s32 fn_80215284(Holder80210ABC *self, char *src, char *ext, u32 flags) {
     Mgr80210ABC *tmp;
     char path[128];
     char *p;
-    fn_800EB764(path, src);
-    p = fn_800EB4C8(path, '\\');
+    strcpy(path, src);
+    p = strrchr(path, '\\');
     if (p == 0) {
         p = path;
     }
-    if (fn_800EB4C8(p, '.') == 0) {
-        fn_800EB6F4(path, lbl_80365890);
-        fn_800EB6F4(path, ext);
+    if (strrchr(p, '.') == 0) {
+        strcat(path, lbl_80365890);
+        strcat(path, ext);
     }
     if (flags & 1) {
         tmp = fn_8021616C(lbl_8035B1F8);

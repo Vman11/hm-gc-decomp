@@ -12,7 +12,7 @@ typedef struct P80240DEC {
     u8 pad0[0xA4]; u32 *fA4; u8 padA8[0xCC - 0xA8]; E12 *fCC; u8 padD0[4]; u32 *fD4;
     u8 padD8[0xE0 - 0xD8]; QE0 *fE0; u8 padE4[0x108 - 0xE4]; void *f108;
 } P80240DEC;
-u32 fn_800EB1B4(void);
+u32 rand(void);
 void fn_80107244(void *, Vec *);
 void fn_802482F8(void *, s32, u32);
 void fn_802488C4(void *, u32, s32, Vec *, u32, f32);
@@ -26,11 +26,11 @@ void fn_80240DEC(P80240DEC *p, s32 chance, s32 lo, s32 hi) {
     u32 a;
     void *obj;
     Vec v;
-    if ((s32)(fn_800EB1B4() % 100) < chance) {
+    if ((s32)(rand() % 100) < chance) {
         r = 0;
         range = hi - lo + 1;
         if (range != 0) {
-            r = fn_800EB1B4() % range;
+            r = rand() % range;
         }
         a = p->fCC[lo + r].f8;
         b = p->fD4[lo + r];

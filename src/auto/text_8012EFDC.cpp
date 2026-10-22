@@ -26,7 +26,7 @@ void fn_800604C4(s32, s32, s32, s32);
 void fn_800F7EC0(void *);
 void fn_800F7E98(void);
 unsigned long strlen(const char *);
-void fn_800EB764(char *, const char *);
+void strcpy(char *, const char *);
 void fn_802079F0(void *, s32);
 void fn_80215BFC(C80215F50 *);
 
@@ -48,7 +48,7 @@ void fn_8012EFDC(P8012D774 *p, void *a2, const char *name) {
         p->f24 = new char[strlen(s) + 1];
         fn_800F7E98();
         if (p->f24 == 0) fn_800604C4(-4, 0, 0, 0);
-        fn_800EB764(p->f24, s);
+        strcpy(p->f24, s);
     }
     fn_802079F0(p->f20, 0);
     fn_80215BFC(&obj);

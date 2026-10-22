@@ -27,7 +27,7 @@ extern void *lbl_8035B594;
 extern u8 lbl_80366498[8];
 s32 fn_800F6CD0(void *a, void *b);
 void fn_800F6E88(void *s, void *name);
-u32 fn_800EB1B4(void);
+u32 rand(void);
 void fn_8024E004(void *mgr, Ent8024FC44 *e, void *x, void *n1, void *n2);
 void fn_8024DD94(void *mgr, Ent8024FC44 *e, void *x, s32 y);
 
@@ -44,7 +44,7 @@ void fn_8024FC44(Tbl8024FC44 *t, u8 *q) {
                 if (!fn_800F6CD0((*(Ent8024FC44 *)((u8 *)t->ents + off)).name2, buf)) return;
             }
             if ((*(Ent8024FC44 *)((u8 *)t->ents + off)).unk1C == 0) {
-                if ((s32)(fn_800EB1B4() % 100) < (*(Ent8024FC44 *)((u8 *)t->ents + off)).chance) {
+                if ((s32)(rand() % 100) < (*(Ent8024FC44 *)((u8 *)t->ents + off)).chance) {
                     Ent8024FC44 *e = &(*(Ent8024FC44 *)((u8 *)t->ents + off));
                     fn_8024E004(mgr, e, e->unk18, e->name, e->name2);
                 }

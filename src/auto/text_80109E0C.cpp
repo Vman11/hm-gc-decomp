@@ -11,7 +11,7 @@ struct Buf80109E0C {
     u32 Size() { return end - start; }
 };
 
-int fn_800E8B1C(const void *a, const void *b, u32 n);
+int memcmp(const void *a, const void *b, u32 n);
 
 struct C80109E0C {
     u32 unk0;
@@ -37,7 +37,7 @@ s32 fn_80109E0C(C80109E0C *a, C80109E0C *b) {
     void *pb = b->GetData(0);
     u32 sa = a->Size();
     if (sa != b->Size()) return 0;
-    if (fn_800E8B1C(pa, pb, a->Size()) == 0) return 1;
+    if (memcmp(pa, pb, a->Size()) == 0) return 1;
     return 0;
 }
 

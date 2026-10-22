@@ -13,12 +13,12 @@ extern char lbl_802A6A20[];
 void fn_80207E5C(void);
 void fn_80210CFC(char *dst, u8 *src);
 s32 fn_800BD044(char *path);
-void fn_800EB764(char *dst, char *src);
-char *fn_800EB324(char *s, char *t);
+void strcpy(char *dst, char *src);
+char *strstr(char *s, char *t);
 s32 fn_800BD900(char *path, Dir8020A71C *d);
 s32 fn_800BD9C0(Dir8020A71C *d, Ent8020A71C *e);
 s32 fn_800BDA64(Dir8020A71C *d);
-s32 fn_800EB580(char *a, char *b);
+s32 strcmp(char *a, char *b);
 void fn_80060568(char *fmt, s32 a, s32 b, s32 c);
 
 s32 fn_8020A870(u8 *p) {
@@ -34,21 +34,21 @@ s32 fn_8020A870(u8 *p) {
     fn_80207E5C();
     fn_80210CFC(path, p + 128);
     if (fn_800BD044(path) >= 0) {
-        fn_800EB764(buf, path);
+        strcpy(buf, path);
         dir = buf;
-        next = fn_800EB324(dir, lbl_803657D8);
+        next = strstr(dir, lbl_803657D8);
         name = next;
         if (next == 0) {
             name = dir;
             dir = lbl_803657DC;
         } else {
-            while ((next = fn_800EB324(name + 1, lbl_803657D8)) != 0) name = next;
+            while ((next = strstr(name + 1, lbl_803657D8)) != 0) name = next;
             *name = 0;
             name++;
         }
         if (fn_800BD900(dir, &d)) {
             while (fn_800BD9C0(&d, &ent)) {
-                if (fn_800EB580(ent.name, name) == 0) {
+                if (strcmp(ent.name, name) == 0) {
                     isDir = ent.isDir;
                     goto done;
                 }

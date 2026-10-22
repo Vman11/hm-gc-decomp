@@ -20,7 +20,7 @@ u32 strlen(const char *);
 void fn_800604C4(s32, s32, s32, s32);
 void fn_800F7EC0(void *);
 void fn_800F7E98(void);
-void fn_800EB764(char *, const char *);
+void strcpy(char *, const char *);
 
 s32 fn_8010CB34(Node_8010CB34 *n, const char *name, s32 a, Node_8010CB34 *parent) {
     Node_8010CB34 *cur;
@@ -48,7 +48,7 @@ s32 fn_8010CB34(Node_8010CB34 *n, const char *name, s32 a, Node_8010CB34 *parent
         if (n->name == 0) {
             fn_800604C4(-4, 0, 0, 0);
         }
-        fn_800EB764(n->name, name);
+        strcpy(n->name, name);
     } else {
         n->name = 0;
     }

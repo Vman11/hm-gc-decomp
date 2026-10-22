@@ -5,7 +5,7 @@
 extern "C" {
 
 extern u8 lbl_802E07C8[];
-void fn_800EB764(char *dst, char *src);
+void strcpy(char *dst, char *src);
 u32 strlen(const char *s);
 char *strchr(const char *s, s32 c);
 s32 fn_8021263C(u8 *tab, char *name);
@@ -54,7 +54,7 @@ static inline u8 *find_80213F6C(u8 *p, char *name)
     if (name == 0) {
         return p + 40;
     }
-    fn_800EB764(buf, name);
+    strcpy(buf, name);
     n = strlen(name);
     t = buf;
     for (i = 0; i < n; i++) {
