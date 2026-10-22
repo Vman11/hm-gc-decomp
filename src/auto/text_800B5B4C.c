@@ -423,6 +423,76 @@ long long fn_800BA5E8(long long arg0);
 void InsertAlarm(void *alarm, long long fire, void *handler);
 
 u64 __OSGetSystemTime(void);
+typedef struct { u8 r, g, b, a; } WBYuv_;
+char *fn_800B6F24(char *, void *, int, int, s32 *);
+
+void fn_800B5B4C(void* xfb, u16 xfbW, u16 xfbH, WBYuv_ yuv, s32 x, s32 y, s32 leading, const char* string) {
+    u8* ptr;
+    s32 width;
+    u32 i;
+    u32 j;
+    u32 image[72];
+    u32 k;
+    u32 l;
+    u8 Y;
+    u32 pixel;
+    s32 col;
+
+loop_1:
+    if (xfbH - 24 >= y) {
+        ptr = (u8*)xfb + ((x + (y * xfbW)) * 2);
+        col = x;
+
+        while ((s8)*string != 0) {
+            if ((s8)*string == '\n') {
+                string++;
+                y += leading;
+                goto loop_1;
+            }
+
+            if (xfbW - 48 < col) {
+                y += leading;
+                goto loop_1;
+            }
+
+            for (i = 0; i < 24; i++) {
+                j = (i & 7) + ((i >> 3) * 24);
+                image[j + 0 ] = 0;
+                image[j + 8 ] = 0;
+                image[j + 16] = 0;
+            }
+
+            string = fn_800B6F24((char*)string, image, 0, 6, &width);
+
+            for (i = 0; i < 24; i++) {
+                j = (i & 7) + ((i >> 3) * 24);
+
+                for (k = 0; k < 24; k++) {
+                    l = j + (k & 0xFFFFFFF8);
+
+                    Y = (image[l] >> ((7 - (k & 7)) * 4)) & 0xF;
+                    if (Y != 0) {
+                        Y = (((yuv.r * (Y * 0xEF)) / 255) / 15) + 0x10;
+                        pixel = k + (i * xfbW);
+                        ptr[pixel * 2] = Y;
+
+                        if ((col + k) & 1) {
+                            ptr[(pixel * 2) - 1] = yuv.g;
+                            ptr[(pixel * 2) + 1] = yuv.b;
+                        } else {
+                            ptr[(pixel * 2) - 1] = yuv.b;
+                            ptr[(pixel * 2) + 1] = yuv.g;
+                        }
+                    }
+                }
+            }
+
+            ptr += width * 2;
+            col += width;
+        }
+    }
+}
+
 #pragma push
 #pragma dont_inline on
 #pragma peephole off
@@ -526,10 +596,10 @@ void fn_800B6B64(s32 arg0, s32 arg1, s32 arg2) {
             n = 0x100;
         }
         arg1 -= n;
-        if (fn_800B9094(arg0, n, arg2) != 0) {
-            arg2 += n;
-            arg0 += n;
+        while (!fn_800B9094(arg0, n, arg2)) {
         }
+        arg2 += n;
+        arg0 += n;
     }
 }
 
