@@ -4,12 +4,12 @@
 
 extern "C" {
 
-u32 fn_800EB1B4(void);
+u32 rand(void);
 
 u32 fn_80201714(u32 n) {
     u32 r = 0;
     if (n != 0) {
-        r = fn_800EB1B4() % n;
+        r = rand() % n;
     }
     return r;
 }

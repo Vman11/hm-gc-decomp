@@ -61,11 +61,11 @@ struct FSTEntry {
 
 void fn_800B5520(char *file, int line, char *msg, ...); /* OSPanic */
 void OSReport(const char *msg, ...);
-int fn_800E8014(int c);                                  /* tolower */
+int tolower(int c);                                  /* tolower */
 s32 fn_800BFE7C(DVDCommandBlock *block);                 /* DVDCancel */
 BOOL fn_800BF658(DVDCommandBlock *block, void *addr, s32 length, s32 offset, DVDCBCallback callback, s32 prio);
 #define OSPanic fn_800B5520
-#define tolower fn_800E8014
+#define tolower tolower
 #define DVDCancel fn_800BFE7C
 #define DVDReadAbsAsyncPrio fn_800BF658
 

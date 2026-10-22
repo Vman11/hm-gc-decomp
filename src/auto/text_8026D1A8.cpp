@@ -2,13 +2,13 @@
 
 extern "C" {
 
-u32 fn_800EB1B4(void);
+u32 rand(void);
 u8 *fn_800F8274(u8 *);
 
 static inline u32 RandMod8026D1A8(u32 n) {
     u32 r = 0;
     if (n != 0) {
-        r = fn_800EB1B4() % n;
+        r = rand() % n;
     }
     return r;
 }

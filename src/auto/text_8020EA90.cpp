@@ -10,7 +10,7 @@ extern u32 lbl_8035A9F4;
 void __dla__FPv(int);
 void fn_800604C4(int, int, int, int);
 void fn_80060568(int, int, int, int);
-void fn_800EB764(int, int);
+void strcpy(int, int);
 void fn_800F7E98(void);
 void fn_800F7EC0(int);
 u32 __nwa__FUl(int);
@@ -38,7 +38,7 @@ void fn_8020EA90(u32 param_1, u32 param_2, s8 *param_3) {
     if (*(u32 *)(*(u32 *)(param_1 + 4) + param_2 * 0x1c) == 0) {
         fn_800604C4(0xfffffffc, 0, 0, 0);
     }
-    fn_800EB764((int)(*(u32 *)(*(u32 *)(param_1 + 4) + param_2 * 0x1c)), (int)(param_3));
+    strcpy((int)(*(u32 *)(*(u32 *)(param_1 + 4) + param_2 * 0x1c)), (int)(param_3));
 }
 
 } /* extern "C" */

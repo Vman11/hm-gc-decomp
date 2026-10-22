@@ -604,7 +604,7 @@ s32 fn_802767E0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
 
 
 void fn_802769B8(s32 arg0) {
-    fn_800EB764(lbl_80357FC0, arg0);
+    strcpy(lbl_80357FC0, arg0);
 }
 
 u8 *fn_802769E4(void) {
@@ -3620,7 +3620,7 @@ s32 fn_80283C94(void *q) {
     return r;
 }
 
-f32 fn_800F051C(f32, f32);
+f32 powf(f32, f32);
 
 void fn_80276554(u8 *p, s32 v) {
     if (v < 0) {
@@ -3629,7 +3629,7 @@ void fn_80276554(u8 *p, s32 v) {
     if (v > 32767) {
         v = 32767;
     }
-    *(s32 *)(p + 120) = fn_800F051C((f32)v, 1.6666666f) * 0.000976582368720213;
+    *(s32 *)(p + 120) = powf((f32)v, 1.6666666f) * 0.000976582368720213;
     fn_80275844(p);
 }
 
@@ -3937,8 +3937,8 @@ void fn_802765E8(u8 *p, s32 pan) {
         pan = 0x10000;
     }
     r = (f32)pan * 1.52587890625e-05f;
-    *(s32 *)(p + 124) = fn_800F051C(1.0f - r, 0.3f) * 32768.0f;
-    *(s32 *)(p + 128) = fn_800F051C(r, 0.3f) * 32768.0f;
+    *(s32 *)(p + 124) = powf(1.0f - r, 0.3f) * 32768.0f;
+    *(s32 *)(p + 128) = powf(r, 0.3f) * 32768.0f;
     fn_80275844(p);
 }
 
@@ -4760,9 +4760,9 @@ void fn_8028B6F4(s32 n, s32 isgn, f32 *a, s32 *ip, f32 *w) {
     }
 }
 
-f32 wC_atanf_BA78(f32) asm("fn_800F05AC");
-f32 wC_cosf_BA78(f32) asm("fn_800F0588");
-f32 wC_sinf_BA78(f32) asm("fn_800F0564");
+f32 wC_atanf_BA78(f32) asm("atanf");
+f32 wC_cosf_BA78(f32) asm("cosf");
+f32 wC_sinf_BA78(f32) asm("sinf");
 
 void fn_8028BA78(s32 nw, s32 *ip, f32 *w) {
     s32 j, nwh, nw0, nw1;
@@ -4813,9 +4813,9 @@ void fn_8028BA78(s32 nw, s32 *ip, f32 *w) {
     }
 }
 
-f32 wC_atanf_BCC0(f32) asm("fn_800F05AC");
-f32 wC_cosf_BCC0(f32) asm("fn_800F0588");
-f32 wC_sinf_BCC0(f32) asm("fn_800F0564");
+f32 wC_atanf_BCC0(f32) asm("atanf");
+f32 wC_cosf_BCC0(f32) asm("cosf");
+f32 wC_sinf_BCC0(f32) asm("sinf");
 
 void fn_8028BCC0(s32 nc, void *ip_, f32 *c) {
     s32 *ip = ip_;

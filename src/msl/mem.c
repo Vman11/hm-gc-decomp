@@ -5,14 +5,14 @@ void __copy_longs_unaligned(void *dst, const void *src, unsigned long n);
 void __copy_longs_rev_aligned(void *d, const void *s, unsigned long n);
 void __copy_longs_aligned(void *d, const void *s, unsigned long n);
 extern void *memmove(void *, const void *, unsigned long);
-int fn_800E8B1C(const void* src1, const void* src2, unsigned long n);
+int memcmp(const void* src1, const void* src2, unsigned long n);
 void* __memrchr(const void* src, int val, unsigned long n);
 void* memchr(const void* src, int val, unsigned long n);
 
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-int fn_800E8B1C(const void* src1, const void* src2, unsigned long n) {
+int memcmp(const void* src1, const void* src2, unsigned long n) {
     const unsigned char* p1;
     const unsigned char* p2;
 

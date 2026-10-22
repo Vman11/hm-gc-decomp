@@ -2,7 +2,7 @@
 #include "common.h"
 extern unsigned char lbl_802E06C8[];
 
-int fn_800F05D0(const char* s1, const char* s2) {
+int stricmp(const char* s1, const char* s2) {
     char c1, c2;
     int c;
     while (1) {

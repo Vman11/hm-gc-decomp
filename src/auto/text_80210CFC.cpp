@@ -4,11 +4,11 @@
 
 extern "C" {
 
-void fn_800EB764(char *);
+void strcpy(char *);
 
 void fn_80210CFC(char *s) {
     char *c;
-    fn_800EB764(s);
+    strcpy(s);
     for (c = s; *c != 0; c++) {
         if (*c == 92) {
             *c = 47;

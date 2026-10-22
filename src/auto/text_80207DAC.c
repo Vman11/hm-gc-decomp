@@ -4,8 +4,8 @@
 
 extern "C" {
 
-void fn_800EB6F4(int, int);
-void fn_800EB764(int, int);
+void strcat(int, int);
+void strcpy(int, int);
 s32 strlen(int);
 
 
@@ -21,9 +21,9 @@ BOOL fn_80207DAC(T_80207DAC *p, char *d, u32 max) {
     if (n >= max) {
         return FALSE;
     }
-    fn_800EB764(d, p);
+    strcpy(d, p);
     if (p->n != -1) {
-        fn_800EB6F4(d, p->names[p->n]);
+        strcat(d, p->names[p->n]);
     }
     return TRUE;
 }

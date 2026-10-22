@@ -8,9 +8,9 @@ extern char lbl_80366100[0x3];
 extern char lbl_80366104[0x3];
 extern char lbl_80366108[0x3];
 extern char lbl_8036610C[0x3];
-u32 fn_800EB324(void *, void *);
-u32 fn_800EB4C8(void *, int);
-void fn_800EB764(void *, int);
+u32 strstr(void *, void *);
+u32 strrchr(void *, int);
+void strcpy(void *, int);
 void fn_800F6FBC(int, int);
 
 void fn_8023E6BC(u32 param_1, u32 param_2, u32 param_3) {
@@ -18,16 +18,16 @@ void fn_8023E6BC(u32 param_1, u32 param_2, u32 param_3) {
     u32 iVar2;
     u8 auStack_108 [244];
 
-    fn_800EB764(auStack_108, (int)(*(u32 *)(param_3 + 0x1e4)));
-    puVar1 = (u8 *)fn_800EB324(auStack_108, lbl_80366100);
+    strcpy(auStack_108, (int)(*(u32 *)(param_3 + 0x1e4)));
+    puVar1 = (u8 *)strstr(auStack_108, lbl_80366100);
     if ((((puVar1 != (u8 *)0x0) ||
-              (puVar1 = (u8 *)fn_800EB324(auStack_108, lbl_80366104), puVar1 != (u8 *)0x0))
-            || (puVar1 = (u8 *)fn_800EB324(auStack_108, lbl_80366108), puVar1 != (u8 *)0x0
-                  )) || (puVar1 = (u8 *)fn_800EB324(auStack_108, lbl_8036610C),
+              (puVar1 = (u8 *)strstr(auStack_108, lbl_80366104), puVar1 != (u8 *)0x0))
+            || (puVar1 = (u8 *)strstr(auStack_108, lbl_80366108), puVar1 != (u8 *)0x0
+                  )) || (puVar1 = (u8 *)strstr(auStack_108, lbl_8036610C),
                               puVar1 != (u8 *)0x0)) {
         *puVar1 = 0;
     }
-    iVar2 = fn_800EB4C8(auStack_108, (int)(0x5c));
+    iVar2 = strrchr(auStack_108, (int)(0x5c));
     if (iVar2 != 0) {
         fn_800F6FBC((int)(iVar2 + 1), (int)(param_2));
     }

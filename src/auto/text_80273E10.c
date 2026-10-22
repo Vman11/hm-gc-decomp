@@ -804,7 +804,7 @@ void fn_80275F08(void *);
 #pragma pop
 s32 fn_80287804();
 void fn_80287810(s32);
-f32 fn_800F051C(f32, f32);
+f32 powf(f32, f32);
 void fn_80275844(void *);
 void *memcpy();
 void fn_80275FC0(void *);
@@ -847,7 +847,7 @@ extern s32 fn_802758B4(void *, s32, s32, s32);
 #pragma pop
 
 extern u8 lbl_80357FC0[];
-void fn_800EB764(void *, s32);
+void strcpy(void *, s32);
 
 #pragma push
 #pragma opt_unroll_loops off
@@ -1065,9 +1065,9 @@ void fn_8028F7D8(s32 n, f32 *a, s32 nc, f32 *c);
 void fn_8028F890(s32 n, f32 *a, s32 nc, f32 *c);
 extern f32 lbl_802AB240;
 
-extern float fn_800F05AC(float);
-extern float fn_800F0588(float);
-extern float fn_800F0564(float);
+extern float atanf(float);
+extern float cosf(float);
+extern float sinf(float);
 extern float lbl_802AB264;
 extern float lbl_802AB270;
 extern double lbl_802AB278;

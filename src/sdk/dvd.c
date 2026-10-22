@@ -99,7 +99,7 @@ void OSCreateAlarm(OSAlarm *alarm);
 void OSSetAlarm(OSAlarm *alarm, OSTime tick, OSAlarmHandler handler);
 void DCInvalidateRange(void *addr, u32 nBytes);
 void *memcpy(void *dst, const void *src, u32 n);
-int fn_800E8B1C(const void *a, const void *b, u32 n); /* memcmp */
+int memcmp(const void *a, const void *b, u32 n); /* memcmp */
 
 /* dvdlow.c */
 void __DVDInitWA(void);
@@ -535,7 +535,7 @@ void stateCheckID() {
         }
         break;
     default:
-        if (fn_800E8B1C(&CurrDiskID, IDShouldBe, sizeof(DVDDiskID))) {
+        if (memcmp(&CurrDiskID, IDShouldBe, sizeof(DVDDiskID))) {
             DVDLowStopMotor(cbForStateCheckID1);
         } else {
             LastState = (void (*)(DVDCommandBlock *))stateCheckID3;

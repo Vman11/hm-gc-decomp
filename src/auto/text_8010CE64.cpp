@@ -6,7 +6,7 @@ extern "C" {
 
 void *fn_80112B18(void *, u32);
 void fn_800F6E88(void *, void *);
-s32 fn_800EB540(void *, void *, s32);
+s32 strncmp(void *, void *, s32);
 void fn_8010D0BC(void *, u32);
 
 void fn_8010CE64(u8 *p, void *a) {
@@ -17,7 +17,7 @@ void fn_8010CE64(u8 *p, void *a) {
     n = *(u32 *)(*(u8 **)(p + 4) + 32);
     for (; i < n; i++) {
         fn_800F6E88(buf, fn_80112B18(*(void **)(p + 4), i));
-        if (fn_800EB540(buf, a, 8) == 0) {
+        if (strncmp(buf, a, 8) == 0) {
             break;
         }
     }

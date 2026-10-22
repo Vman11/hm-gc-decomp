@@ -6,7 +6,7 @@ extern "C" {
 
 struct R { u8 pad[0x124]; virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void err(s32); virtual s32 next(); };
 struct P { u8 pad0[2]; u8 flag; u8 pad3[5]; char *name; virtual void p0(); virtual void p1(); virtual void p2(); virtual void clr(); };
-extern "C" { void fn_800FAEF8(R *); char *fn_800FB284(R *); u32 strlen(const char *); void fn_800604C4(s32, s32, s32, s32); void fn_800F7EC0(void *); void fn_800F7E98(void); void fn_800EB764(char *, char *); void fn_8013410C(P *, R *); extern void *lbl_8035AC20; }
+extern "C" { void fn_800FAEF8(R *); char *fn_800FB284(R *); u32 strlen(const char *); void fn_800604C4(s32, s32, s32, s32); void fn_800F7EC0(void *); void fn_800F7E98(void); void strcpy(char *, char *); void fn_8013410C(P *, R *); extern void *lbl_8035AC20; }
 void *__nwa__FUl(u32);
 
 extern "C" void fn_80134324(P *p, u32 unused, R *r) {
@@ -31,7 +31,7 @@ extern "C" void fn_80134324(P *p, u32 unused, R *r) {
             p->name = (char *)__nwa__FUl(len + 1);
             fn_800F7E98();
             if (!p->name) fn_800604C4(-4, 0, 0, 0);
-            fn_800EB764(p->name, s);
+            strcpy(p->name, s);
             fn_800FAEF8(r);
             while ((u32)(k = r->next()) != 6) {
                 switch (k) {

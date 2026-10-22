@@ -171,7 +171,7 @@
 #define GXTexMode0Ids lbl_80359630
 #define GXTexMode1Ids lbl_80359638
 #define GXTexTlutIds lbl_80359660
-#define cosf fn_800F0588
+#define cosf cosf
 #define GXEurgb60Hz480IntDf lbl_802DFDC4
 #define GXMpal480IntDf lbl_802DFB6C
 #define GXNtsc480IntDf lbl_802DF950

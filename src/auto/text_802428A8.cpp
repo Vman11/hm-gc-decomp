@@ -4,7 +4,7 @@
 
 extern "C" {
 
-s32 fn_800EB1B4(void);
+s32 rand(void);
 void fn_80116B10(int, int, int);
 
 u32 fn_802428A8(u32 param_1, u32 param_2, s32 param_3) {
@@ -16,7 +16,7 @@ u32 fn_802428A8(u32 param_1, u32 param_2, s32 param_3) {
     uVar2 = *(u32 *)(param_3 + 4);
     uVar1 = 0;
     if (uVar2 != 0) {
-        uVar1 = fn_800EB1B4();
+        uVar1 = rand();
         uVar1 = uVar1 % uVar2;
     }
     return uVar1 & 0xffff;

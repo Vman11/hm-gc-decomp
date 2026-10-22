@@ -655,7 +655,7 @@ extern u32 lbl_802DA128[18];
 extern u32 lbl_802DA128[];
 
 
-s32 fn_800EB540(const char *, const char *, u32);
+s32 strncmp(const char *, const char *, u32);
 
 
 
@@ -1024,7 +1024,7 @@ extern u16 *__peReg;
 
 
 
-f32 fn_800F0588(f32 x);
+f32 cosf(f32 x);
 
 
 
@@ -5704,13 +5704,13 @@ typedef struct WBCard {
 
 #pragma auto_inline off
 inline s32 wbAccess(WBCard *card, WBCardDir *ent) {
-    s32 fn_800E8B1C(const void *, const void *, u32);
+    s32 memcmp(const void *, const void *, u32);
     extern u8 lbl_80323780[];
     const u8 *diskID = (const u8 *)card->diskID;
     if (ent->gameName[0] == 0xFF) {
         return -4;
     }
-    if (diskID == lbl_80323780 || (fn_800E8B1C(ent->gameName, diskID, 4) == 0 && fn_800E8B1C(ent->company, diskID + 4, 2) == 0)) {
+    if (diskID == lbl_80323780 || (memcmp(ent->gameName, diskID, 4) == 0 && memcmp(ent->company, diskID + 4, 2) == 0)) {
         return 0;
     }
     return -10;
@@ -5803,7 +5803,7 @@ typedef struct WBCard {
 
 #pragma auto_inline off
 inline s32 wbIsWritable(WBCard *card, WBCardDir *ent) {
-    s32 fn_800E8B1C(const void *, const void *, u32);
+    s32 memcmp(const void *, const void *, u32);
     s32 fn_800D1DE0(WBCard *card, WBCardDir *ent);
     extern u8 lbl_80323780[];
     extern u8 lbl_80359612;
@@ -5815,12 +5815,12 @@ inline s32 wbIsWritable(WBCard *card, WBCardDir *ent) {
     if (result == -10) {
         perm = ent->permission & lbl_80359612;
         if (perm & 0x20) {
-            if (fn_800E8B1C(ent->gameName, lbl_80323780, 4) == 0 && fn_800E8B1C(ent->company, lbl_80323780 + 4, 2) == 0) {
+            if (memcmp(ent->gameName, lbl_80323780, 4) == 0 && memcmp(ent->company, lbl_80323780 + 4, 2) == 0) {
                 return 0;
             }
         }
         if (perm & 0x40) {
-            if (fn_800E8B1C(ent->gameName, lbl_80323780, 4) == 0 && fn_800E8B1C(ent->company, diskID + 4, 2) == 0) {
+            if (memcmp(ent->gameName, lbl_80323780, 4) == 0 && memcmp(ent->company, diskID + 4, 2) == 0) {
                 return 0;
             }
         }

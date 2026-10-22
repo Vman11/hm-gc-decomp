@@ -13,7 +13,7 @@ void __begin_critical_region(int region);
 void __end_critical_region(int region);
 void __kill_critical_regions(void);
 void exit(int status);
-void fn_800E42BC(void);
+void abort(void);
 
 void exit(int status) {
     void (**dtor)(void);
@@ -45,7 +45,7 @@ void exit(int status) {
     _ExitProcess();
 }
 
-void fn_800E42BC(void) {
+void abort(void) {
     raise(1);
     __aborting = 1;
     __begin_critical_region(0);

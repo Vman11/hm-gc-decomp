@@ -5,7 +5,7 @@
 extern "C" {
 
 struct V_8024B898 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(void *, void *); };
-extern "C" { extern u8 *lbl_8035B594; extern char lbl_80366398[8]; u32 fn_800EB1B4(void); void *fn_8024E69C(void *, void *); void fn_802502BC(void *); void *fn_8024E57C(void *, void *); void fn_80250EBC(void *); void *fn_8024E3DC(void *, void *, void *); }
+extern "C" { extern u8 *lbl_8035B594; extern char lbl_80366398[8]; u32 rand(void); void *fn_8024E69C(void *, void *); void fn_802502BC(void *); void *fn_8024E57C(void *, void *); void fn_80250EBC(void *); void *fn_8024E3DC(void *, void *, void *); }
 
 void fn_8024B898(u8 *p) {
     *(s32 *)(p + 28) = 2;
@@ -16,7 +16,7 @@ void fn_8024B898(u8 *p) {
         u32 k = 0;
         u32 i;
         if (n != 0) {
-            k = fn_800EB1B4() % n;
+            k = rand() % n;
         }
         *(u32 *)(p + 44) = k;
         i = *(u32 *)(p + 44);

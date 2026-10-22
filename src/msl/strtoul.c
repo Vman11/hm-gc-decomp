@@ -13,14 +13,14 @@ extern unsigned char lbl_802E07C8[];
 #define fetch() (count++, (*ReadProc)(ReadProcArg, 0, 0))
 #define unfetch(c) (*ReadProc)(ReadProcArg, c, 1)
 int __StringRead(void *arg0, int arg1, int arg2);
-int fn_800EC8D0(char *str);
+int atoi(char *str);
 u32 __strtoul(int base, int max_width, int (*ReadProc)(void *, int, int), void *ReadProcArg, int *chars_scanned, int *negative, int *overflow);
 
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
 #pragma scheduling reset
-int fn_800EC8D0(char *str) {
+int atoi(char *str) {
     u32 __strtoul(int, int, int (*)(void *, int, int), void *, int *, int *, int *);
     unsigned long value;
     int overflow, negative, count;

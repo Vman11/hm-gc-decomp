@@ -1,24 +1,24 @@
 /* MSL_C string.c */
 #include "common.h"
-char *fn_800EB764(char *, const char *);
-char *fn_800EB720(char *dst, const char *src, u32 n);
+char *strcpy(char *, const char *);
+char *strncpy(char *dst, const char *src, u32 n);
 unsigned int strlen(const char *s);
 char *strchr(const char *str, int chr);
 extern unsigned char* lbl_803596A8;
 extern unsigned char* lbl_803596AC;
 typedef unsigned int size_t;
-char* fn_800EB324(const char* str, const char* pat);
+char* strstr(const char* str, const char* pat);
 char* strtok(char* str, const char* set);
-char* fn_800EB4C8(const char* str, int chr);
-int fn_800EB540(const char* str1, const char* str2, unsigned long n);
-int fn_800EB580(const char *str1, const char *str2);
-char* fn_800EB6A8(char* dst, const char* src, u32 n);
-char* fn_800EB6F4(char* dst, const char* src);
+char* strrchr(const char* str, int chr);
+int strncmp(const char* str1, const char* str2, unsigned long n);
+int strcmp(const char *str1, const char *str2);
+char* strncat(char* dst, const char* src, u32 n);
+char* strcat(char* dst, const char* src);
 
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-char* fn_800EB324(const char* str, const char* pat) {
+char* strstr(const char* str, const char* pat) {
     unsigned char* s1 = (unsigned char*)str - 1;
     unsigned char* p1 = (unsigned char*)pat - 1;
     unsigned long firstc, c1, c2;
@@ -92,7 +92,7 @@ char* strtok(char* str, const char* set) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-char* fn_800EB4C8(const char* str, int chr) {
+char* strrchr(const char* str, int chr) {
     const unsigned char* p = (unsigned char*)str - 1;
     const unsigned char* q = 0;
     unsigned long c = (chr & 0xff);
@@ -130,7 +130,7 @@ char* strchr(const char* str, int chr) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-int fn_800EB540(const char* str1, const char* str2, unsigned long n) {
+int strncmp(const char* str1, const char* str2, unsigned long n) {
     const unsigned char* p1 = (unsigned char*)str1 - 1;
     const unsigned char* p2 = (unsigned char*)str2 - 1;
     unsigned long c1, c2;
@@ -150,7 +150,7 @@ int fn_800EB540(const char* str1, const char* str2, unsigned long n) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-int fn_800EB580(const char *str1, const char *str2) {
+int strcmp(const char *str1, const char *str2) {
     register unsigned char *left = (unsigned char *)str1;
     register unsigned char *right = (unsigned char *)str2;
     unsigned long align, l1, r1, x;
@@ -227,7 +227,7 @@ bytecopy:
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-char* fn_800EB6A8(char* dst, const char* src, u32 n) {
+char* strncat(char* dst, const char* src, u32 n) {
     const unsigned char* p = (const unsigned char*)src - 1;
     unsigned char* q = (unsigned char*)dst - 1;
     while (*++q);
@@ -247,7 +247,7 @@ char* fn_800EB6A8(char* dst, const char* src, u32 n) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-char* fn_800EB6F4(char* dst, const char* src) {
+char* strcat(char* dst, const char* src) {
     const unsigned char* p = (const unsigned char*)src - 1;
     unsigned char* q = (unsigned char*)dst - 1;
     while (*++q);
@@ -260,7 +260,7 @@ char* fn_800EB6F4(char* dst, const char* src) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-char* fn_800EB720(char* dst, const char* src, u32 n) {
+char* strncpy(char* dst, const char* src, u32 n) {
     const unsigned char* p = (const unsigned char*)src - 1;
     unsigned char* q = (unsigned char*)dst - 1;
     n++;
@@ -277,7 +277,7 @@ char* fn_800EB720(char* dst, const char* src, u32 n) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-char* fn_800EB764(char* dst, const char* src) {
+char* strcpy(char* dst, const char* src) {
     char* ret = dst;
     u8* d = (u8*)dst;
     const u8* s = (const u8*)src;

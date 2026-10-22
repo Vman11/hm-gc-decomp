@@ -4,8 +4,8 @@
 
 extern "C" {
 
-void fn_800EB6F4(int, int);
-void fn_800EB764(int, int);
+void strcat(int, int);
+void strcpy(int, int);
 s32 strlen(int);
 
 u32 fn_80207DAC(s8 *param_1, u32 param_2, u32 param_3) {
@@ -22,9 +22,9 @@ u32 fn_80207DAC(s8 *param_1, u32 param_2, u32 param_3) {
         uVar3 = 0;
     }
     else {
-        fn_800EB764((int)(param_2), (int)(param_1));
+        strcpy((int)(param_2), (int)(param_1));
         if (*(s32 *)(param_1 + 0x698) != -1) {
-            fn_800EB6F4((int)(param_2), (int)(param_1 + *(s32 *)(param_1 + 0x698) * 0x80 + 0x298));
+            strcat((int)(param_2), (int)(param_1 + *(s32 *)(param_1 + 0x698) * 0x80 + 0x298));
         }
         uVar3 = 1;
     }

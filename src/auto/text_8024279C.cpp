@@ -14,7 +14,7 @@ extern C80116200 *lbl_8035AB04;
 extern char lbl_803661C0[0x7];
 extern char lbl_803661C8[0x7];
 void fn_800604C4(s32, s32, s32, s32);
-u32 fn_800EB1B4(void);
+u32 rand(void);
 void fn_800F6FBC(char *, void *);
 void fn_800F7E98(void);
 void fn_800F7EC0(void *);
@@ -49,7 +49,7 @@ u32 fn_8024279C(u32 param_1, u32 param_2, u32 param_3) {
     uVar4 = *(u32 *)(param_3 + 4);
     uVar1 = 0;
     if (uVar4 != 0) {
-        uVar1 = fn_800EB1B4();
+        uVar1 = rand();
         uVar1 = uVar1 % uVar4;
     }
     return uVar1 & 0xffff;

@@ -4187,7 +4187,7 @@ void fn_800D2468(s32 chan, s32 result) {
     WBCardDir *fn_800CF8C4(WBCard *card);
     u16 *fn_800CF4C0(WBCard *card);
     void *memcpy(void *, const void *, unsigned long);
-    s32 fn_800E8B1C(const void *, const void *, u32);
+    s32 memcmp(const void *, const void *, u32);
     s64 OSGetTime(void);
     s32 fn_800CFA64(s32 chan, WBCardCB callback);
     extern u8 lbl_80323560[];
@@ -4235,9 +4235,9 @@ s32 fn_800D2598(s32 chan, const char *fileName, u32 size, WBCardFileInfo *fileIn
     WBCardDir *fn_800CF8C4(WBCard *card);
     u16 *fn_800CF4C0(WBCard *card);
     void *memcpy(void *, const void *, unsigned long);
-    s32 fn_800E8B1C(const void *, const void *, u32);
+    s32 memcmp(const void *, const void *, u32);
     u32 strlen(const char *);
-    char *fn_800EB720(char *, const char *, u32);
+    char *strncpy(char *, const char *, u32);
     s32 fn_800D1D78(WBCardDir *ent, const char *fileName);
     void fn_800CCC78(s32 chan, s32 result);
     s32 fn_800CF664(s32 chan, u32 cBlock, WBCardCB callback);
@@ -4267,8 +4267,8 @@ s32 fn_800D2598(s32 chan, const char *fileName, u32 size, WBCardFileInfo *fileIn
             if (freeNo == (u16)-1) {
                 freeNo = fileNo;
             }
-        } else if (fn_800E8B1C(ent->gameName, card->diskID, 4) == 0 &&
-                   fn_800E8B1C(ent->company, (u8 *)card->diskID + 4, 2) == 0 &&
+        } else if (memcmp(ent->gameName, card->diskID, 4) == 0 &&
+                   memcmp(ent->company, (u8 *)card->diskID + 4, 2) == 0 &&
                    fn_800D1D78(ent, fileName)) {
             return fn_800CDC90(card, -7);
         }
@@ -4284,7 +4284,7 @@ s32 fn_800D2598(s32 chan, const char *fileName, u32 size, WBCardFileInfo *fileIn
     card->freeNo = freeNo;
     ent = &dir[freeNo];
     ent->length = (u16)(size / card->sectorSize);
-    fn_800EB720((char *)ent->fileName, fileName, 32);
+    strncpy((char *)ent->fileName, fileName, 32);
     card->fileInfo = fileInfo;
     fileInfo->chan = chan;
     fileInfo->fileNo = freeNo;

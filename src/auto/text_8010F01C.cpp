@@ -11,7 +11,7 @@ void fn_800604C4(s32, s32, s32, s32);
 void fn_800F7EC0(void *);
 void fn_800F7E98(void);
 char *__nwa__FUl(u32);
-void fn_800EB764(char *, const char *);
+void strcpy(char *, const char *);
 
 void fn_8010F01C(u8 *p, const char *s) {
     if (*(char **)(p + 0x1E4) != NULL) {
@@ -35,7 +35,7 @@ void fn_8010F01C(u8 *p, const char *s) {
         }
     }
 copy:
-    fn_800EB764(*(char **)(p + 0x1E4), s);
+    strcpy(*(char **)(p + 0x1E4), s);
 }
 
 } /* extern "C" */

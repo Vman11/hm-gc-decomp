@@ -9,8 +9,8 @@ extern char lbl_803643B4[0x3];
 void __dla__FPv(int);
 void fn_800604C4(int, int, int, int);
 void fn_80060568(int, int, int, int);
-void fn_800EB6F4(int, void *);
-void fn_800EB764(int, int);
+void strcat(int, void *);
+void strcpy(int, int);
 void fn_800F7E98(void);
 void fn_800F7EC0(int);
 u32 __nwa__FUl(int);
@@ -34,9 +34,9 @@ void fn_801486B4(u32 param_1, s8 *param_2) {
         fn_80060568((int)(param_2), (int)(0), (int)(0), (int)(0));
     }
     else {
-        fn_800EB764((int)(iVar2), (int)(param_1));
-        fn_800EB6F4((int)(iVar2), lbl_803643B4);
-        fn_800EB6F4((int)(iVar2), param_2);
+        strcpy((int)(iVar2), (int)(param_1));
+        strcat((int)(iVar2), lbl_803643B4);
+        strcat((int)(iVar2), param_2);
         fn_80060568((int)(iVar2), (int)(0), (int)(0), (int)(0));
         __dla__FPv((int)(iVar2));
     }

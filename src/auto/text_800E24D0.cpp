@@ -4,10 +4,10 @@
 
 extern "C" {
 
-void fn_800E42BC(void);
+void abort(void);
 
 void fn_800E24D0(void) {
-    fn_800E42BC();
+    abort();
 }
 
 } /* extern "C" */

@@ -10,7 +10,7 @@ extern char lbl_80365860[0x5];
 extern char lbl_80365868[0x5];
 extern char lbl_80365870[0x5];
 void fn_80060568(void *, s32, s32, s32);
-s32 fn_800EB540(u8 *, void *, s32);
+s32 strncmp(u8 *, void *, s32);
 void *memcpy(void *, const void *, unsigned long);
 void *memset(void *, int, unsigned long);
 
@@ -21,13 +21,13 @@ void fn_80212304(u32 *param_1, u8 *param_2) {
         param_1[2] = 0;
         memset(param_1 + 5, 0, 0x10);
     }
-    if (fn_800EB540(param_2, lbl_80365858, 4) == 0) {
+    if (strncmp(param_2, lbl_80365858, 4) == 0) {
         *param_1 = 1;
-    } else if (fn_800EB540(param_2, lbl_80365860, 4) == 0) {
+    } else if (strncmp(param_2, lbl_80365860, 4) == 0) {
         *param_1 = 2;
-    } else if (fn_800EB540(param_2, lbl_80365868, 4) == 0) {
+    } else if (strncmp(param_2, lbl_80365868, 4) == 0) {
         *param_1 = 3;
-    } else if (fn_800EB540(param_2, lbl_80365870, 4) == 0) {
+    } else if (strncmp(param_2, lbl_80365870, 4) == 0) {
         *param_1 = 4;
     } else {
         fn_80060568(lbl_802A72C0, 0, 0, 0);

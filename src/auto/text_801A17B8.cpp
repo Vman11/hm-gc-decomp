@@ -17,7 +17,7 @@ struct Mk { u8 pad[0x30]; virtual void p0(); virtual void p1(); virtual void p2(
 struct Own { u32 pad0; Mk *mk; };
 struct F { u8 pad[0x84]; void **pp; };
 struct P { u32 flags; u8 pad4[0x28]; Own *own; u8 pad30[0x3C]; void *res1; u32 n; C8018D1A4 *arr; void *obj; void *res2; u32 pad80; C8017AB98 *m; u32 pad88; void *res3; };
-extern "C" { u32 fn_800FADA8(R *); void fn_800FB064(R *, void *); void fn_800FAEA0(R *); char *fn_800FB284(R *); void fn_800604C4(s32, s32, s32, s32); void fn_800F7EC0(void *); void fn_800F7E98(void); void *fn_800F9398(void *, void *); void *fn_800F9788(void *, char *, void *); void fn_80101124(V3 *, R *); void fn_80107F3C(void *, V3 *); void fn_8018CFA0(C8018D1A4 *, Sub *, R *); void fn_8017A8DC(C8017AB98 *, X *, R *); void fn_8017A8D4(C8017AB98 *, void *); void fn_8017A780(C8017AB98 *, X *, R *, s32); void fn_80105350(C80105EE8 *, void *, void *); F *fn_8019565C(void *); void fn_800EB720(char *, char *, s32); void *fn_80207144(void *, char *, char *); void fn_80191484(P *, X *, R *); extern void *lbl_8035AEA8; extern u32 lbl_80364D88, lbl_80364D8C, lbl_80364D90, lbl_80364D94; }
+extern "C" { u32 fn_800FADA8(R *); void fn_800FB064(R *, void *); void fn_800FAEA0(R *); char *fn_800FB284(R *); void fn_800604C4(s32, s32, s32, s32); void fn_800F7EC0(void *); void fn_800F7E98(void); void *fn_800F9398(void *, void *); void *fn_800F9788(void *, char *, void *); void fn_80101124(V3 *, R *); void fn_80107F3C(void *, V3 *); void fn_8018CFA0(C8018D1A4 *, Sub *, R *); void fn_8017A8DC(C8017AB98 *, X *, R *); void fn_8017A8D4(C8017AB98 *, void *); void fn_8017A780(C8017AB98 *, X *, R *, s32); void fn_80105350(C80105EE8 *, void *, void *); F *fn_8019565C(void *); void strncpy(char *, char *, s32); void *fn_80207144(void *, char *, char *); void fn_80191484(P *, X *, R *); extern void *lbl_8035AEA8; extern u32 lbl_80364D88, lbl_80364D8C, lbl_80364D90, lbl_80364D94; }
 
 static inline void *findA(Sub *sb, char *grp, Key *key) {
     if (grp == 0 || grp[0] == 0) {
@@ -159,7 +159,7 @@ extern "C" void fn_801A17B8(P *p, X *x, R *r, u32 k) {
         fn_8017A780(p->m, x, r, 136);
         break;
     case 115:
-        fn_800EB720(buf, fn_800FB284(r), 256);
+        strncpy(buf, fn_800FB284(r), 256);
         fn_800FB064(r, grp);
         p->res3 = fn_80207144(x->db, buf, grp);
         break;

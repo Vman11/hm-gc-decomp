@@ -170,7 +170,7 @@
 #define GXTexMode0Ids lbl_80359630
 #define GXTexMode1Ids lbl_80359638
 #define GXTexTlutIds lbl_80359660
-#define cosf fn_800F0588
+#define cosf cosf
 #define GXEurgb60Hz480IntDf lbl_802DFDC4
 #define GXMpal480IntDf lbl_802DFB6C
 #define GXNtsc480IntDf lbl_802DF950
@@ -215,7 +215,7 @@
 #define VIConfigure fn_800C182C
 #define VIConfigurePan fn_800C2054
 #define __OSReadROM fn_800B9094
-#define tanf fn_800F0540
+#define tanf tanf
 #include <dolphin.h>
 #include <dolphin/mtx.h>
 

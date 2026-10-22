@@ -4,7 +4,7 @@
 
 extern "C" {
 
-void fn_800EB764(int);
+void strcpy(int);
 
 void fn_802079F0(u32 param_1, u32 param_2) {
     s32 iVar1;
@@ -15,7 +15,7 @@ void fn_802079F0(u32 param_1, u32 param_2) {
             *(u32 *)(param_1 + 0x698) = iVar1 + -1;
         }
         else {
-            fn_800EB764((int)(param_1 + iVar1 * 0x80 + 0x298));
+            strcpy((int)(param_1 + iVar1 * 0x80 + 0x298));
             *(u32 *)(param_1 + 0x698) = *(u32 *)(param_1 + 0x698) + -1;
         }
     }

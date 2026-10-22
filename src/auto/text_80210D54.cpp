@@ -6,8 +6,8 @@ extern "C" {
 
 u32 strlen(const char *);
 char *strchr(const char *, s32);
-void fn_800EB764(void *, void *);
-s32 fn_800EB580(void *, void *);
+void strcpy(void *, void *);
+s32 strcmp(void *, void *);
 
 BOOL fn_80210D54(char *a, char *b, char *c) {
     char buf[20];
@@ -15,7 +15,7 @@ BOOL fn_80210D54(char *a, char *b, char *c) {
     if (strlen(a) == 0 || strlen(b) == 0) {
         return FALSE;
     }
-    fn_800EB764(buf, a);
+    strcpy(buf, a);
     s = strchr(buf, 46);
     if (s != NULL) {
         *s = 0;
@@ -23,10 +23,10 @@ BOOL fn_80210D54(char *a, char *b, char *c) {
     } else {
         s = buf + strlen(buf);
     }
-    if (fn_800EB580(c, s) != 0 && *c != 42) {
+    if (strcmp(c, s) != 0 && *c != 42) {
         return FALSE;
     }
-    if (fn_800EB580(b, buf) != 0 && *b != 42) {
+    if (strcmp(b, buf) != 0 && *b != 42) {
         return FALSE;
     }
     return TRUE;

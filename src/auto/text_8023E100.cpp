@@ -4,10 +4,10 @@
 
 extern "C" {
 
-void fn_800EB324(void);
+void strstr(void);
 
 void fn_8023E100(void) {
-    fn_800EB324();
+    strstr();
 }
 
 } /* extern "C" */

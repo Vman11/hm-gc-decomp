@@ -11,8 +11,8 @@ typedef struct DVDDiskID {
     u8 padding[22];
 } DVDDiskID;
 
-int fn_800EB540(const char *s1, const char *s2, u32 n); /* strncmp */
-#define strncmp fn_800EB540
+int strncmp(const char *s1, const char *s2, u32 n); /* strncmp */
+#define strncmp strncmp
 #define DVDCompareDiskID fn_800C04F8
 
 BOOL DVDCompareDiskID(DVDDiskID *id1, DVDDiskID *id2) {

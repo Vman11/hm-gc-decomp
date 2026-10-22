@@ -35,7 +35,7 @@ static int unicode_to_UTF8(char *s, u16 wchar) {
 
     return number_of_bytes;
 }
-char *fn_800EB720(char *dst, const char *src, u32 n);
+char *strncpy(char *dst, const char *src, u32 n);
 u32 wcstombs(char *s, const u16 *pwcs, u32 n);
 
 #pragma push
@@ -59,7 +59,7 @@ u32 wcstombs(char *s, const u16 *pwcs, u32 n) {
         } else {
             result = unicode_to_UTF8(temp, *source++);
             if ((chars_written + result) <= n) {
-                fn_800EB720(s + chars_written, temp, result);
+                strncpy(s + chars_written, temp, result);
                 chars_written += result;
             } else {
                 break;
