@@ -163,4 +163,10 @@ The decoded extab in `build/GHYE6S/asm/<unit>.s` says which C++ construct the or
 
 ## Coordination
 
+**Claimed game functions (2026-10-22):** the library agent now also works on game code, but only on the functions in
+`tools/decomp_agent/claimed_by_library_agent.txt`: units whose only unmatched functions are 1,000 bytes or larger
+(352 functions). Your `dumpasm2.py` loop works up from the smallest, so add that file's names to your skip.txt
+(`awk '!/^#/{print $2}' tools/decomp_agent/claimed_by_library_agent.txt >> $DECOMP_SCRATCH/skip.txt`) and the two
+loops won't overlap. Pull often: both agents commit to `main`.
+
 The library-unit agent works in this repo too and commits its own batches. Commit only your own units: `git add` specific paths rather than `-A`. If a library unit shows up as modified in `git status`, leave it alone.
