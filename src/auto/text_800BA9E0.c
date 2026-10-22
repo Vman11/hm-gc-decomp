@@ -628,16 +628,6 @@ void *fn_800BAC18(u32 *arg0, u32 arg1) {
     return NULL;
 }
 
-void fn_800BB284(void) {
-    extern void *lbl_8035A600;
-    extern f32 lbl_80363048;
-    extern f32 lbl_8036304C;
-    void fn_800BBD48(f32);
-    void fn_800BBD40(f32);
-    lbl_8035A600 = 0;
-    fn_800BBD48(lbl_80363048);
-    fn_800BBD40(lbl_8036304C);
-}
 
 int fn_800B50D0();
 extern void *lbl_8035A600;
@@ -645,226 +635,34 @@ extern f32 lbl_80363048, lbl_8036304C;
 void fn_800BBD48(f32);
 void fn_800BBD40(f32);
 void fn_800BB7E0(void*);
-void fn_800BB2B8(void) {
-    void *p = lbl_8035A600;
-    while (p != NULL) {
-        fn_800BB7E0(p);
-        p = *(void**)p;
-    }
-}
 
-void fn_800BB2F8(void *arg0, s32 arg1, u32 arg2) {
-    f32 f;
-    *(s32 *)((u8 *)arg0 + 0x10) = 0;
-    *(s32 *)((u8 *)arg0 + 0x8) = arg1;
-    f = arg2;
-    *(f32 *)((u8 *)arg0 + 0xC) = f;
-}
 
-void fn_800BB678(void *arg0, s32 arg1, s32 arg2, f32 farg0) {
-    extern f32 lbl_80363068;
-    *(s32 *)((u8 *)arg0 + 0x0) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x4) = arg2;
-    *(f32 *)((u8 *)arg0 + 0x8) = farg0;
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(f32 *)((u8 *)arg0 + 0x10) = *(f32 *)((u8 *)arg0 + 0x14) = *(f32 *)((u8 *)arg0 + 0x18) = *(f32 *)((u8 *)arg0 + 0x1C) = lbl_80363068;
-}
 
-void fn_800BB6A4(void *arg0) {
-    extern f32 lbl_8036306C;
-    u32 zero = 0;
-    f32 temp_f0;
 
-    M2C_FIELD(arg0, s32 *, 4) = 1;
-    M2C_FIELD(arg0, s32 *, 0x18) = zero;
-    temp_f0 = (f32) zero;
-    M2C_FIELD(arg0, f32 *, 0x14) = temp_f0;
-    M2C_FIELD(arg0, f32 *, 0x10) = temp_f0;
-    M2C_FIELD(arg0, f32 *, 0xC) = temp_f0;
-    M2C_FIELD(arg0, f32 *, 8) = temp_f0;
-    M2C_FIELD(arg0, u8 *, 0x1C) = 0x40;
-    M2C_FIELD(arg0, u8 *, 0x1D) = 0x7F;
-    M2C_FIELD(arg0, u8 *, 0x1E) = 1;
-    M2C_FIELD(arg0, s16 *, 0x22) = zero;
-    M2C_FIELD(arg0, s16 *, 0x20) = zero;
-    M2C_FIELD(arg0, f32 *, 0x24) = lbl_8036306C;
-    M2C_FIELD(arg0, s32 *, 0x28) = 0xFC400000;
-}
 
-void fn_800BB714(void *arg0) {
-    u8 a = 0x40;
-    M2C_FIELD(arg0, s32 *, 4) = 2;
-    M2C_FIELD(arg0, u8 *, 8) = a;
-    M2C_FIELD(arg0, u8 *, 9) = 0x7F;
-}
 
-void fn_800BB730(s32 *p) {
-    p[1] = 5;
-    p[2] = 0;
-}
 
-void fn_800BB744(s32 *p) {
-    f32 f;
-    p[1] = 7;
-    p[10] = 0;
-    p[2] = (s32)lbl_802D8F60;
-    p[3] = 0x40;
-    f = lbl_80363068;
-    *(f32 *)&p[4] = f;
-    p[5] = 0;
-    *(f32 *)&p[9] = f;
-    *(f32 *)&p[8] = f;
-    *(f32 *)&p[7] = f;
-    *(f32 *)&p[6] = f;
-}
 
-void fn_800BB788(AnimInit *p) {
-    p->unk4 = 8;
-    p->unk8 = 0;
-}
 
-void fn_800BB79C(AnimInit *p) {
-    p->unk4 = 0xE;
-    p->unk28 = 0;
-    p->unk8 = lbl_802D8F60;
-    p->unkC = 0x40;
-    p->unk10 = lbl_80363068;
-    p->unk14 = 0;
-    p->unk24 = lbl_80363068;
-    p->unk20 = lbl_80363068;
-    p->unk1C = lbl_80363068;
-    p->unk18 = lbl_80363068;
-}
-
-void fn_800BBAC8(void **arg0, void **arg1) {
-    *arg1 = arg0[4];
-    arg0[4] = arg1;
-}
 
 extern f32 lbl_802D8B70[];
 extern f32 lbl_80363080;
-f32 fn_800BBAD8(s32 cents) {
-    f32 *table = lbl_802D8B70;
-    s32 fine;
-    s32 semi;
-
-    if (cents > 0) {
-        return table[cents % 100] * (table[100 + cents / 1200] * table[112 + (cents % 1200) / 100]);
-    } else if (cents < 0) {
-        fine = cents % 100;
-        semi = cents / 100;
-        if (fine != 0) {
-            fine += 100;
-            semi -= 1;
-        }
-        return table[124 + -semi] * table[fine];
-    } else {
-        return lbl_80363080;
-    }
-}
 
 #pragma dont_inline reset
 
-void fn_800BBBD4(UnkStep* arg0) {
-    if (arg0->unk10 != arg0->unkC) {
-        arg0->unk10 += arg0->unk8;
-        if (arg0->unk8 > 0) {
-            if (arg0->unk10 > arg0->unkC) {
-                arg0->unk10 = arg0->unkC;
-            }
-        } else if (arg0->unk8 < 0) {
-            if (arg0->unk10 < arg0->unkC) {
-                arg0->unk10 = arg0->unkC;
-            }
-        }
-    }
-}
 
-void fn_800BBC30(UnkStep* arg0) {
-    if (arg0->unk10 != arg0->unkC) {
-        arg0->unk10 += arg0->unk8;
-        if (arg0->unk8 > 0) {
-            if (arg0->unk10 > arg0->unkC) {
-                arg0->unk10 = arg0->unkC;
-            }
-        } else if (arg0->unk8 < 0) {
-            if (arg0->unk10 < arg0->unkC) {
-                arg0->unk10 = arg0->unkC;
-            }
-        }
-    }
-}
 
 extern s32 __cvt_fp2unsigned();
-void fn_800BBC8C(Anim *a) {
-    f32 d;
-    a->t = a->t + a->speed;
-    if (a->t >= lbl_80363088) {
-        a->t = a->t - a->t;
-        a->idx = a->idx + __cvt_fp2unsigned();
-        a->idx = a->idx % a->count;
-        a->prev = a->cur;
-        a->cur = a->data[a->idx];
-    }
-    d = a->t * (a->prev - a->cur);
-    a->out = a->prev - d;
-}
 
 extern f32 lbl_8035A608;
 extern f32 lbl_80363088;
 extern u16 lbl_802D9DD8[];
 s32 __cvt_fp2unsigned(void);
-void fn_800BBD40(f32 arg0) {
-    lbl_8035A608 = arg0;
-}
 
 extern f32 lbl_8035A60C;
-void fn_800BBD48(f32 arg0) {
-    lbl_8035A60C = arg0;
-}
 
-void fn_800BBED4(u32* arg0, u8* arg1) {
-    u32 idx;
-
-    if (arg0[4] != 0) {
-        if (arg0[2] != 0) {
-            arg0[2] = 0;
-            *(u16*)(arg1 + 0x1F2) = 1;
-            *(u16*)(arg1 + 0x1F4) = 0;
-            *(u32*)(arg1 + 0x1C) |= 0x200000;
-        } else {
-            *(u32*)(arg1 + 0x1C) |= 0x400000;
-        }
-        idx = arg0[3] * 2;
-        *(u16*)(arg1 + 0x1F6) = ((u16*)lbl_802D9DD8)[idx];
-        *(u16*)(arg1 + 0x1F8) = ((u16*)lbl_802D9DD8)[idx + 1];
-        arg0[4] = 0;
-    }
-}
 
 extern f32 lbl_803630A0, lbl_803630A4, lbl_803630A8, lbl_803630AC;
-void fn_800BC02C(f32 m[4][4], f32 t, f32 b, f32 l, f32 r, f32 n, f32 f) {
-    f32 tmp;
-    tmp = 1.0f / (r - l);
-    m[0][0] = 2.0f * tmp;
-    m[0][1] = 0.0f;
-    m[0][2] = 0.0f;
-    m[0][3] = tmp * -(r + l);
-    tmp = 1.0f / (t - b);
-    m[1][0] = 0.0f;
-    m[1][1] = 2.0f * tmp;
-    m[1][2] = 0.0f;
-    m[1][3] = tmp * -(t + b);
-    tmp = 1.0f / (f - n);
-    m[2][0] = 0.0f;
-    m[2][1] = 0.0f;
-    m[2][2] = -1.0f * tmp;
-    m[2][3] = -f * tmp;
-    m[3][0] = 0.0f;
-    m[3][1] = 0.0f;
-    m[3][2] = 0.0f;
-    m[3][3] = 1.0f;
-}
 
 
 
