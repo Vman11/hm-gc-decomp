@@ -4,6 +4,8 @@
 
 extern "C" {
 
+
+
 struct S_801FBCC4 { u8 pad[0x124]; virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void err(s32); };
 typedef struct {
     u32 flags;
@@ -19,6 +21,26 @@ void *fn_800F9398(void *, void *);
 void *fn_800F9788(void *, void *, void *);
 f32 fn_800FB2E0(S_801FBCC4 *);
 u32 fn_800FB33C(S_801FBCC4 *);
+
+void fn_801FB848(void);
+void fn_801FB840(void);
+void fn_801FC074(void);
+void fn_801FBFF8(void);
+void fn_801FBEE8(void);
+void fn_801FBE28(void);
+void fn_801FBCB4(void);
+void fn_801FBCA0(void);
+void fn_801FBC8C(void);
+void fn_801FBC7C(void);
+void fn_801FBC74(void);
+void fn_801FBA00(void);
+void fn_801FB990(void);
+void fn_801FB984(void);
+void fn_801FBB60(void);
+void fn_801FBA4C(void);
+void fn_801FBA24(void);
+void fn_801FBCC4(O_801FBCC4 *o, u8 *ctx, S_801FBCC4 *s, s32 tok);
+void *lbl_802EF1E0[27] = { 0, 0, (void *)fn_801FBCC4, 0, (void *)fn_801FB848, (void *)fn_801FB840, (void *)fn_801FC074, (void *)fn_801FBFF8, (void *)fn_801FBEE8, (void *)fn_801FBE28, (void *)fn_801FBCB4, (void *)fn_801FBCA0, (void *)fn_801FBC8C, (void *)fn_801FBC7C, (void *)fn_801FBC74, (void *)fn_801FBA00, (void *)fn_801FB990, (void *)fn_801FB984, 0, 0, 0, 0, 0, 0, (void *)fn_801FBB60, (void *)fn_801FBA4C, (void *)fn_801FBA24 };
 
 void fn_801FBCC4(O_801FBCC4 *o, u8 *ctx, S_801FBCC4 *s, s32 tok) {
     char b8[8];

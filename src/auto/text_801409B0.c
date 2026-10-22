@@ -142,46 +142,7 @@ void fn_80140C78(ImgPix *p) {
     } while (s < e);
 }
 
-void fn_80140CDC(ImgPix *p) {
-    u8 *s = p->src;
-    u8 *e = s + p->count * 4;
-    u8 *m = p->mask;
-    u16 *d = (u16 *)p->out;
-    do {
-        if (*m != 0) {
-            u16 v;
-            v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
-            v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
-            v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
-            v |= ((u32)s[3] >> p->shr[3]) << p->shl[3];
-            *d = v;
-        }
-        s += 4;
-        d++;
-        m++;
-    } while (s < e);
-    p->out += p->count * 2;
-}
 
-void fn_80140D98(ImgPix *p) {
-    u8 *s = p->src;
-    u8 *m = p->mask;
-    u16 *d = (u16 *)p->out;
-    u8 *e = s + p->count * 4;
-    do {
-        if (*m != 0) {
-            u16 v;
-            v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
-            v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
-            v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
-            *d = v;
-        }
-        s += 4;
-        d++;
-        m++;
-    } while (s < e);
-    p->out += p->count * 2;
-}
 
 void fn_80140E38(ImgPix *p) {
     u8 *s = p->px;
@@ -412,28 +373,6 @@ void fn_8014152C(ImgDec *p) {
     } while (d < e);
 }
 
-void fn_80141584(ImgDec *p) {
-    u32 c, v, b, a;
-    u8 *d = p->dst;
-    u8 *e = d + p->count * 4;
-    do {
-        b = p->src[1] << 8;
-        a = p->src[2] << 16;
-        c = p->src[0];
-        p->src += 3;
-        c |= b;
-        c |= a;
-        v = c >> p->shr[0];
-        d[0] = (v << p->shl[0]) | (v & p->mask[0]);
-        v = c >> p->shr[1];
-        d[1] = (v << p->shl[1]) | (v & p->mask[1]);
-        v = c >> p->shr[2];
-        d[2] = (v << p->shl[2]) | (v & p->mask[2]);
-        v = c >> p->shr[3];
-        d[3] = (v << p->shl[3]) | (v & p->mask[3]);
-        d += 4;
-    } while (d < e);
-}
 
 void fn_8014164C(ImgDec *p) {
     u8 *d = p->dst;
@@ -964,4 +903,134 @@ void fn_80142900(ImgDec *p) {
         d[1] = (u32)v >> 8;
         d[2] = (u32)v >> 8;
     }
+}
+
+typedef struct ImgDec_80141584 {
+    u8 pad0[0x3C];
+    u32 shr[4];
+    u32 shl[4];
+    u8 pad5C[0x7C - 0x5C];
+    u32 mask[4];
+    u8 pad8C[0x9C - 0x8C];
+    s32 count;
+    u8 padA0[0xB0 - 0xA0];
+    u8 *src;
+    u8 *out;
+    u8 padB8[0x138 - 0xB8];
+    u8 buf[0x184 - 0x138];
+    u8 *dst;
+    u8 pad188[4];
+    u8 *px;
+    u8 pad190[0x6D0 - 0x190];
+    s32 wt[3];
+} ImgDec_80141584;
+void fn_80141584(ImgDec_80141584 *p) {
+    u8 *d;
+    u32 v;
+    u32 c;
+    u8 *e;
+    u32 b;
+    u32 a;
+    d = p->dst;
+    e = d + p->count * 4;
+    do {
+        b = p->src[1] << 8;
+        a = p->src[2] << 16;
+        c = p->src[0];
+        p->src += 3;
+        c |= b;
+        c |= a;
+        v = c >> p->shr[0];
+        d[0] = (v << p->shl[0]) | (v & p->mask[0]);
+        v = c >> p->shr[1];
+        d[1] = (v << p->shl[1]) | (v & p->mask[1]);
+        v = c >> p->shr[2];
+        d[2] = (v << p->shl[2]) | (v & p->mask[2]);
+        v = c >> p->shr[3];
+        d[3] = (v << p->shl[3]) | (v & p->mask[3]);
+        d += 4;
+    } while (d < e);
+}
+
+typedef struct ImgPix80140CDC {
+    u8 pad0[0x5C];
+    u32 shr[4];
+    u32 shl[4];
+    u8 pad7C[0x9C - 0x7C];
+    s32 count;
+    u8 padA0[0xB4 - 0xA0];
+    u8 *out;
+    u8 padB8[0x188 - 0xB8];
+    u8 *src;
+    u8 *px;
+    u8 *mask;
+} ImgPix80140CDC;
+
+static inline u16 Pack80140CDC(ImgPix80140CDC *p, u8 *s) {
+    u16 v;
+    v = ((u32)s[0] >> p->shr[0]) << p->shl[0];
+    v |= ((u32)s[1] >> p->shr[1]) << p->shl[1];
+    v |= ((u32)s[2] >> p->shr[2]) << p->shl[2];
+    v |= ((u32)s[3] >> p->shr[3]) << p->shl[3];
+    return v;
+}
+
+void fn_80140CDC(ImgPix80140CDC *p) {
+    u16 *d;
+    u8 *s = p->src;
+    u8 *e = s + p->count * 4;
+    u8 *m = p->mask;
+    d = (u16 *)p->out;
+    do {
+        if (*m != 0) {
+            *d = Pack80140CDC(p, s);
+        }
+        s += 4;
+        m++;
+        d++;
+    } while (s < e);
+    p->out += p->count * 2;
+}
+
+typedef struct S80140D98 {
+    u8 pad0[92];
+    u32 rs;
+    u32 gs;
+    u32 bs;
+    u8 pad1[4];
+    u32 rp;
+    u32 gp;
+    u32 bp;
+    u8 pad2[36];
+    s32 count;
+    u8 pad3[20];
+    u16 *dst;
+    u8 pad4[208];
+    u8 *src;
+    u8 pad5[4];
+    u8 *mask;
+} S80140D98;
+
+void fn_80140D98(S80140D98 *p) {
+    u16 *dst;
+    u16 c;
+    u8 *src;
+    u8 *end;
+    u8 *mask;
+    src = p->src;
+    end = src + p->count * 4;
+    mask = p->mask;
+    dst = p->dst;
+    do {
+        if (*mask != 0) {
+            c = ((u32)src[0] >> p->rs) << p->rp;
+            c |= ((u32)src[1] >> p->gs) << p->gp;
+            c |= ((u32)src[2] >> p->bs) << p->bp;
+            *dst = c;
+        }
+        src += 4;
+        mask++;
+        dst++;
+    } while (src < end);
+    p->dst += p->count;
 }

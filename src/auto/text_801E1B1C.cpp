@@ -4,6 +4,10 @@
 
 extern "C" {
 
+void __dt__9C801E32DCFv(void);
+void *lbl_802ED7A0[3] = { 0, 0, (void *)__dt__9C801E32DCFv };
+
+
 struct ItemB { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void f(); };
 struct Item : ItemB { s32 type; };
 struct Node { Node *next; Node *prev; Item *data; };

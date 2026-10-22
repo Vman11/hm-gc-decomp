@@ -173,7 +173,6 @@ auto/text_801E18F4
 auto/text_801E5BA4
 auto/text_801ECD58
 auto/text_801EE07C
-auto/text_801EF3A0
 auto/text_801F6BFC
 auto/text_801FA0D4
 auto/text_801FDBD0
