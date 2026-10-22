@@ -18537,7 +18537,7 @@ auto/text_8017F818.c:
 	extabindex  start:0x80020D8C end:0x80020D98
 	.text       start:0x8017F818 end:0x8017F990
 
-auto/text_8017F990.c:
+auto/text_8017F990.cpp:
 	extab       start:0x8000E57C end:0x8000E594
 	extabindex  start:0x80020D98 end:0x80020DA4
 	.text       start:0x8017F990 end:0x8017FD8C
