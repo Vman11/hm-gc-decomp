@@ -7808,8 +7808,7 @@ u8 *fn_80277218(void *name, u32 flags) {
         wD7218_tracknum[0] = 1;
         wD7218_tracks[0] = 0;
     }
-    wD7218_memset(&bk, 0, 0x38c);
-    pbk = &bk;
+    wD7218_memset(pbk = &bk, 0, 0x38c);
     L(0x2b8) = wD7218_now();
     wD7218_err[0] = 0;
     if (flags & 0x4000000) {
@@ -7995,7 +7994,8 @@ u8 *fn_80277218(void *name, u32 flags) {
             B(0x20) |= 0x2000;
         }
         if (flags & 0x2000) {
-            u32 sz = B(0x28) - ((*(u32 *)B(0x10c) & ~1) - 8);
+            u32 off = (*(u32 *)B(0x10c) & ~1) - 8;
+            u32 sz = B(0x28) - off;
             B(0x108) = (u32)wD7218_alloc(b, sz);
             if (B(0x108) == 0) {
                 wD7218_free((void *)L(0xbc));
@@ -8014,7 +8014,7 @@ u8 *fn_80277218(void *name, u32 flags) {
     }
     ((u8 *)B(0xdc))[B(0xe4)] = 0;
     B(0xc) = -1;
-    if (B(0x14) != 0) B(0x288) = wD7218_muldiv(2000, B(0x14), B(0x18));
+    if (B(0x14) != 0) B(0x288) = wD7218_muldiv(2000, B(0x18), B(0x14));
     else B(0x288) = 2000;
     B(0x2a4) = 1;
     wD7218_goto(b, 1);
@@ -8022,12 +8022,14 @@ u8 *fn_80277218(void *name, u32 flags) {
     *(s32 *)(B(0x300) + 0x68) = 0x10000;
     B(0x2f8) = 0;
     if (B(0xf0) != 0 && wD7218_tracknum[0] != 0) {
-        for (i = 0; i < (u32)wD7218_tracknum[0]; i++) {
+        u32 n = wD7218_tracknum[0];
+        for (i = 0; i < n; i++) {
             s32 j;
             for (j = 0; j < (s32)B(0xf0); j++) {
                 if (((s32 *)B(0x268))[j] == wD7218_tracks[i]) {
-                    ((s32 *)B(0x25c))[B(0x2f8)] = j;
-                    B(0x2f8)++;
+                    u32 k = B(0x2f8);
+                    ((s32 *)B(0x25c))[k] = j;
+                    B(0x2f8) = k + 1;
                     break;
                 }
             }
@@ -8035,52 +8037,41 @@ u8 *fn_80277218(void *name, u32 flags) {
     }
     wD7218_tracks[0] = 0;
     wD7218_tracknum[0] = 1;
+#define TRK ((u8 *)(i * 0x178 + B(0x300)))
+#define FL (((u32 *)B(0x264))[((s32 *)B(0x25c))[i]])
+#define T(o) (*(u32 *)(TRK + (o)))
     for (i = 0; i < B(0x2f8);) {
-        u8 *trk = (u8 *)B(0x300) + i * 0x178;
-        u32 fl;
-        *(u32 *)(trk + 0x2c) = 0;
-        fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
-        if (((s32)fl < 0 || (fl & 0x10000000)) && wD7218_sndopen[0] != 0) {
-            u32 rate = fl & 0xffff;
+        u32 rate;
+        T(0x2c) = 0;
+        if (((s32)FL < 0 || (FL & 0x10000000)) && wD7218_sndopen[0] != 0) {
+            rate = FL & 0xffff;
             if (L(0x14) != 0 && L(0x18) != 0) {
                 rate = (u32)(((double)rate * (double)L(0x14) * (double)L(0x2c0)) / ((double)L(0x18) * (double)L(0x2bc)));
             }
-            fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
-            if (wD7218_sndopen[0]((u8 *)B(0x300) + i * 0x178, rate, (fl & 0x40000000 ? 8 : 0) + 8, ((fl >> 29) & 1) + 1, B(0x20), b)) {
-                trk = (u8 *)B(0x300) + i * 0x178;
-                if (*(s32 *)(trk + 0x58) == 0) *(s32 *)(trk + 0x58) = -1;
-                *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x28) = (((u32 *)B(0x260))[((s32 *)B(0x25c))[i]] + 0xff) & ~0xff;
-                *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x2c) = (u32)wD7218_alloc(b, *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x28));
-                trk = (u8 *)B(0x300) + i * 0x178;
-                if (*(u32 *)(trk + 0x2c) == 0) {
-                    ((wDOne_77218) * (u32 *)(trk + 0x1c))(trk);
+            if (wD7218_sndopen[0]((u8 *)(B(0x300) + i * 0x178), rate, ((FL >> 27) & 8) + 8, ((FL >> 29) & 1) + 1, B(0x20), b)) {
+                if (*(s32 *)(TRK + 0x58) == 0) *(s32 *)(TRK + 0x58) = -1;
+                T(0x28) = (((u32 *)B(0x260))[((s32 *)B(0x25c))[i]] + 0xff) & ~0xff;
+                T(0x2c) = (u32)wD7218_alloc(b, T(0x28));
+                if (T(0x2c) == 0) {
+                    ((wDOne_77218)T(0x1c))(TRK);
                 } else {
-                    fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
                     wD7218_sndcount[0]++;
-                    *(u32 *)(trk + 0x44) = (fl & 0x40000000) == 0;
-                    trk = (u8 *)B(0x300) + i * 0x178;
-                    *(u32 *)(trk + 0x30) = *(u32 *)(trk + 0x2c) + *(u32 *)(trk + 0x28);
-                    trk = (u8 *)B(0x300) + i * 0x178;
-                    *(u32 *)(trk + 0x34) = *(u32 *)(trk + 0x2c);
-                    trk = (u8 *)B(0x300) + i * 0x178;
-                    *(u32 *)(trk + 0x38) = *(u32 *)(trk + 0x2c);
-                    fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
-                    trk = (u8 *)B(0x300) + i * 0x178;
-                    *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x4c) = wD7218_muldiv((rate << ((fl >> 29) & 1)) * 2, 750 - *(s32 *)(trk + 0x64), 1000) & ~3;
-                    trk = (u8 *)B(0x300) + i * 0x178;
-                    if (*(u32 *)(trk + 0x4c) > *(u32 *)(trk + 0x28)) *(u32 *)(trk + 0x4c) = *(u32 *)(trk + 0x28);
-                    fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
-                    *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x3c) = wD7218_sndfmt(fl & 0xffff, ((fl >> 29) & 1) + 1, ((s32)fl >= 0 && (fl & 0x10000000)) ? 1 : 0);
-                    *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x48) = B(0x8) - (B(0x2bc) * 3) / (B(0x2c0) * 4);
-                    *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x40) = 0;
+                    T(0x44) = (((FL >> 27) & 8) + 8) == 8;
+                    T(0x30) = T(0x2c) + T(0x28);
+                    T(0x34) = T(0x2c);
+                    T(0x38) = T(0x2c);
+                    T(0x4c) = wD7218_muldiv((rate << ((FL >> 29) & 1)) * 2, 750 - *(s32 *)(TRK + 0x64), 1000) & ~3;
+                    if (T(0x4c) > T(0x28)) T(0x4c) = T(0x28);
+                    T(0x3c) = wD7218_sndfmt(FL & 0xffff, ((FL >> 29) & 1) + 1, ((s32)FL >= 0 && (FL & 0x10000000)) ? 1 : 0);
+                    T(0x48) = B(0x8) - (B(0x2bc) * 3) / (B(0x2c0) * 4);
+                    T(0x40) = 0;
                 }
             }
         }
-        trk = (u8 *)B(0x300) + i * 0x178;
-        if (*(s32 *)(trk + 0x68) == 0) *(s32 *)(trk + 0x68) = 0x10000;
-        if (*(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x2c) == 0) {
+        if (*(s32 *)(TRK + 0x68) == 0) *(s32 *)(TRK + 0x68) = 0x10000;
+        if (T(0x2c) == 0) {
             B(0x2f8)--;
-            wD7218_memcpy((s32 *)B(0x25c) + i, (s32 *)B(0x25c) + i + 1, (B(0x2f8) - i) * 4);
+            wD7218_memcpy((s32 *)(i * 4 + B(0x25c)), (s32 *)(i * 4 + B(0x25c)) + 1, (B(0x2f8) - i) * 4);
         } else {
             i++;
         }
