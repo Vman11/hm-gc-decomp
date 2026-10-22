@@ -2021,6 +2021,79 @@ void InquiryCallback(s32 result, s32 *block) {
         break;
     }
 }
+static u32 __OSExceptionLocations[] = {
+    0x00000100, 0x00000200, 0x00000300, 0x00000400, 0x00000500, 0x00000600, 0x00000700, 0x00000800,
+    0x00000900, 0x00000C00, 0x00000D00, 0x00000F00, 0x00001300, 0x00001400, 0x00001700,
+};
+
+static void OSExceptionInit(void) {
+    extern void DBPrintf(const char *, ...);
+    extern int __DBIsExceptionMarked(u8);
+    extern void *memcpy(void *, const void *, u32);
+    extern void __OSSetExceptionHandler(u8, void *);
+    extern void OSDefaultExceptionHandler(u8, void *);
+    extern u32 *BI2DebugFlag_8035A524;
+    extern void __OSDBINTSTART(void);
+    extern void __OSDBINTEND(void);
+    extern void __OSDBJUMPSTART(void);
+    extern void __OSDBJUMPEND(void);
+    extern void __OSEVStart(void);
+    extern void __OSEVEnd(void);
+    extern void __OSEVSetNumber(void);
+    extern void __DBVECTOR(void);
+    extern s32 *OSExceptionTable_8035A544;
+    u8 exception;
+    void *destAddr;
+    u32 *opCodeAddr;
+    u32 oldOpCode;
+    u8 *handlerStart;
+    u32 handlerSize;
+
+    opCodeAddr = (u32 *)__OSEVSetNumber;
+    oldOpCode = *opCodeAddr;
+    handlerStart = (u8 *)__OSEVStart;
+    handlerSize = (u32)((u8 *)__OSEVEnd - (u8 *)__OSEVStart);
+
+    destAddr = (void *)0x80000060;
+    if (*(u32 *)destAddr == 0) {
+        DBPrintf("Installing OSDBIntegrator\n");
+        memcpy(destAddr, (void *)__OSDBINTSTART, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
+        DCFlushRangeNoSync(destAddr, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
+        __sync();
+        ICInvalidateRange(destAddr, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
+    }
+
+    for (exception = 0; exception < 15; exception++) {
+        if (BI2DebugFlag_8035A524 && (*BI2DebugFlag_8035A524 >= 2) && __DBIsExceptionMarked(exception)) {
+            DBPrintf(">>> OSINIT: exception %d commandeered by TRK\n", exception);
+            continue;
+        }
+        *opCodeAddr = oldOpCode | exception;
+        if (__DBIsExceptionMarked(exception)) {
+            DBPrintf(">>> OSINIT: exception %d vectored to debugger\n", exception);
+            memcpy((void *)__DBVECTOR, (void *)__OSDBJUMPSTART, (u32)__OSDBJUMPEND - (u32)__OSDBJUMPSTART);
+        } else {
+            u32 *ops = (u32 *)__DBVECTOR;
+            int cb;
+            for (cb = 0; cb < (u32)__OSDBJUMPEND - (u32)__OSDBJUMPSTART; cb += sizeof(u32)) {
+                *ops++ = 0x60000000;
+            }
+        }
+        destAddr = (void *)(__OSExceptionLocations[(u32)exception] + 0x80000000);
+        memcpy(destAddr, handlerStart, handlerSize);
+        DCFlushRangeNoSync(destAddr, handlerSize);
+        __sync();
+        ICInvalidateRange(destAddr, handlerSize);
+    }
+
+    OSExceptionTable_8035A544 = (s32 *)0x80003000;
+    for (exception = 0; exception < 15; exception++) {
+        __OSSetExceptionHandler(exception, OSDefaultExceptionHandler);
+    }
+    *opCodeAddr = oldOpCode;
+    DBPrintf("Exceptions initialized...\n");
+}
+
 #pragma pop
 
 asm void __OSDBIntegrator(void) {
