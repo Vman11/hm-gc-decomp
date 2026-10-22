@@ -523,28 +523,36 @@ void OSRegisterResetFunction(void *arg0) {
     else prev->next = info;
 }
 
+volatile u16 __VIRegs[59] : 0xCC002000;
+volatile u32 __PIRegs[12] : 0xCC003000;
+
 s32 fn_800B81D4(s32 arg0) {
     extern s32 __OSSyncSram(void);
     OSResetFunctionInfo *iter;
     s32 failed;
     failed = 0;
-    for (iter = ResetFunctionQueue_8035A5B8.head; iter != NULL && failed == 0; iter = iter->next) {
-        failed |= iter->func(arg0) == 0;
+    iter = ResetFunctionQueue_8035A5B8.head;
+    while (iter != NULL && failed == 0) {
+        failed |= !iter->func(arg0);
+        iter = iter->next;
     }
-    failed |= __OSSyncSram() == 0;
+    failed |= !__OSSyncSram();
     if (failed) return 0;
     return 1;
 }
 
+#pragma push
+#pragma peephole off
 u32 OSGetResetCode(void) {
     u32 code;
     if (*(u8 *)0x800030E2 != 0) {
         code = 0x80000000;
     } else {
-        code = (*(volatile u32 *)(0xCC003000 + 0x24) & ~7) >> 3;
+        code = (__PIRegs[9] & ~7) >> 3;
     }
     return code;
 }
+#pragma pop
 
 
 
@@ -2106,7 +2114,7 @@ void fn_800B7700(void);
 
 
 
-asm void Reset(void) {
+asm void Reset(register u32 resetCode) {
     nofralloc
     b L_20
 L_4:
@@ -2145,6 +2153,15 @@ L_64:
     b L_64
 L_6c:
     b L_4
+}
+
+void fn_800B82D8(u32 resetCode) {
+    extern int OSDisableInterrupts(void);
+    extern void ICFlashInvalidate(void);
+    OSDisableInterrupts();
+    __VIRegs[1] = 0;
+    ICFlashInvalidate();
+    Reset(resetCode * 8);
 }
 
 volatile u16 __DSPRegsA[32] : 0xCC005000;
