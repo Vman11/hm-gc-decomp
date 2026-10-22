@@ -7738,8 +7738,10 @@ sdk/OSAlarm.c:
 	.text       start:0x800B3B68 end:0x800B4294
 	.sbss       start:0x8035A560 end:0x8035A568
 
-auto/text_800B4294.c:
+sdk/OSAlloc.c:
 	.text       start:0x800B4294 end:0x800B45A4
+	.sdata      start:0x80359530 end:0x80359538
+	.sbss       start:0x8035A568 end:0x8035A578
 
 sdk/OSArena.c:
 	.text       start:0x800B45A4 end:0x800B45F0
