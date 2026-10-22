@@ -8287,8 +8287,9 @@ runtime/Gecko_ExceptionPPC.cp:
 auto/jt_802E0320.c:
 	.data       start:0x802E0320 end:0x802E04A0
 
-auto/text_800E40A0.c:
+msl/GCN_mem_alloc.c:
 	.text       start:0x800E4114 end:0x800E41CC
+	.rodata     start:0x8029BFD0 end:0x8029C048
 
 msl/abort_exit.c:
 	.text       start:0x800E41CC end:0x800E4358

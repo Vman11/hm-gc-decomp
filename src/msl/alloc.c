@@ -1,6 +1,6 @@
 /* MSL_C alloc.c */
 #include "common.h"
-void fn_800E4114(int size);
+void __sys_free(void *ptr);
 void __begin_critical_region(int region);
 void __end_critical_region(int region);
 void fn_800E43C8(void *pool, void *ptr);
@@ -243,6 +243,6 @@ void fn_800E4578(void *pool, void *ptr) {
     Block_link(bp, sb);
     if (Block_empty(bp)) {
         __unlink(pool_obj, bp);
-        fn_800E4114((int)bp);
+        __sys_free(bp);
     }
 }
