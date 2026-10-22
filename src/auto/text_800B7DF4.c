@@ -500,6 +500,113 @@ void fn_800B7E04(void) {
     lbl_8035A5B0 = 1;
 }
 
+u32 wbBusClock : 0x800000F8;
+u32 wbRegionStart : 0x812FDFF0;
+u32 wbRegionEnd : 0x812FDFEC;
+u32 wbOSResetCode : 0x817FFFFC;
+u32 wbOSResetCode2 : 0x817FFFF8;
+
+#pragma push
+#pragma peephole off
+void __OSReboot(u32 resetCode, BOOL forceMenu) {
+    extern u8 lbl_80307880[];
+    extern u32 lbl_8035A5A8;
+    extern u32 lbl_8035A5AC;
+    extern int __OSIsGcam;
+    extern int OSDisableInterrupts(void);
+    extern int OSEnableInterrupts(void);
+    extern void OSClearContext(void *);
+    extern void OSSetCurrentContext(void *);
+    extern void DVDInit(void);
+    extern void fn_800BFBA0(BOOL);
+    extern void fn_800BFBB0(void);
+    extern void fn_800C004C(void *);
+    extern void __OSMaskInterrupts(u32);
+    extern void __OSUnmaskInterrupts(u32);
+    extern s64 OSGetTime(void);
+    extern BOOL fn_800BFF54(void);
+    extern u8 *fn_800BFF4C(void);
+    extern void fn_800C4950(u8);
+    extern void fn_800C497C(u8);
+    extern void fn_800BF8D8(void *, void *);
+    extern s32 fn_800BFAA8(void *);
+    extern void fn_800C4690(u32);
+    extern void fn_800BF658(void *, void *, s32, s32, void *, s32);
+    extern void ICInvalidateRange(void *, u32);
+    extern void ICFlashInvalidate(void);
+    extern void fn_800B82D8(u32);
+    extern void fn_800B7DF4(void *);
+    u8 exceptionContext[0x2C8];
+    u8 dvdCmd[0x30];
+    u8 dvdCmd2[0x30];
+    u8 dvdCmd3[0x30];
+    u8 *header;
+    u32 length;
+    s64 start;
+
+    header = lbl_80307880;
+    OSDisableInterrupts();
+    *(u32 *)0x817FFFFC = 0;
+    *(u32 *)0x817FFFF8 = 0;
+    *(u8 *)0x800030E2 = 1;
+    wbRegionStart = lbl_8035A5A8;
+    wbRegionEnd = lbl_8035A5AC;
+    OSClearContext(exceptionContext);
+    OSSetCurrentContext(exceptionContext);
+    DVDInit();
+    fn_800BFBA0(TRUE);
+    fn_800BFBB0();
+    lbl_8035A5B0 = 0;
+    fn_800C004C(fn_800B7E04);
+    __OSMaskInterrupts(~0x1F);
+    __OSUnmaskInterrupts(0x400);
+    OSEnableInterrupts();
+
+    start = OSGetTime();
+    while (lbl_8035A5B0 != 1) {
+        if (!fn_800BFF54() || OSGetTime() - start > (s64)(wbBusClock / 4)) {
+            fn_800B82D8(*(u32 *)0x817FFFFC);
+        }
+    }
+
+    if (!__OSIsGcam && (fn_800BFF4C()[8] ? TRUE : FALSE)) {
+        fn_800C4950(0);
+        fn_800C497C(0);
+        fn_800BF8D8(dvdCmd, NULL);
+        start = OSGetTime();
+        while (fn_800BFAA8(dvdCmd)) {
+            if (!fn_800BFF54() || OSGetTime() - start > (s64)(wbBusClock / 4)) {
+                fn_800B82D8(*(u32 *)0x817FFFFC);
+            }
+        }
+        fn_800C4690(0);
+    }
+
+    fn_800BF658(dvdCmd2, header, 32, 0x2440, NULL, 0);
+    start = OSGetTime();
+    while (fn_800BFAA8(dvdCmd2)) {
+        if (!fn_800BFF54() || OSGetTime() - start > (s64)(wbBusClock / 4)) {
+            fn_800B82D8(*(u32 *)0x817FFFFC);
+        }
+    }
+
+    length = (*(u32 *)(header + 24) + 31) & ~31;
+    fn_800BF658(dvdCmd3, (void *)0x81300000, length, *(u32 *)(header + 20) + 32 + 0x2440, NULL, 0);
+    start = OSGetTime();
+    while (fn_800BFAA8(dvdCmd3)) {
+        if (!fn_800BFF54() || OSGetTime() - start > (s64)(wbBusClock / 4)) {
+            fn_800B82D8(*(u32 *)0x817FFFFC);
+        }
+    }
+
+    ICInvalidateRange((void *)0x81300000, length);
+    OSDisableInterrupts();
+    ICFlashInvalidate();
+    fn_800B7DF4((void *)0x81300000);
+}
+#pragma pop
+
+
 void OSRegisterResetFunction(void *arg0) {
     OSResetFunctionInfo *info = arg0;
     OSResetFunctionInfo *iter;
