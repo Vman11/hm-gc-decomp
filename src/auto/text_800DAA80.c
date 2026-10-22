@@ -762,7 +762,10 @@ static inline s32 TRKReadBuffer_nz(TrkBuf *buf, void *data, u32 length) {
 }
 s32 fn_800DB438(TrkBuf *buf, u16 *data) {
     extern s32 gTRKBigEndian[];
+    extern void *fn_80003488(void *, const void *, u32);
     s32 err;
+    u32 length;
+    u32 bytesLeft;
     u8 *bigEndianData;
     u8 *byteData;
     u8 swapBuffer[sizeof(data)];
@@ -771,7 +774,15 @@ s32 fn_800DB438(TrkBuf *buf, u16 *data) {
     } else {
         bigEndianData = swapBuffer;
     }
-    err = TRKReadBuffer_nz(buf, (void *)bigEndianData, sizeof(*data));
+    length = sizeof(*data);
+    err = 0;
+    bytesLeft = buf->count - buf->pos;
+    if (length > bytesLeft) {
+        err = 0x302;
+        length = bytesLeft;
+    }
+    fn_80003488(bigEndianData, buf->data + buf->pos, length);
+    buf->pos += length;
     if (!gTRKBigEndian[0] && err == 0) {
         byteData = (u8 *)data;
         byteData[0] = bigEndianData[1];
