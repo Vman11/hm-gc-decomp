@@ -7730,9 +7730,12 @@ sdk/db.c:
 	.data       start:0x802D7578 end:0x802D7590
 	.sbss       start:0x8035A518 end:0x8035A520
 
-auto/text_800B307C.c:
+sdk/OS.c:
 	.text       start:0x800B307C end:0x800B3B68
 	.data       start:0x802D7590 end:0x802D7788
+	.bss        start:0x80307500 end:0x80307550
+	.sdata      start:0x80359520 end:0x80359530
+	.sbss       start:0x8035A520 end:0x8035A560
 
 sdk/OSAlarm.c:
 	.text       start:0x800B3B68 end:0x800B4294
