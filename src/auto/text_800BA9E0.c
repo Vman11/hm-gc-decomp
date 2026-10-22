@@ -539,7 +539,26 @@ void InitMetroTRK_BBA(void) {
 
 }
 
+void __init_cpp(void);
 void __init_user(void) { __init_cpp(); }
+
+/* __ppc_eabi_init.c: built with the peephole optimizer off */
+#pragma push
+#pragma peephole off
+void __init_cpp(void) {
+    extern void (*_ctors[])(void);
+    void (**constructor)(void);
+
+    for (constructor = _ctors; *constructor; constructor++) {
+        (*constructor)();
+    }
+}
+
+void _ExitProcess(void) {
+    extern void PPCHalt(void);
+    PPCHalt();
+}
+#pragma pop
 
 void fn_800BAA78(UnkHeader_800BAA78 *hdr, u32 x, u32 y) {
     u32 i;
