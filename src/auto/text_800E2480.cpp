@@ -6,7 +6,7 @@ extern "C" {
 
 extern s32 lbl_80359678;
 
-void fn_800E2480(void) {
+void terminate__3stdFv(void) {
     ((void (*)())lbl_80359678)();
 }
 

@@ -8199,55 +8199,20 @@ auto/text_800E24F0.c:
 runtime/arith.c:
 	.text       start:0x800E25E0 end:0x800E2C68
 
-auto/text_800E2CDC.c:
-	.text       start:0x800E2CDC end:0x800E2F24
+runtime/Gecko_ExceptionPPC.cp:
+	extab       start:0x80009720 end:0x80009794
+	extabindex  start:0x8001BB0C end:0x8001BB60
+	.text       start:0x800E2CDC end:0x800E4114
+	.rodata     start:0x8029BF38 end:0x8029BFD0
+	.data       start:0x802E0238 end:0x802E0320
+	.bss        start:0x80327F98 end:0x80327FA4
+	.sdata      start:0x80359688 end:0x80359698
 
-auto/text_800E2F24.cpp:
-	extab       start:0x80009720 end:0x80009728
-	extabindex  start:0x8001BB0C end:0x8001BB18
-	.text       start:0x800E2F24 end:0x800E2F68
-
-auto/text_800E2F68.c:
-	extab       start:0x80009728 end:0x8000973C
-	extabindex  start:0x8001BB18 end:0x8001BB24
-	.text       start:0x800E2F68 end:0x800E3378
-	.data       start:0x802E0238 end:0x802E027C
-
-auto/text_800E3378.c:
-	extab       start:0x8000973C end:0x80009768
-	extabindex  start:0x8001BB24 end:0x8001BB30
-	.text       start:0x800E3378 end:0x800E352C
-
-auto/text_800E352C.cpp:
-	extab       start:0x80009768 end:0x80009770
-	extabindex  start:0x8001BB30 end:0x8001BB3C
-	.text       start:0x800E352C end:0x800E3588
-
-auto/text_800E3588.c:
-	extab       start:0x80009770 end:0x80009784
-	extabindex  start:0x8001BB3C end:0x8001BB48
-	.text       start:0x800E3588 end:0x800E3A94
-	.data       start:0x802E027C end:0x802E02C0
-
-auto/text_800E3A94.c:
-	.text       start:0x800E3A94 end:0x800E3CDC
-
-auto/text_800E3CDC.c:
-	extab       start:0x80009784 end:0x8000978C
-	extabindex  start:0x8001BB48 end:0x8001BB54
-	.text       start:0x800E3CDC end:0x800E3E9C
-	.data       start:0x802E02C0 end:0x802E0304
-
-auto/jt_802E0304.c:
-	.data       start:0x802E0304 end:0x802E04A0
-
-auto/text_800E3E9C.c:
-	extab       start:0x8000978C end:0x80009794
-	extabindex  start:0x8001BB54 end:0x8001BB60
-	.text       start:0x800E3E9C end:0x800E40A0
+auto/jt_802E0320.c:
+	.data       start:0x802E0320 end:0x802E04A0
 
 auto/text_800E40A0.c:
-	.text       start:0x800E40A0 end:0x800F065C
+	.text       start:0x800E4114 end:0x800F065C
 	.data       start:0x802E04A0 end:0x802E0B74
 
 auto/jt_802E0B74.c:

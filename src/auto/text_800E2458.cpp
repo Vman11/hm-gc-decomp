@@ -6,7 +6,7 @@ extern "C" {
 
 extern s32 lbl_8035967C;
 
-void fn_800E2458(void) {
+void unexpected__3stdFv(void) {
     ((void (*)())lbl_8035967C)();
 }
 

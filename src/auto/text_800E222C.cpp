@@ -3,7 +3,7 @@
 
 extern "C" {
 
-char fn_800E222C(const char* throwtype, const char* catchtype, long* offset_result) {
+char __throw_catch_compare(const char* throwtype, const char* catchtype, long* offset_result) {
     const char *cptr1, *cptr2;
 
     *offset_result = 0;

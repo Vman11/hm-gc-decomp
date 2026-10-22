@@ -3,6 +3,6 @@
 
 extern u8 lbl_8029BF00[];
 
-void* fn_800E1E7C(void) {
+void* what__Q23std9exceptionCFv(void) {
     return lbl_8029BF00;
 }
