@@ -1510,7 +1510,7 @@ config.libs = [
             Object(Matching, "runtime/Gecko_ExceptionPPC.cp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on", "-RTTI on", "-str reuse,readonly"], extab_padding=[0x02, 0x55]),
             Object(NonMatching, "auto/text_800E40A0.c", mw_version="GC/2.0"),
             Object(Matching, "msl/abort_exit.c", mw_version="GC/2.0"),
-            Object(NonMatching, "msl/alloc.c", mw_version="GC/2.0"),
+            Object(Matching, "msl/alloc.c", mw_version="GC/2.0"),
             Object(Matching, "msl/ansi_files.c", mw_version="GC/2.0"),
             Object(Matching, "msl/ansi_fp.c", mw_version="GC/2.0", extra_cflags=["-str reuse,pool,readonly"]),
             Object(Matching, "msl/arith.c", mw_version="GC/2.0"),

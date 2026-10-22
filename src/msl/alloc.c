@@ -7,8 +7,8 @@ void fn_800E43C8(void *pool, void *ptr);
 void fn_800E4420(void *pool, void *ptr, u32 size);
 void fn_800E4578(void *pool, void *ptr);
 void *memset(void *, int, u32);
-extern u8 lbl_803280A8[];
-extern u8 lbl_8035A970;
+static u8 lbl_803280A8[0x34];
+static u8 lbl_8035A970;
 typedef struct FixBlock {
     struct FixBlock *prev_;
     struct FixBlock *next_;
@@ -28,11 +28,12 @@ typedef struct __mem_pool_obj {
     void *start_;
     FixStart fix_start[6];
 } __mem_pool_obj;
-extern u32 lbl_8029C048[];
+static const u32 lbl_8029C048[6] = {4, 12, 20, 36, 52, 68};
 extern u32 __fwrite(const void *ptr, u32 size, u32 count, void *file);
 extern int _fseek(void *file, s32 offset, int mode);
 void *memset(void *, int, unsigned long);
 void free(void *ptr);
+
 
 void free(void *ptr) {
     __begin_critical_region(1);
@@ -111,90 +112,137 @@ void fn_800E4420(void *pool, void *ptr, u32 size) {
     }
 }
 
-#pragma push
-#pragma inline_depth(0)
-void fn_800E4578(void *pool, void *ptr) {
-    u32 *prev;
-    u32 oldsize;
-    u32 *p;
-    u32 *next;
-    u32 size;
-    u32 *b;
-    u32 *arena;
-    u32 **head;
-    u32 total;
-    int empty;
-    u32 *link;
-    b = (u32 *)((char *)ptr - 8);
-    size = b[0] & ~7;
-    arena = (u32 *)(b[1] & ~1);
-    next = (u32 *)((char *)b + size);
-    b[0] &= ~2;
-    next[0] &= ~4;
-    next[-1] = size;
-    head = (u32 **)((char *)arena + (arena[3] & ~7) - 4);
-    if (*head) {
-        b[2] = (*head)[2];
-        ((u32 *)b[2])[3] = (u32)b;
-        b[3] = (u32)*head;
-        (*head)[2] = (u32)b;
-        *head = b;
-        p = *head;
-        if (!(p[0] & 4)) {
-            oldsize = p[-1];
-            if (oldsize & 2) {
-                prev = p;
-            } else {
-                prev = (u32 *)((char *)p - oldsize);
-                prev[0] &= 7;
-                prev[0] |= (oldsize + (p[0] & ~7)) & ~7;
-                if (!(prev[0] & 2)) {
-                    total = oldsize + (p[0] & ~7);
-                    *(u32 *)((char *)prev + total - 4) = total;
-                }
-                if (*head == p) *head = (u32 *)(*head)[3];
-                ((u32 *)p[3])[2] = p[2];
-                link = (u32 *)p[3];
-                ((u32 *)link[2])[3] = (u32)link;
-            }
-        } else prev = p;
-        *head = prev;
-        p = *head;
-        oldsize = p[0] & ~7;
-        next = (u32 *)((char *)p + oldsize);
-        total = next[0];
-        if (!(total & 2)) {
-            p[0] &= 7;
-            total = oldsize + (total & ~7);
-            p[0] |= total & ~7;
-            if (!(p[0] & 2)) *(u32 *)((char *)p + total - 4) = total;
-            if (!(p[0] & 2)) *(u32 *)((char *)p + total) &= ~4;
-            else *(u32 *)((char *)p + total) |= 4;
-            if (*head == next) *head = (u32 *)(*head)[3];
-            if (*head == next) *head = 0;
-            ((u32 *)next[3])[2] = next[2];
-            ((u32 *)next[2])[3] = next[3];
-        }
-    } else {
-        *head = b;
-        b[2] = (u32)b;
-        b[3] = (u32)b;
+typedef struct Block {
+    struct Block *prev;
+    struct Block *next;
+    unsigned long max_size;
+    unsigned long size;
+} Block;
+
+typedef struct SubBlock {
+    unsigned long size;
+    Block *bp;
+    struct SubBlock *prev;
+    struct SubBlock *next;
+} SubBlock;
+
+#define SubBlock_size(ths) ((ths)->size & 0xFFFFFFF8)
+#define SubBlock_block(ths) ((Block *)((unsigned long)((ths)->bp) & ~0x01))
+#define SubBlock_is_free(ths) !((ths)->size & 2)
+#define SubBlock_set_size(ths, sz)                                                \
+    {                                                                             \
+        (ths)->size &= ~0xFFFFFFF8;                                               \
+        (ths)->size |= (sz) & 0xFFFFFFF8;                                         \
+        if (SubBlock_is_free((ths)))                                              \
+            *(unsigned long *)((char *)(ths) + (sz) - sizeof(unsigned long)) = (sz); \
     }
-    size = (*head)[0] & ~7;
-    if (arena[2] < size) arena[2] = size;
-    empty = 0;
-    if (!(arena[4] & 2) && (arena[4] & ~7) == (arena[3] & ~7) - 0x18) empty = 1;
-    if (empty) {
-        link = (u32 *)arena[1];
-        if (link == arena) link = 0;
-        if (*(u32 **)pool == arena) *(u32 **)pool = link;
-        if (link) {
-            link[0] = arena[0];
-            ((u32 *)link[0])[1] = (u32)link;
-        }
-        arena[1] = 0;
-        arena[0] = 0;
-        fn_800E4114((int)arena);
+#define SubBlock_set_free(ths)                                                         \
+    {                                                                                  \
+        unsigned long this_size = SubBlock_size((ths));                                \
+        (ths)->size &= ~0x02;                                                          \
+        *(unsigned long *)((char *)(ths) + this_size) &= ~0x04;                         \
+        *(unsigned long *)((char *)(ths) + this_size - sizeof(unsigned long)) = this_size; \
+    }
+#define SubBlock_from_pointer(ptr) ((SubBlock *)((char *)(ptr) - 8))
+#define Block_size(ths) ((ths)->size & 0xFFFFFFF8)
+#define Block_start(ths) (*(SubBlock **)((char *)(ths) + Block_size((ths)) - sizeof(unsigned long)))
+#define Block_empty(ths) \
+    (_sb = (SubBlock *)((char *)(ths) + 16), SubBlock_is_free(_sb) && SubBlock_size(_sb) == Block_size((ths)) - 24)
+
+typedef struct __mem_pool_obj_al {
+    Block *start_;
+} __mem_pool_obj_al;
+
+static SubBlock *SubBlock_merge_prev(SubBlock *ths, SubBlock **start) {
+    unsigned long prevsz;
+    SubBlock *p;
+
+    if (!(ths->size & 0x04)) {
+        prevsz = *(unsigned long *)((char *)ths - sizeof(unsigned long));
+        if (prevsz & 0x2)
+            return ths;
+        p = (SubBlock *)((char *)ths - prevsz);
+        SubBlock_set_size(p, prevsz + SubBlock_size(ths));
+        if (*start == ths)
+            *start = (*start)->next;
+        ths->next->prev = ths->prev;
+        ths->next->prev->next = ths->next;
+        return p;
+    }
+    return ths;
+}
+
+static void SubBlock_merge_next(SubBlock *pBlock, SubBlock **pStart) {
+    SubBlock *next_sub_block;
+    unsigned long this_cur_size;
+
+    next_sub_block = (SubBlock *)((char *)pBlock + (pBlock->size & 0xFFFFFFF8));
+    if (!(next_sub_block->size & 2)) {
+        this_cur_size = (pBlock->size & 0xFFFFFFF8) + (next_sub_block->size & 0xFFFFFFF8);
+        pBlock->size &= ~0xFFFFFFF8;
+        pBlock->size |= this_cur_size & 0xFFFFFFF8;
+        if (!(pBlock->size & 2))
+            *(unsigned long *)((char *)(pBlock) + (this_cur_size)-4) = (this_cur_size);
+        if (!(pBlock->size & 2))
+            *(unsigned long *)((char *)pBlock + this_cur_size) &= ~4;
+        else
+            *(unsigned long *)((char *)pBlock + this_cur_size) |= 4;
+        if (*pStart == next_sub_block)
+            *pStart = (*pStart)->next;
+        if (*pStart == next_sub_block)
+            *pStart = 0;
+        next_sub_block->next->prev = next_sub_block->prev;
+        next_sub_block->prev->next = next_sub_block->next;
     }
 }
-#pragma pop
+
+static void Block_link(Block *ths, SubBlock *sb) {
+    SubBlock **st;
+
+    SubBlock_set_free(sb);
+    st = &Block_start(ths);
+    if (*st != 0) {
+        sb->prev = (*st)->prev;
+        sb->prev->next = sb;
+        sb->next = *st;
+        (*st)->prev = sb;
+        *st = sb;
+        *st = SubBlock_merge_prev(*st, st);
+        SubBlock_merge_next(*st, st);
+    } else {
+        *st = sb;
+        sb->prev = sb;
+        sb->next = sb;
+    }
+    if (ths->max_size < SubBlock_size(*st))
+        ths->max_size = SubBlock_size(*st);
+}
+
+static Block *__unlink(__mem_pool_obj_al *pool_obj, Block *bp) {
+    Block *result = bp->next;
+
+    if (result == bp)
+        result = 0;
+    if (pool_obj->start_ == bp)
+        pool_obj->start_ = result;
+    if (result != 0) {
+        result->prev = bp->prev;
+        result->prev->next = result;
+    }
+    bp->next = 0;
+    bp->prev = 0;
+    return result;
+}
+
+void fn_800E4578(void *pool, void *ptr) {
+    __mem_pool_obj_al *pool_obj = pool;
+    SubBlock *sb = SubBlock_from_pointer(ptr);
+    SubBlock *_sb;
+    Block *bp = SubBlock_block(sb);
+
+    Block_link(bp, sb);
+    if (Block_empty(bp)) {
+        __unlink(pool_obj, bp);
+        fn_800E4114((int)bp);
+    }
+}
