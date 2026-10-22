@@ -1399,6 +1399,7 @@ config.libs = [
             Object(Matching, "sdk/OSThread.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/OSTime.c", mw_version="GC/1.2.5n"),
             Object(NonMatching, "auto/text_800BA9E0.c", mw_version="GC/1.2.5n"),
+            Object(Matching, "sdk/mtx44.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/dvdlow.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/dvdfs.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/dvd.c", mw_version="GC/1.2.5n"),
