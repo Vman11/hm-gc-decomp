@@ -497,6 +497,8 @@ loop_1:
 #pragma dont_inline on
 #pragma peephole off
 #pragma pop
+
+
 static HeapCell *DLAddFront(HeapCell *list, HeapCell *cell) {
     cell->next = list;
     cell->prev = NULL;
@@ -1206,6 +1208,67 @@ extern u8 lbl_80359668[8];
 
 #pragma push
 #pragma fp_contract off
+u32 __OSBusClock : 0x800000F8;
+static u8 lbl_80307598[0x10]; /* FatalParam */
+static u8 FatalContext[0x2D8];
+
+void fn_800B6024(GXColor fg, GXColor bg, u32 msg) {
+    extern int OSDisableInterrupts(void);
+    extern int OSEnableInterrupts(void);
+    extern void OSDisableScheduler(void);
+    extern void OSClearContext(void *);
+    extern void OSSetCurrentContext(void *);
+    extern void __OSStopAudioSystem(void);
+    extern void fn_800C4950(u8);
+    extern void fn_800C497C(u8);
+    extern void fn_800C0EB4(void);
+    extern void fn_800C2584(BOOL);
+    extern void fn_800C23E8(void);
+    extern u32 fn_800C2600(void);
+    extern s64 OSGetTime(void);
+    extern BOOL fn_800B81D4(BOOL);
+    extern void __OSSetExceptionHandler(u8, void *);
+    extern void OSDefaultExceptionHandler(u8, void *);
+    extern void fn_800D6438(void);
+    extern void OSSetArenaLo(void *);
+    extern void OSSetArenaHi(void *);
+    extern void *OSGetArenaHi(void);
+    extern void fn_800B6178(void);
+    extern void fn_800B50D8(u32, u32);
+    u32 *bootInfo;
+    u32 count;
+    s64 t;
+
+    bootInfo = (u32 *)0x80000000;
+    OSDisableInterrupts();
+    OSDisableScheduler();
+    OSClearContext(FatalContext);
+    OSSetCurrentContext(FatalContext);
+    __OSStopAudioSystem();
+    fn_800C4950(0);
+    fn_800C497C(0);
+    fn_800C0EB4();
+    fn_800C2584(TRUE);
+    fn_800C23E8();
+    OSEnableInterrupts();
+    count = fn_800C2600();
+    do {
+    } while ((s32)(fn_800C2600() - count) < 1);
+    t = OSGetTime();
+    while (!fn_800B81D4(FALSE) && OSGetTime() - t < (s64)(((__OSBusClock / 4) / 1000) * 1000)) {
+    }
+    OSDisableInterrupts();
+    fn_800B81D4(TRUE);
+    __OSSetExceptionHandler(8, OSDefaultExceptionHandler);
+    fn_800D6438();
+    OSSetArenaLo((void *)0x81200000);
+    OSSetArenaHi((void *)bootInfo[14]);
+    *(GXColor *)(lbl_80307598 + 0) = fg;
+    *(GXColor *)(lbl_80307598 + 4) = bg;
+    *(u32 *)(lbl_80307598 + 8) = msg;
+    fn_800B50D8((u32)fn_800B6178, (u32)OSGetArenaHi());
+}
+
 #pragma pop
 
 
