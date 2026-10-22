@@ -830,6 +830,8 @@ void GXGetLightAttnK(const GXLightObj* lt_obj, f32* k0, f32* k1, f32* k2) {
     *k2 = obj->k[2];
 }
 
+#pragma push
+#pragma fp_contract off
 void GXInitLightSpot(GXLightObj* lt_obj, f32 cutoff, GXSpotFn spot_func) {
     f32 a0, a1, a2;
     f32 r;
@@ -892,6 +894,7 @@ void GXInitLightSpot(GXLightObj* lt_obj, f32 cutoff, GXSpotFn spot_func) {
     obj->a[1] = a1;
     obj->a[2] = a2;
 }
+#pragma pop
 
 void GXInitLightPos(GXLightObj* lt_obj, f32 x, f32 y, f32 z) {
     __GXLightObjInt_struct* obj;
