@@ -45,7 +45,6 @@ int __flush_all(void);
 int __flush_buffer(MslFile *file, u32 *length);
 
 #pragma push
-#pragma dont_inline on
 #pragma use_lmw_stmw on
 int fflush(void *arg0) {
     MslFile *file = (MslFile *)arg0;
@@ -88,13 +87,11 @@ int fflush(void *arg0) {
 #pragma pop
 
 #pragma push
-#pragma dont_inline on
 #pragma use_lmw_stmw on
 int fclose(void *arg0) {
     MslFile *file = (MslFile *)arg0;
     int flush_result;
     int close_result;
-    u32 position;
 
     if (file == NULL) {
         return -1;
@@ -102,39 +99,7 @@ int fclose(void *arg0) {
     if (file->mode.file_kind == 0) {
         return 0;
     }
-    if (file == NULL) {
-        flush_result = __flush_all();
-    } else if (file->state.error || file->mode.file_kind == 0) {
-        flush_result = -1;
-    } else if (file->mode.io_mode == 1) {
-        flush_result = 0;
-    } else {
-        if (file->state.io_state >= 3) {
-            file->state.io_state = 2;
-        }
-        if (file->state.io_state == 2) {
-            file->buffer_len = 0;
-        }
-        flush_result = 0;
-        if (file->state.io_state != 1) {
-            file->state.io_state = 0;
-        } else {
-            if (file->mode.file_kind != 1) {
-                position = 0;
-            } else {
-                position = ftell(file);
-            }
-            if (__flush_buffer(file, 0)) {
-                file->state.error = 1;
-                file->buffer_len = 0;
-                flush_result = -1;
-            } else {
-                file->state.io_state = 0;
-                file->position = position;
-                file->buffer_len = 0;
-            }
-        }
-    }
+    flush_result = fflush(file);
     close_result = ((int (*)(u32))file->close_proc)(file->handle);
     file->mode.file_kind = 0;
     file->handle = 0;
