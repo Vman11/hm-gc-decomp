@@ -33180,7 +33180,7 @@ auto/text_8023A8AC.c:
 	extabindex  start:0x800287B4 end:0x800287C0
 	.text       start:0x8023A8AC end:0x8023ABF4
 
-auto/text_8023ABF4.c:
+auto/text_8023ABF4.cpp:
 	extab       start:0x800159C0 end:0x800159C8
 	extabindex  start:0x800287C0 end:0x800287CC
 	.text       start:0x8023ABF4 end:0x8023AFDC
