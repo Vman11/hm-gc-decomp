@@ -8217,11 +8217,90 @@ auto/jt_802E0320.c:
 	.data       start:0x802E0320 end:0x802E04A0
 
 auto/text_800E40A0.c:
-	.text       start:0x800E4114 end:0x800ECE54
-	.data       start:0x802E04A0 end:0x802E0B74
+	.text       start:0x800E4114 end:0x800E41CC
+
+msl/abort_exit.c:
+	.text       start:0x800E41CC end:0x800E4358
+
+msl/alloc.c:
+	.text       start:0x800E4358 end:0x800E480C
+
+msl/ansi_files.c:
+	.text       start:0x800E480C end:0x800E4924
+
+msl/ansi_fp.c:
+	.text       start:0x800E4924 end:0x800E7F00
+
+msl/arith.c:
+	.text       start:0x800E7F00 end:0x800E7F10
+
+msl/buffer_io.c:
+	.text       start:0x800E7F10 end:0x800E8008
+
+msl/critical_regions.c:
+	.text       start:0x800E8008 end:0x800E8014
+
+msl/ctype.c:
+	.text       start:0x800E8014 end:0x800E8038
+
+msl/direct_io.c:
+	.text       start:0x800E8038 end:0x800E83C0
+
+msl/file_io.c:
+	.text       start:0x800E83C0 end:0x800E86B4
+
+msl/FILE_POS.c:
+	.text       start:0x800E86B4 end:0x800E8A04
+
+msl/mbstring.c:
+	.text       start:0x800E8A04 end:0x800E8B1C
+	.sdata2     start:0x803631D0 end:0x803631D4
+
+msl/mem.c:
+	.text       start:0x800E8B1C end:0x800E8C8C
+
+msl/mem_funcs.c:
+	.text       start:0x800E8C8C end:0x800E8F5C
+
+msl/misc_io.c:
+	.text       start:0x800E8F5C end:0x800E8F6C
+
+msl/printf.c:
+	.text       start:0x800E8F6C end:0x800EB040
+
+msl/qsort.c:
+	.text       start:0x800EB040 end:0x800EB1AC
+
+msl/rand.c:
+	.text       start:0x800EB1AC end:0x800EB1D4
+
+msl/scanf.c:
+	.text       start:0x800EB1D4 end:0x800EB264
+
+msl/signal.c:
+	.text       start:0x800EB264 end:0x800EB324
+
+msl/string.c:
+	.text       start:0x800EB324 end:0x800EB838
+	.rodata     start:0x8029C170 end:0x8029C190
+
+msl/strtold.c:
+	.text       start:0x800EB838 end:0x800EC8D0
+	.rodata     start:0x8029C500 end:0x8029C538
+	.sdata2     start:0x803631E0 end:0x803631F0
+
+msl/strtoul.c:
+	.text       start:0x800EC8D0 end:0x800ECD08
+	.data       start:0x802E0B30 end:0x802E0B74
 
 auto/jt_802E0B74.c:
 	.data       start:0x802E0B74 end:0x802E0CA8
+
+msl/uart_console_io.c:
+	.text       start:0x800ECD08 end:0x800ECDCC
+
+msl/wchar_io.c:
+	.text       start:0x800ECDCC end:0x800ECE54
 
 msl/e_acos.c:
 	.text       start:0x800ECE54 end:0x800ED164
@@ -8330,7 +8409,10 @@ msl/w_pow.c:
 	.text       start:0x800F04FC end:0x800F051C
 
 auto/text_800F051C.c:
-	.text       start:0x800F051C end:0x800F065C
+	.text       start:0x800F051C end:0x800F05D0
+
+msl/extras.c:
+	.text       start:0x800F05D0 end:0x800F065C
 
 sdk/odenotstub.c:
 	.text       start:0x800F065C end:0x800F0664
