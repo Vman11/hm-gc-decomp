@@ -869,14 +869,14 @@ void __GXAbort(void) {
 }
 
 void GXAbortFrame(void) {
-    __GXAbort();
-
-    if (GXGetGPFifo() != (GXFifoObj*)NULL) {
-        __GXCleanGPFifo();
-        __GXInitRevisionBits();
-        __GXData->dirtyState = 0;
-        GXFlush();
+    if (__GXData->abtWaitPECopy && GXGetGPFifo() != (GXFifoObj*)NULL) {
+        __GXAbortWaitPECopyDone();
     }
+    __PIRegs[0x18 / 4] = 1;
+    __GXAbortWait(200);
+    __PIRegs[0x18 / 4] = 0;
+    __GXAbortWait(20);
+    __GXCleanGPFifo();
 }
 
 void GXSetDrawSync(u16 token) {
