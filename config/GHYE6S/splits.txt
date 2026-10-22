@@ -8295,12 +8295,22 @@ msl/abort_exit.c:
 
 msl/alloc.c:
 	.text       start:0x800E4358 end:0x800E480C
+	.rodata     start:0x8029C048 end:0x8029C060
+	.bss        start:0x803280A8 end:0x803280E0
+	.sbss       start:0x8035A970 end:0x8035A978
 
 msl/ansi_files.c:
 	.text       start:0x800E480C end:0x800E4924
 
 msl/ansi_fp.c:
 	.text       start:0x800E4924 end:0x800E7F00
+	.rodata     start:0x8029C060 end:0x8029C140
+	.data       start:0x802E04A0 end:0x802E05C8
+	.sdata2     start:0x803631A0 end:0x803631D0
+
+msl/locale.c:
+	.rodata     start:0x8029C140 end:0x8029C148
+	.data       start:0x802E08C8 end:0x802E0900
 
 msl/arith.c:
 	.text       start:0x800E7F00 end:0x800E7F10
@@ -8338,6 +8348,10 @@ msl/misc_io.c:
 
 msl/printf.c:
 	.text       start:0x800E8F6C end:0x800EB040
+	.rodata     start:0x8029C148 end:0x8029C170
+	.data       start:0x802E0900 end:0x802E0B30
+	.sdata      start:0x80359698 end:0x803596A0
+	.sdata2     start:0x803631D8 end:0x803631E0
 
 msl/qsort.c:
 	.text       start:0x800EB040 end:0x800EB1AC

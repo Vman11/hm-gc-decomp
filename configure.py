@@ -1520,6 +1520,7 @@ config.libs = [
             Object(Matching, "msl/direct_io.c", mw_version="GC/2.0"),
             Object(NonMatching, "msl/file_io.c", mw_version="GC/2.0"),
             Object(Matching, "msl/FILE_POS.c", mw_version="GC/2.0"),
+            Object(NonMatching, "msl/locale.c", mw_version="GC/2.0"),
             Object(Matching, "msl/mbstring.c", mw_version="GC/2.0"),
             Object(Matching, "msl/mem.c", mw_version="GC/2.0"),
             Object(Matching, "msl/mem_funcs.c", mw_version="GC/2.0"),
