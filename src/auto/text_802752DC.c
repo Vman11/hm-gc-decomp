@@ -363,9 +363,7 @@ void fn_80275844(void *arg0) {
     s32 v;
     s32 a = *(s32 *)(p + 0xC8);
     if (a != 0) {
-        v = 0;
-        if (*(s32 *)(p + 0x74) == 1) v = *(s32 *)(p + 0x80);
-        fn_802757D0((void *)a, *(s32 *)(p + 0x78), *(s32 *)(p + 0x7C), v);
+        fn_802757D0((void *)a, *(s32 *)(p + 0x78), *(s32 *)(p + 0x7C), *(s32 *)(p + 0x74) == 1 ? *(s32 *)(p + 0x80) : 0);
     }
     a = *(s32 *)(p + 0xCC);
     if (a != 0) fn_802757D0((void *)a, *(s32 *)(p + 0x78), 0, *(s32 *)(p + 0x80));
@@ -377,8 +375,8 @@ void fn_80275D00(u32 *src, u16 *left, u16 *right, u32 count) {
     if (i < n) do {
         u32 a = *src++;
         u32 b = a >> 8;
-        *left++ = ((a >> 16) & 0xFF00) | (u8)b;
-        *right++ = (b & 0xFF00) | (u8)a;
+        *left++ = ((a >> 16) & 0xFF00) | (b & 0xFF);
+        *right++ = (b & 0xFF00) | (a & 0xFF);
     } while (++i < n);
     if (count & 1) {
         u16 a = *(u16 *)src;
@@ -395,8 +393,8 @@ void fn_80275D6C(s16 *src, u8 *left, u8 *right, u32 count) {
         u32 a = p[0];
         u32 b = p[1];
         p += 2;
-        *(u32 *)left = (a & 0xFFFF0000) | (b >> 16);
-        *(u32 *)right = (a << 16) | (u16)b;
+        *(u32 *)left = (b >> 16) | (a & 0xFFFF0000);
+        *(u32 *)right = (b & 0xFFFF) | (a << 16);
         left += 4;
         right += 4;
     } while (++i < n);
@@ -2317,22 +2315,10 @@ void fn_8028C71C(float *a)
 
 
 void fn_8028C954(f32 *m) {
-    f32 a = m[2];
-    f32 b = m[3];
-    f32 c = m[6];
-    f32 d = m[7];
-    f32 e = m[8];
-    f32 f = m[9];
-    f32 g = m[12];
-    f32 h = m[13];
-    m[13] = d;
-    m[2] = e;
-    m[3] = f;
-    m[6] = g;
-    m[7] = h;
-    m[8] = a;
-    m[9] = b;
-    m[12] = c;
+    f32 a = m[2], b = m[3], c = m[6], d = m[7];
+    f32 e = m[8], f = m[9], g = m[12], h = m[13];
+    m[2] = e; m[3] = f; m[6] = g; m[7] = h;
+    m[8] = a; m[9] = b; m[12] = c; m[13] = d;
 }
 
 
