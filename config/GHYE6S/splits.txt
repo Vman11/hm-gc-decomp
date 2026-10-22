@@ -15030,7 +15030,7 @@ auto/text_8014E124.cpp:
 	extabindex  start:0x8001F034 end:0x8001F040
 	.text       start:0x8014E124 end:0x8014E1E0
 
-auto/text_8014E1E0.c:
+auto/text_8014E1E0.cpp:
 	extab       start:0x8000C8A4 end:0x8000C8F4
 	extabindex  start:0x8001F040 end:0x8001F04C
 	.text       start:0x8014E1E0 end:0x8014E2D8
