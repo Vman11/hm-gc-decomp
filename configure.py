@@ -1400,6 +1400,7 @@ config.libs = [
             Object(Matching, "sdk/OSThread.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/OSTime.c", mw_version="GC/1.2.5n"),
             Object(NonMatching, "auto/text_800BA9E0.c", mw_version="GC/1.2.5n"),
+            Object(Matching, "sdk/sp.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/axart.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/axartsound.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/axartcents.c", mw_version="GC/1.2.5n"),

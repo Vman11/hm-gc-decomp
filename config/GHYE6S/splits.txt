@@ -7819,7 +7819,11 @@ sdk/OSTime.c:
 	.data       start:0x802D8A80 end:0x802D8AE0
 
 auto/text_800BA9E0.c:
-	.text       start:0x800BA9E0 end:0x800BB284
+	.text       start:0x800BA9E0 end:0x800BAA78
+
+sdk/sp.c:
+	.text       start:0x800BAA78 end:0x800BB284
+	.sdata2     start:0x80363038 end:0x80363048
 
 sdk/axart.c:
 	.text       start:0x800BB284 end:0x800BB7E0

@@ -560,73 +560,7 @@ void _ExitProcess(void) {
 }
 #pragma pop
 
-void fn_800BAA78(UnkHeader_800BAA78 *hdr, u32 x, u32 y) {
-    u32 i;
-    UnkEntry_800BAA78 *e;
-    u8 *data;
-    u32 xh;
-    u32 y2;
-    u32 yh;
-    u32 x2;
 
-    y2 = y * 2 + 2;
-    x2 = x * 2;
-    xh = x >> 1;
-    yh = y >> 1;
-    e = hdr->entries;
-    data = (u8 *)&hdr->entries[hdr->count];
-    for (i = 0; i < hdr->count; i++, e++) {
-        switch (e->type) {
-        case 0:
-            e->unk8 = y2;
-            e->unkC = 0;
-            e->unk10 = x2 + e->unk10;
-            e->unk14 = x2 + e->unk14;
-            e->unk18 = data;
-            data += 0x2E;
-            break;
-        case 1:
-            e->unk8 = x2 + e->unk8;
-            e->unkC = x2 + e->unkC;
-            e->unk10 = x2 + e->unk10;
-            e->unk14 = x2 + e->unk14;
-            e->unk18 = data;
-            data += 0x2E;
-            break;
-        case 2:
-            e->unk8 = yh;
-            e->unkC = 0;
-            e->unk10 = xh + e->unk10;
-            e->unk14 = xh + e->unk14;
-            break;
-        case 3:
-            e->unk8 = xh + e->unk8;
-            e->unkC = xh + e->unkC;
-            e->unk10 = xh + e->unk10;
-            e->unk14 = xh + e->unk14;
-            break;
-        case 4:
-            e->unk8 = y;
-            e->unkC = 0;
-            e->unk10 = x + e->unk10;
-            e->unk14 = x + e->unk14;
-            break;
-        case 5:
-            e->unk8 = x + e->unk8;
-            e->unkC = x + e->unkC;
-            e->unk10 = x + e->unk10;
-            e->unk14 = x + e->unk14;
-            break;
-        }
-    }
-}
-
-void *fn_800BAC18(u32 *arg0, u32 arg1) {
-    if (*arg0 > arg1) {
-        return (u8 *)arg0 + arg1 * 0x1C + 4;
-    }
-    return NULL;
-}
 
 
 int fn_800B50D0();
