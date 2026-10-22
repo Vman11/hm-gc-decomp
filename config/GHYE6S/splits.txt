@@ -19087,7 +19087,7 @@ auto/text_80189F24.c:
 	extabindex  start:0x80021230 end:0x8002123C
 	.text       start:0x80189F24 end:0x8018A0C4
 
-auto/text_8018A0C4.c:
+auto/text_8018A0C4.cpp:
 	extab       start:0x8000EC30 end:0x8000EC38
 	extabindex  start:0x8002123C end:0x80021248
 	.text       start:0x8018A0C4 end:0x8018A534
