@@ -4388,7 +4388,7 @@ auto/text_80081F84.c:
 	extabindex  start:0x80019F64 end:0x80019F70
 	.text       start:0x80081F84 end:0x800820C4
 
-auto/text_800820C4.c:
+auto/text_800820C4.cpp:
 	extab       start:0x80007B50 end:0x80007B58
 	extabindex  start:0x80019F70 end:0x80019F7C
 	.text       start:0x800820C4 end:0x800824C0
