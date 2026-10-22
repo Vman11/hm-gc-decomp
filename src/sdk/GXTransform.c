@@ -1140,27 +1140,23 @@ do { \
 } while (0)
 
 void GXSetZScaleOffset(f32 scale, f32 offset) {
-    f32 sz;
-    f32 oz;
     f32 zmin;
     f32 zmax;
+    f32 zScale;
+    f32 zs;
+    f32 zOffset;
 
-    CHECK_GXBEGIN(996, "GXSetZScaleOffset");
-
-    oz = 1.6777215e7f * offset;
-    __GXData->zOffset = oz;
-
-    sz = 1.0f + (1.6777215e7f * scale);
-    __GXData->zScale = sz;
-
-    zmin = __GXData->vpNearz * sz;
-    zmax = __GXData->vpFarz * sz;
-    sz = zmax - zmin;
-    oz = oz + zmax;
-
-    GX_WRITE_XF_REG_F_(0x1C, sz);
-    GX_WRITE_XF_REG_F_(0x1F, oz);
-
+    zOffset = 1.6777215e7f * offset;
+    zs = 1.6777215e7f * scale;
+    __GXData->zOffset = zOffset;
+    zScale = 1.0f + zs;
+    __GXData->zScale = zScale;
+    zmax = __GXData->vpFarz * zScale;
+    zmin = __GXData->vpNearz * zScale;
+    zOffset = zOffset + zmax;
+    zmin = zmax - zmin;
+    GX_WRITE_XF_REG_F_(0x1C, zmin);
+    GX_WRITE_XF_REG_F_(0x1F, zOffset);
     __GXData->bpSentNot = 1;
 }
 
