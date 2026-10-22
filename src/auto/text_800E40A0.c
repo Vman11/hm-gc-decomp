@@ -1794,7 +1794,7 @@ void fn_800E904C(char *s, const char *fmt, void *args) {
     ctx.s = s;
     ctx.n = -1;
     ctx.c = 0;
-    r = __pformatter(fn_800E92B8, &ctx, fmt, args, -1);
+    r = __pformatter(fn_800E92B8, &ctx, fmt, args);
     if (s != 0) {
         idx = -2;
         if (r < 0xFFFFFFFF) idx = r;
