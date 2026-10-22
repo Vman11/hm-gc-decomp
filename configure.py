@@ -5620,6 +5620,7 @@ config.libs = [
             Object(Matching, "auto/text_80215414.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80215450.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80215534.cpp", extra_cflags=["-Cpp_exceptions on"]),
+            Object(Matching, "auto/text_802155D4.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"], extab_padding=[0xB1, 0x02, 0xB1, 0x02]),
             Object(Matching, "auto/text_80215B8C.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8021539C.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80215B18.cpp", extra_cflags=["-Cpp_exceptions on"]),
