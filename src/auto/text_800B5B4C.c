@@ -1310,6 +1310,8 @@ void fn_800B6998(unsigned char * s, unsigned char * d) {
 
 volatile u16 __VIRegsA[64] : 0xCC002000;
 
+#pragma push
+#pragma auto_inline off
 u16 fn_800B6B0C(void) {
     if (lbl_80359550 <= 1) {
         return lbl_80359550;
@@ -1328,6 +1330,7 @@ u16 fn_800B6B0C(void) {
     }
     return lbl_80359550;
 }
+#pragma pop
 
 
 static inline BOOL IsSjisTrailByteA(u8 c) {
@@ -1336,34 +1339,45 @@ static inline BOOL IsSjisTrailByteA(u8 c) {
 
 int fn_800B67FC(u16 code) {
     if (fn_800B6B0C() == 1) {
-        if (0x20 <= code && code <= 0xDF) {
+        if (code >= 0x20 && code <= 0xDF) {
             return lbl_802D7F30[code - 0x20];
-        } else if (0x889E < code && code <= 0x9872) {
+        }
+
+        if (code > 0x889E && code <= 0x9872) {
             int i = ((code >> 8) - 0x88) * 188;
             int j = (code & 0xFF);
+
             if (!IsSjisTrailByteA(j)) {
                 return 0;
             }
+
             j -= 0x40;
-            if (0x40 <= j) {
+            if (j >= 0x40) {
                 j--;
             }
+
             return (i + j + 0x2BE);
-        } else if (0x8140 <= code && code < 0x879E) {
-            int i = ((code >> 8) - 0x81) * 188;
+        }
+
+        if (code >= 0x8140 && code < 0x879E) {
+            int i  = ((code >> 8) - 0x81) * 188;
             int j = (code & 0xFF);
+
             if (!IsSjisTrailByteA(j)) {
                 return 0;
             }
+
             j -= 0x40;
-            if (0x40 <= j) {
+            if (j >= 0x40) {
                 j--;
             }
+
             return lbl_802D80B0[i + j];
         }
-    } else if (0x20 < code && code <= 0xFF) {
+    } else if (code > 0x20 && code <= 0xFF) {
         return code - 0x20;
     }
+
     return 0;
 }
 
