@@ -8,7 +8,7 @@ extern u8 lbl_802F2DE8[];
 extern f32 lbl_80366C00;
 void fn_80267F2C(void *);
 
-void *fn_80266A14(u8 *p) {
+void *__ct__9C80266A14Fv(u8 *p) {
     fn_80267F2C(p);
     *(void **)p = lbl_802F2DE8;
     *(s32 *)(p + 252) = 0;

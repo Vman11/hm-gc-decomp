@@ -12,7 +12,7 @@ void __dl__FPv(int);
 void dtor_80267EB8(int, int);
 struct VCall_fn_8025BA0C_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(); };
 
-s32 * fn_8025BA0C(s32 *param_1, s16 param_2) {
+s32 * __dt__9C8025BA80Fv(s32 *param_1, s16 param_2) {
     if (param_1 != (s32 *)0x0) {
         *param_1 = (s32)lbl_802F2818;
         ((VCall_fn_8025BA0C_0 *)(param_1))->m();
