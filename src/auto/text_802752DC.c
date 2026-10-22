@@ -7739,3 +7739,367 @@ s32 fn_80280AEC(s32 n, s32 m) {
     } while (--i != 0);
     return m + n;
 }
+
+typedef struct { u32 w[0x38c / 4]; } wDBink_77218;
+typedef struct { u32 w[11]; } wDBinkHdr_77218;
+typedef s32 (*wDIOFn_77218)();
+typedef s32 (*wDOpen_77218)(u8 *, void *, u32);
+typedef s32 (*wDRead_77218)(u8 *, s32, void *, u32);
+typedef u32 (*wDSize_77218)(u8 *, u32);
+typedef s32 (*wDSetBuf_77218)(u8 *, void *, u32, u32, s32);
+typedef s32 (*wDReadAt_77218)(u8 *, u32, u32, void *, u32);
+typedef s32 (*wDOne_77218)(u8 *);
+typedef s32 (*wDSnd_77218)(u8 *, u32, u32, u32, u32, u8 *);
+
+extern s32 wD7218_tracknum[] asm("lbl_802F3870");
+extern s32 wD7218_tracks[] asm("lbl_802F3874");
+extern wDOpen_77218 wD7218_openover[] asm("lbl_802F3894");
+extern char wD7218_err[] asm("lbl_80357FC0");
+extern s32 wD7218_fpsnum[] asm("lbl_802F3864");
+extern s32 wD7218_fpsden[] asm("lbl_803580C0");
+extern s32 wD7218_iosize[] asm("lbl_802F3868");
+extern s32 wD7218_simulate[] asm("lbl_802F386C");
+extern wDSnd_77218 wD7218_sndopen[] asm("lbl_802F3854");
+extern s32 wD7218_sndcount[] asm("lbl_802F3858");
+extern s32 wD7218_timer[] asm("lbl_802F3860");
+extern char wD7218_s0[] asm("lbl_802AAAE0");
+extern char wD7218_s1[] asm("lbl_802AAAF4");
+extern char wD7218_s2[] asm("lbl_802AAB08");
+extern char wD7218_s3[] asm("lbl_802AAB3C");
+
+void *wD7218_memset() asm("memset");
+void *wD7218_memcpy() asm("memcpy");
+s32 wD7218_now(void) asm("fn_802753F0");
+void wD7218_seterr(char *) asm("fn_802769B8");
+void wD7218_plan(void *slot, u32 size) asm("fn_802876F8");
+u8 *wD7218_alloc(u8 *b, u32 size) asm("fn_80276970");
+void wD7218_free(void *p) asm("fn_8027B790");
+void wD7218_plan2(void *slot, u32 n) asm("fn_80285D24");
+s32 wD7218_frames(u32 n, u32 idx, u32 x, u8 *a, s32 *b) asm("fn_80277020");
+u32 wD7218_muldiv(u32 a, u32 b, u32 c) asm("fn_802752DC");
+void wD7218_goto(u8 *b, s32 f) asm("fn_80276E80");
+s32 wD7218_sndfmt(u32 rate, u32 chans, u32 flag) asm("fn_802833CC");
+s32 wD7218_timeropen(s32 n) asm("fn_80283AA4");
+void wD7218_timerinit(void) asm("fn_80283D44");
+void wD7218_timeradd(s32 t, void *p, void *a, void *c) asm("fn_80283B20");
+s32 wD7218_defopen(u8 *io, void *src, u32 flags) asm("fn_8027B58C");
+void wD7218_802771B8(void) asm("fn_802771B8");
+void wD7218_802771D4(void) asm("fn_802771D4");
+void wD7218_8027716C(void) asm("fn_8027716C");
+void wD7218_80277114(void) asm("fn_80277114");
+void wD7218_80277140(void) asm("fn_80277140");
+void wD7218_80277198(void) asm("fn_80277198");
+
+#define L(o) (*(u32 *)((u8 *)&bk + (o)))
+#define B(o) (*(u32 *)(b + (o)))
+#define H(o) (hdr.w[((o) - 0x398 + 8) / 4])
+
+u8 *fn_80277218(void *name, u32 flags) {
+    wDBink_77218 bk;
+    wDBinkHdr_77218 hdr;
+    wDBink_77218 *pbk;
+    s32 notfirst;
+    wDOpen_77218 openfn = wD7218_defopen;
+    u8 *b;
+    u32 i;
+    s32 simulate;
+
+    if (!(flags & 0x4000)) {
+        wD7218_tracknum[0] = 1;
+        wD7218_tracks[0] = 0;
+    }
+    wD7218_memset(&bk, 0, 0x38c);
+    pbk = &bk;
+    L(0x2b8) = wD7218_now();
+    wD7218_err[0] = 0;
+    if (flags & 0x4000000) {
+        hdr = *(wDBinkHdr_77218 *)name;
+    } else {
+        if ((flags & 0x2000000) && wD7218_openover[0] != 0) openfn = wD7218_openover[0];
+        wD7218_openover[0] = 0;
+        if (!openfn((u8 *)&bk + 0x110, name, flags)) {
+            if (!wD7218_err[0]) wD7218_seterr(wD7218_s0);
+            return 0;
+        }
+        ((wDRead_77218)L(0x110))((u8 *)&bk + 0x110, 0, &hdr, 0x2c);
+    }
+    if (hdr.w[0] != 0x664b4942 && hdr.w[0] != 0x674b4942 && hdr.w[0] != 0x684b4942 && hdr.w[0] != 0x694b4942) {
+        wD7218_seterr(wD7218_s1);
+    fail:
+        if (!(flags & 0x4000000)) ((wDOne_77218)L(0x124))((u8 *)&bk + 0x110);
+        return 0;
+    }
+    if (hdr.w[2] == 0) {
+        wD7218_seterr(wD7218_s2);
+        goto fail;
+    }
+    {
+        u32 w = hdr.w[5];
+        u32 h = hdr.w[6];
+        u32 hf = hdr.w[9];
+        u32 cw = (((w + 1) >> 1) + 7) & ~7;
+        u32 ch = (((h + 1) >> 1) + 7) & ~7;
+        u32 f = (flags & 0x8FFFFFFF) | (hf & 0x20000);
+        L(0xd0) = ch + ch;
+        L(0xe0) = (cw + cw) >> 4;
+        L(0x0) = w;
+        L(0x4) = h;
+        L(0x254) = w;
+        L(0x258) = h;
+        L(0x24) = hf;
+        L(0xd4) = cw;
+        L(0xd8) = ch;
+        L(0xcc) = cw + cw;
+        L(0x20) = f;
+        if (!(hf & 0x100000)) L(0x20) = f & ~0x100000;
+    }
+    {
+        u32 s = flags & 0x70000000;
+        if (s != 0x70000000) {
+            if (s != 0) L(0x20) |= s;
+            else L(0x20) |= hdr.w[9] & 0x70000000;
+            switch (L(0x20) & 0x70000000) {
+            case 0x10000000:
+            case 0x20000000:
+                L(0x4) += L(0x4);
+                break;
+            case 0x30000000:
+                L(0x0) += L(0x0);
+                break;
+            case 0x40000000:
+            case 0x50000000:
+                L(0x0) += L(0x0);
+                L(0x4) += L(0x4);
+                break;
+            }
+        }
+    }
+    if (hdr.w[0] == 0x664b4942 || hdr.w[0] == 0x674b4942) {
+        L(0x20) |= 0x18000;
+    } else if (hdr.w[0] == 0x684b4942) {
+        L(0x20) |= 0x8000;
+    }
+    L(0x8) = hdr.w[2];
+    L(0xec) = hdr.w[4];
+    if ((flags & 0x1000) && wD7218_fpsnum[0] != -1) {
+        s32 n = wD7218_fpsnum[0];
+        wD7218_fpsnum[0] = -1;
+        L(0x14) = n;
+        L(0x18) = wD7218_fpsden[0];
+    } else {
+        L(0x14) = hdr.w[7];
+        L(0x18) = hdr.w[8];
+    }
+    {
+        u32 den = hdr.w[8];
+        u32 num = hdr.w[7];
+        u32 r = (num + (den >> 1)) / den;
+        L(0x28) = hdr.w[1];
+        L(0xf0) = hdr.w[10];
+        L(0xe8) = hdr.w[3];
+        L(0x2bc) = num;
+        L(0x2c0) = den;
+        L(0x2c4) = r;
+        L(0xe4) = ((L(0xcc) >> 4) * L(0xd0)) >> 4;
+        if (r == 0) L(0x2c4) = 1;
+    }
+    L(0x2c8) = (L(0x2c4) - 1) * 4;
+    wD7218_plan((u8 *)&bk + 0xdc, L(0xe4) + 16);
+    wD7218_plan((u8 *)&bk + 0x2cc, L(0x2c4) * 4);
+    wD7218_plan((u8 *)&bk + 0x2d0, L(0x2c4) * 4);
+    wD7218_plan((u8 *)&bk + 0x2d4, L(0x2c4) * 4);
+    wD7218_plan((u8 *)&bk + 0x2d8, L(0x2c4) * 4);
+    wD7218_plan((u8 *)&bk + 0x2dc, L(0x2c4) * 4);
+    wD7218_plan((u8 *)&bk + 0x2e0, L(0x2c4) * 4);
+    wD7218_plan((u8 *)&bk + 0x2e4, L(0x2c4) * 4);
+    wD7218_plan((u8 *)&bk + 0x300, wD7218_tracknum[0] ? wD7218_tracknum[0] * 0x178 : 0x178);
+    wD7218_plan((u8 *)&bk + 0x25c, wD7218_tracknum[0] * 4);
+    wD7218_plan2((u8 *)&bk + 0x310, L(0xcc));
+    wD7218_plan((u8 *)&bk + 0x310, L(0x310));
+    wD7218_plan((u8 *)&bk + 0x314, L(0x314));
+    wD7218_plan((u8 *)&bk + 0x318, L(0x318));
+    wD7218_plan((u8 *)&bk + 0x31c, L(0x31c));
+    wD7218_plan((u8 *)&bk + 0x320, L(0x320));
+    wD7218_plan((u8 *)&bk + 0x324, L(0x324));
+    wD7218_plan((u8 *)&bk + 0x328, L(0x328));
+    wD7218_plan((u8 *)&bk + 0x32c, L(0x32c));
+    wD7218_plan((u8 *)&bk + 0x330, L(0x330));
+    if (!(flags & 0x4000000)) {
+        wD7218_plan((u8 *)&bk + 0x10c, (L(0xec) + 1) * 4);
+        wD7218_plan((u8 *)&bk + 0x260, L(0xf0) * 4);
+        wD7218_plan((u8 *)&bk + 0x264, L(0xf0) * 4);
+        wD7218_plan((u8 *)&bk + 0x268, L(0xf0) * 4);
+    }
+    b = wD7218_alloc((u8 *)&bk, 0x38c);
+    if (b == 0) {
+    nomem:
+        wD7218_seterr(wD7218_s3);
+        goto fail;
+    }
+    *(wDBink_77218 *)b = *pbk;
+    B(0x128) = (u32)b;
+    *(s32 *)B(0x2d0) = 0;
+    *(s32 *)B(0x2d4) = 0;
+    *(s32 *)B(0x2d8) = 0;
+    *(s32 *)B(0x2dc) = 0;
+    *(s32 *)B(0x2e0) = 0;
+    *(s32 *)B(0x2e4) = 0;
+    if (flags & 0x4000000) {
+        u32 n = B(0xf0);
+        B(0x260) = (u32)((u8 *)name + 0x2c);
+        B(0x264) = (u32)((u8 *)name + n * 4 + 0x2c);
+        B(0x268) = (u32)((u8 *)name + n * 8 + 0x2c);
+        B(0x10c) = (u32)((u8 *)name + n * 12 + 0x2c);
+    } else {
+        u8 *io = b + 0x110;
+        ((wDRead_77218)B(0x110))(io, -1, B(0x260), B(0xf0) * 4);
+        ((wDRead_77218)B(0x110))(io, -1, B(0x264), B(0xf0) * 4);
+        ((wDRead_77218)B(0x110))(io, -1, B(0x268), B(0xf0) * 4);
+        ((wDRead_77218)B(0x110))(io, -1, B(0x10c), (B(0xec) + 1) * 4);
+    }
+    B(0xf4) = wD7218_frames(B(0x8), B(0x10c), B(0x2c4), b + 0xf8, &notfirst);
+    if (B(0x20) & 0x100000) {
+        wD7218_plan(b + 0xc4, B(0xcc) * B(0xd0));
+        if (!notfirst) wD7218_plan(b + 0xc8, B(0xcc) * B(0xd0));
+    }
+    if (!notfirst) wD7218_plan(b + 0xc0, B(0xd4) * B(0xd8) * 2 + B(0xcc) * B(0xd0));
+    B(0xbc) = (u32)wD7218_alloc(b, B(0xd4) * B(0xd8) * 2 + B(0xcc) * B(0xd0));
+    if (B(0xbc) == 0) {
+    freefail:
+        wD7218_free(b);
+        goto nomem;
+    }
+    if (notfirst) {
+        B(0xc0) = B(0xbc);
+        B(0xc8) = B(0xc4);
+    }
+    if ((flags & 0x1000000) && wD7218_iosize[0] != -1) {
+        B(0x250) = wD7218_iosize[0];
+        wD7218_iosize[0] = -1;
+    } else {
+        B(0x250) = B(0xf4);
+    }
+    if ((flags & 0x400000) && wD7218_simulate[0] != -1) {
+        simulate = wD7218_simulate[0];
+        wD7218_simulate[0] = -1;
+    } else {
+        simulate = 0;
+    }
+    if (flags & 0x4000000) {
+        B(0x108) = (u32)((u8 *)name + (*(u32 *)B(0x10c) & ~1));
+    } else {
+        u8 *io = b + 0x110;
+        B(0x250) = ((wDSize_77218)B(0x118))(io, B(0x250));
+        if (B(0x250) >= (B(0x28) * 9) / 10) {
+            flags |= 0x2000;
+            B(0x20) |= 0x2000;
+        }
+        if (flags & 0x2000) {
+            u32 sz = B(0x28) - ((*(u32 *)B(0x10c) & ~1) - 8);
+            B(0x108) = (u32)wD7218_alloc(b, sz);
+            if (B(0x108) == 0) {
+                wD7218_free((void *)L(0xbc));
+                goto freefail;
+            }
+            ((wDSetBuf_77218)B(0x11c))(io, 0, 0, B(0x28) + 8, simulate);
+            ((wDReadAt_77218)B(0x114))(io, 0, *(u32 *)B(0x10c) & ~1, B(0x108), sz);
+            ((wDOne_77218)B(0x124))(io);
+            B(0x140) = 0;
+        } else {
+            wD7218_plan(b + 0x104, B(0xe8));
+            B(0x24c) = (u32)wD7218_alloc(b, B(0x250));
+            if (B(0x24c) == 0) B(0x250) = 0;
+            ((wDSetBuf_77218)B(0x11c))(io, B(0x24c), B(0x250), B(0x28) + 8, simulate);
+        }
+    }
+    ((u8 *)B(0xdc))[B(0xe4)] = 0;
+    B(0xc) = -1;
+    if (B(0x14) != 0) B(0x288) = wD7218_muldiv(2000, B(0x14), B(0x18));
+    else B(0x288) = 2000;
+    B(0x2a4) = 1;
+    wD7218_goto(b, 1);
+    B(0x2b8) = wD7218_now() - B(0x2b8);
+    *(s32 *)(B(0x300) + 0x68) = 0x10000;
+    B(0x2f8) = 0;
+    if (B(0xf0) != 0 && wD7218_tracknum[0] != 0) {
+        for (i = 0; i < (u32)wD7218_tracknum[0]; i++) {
+            s32 j;
+            for (j = 0; j < (s32)B(0xf0); j++) {
+                if (((s32 *)B(0x268))[j] == wD7218_tracks[i]) {
+                    ((s32 *)B(0x25c))[B(0x2f8)] = j;
+                    B(0x2f8)++;
+                    break;
+                }
+            }
+        }
+    }
+    wD7218_tracks[0] = 0;
+    wD7218_tracknum[0] = 1;
+    for (i = 0; i < B(0x2f8);) {
+        u8 *trk = (u8 *)B(0x300) + i * 0x178;
+        u32 fl;
+        *(u32 *)(trk + 0x2c) = 0;
+        fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
+        if (((s32)fl < 0 || (fl & 0x10000000)) && wD7218_sndopen[0] != 0) {
+            u32 rate = fl & 0xffff;
+            if (L(0x14) != 0 && L(0x18) != 0) {
+                rate = (u32)(((double)rate * (double)L(0x14) * (double)L(0x2c0)) / ((double)L(0x18) * (double)L(0x2bc)));
+            }
+            fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
+            if (wD7218_sndopen[0]((u8 *)B(0x300) + i * 0x178, rate, (fl & 0x40000000 ? 8 : 0) + 8, ((fl >> 29) & 1) + 1, B(0x20), b)) {
+                trk = (u8 *)B(0x300) + i * 0x178;
+                if (*(s32 *)(trk + 0x58) == 0) *(s32 *)(trk + 0x58) = -1;
+                *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x28) = (((u32 *)B(0x260))[((s32 *)B(0x25c))[i]] + 0xff) & ~0xff;
+                *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x2c) = (u32)wD7218_alloc(b, *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x28));
+                trk = (u8 *)B(0x300) + i * 0x178;
+                if (*(u32 *)(trk + 0x2c) == 0) {
+                    ((wDOne_77218) * (u32 *)(trk + 0x1c))(trk);
+                } else {
+                    fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
+                    wD7218_sndcount[0]++;
+                    *(u32 *)(trk + 0x44) = (fl & 0x40000000) == 0;
+                    trk = (u8 *)B(0x300) + i * 0x178;
+                    *(u32 *)(trk + 0x30) = *(u32 *)(trk + 0x2c) + *(u32 *)(trk + 0x28);
+                    trk = (u8 *)B(0x300) + i * 0x178;
+                    *(u32 *)(trk + 0x34) = *(u32 *)(trk + 0x2c);
+                    trk = (u8 *)B(0x300) + i * 0x178;
+                    *(u32 *)(trk + 0x38) = *(u32 *)(trk + 0x2c);
+                    fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
+                    trk = (u8 *)B(0x300) + i * 0x178;
+                    *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x4c) = wD7218_muldiv((rate << ((fl >> 29) & 1)) * 2, 750 - *(s32 *)(trk + 0x64), 1000) & ~3;
+                    trk = (u8 *)B(0x300) + i * 0x178;
+                    if (*(u32 *)(trk + 0x4c) > *(u32 *)(trk + 0x28)) *(u32 *)(trk + 0x4c) = *(u32 *)(trk + 0x28);
+                    fl = ((u32 *)B(0x264))[((s32 *)B(0x25c))[i]];
+                    *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x3c) = wD7218_sndfmt(fl & 0xffff, ((fl >> 29) & 1) + 1, ((s32)fl >= 0 && (fl & 0x10000000)) ? 1 : 0);
+                    *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x48) = B(0x8) - (B(0x2bc) * 3) / (B(0x2c0) * 4);
+                    *(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x40) = 0;
+                }
+            }
+        }
+        trk = (u8 *)B(0x300) + i * 0x178;
+        if (*(s32 *)(trk + 0x68) == 0) *(s32 *)(trk + 0x68) = 0x10000;
+        if (*(u32 *)((u8 *)B(0x300) + i * 0x178 + 0x2c) == 0) {
+            B(0x2f8)--;
+            wD7218_memcpy((s32 *)B(0x25c) + i, (s32 *)B(0x25c) + i + 1, (B(0x2f8) - i) * 4);
+        } else {
+            i++;
+        }
+    }
+    if (B(0x2f8) != 0) {
+        B(0x2a0) = 1;
+        if (wD7218_timer[0] == 0) {
+            wD7218_timer[0] = wD7218_timeropen(-13);
+            wD7218_timerinit();
+        }
+        wD7218_timeradd(wD7218_timer[0], b + 0x34c, (void *)wD7218_802771B8, (void *)wD7218_802771D4);
+    }
+    B(0x204) = (u32)wD7218_8027716C;
+    B(0x1fc) = (u32)wD7218_80277114;
+    B(0x200) = (u32)wD7218_80277140;
+    B(0x208) = (u32)wD7218_80277198;
+    if (B(0x108) == 0 && !(flags & 0x200000)) {
+        while (((wDOne_77218)B(0x120))(b + 0x110) != 0) {
+        }
+    }
+    return b;
+}
