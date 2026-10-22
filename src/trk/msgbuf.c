@@ -459,45 +459,58 @@ extern s32 __OSArenaHi_8035A578;
 #pragma use_lmw_stmw on
 #pragma inline_depth(4)
 #pragma peephole on
-#pragma opt_propagation off
 
-s32 fn_800DB100(TrkBuf *buf, u32 *data, s32 count) {
-    extern s32 gTRKBigEndian[];
+static inline s32 wA_ReadBufferInline(TrkBuf *buf, void *dst, unsigned long n) {
     extern void *fn_80003488(void *, const void *, u32);
-    s32 result;
+    s32 err = 0;
+    unsigned int space;
+
+    if (n == 0) {
+        return 0;
+    }
+    space = buf->count - buf->pos;
+    if (n > space) {
+        err = 0x302;
+        n = space;
+    }
+    fn_80003488(dst, buf->data + buf->pos, n);
+    buf->pos += n;
+    return err;
+}
+
+static inline s32 wA_ReadBuffer1_ui32(TrkBuf *buf, u32 *data) {
+    extern s32 gTRKBigEndian[];
+    u8 *bigEndianData;
+    u8 *byteData;
+    u8 swapBuffer[sizeof(u32)];
+    s32 err;
+
+    if (gTRKBigEndian[0] != 0) {
+        bigEndianData = (u8 *)data;
+    } else {
+        bigEndianData = swapBuffer;
+    }
+
+    err = wA_ReadBufferInline(buf, bigEndianData, sizeof(*data));
+    if (gTRKBigEndian[0] == 0 && err == 0) {
+        byteData = (u8 *)data;
+        byteData[0] = bigEndianData[3];
+        byteData[1] = bigEndianData[2];
+        byteData[2] = bigEndianData[1];
+        byteData[3] = bigEndianData[0];
+    }
+    return err;
+}
+
+s32 fn_800DB100(TrkBuf *buf, u32 *dst, s32 count) {
+    s32 err;
     s32 i;
 
-    for (i = 0, result = 0; result == 0 && i < count; i++, data++) {
-        s32 err;
-        u8 *bigEndianData;
-        u32 length;
-        u32 bytesLeft;
-        u8 *byteData;
-        u8 swapBuffer[sizeof(*data)];
-        if (gTRKBigEndian[0]) {
-            bigEndianData = (u8 *)data;
-        } else {
-            bigEndianData = swapBuffer;
-        }
-        length = sizeof(*data);
-        err = 0;
-        bytesLeft = buf->count - buf->pos;
-        if (length > bytesLeft) {
-            err = 0x302;
-            length = bytesLeft;
-        }
-        fn_80003488(bigEndianData, buf->data + buf->pos, length);
-        buf->pos += length;
-        if (!gTRKBigEndian[0] && err == 0) {
-            byteData = (u8 *)data;
-            byteData[0] = bigEndianData[3];
-            byteData[1] = bigEndianData[2];
-            byteData[2] = bigEndianData[1];
-            byteData[3] = bigEndianData[0];
-        }
-        result = err;
+    for (i = 0, err = 0; err == 0 && i < count; i++) {
+        err = wA_ReadBuffer1_ui32(buf, &dst[i]);
     }
-    return result;
+
+    return err;
 }
 #pragma pop
 
