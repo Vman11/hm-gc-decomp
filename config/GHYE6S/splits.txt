@@ -6025,7 +6025,7 @@ auto/text_8009C4F4.cpp:
 	.text       start:0x8009C4F4 end:0x8009C564
 	.ctors      start:0x8029406C end:0x80294070
 
-auto/text_8009C564.c:
+auto/text_8009C564.cpp:
 	extab       start:0x800089F8 end:0x80008A00
 	extabindex  start:0x8001ACC0 end:0x8001ACCC
 	.text       start:0x8009C564 end:0x8009CBA4
