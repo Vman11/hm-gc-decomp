@@ -4292,27 +4292,26 @@ s32 fn_800CF664(s32 chan, u32 cBlock, WBCardCB callback) {
     return fn_800CF818(chan, fat, callback);
 }
 
-s32 fn_800CF77C(s32 chan, u16 nBlock, WBCardCB callback) {
-    s32 fn_800CF818(s32 chan, u16 *fat, WBCardCB callback);
-    WBCard *card;
+static inline u16 *wA_fatid(u16 *p) { return p; }
+s32 fn_800CF77C(s32 chan, u16 block, WBCardCB callback) {
     u16 *fat;
-    u16 nextBlock;
+    WBCard *card = &WB_CARDBLK[chan];
+    s32 fn_800CF818(s32 chan, u16 *fat, WBCardCB callback);
+    u16 next;
 
-    card = &WB_CARDBLK[chan];
-    if (!card->attached)
+    if (card->attached == 0) {
         return -3;
-
-    fat = wbGetFat_(card);
-    while (nBlock != 0xFFFF) {
-        if (!(5 <= nBlock && nBlock < card->cBlock))
-            return -6;
-
-        nextBlock = fat[nBlock];
-        fat[nBlock] = 0;
-        nBlock = nextBlock;
-        ++fat[3];
     }
-
+    fat = wA_fatid(card->currentFat);
+    while (block != 0xffff) {
+        if (block < 5 || block >= card->cBlock) {
+            return -6;
+        }
+        next = fat[block];
+        fat[block] = 0;
+        fat[3]++;
+        block = next;
+    }
     return fn_800CF818(chan, fat, callback);
 }
 
