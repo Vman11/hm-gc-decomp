@@ -2008,6 +2008,9 @@ asm void fn_800B39AC(void) {
 }
 
 #pragma push
+u32 wbRegionStart : 0x812FDFF0;
+u32 wbRegionEnd : 0x812FDFEC;
+
 static void ClearArena(void) {
     extern u32 OSGetResetCode(void);
     extern void *OSGetArenaLo(void);
@@ -2022,13 +2025,9 @@ static void ClearArena(void) {
         return;
     }
     {
-        u32 end;
-        u32 start;
-        start = *(u32 *)0x812FDFF0;
-        end = *(u32 *)0x812FDFEC;
-        __OSSavedRegionStart = start;
-        __OSSavedRegionEnd = end;
-        if (start == 0) {
+        __OSSavedRegionStart = wbRegionStart;
+        __OSSavedRegionEnd = wbRegionEnd;
+        if (__OSSavedRegionStart == 0) {
             memset(OSGetArenaLo(), 0, (u32)OSGetArenaHi() - (u32)OSGetArenaLo());
             return;
         }
