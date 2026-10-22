@@ -8066,6 +8066,10 @@ sdk/CARDNet.c:
 auto/text_800D3730.c:
 	.text       start:0x800D3730 end:0x800D4AA8
 	.data       start:0x802DF4C0 end:0x802DF700
+	.bss        start:0x803237A0 end:0x80323DD0
+	.sdata      start:0x80359618 end:0x8035961C
+	.sbss       start:0x8035A8F8 end:0x8035A920
+	.sdata2     start:0x803630C8 end:0x803630F0
 
 sdk/GXFifo.c:
 	.text       start:0x800D4AA8 end:0x800D5488
