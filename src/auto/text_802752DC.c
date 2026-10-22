@@ -496,11 +496,11 @@ s32 fn_802762FC(u8 *arg0, u32 arg1) {
     u32 pos = *(u32 *)(arg0 + 0xF0);
     u32 end = pos + arg1;
     if (end >= *(u32 *)(arg0 + 0xDC)) {
-        memcpy(*(u8 **)(arg0 + 0xE4) + pos, *(u8 **)(arg0 + 0xEC), *(u32 *)(arg0 + 0xDC) - pos);
-        memcpy(*(u8 **)(arg0 + 0xE4), *(u8 **)(arg0 + 0xEC) + *(u32 *)(arg0 + 0xDC) - *(u32 *)(arg0 + 0xF0), end - *(u32 *)(arg0 + 0xDC));
+        memcpy_np(*(u8 **)(arg0 + 0xE4) + pos, *(u8 **)(arg0 + 0xEC), *(u32 *)(arg0 + 0xDC) - pos);
+        memcpy_np(*(u8 **)(arg0 + 0xE4), *(u8 **)(arg0 + 0xEC) + *(u32 *)(arg0 + 0xDC) - *(u32 *)(arg0 + 0xF0), end - *(u32 *)(arg0 + 0xDC));
         *(u32 *)(arg0 + 0xF0) = end - *(u32 *)(arg0 + 0xDC);
     } else {
-        memcpy(*(u8 **)(arg0 + 0xE4) + pos, *(u8 **)(arg0 + 0xEC), arg1);
+        memcpy_np(*(u8 **)(arg0 + 0xE4) + pos, *(u8 **)(arg0 + 0xEC), arg1);
         *(u32 *)(arg0 + 0xF0) = end;
     }
     *(s32 *)(arg0 + 0x100) += arg1;
