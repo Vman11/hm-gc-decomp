@@ -8213,11 +8213,120 @@ auto/jt_802E0320.c:
 	.data       start:0x802E0320 end:0x802E04A0
 
 auto/text_800E40A0.c:
-	.text       start:0x800E4114 end:0x800F065C
+	.text       start:0x800E4114 end:0x800ECE54
 	.data       start:0x802E04A0 end:0x802E0B74
 
 auto/jt_802E0B74.c:
 	.data       start:0x802E0B74 end:0x802E0CA8
+
+msl/e_acos.c:
+	.text       start:0x800ECE54 end:0x800ED164
+	.sdata2     start:0x803631F8 end:0x80363288
+
+msl/e_atan2.c:
+	.text       start:0x800ED164 end:0x800ED3F4
+	.sdata2     start:0x80363288 end:0x803632E0
+
+msl/e_exp.c:
+	.text       start:0x800ED3F4 end:0x800ED618
+	.rodata     start:0x8029C538 end:0x8029C568
+	.sdata2     start:0x803632E0 end:0x80363358
+
+msl/e_fmod.c:
+	.text       start:0x800ED618 end:0x800ED954
+	.rodata     start:0x8029C568 end:0x8029C578
+
+msl/e_log.c:
+	.text       start:0x800ED954 end:0x800EDBD0
+	.sdata2     start:0x80363358 end:0x803633D8
+
+msl/e_pow.c:
+	.text       start:0x800EDBD0 end:0x800EE484
+	.rodata     start:0x8029C578 end:0x8029C5A8
+	.sdata2     start:0x803633D8 end:0x803634E8
+
+msl/e_rem_pio2.c:
+	.text       start:0x800EE484 end:0x800EE824
+	.rodata     start:0x8029C5A8 end:0x8029C730
+	.sdata2     start:0x803634E8 end:0x80363540
+
+msl/k_cos.c:
+	.text       start:0x800EE824 end:0x800EE918
+	.sdata2     start:0x80363540 end:0x80363588
+
+msl/k_rem_pio2.c:
+	.text       start:0x800EE918 end:0x800EF76C
+	.rodata     start:0x8029C730 end:0x8029C780
+	.sdata2     start:0x80363588 end:0x803635C8
+
+msl/k_sin.c:
+	.text       start:0x800EF76C end:0x800EF80C
+	.sdata2     start:0x803635C8 end:0x80363600
+
+msl/k_tan.c:
+	.text       start:0x800EF80C end:0x800EFA20
+	.rodata     start:0x8029C780 end:0x8029C7E8
+	.sdata2     start:0x80363600 end:0x80363638
+
+msl/s_atan.c:
+	.text       start:0x800EFA20 end:0x800EFC38
+	.rodata     start:0x8029C7E8 end:0x8029C880
+	.sdata2     start:0x80363638 end:0x80363660
+
+msl/s_ceil.c:
+	.text       start:0x800EFC38 end:0x800EFD7C
+	.sdata2     start:0x80363660 end:0x80363670
+
+msl/s_copysign.c:
+	.text       start:0x800EFD7C end:0x800EFDA4
+
+msl/s_cos.c:
+	.text       start:0x800EFDA4 end:0x800EFE78
+	.sdata2     start:0x80363670 end:0x80363678
+
+msl/s_floor.c:
+	.text       start:0x800EFE78 end:0x800EFFC0
+	.sdata2     start:0x80363678 end:0x80363688
+
+msl/s_frexp.c:
+	.text       start:0x800EFFC0 end:0x800F004C
+	.sdata2     start:0x80363688 end:0x80363690
+
+msl/s_ldexp.c:
+	.text       start:0x800F004C end:0x800F0210
+	.sdata2     start:0x80363690 end:0x803636B8
+
+msl/s_modf.c:
+	.text       start:0x800F0210 end:0x800F030C
+
+msl/s_sin.c:
+	.text       start:0x800F030C end:0x800F03E4
+	.sdata2     start:0x803636B8 end:0x803636C0
+
+msl/s_tan.c:
+	.text       start:0x800F03E4 end:0x800F045C
+	.sdata2     start:0x803636C0 end:0x803636C8
+
+msl/w_acos.c:
+	.text       start:0x800F045C end:0x800F047C
+
+msl/w_atan2.c:
+	.text       start:0x800F047C end:0x800F049C
+
+msl/w_exp.c:
+	.text       start:0x800F049C end:0x800F04BC
+
+msl/w_fmod.c:
+	.text       start:0x800F04BC end:0x800F04DC
+
+msl/w_log.c:
+	.text       start:0x800F04DC end:0x800F04FC
+
+msl/w_pow.c:
+	.text       start:0x800F04FC end:0x800F051C
+
+auto/text_800F051C.c:
+	.text       start:0x800F051C end:0x800F065C
 
 sdk/odenotstub.c:
 	.text       start:0x800F065C end:0x800F0664
