@@ -1,6 +1,11 @@
 /* Functions from 0x8014EB30 to 0x8014F264, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+extern f32 lbl_8036453C;
+extern f32 lbl_80364544;
+
+extern f32 lbl_80364540;
 extern s32 lbl_8035ACB8;
 
 static inline void MtxMultVec4(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out) {
@@ -152,59 +157,50 @@ u32 fn_8014EF58(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out, 
     return neg | (over & ~(neg << 1));
 }
 
-void fn_8014F0D8(f32 *m, f32 *a, f32 *b, f32 *c, f32 n, f32 f) {
-    extern f32 lbl_8036453C;
-    extern f32 lbl_80364540;
-    extern f32 lbl_80364544;
-    f32 d = f - n;
-    f32 w = a[2] - a[0];
-    f32 h = a[3] - a[1];
-    f32 c0 = c[0];
-    f32 c1 = c[1];
-    m[0] = (lbl_80364540 * b[0]) / w;
+
+
+/* QV=2.0p1 */
+void fn_8014F0D8(f32 *m, const f32 *rect, const f32 *scale, const f32 *ofs, f32 n, f32 f) {
+    m[0] = lbl_80364540 * scale[0] / (rect[2] - rect[0]);
     m[4] = lbl_80364544;
     m[8] = lbl_80364544;
     m[12] = lbl_80364544;
     m[1] = lbl_80364544;
-    m[5] = (lbl_80364540 * b[1]) / h;
+    m[5] = lbl_80364540 * scale[1] / (rect[3] - rect[1]);
     m[9] = lbl_80364544;
     m[13] = lbl_80364544;
     m[2] = lbl_80364544;
     m[6] = lbl_80364544;
-    m[10] = lbl_8036453C / d;
+    m[10] = lbl_8036453C / (f - n);
     m[14] = lbl_80364544;
-    m[3] = c0;
-    m[7] = c1;
-    m[11] = -(n / d);
+    m[3] = ofs[0];
+    m[7] = ofs[1];
+    m[11] = -(n / (f - n));
     m[15] = lbl_8036453C;
 }
 
-void fn_8014F198(f32 *m, f32 *a, f32 *b, f32 *c, f32 n, f32 f) {
-extern f32 lbl_8036453C, lbl_80364540, lbl_80364544;
-f32 right=a[2], left=a[0];
-f32 depth=f/(f-n);
-f32 top=a[3], bottom=a[1];
-f32 x=b[0]/(right-left);
-f32 scale=lbl_80364540*n;
-f32 y=b[1]/(top-bottom);
-f32 cx=c[0], cy=c[1];
-f32 tx=cx-x*(left+right);
-f32 ty=cy-y*(top+bottom);
-m[0]=scale*x;
-m[4]=lbl_80364544;
-m[8]=lbl_80364544;
-m[12]=lbl_80364544;
-m[1]=lbl_80364544;
-m[5]=scale*y;
-m[9]=lbl_80364544;
-m[13]=lbl_80364544;
-m[2]=tx;
-m[6]=ty;
-m[10]=depth;
-m[14]=lbl_8036453C;
-m[3]=lbl_80364544;
-m[7]=lbl_80364544;
-m[11]=-(n*depth);
-m[15]=lbl_80364544;
+/* QV=2.0p1 */
+void fn_8014F198(f32 *m, const f32 *r, const f32 *s, const f32 *o, f32 n, f32 f) {
+    f32 a = s[0] / (r[2] - r[0]);
+    f32 b = s[1] / (r[3] - r[1]);
+    f32 q = f / (f - n);
+    f32 n2 = lbl_80364540 * n;
+    m[0] = n2 * a;
+    m[4] = lbl_80364544;
+    m[8] = lbl_80364544;
+    m[12] = lbl_80364544;
+    m[1] = lbl_80364544;
+    m[5] = n2 * b;
+    m[9] = lbl_80364544;
+    m[13] = lbl_80364544;
+    m[2] = o[0] - a * (r[0] + r[2]);
+    m[6] = o[1] - b * (r[3] + r[1]);
+    m[10] = q;
+    m[14] = lbl_8036453C;
+    m[3] = lbl_80364544;
+    m[7] = lbl_80364544;
+    m[11] = -(n * q);
+    m[15] = lbl_80364544;
 }
 
+} /* extern "C" */

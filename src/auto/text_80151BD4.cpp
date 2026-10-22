@@ -1,11 +1,13 @@
 /* Functions from 0x80151BD4 to 0x80151D58, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 typedef struct Vec80151BD4 {
     f32 x, y, z;
 } Vec80151BD4;
 
-void fn_80151BD4(f32* m, f32* x, f32* y, f32* z) {
+void fn_80151BD4(f32* m, const f32* x, f32* y, f32* z) {
     extern f32 lbl_8036453C;
     extern f32 lbl_80364544;
     f32 x0 = x[0];
@@ -65,3 +67,5 @@ m[10]=lbl_8036453C-(xx+yy);
 m[3]=lbl_80364544; m[7]=lbl_80364544; m[11]=lbl_80364544;
 m[12]=lbl_80364544; m[13]=lbl_80364544; m[14]=lbl_80364544; m[15]=lbl_8036453C;
 }
+
+} /* extern "C" */
