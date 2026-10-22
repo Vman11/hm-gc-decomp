@@ -541,6 +541,101 @@ s32 fn_800B81D4(s32 arg0) {
     return 1;
 }
 
+void Reset(u32 resetCode);
+
+static inline BOOL wbCallResetFunctions(BOOL final) {
+    extern s32 __OSSyncSram(void);
+    OSResetFunctionInfo *iter;
+    s32 failed;
+    failed = 0;
+    iter = ResetFunctionQueue_8035A5B8.head;
+    while (iter != NULL && failed == 0) {
+        failed |= !iter->func(final);
+        iter = iter->next;
+    }
+    failed |= !__OSSyncSram();
+    if (failed) return 0;
+    return 1;
+}
+
+static inline void wbKillThreads(void) {
+    extern void OSCancelThread(void *);
+    u8 *thread;
+    u8 *next;
+
+    for (thread = *(u8 **)0x800000DC; thread; thread = next) {
+        next = *(u8 **)(thread + 764);
+        switch (*(u16 *)(thread + 712)) {
+        case 1:
+        case 4:
+            OSCancelThread(thread);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+#pragma push
+#pragma peephole off
+void OSResetSystem(int reset, u32 resetCode, BOOL forceMenu) {
+    extern u32 bootThisDol_8035A5C0;
+    extern void OSDisableScheduler(void);
+    extern void OSEnableScheduler(void);
+    extern void __OSStopAudioSystem(void);
+    extern BOOL __PADDisableRecalibration(BOOL);
+    extern u8 *__OSLockSram(void);
+    extern BOOL __OSUnlockSram(BOOL);
+    extern s32 __OSSyncSram(void);
+    extern int OSDisableInterrupts(void);
+    extern void LCDisable(void);
+    extern void ICFlashInvalidate(void);
+    extern void __OSReboot(u32, BOOL);
+    extern void *memset(void *, int, unsigned long);
+    BOOL disableRecalibration;
+    u32 pad_[4]; /* the 2003 frame is 16 bytes larger (inlined helpers' locals) */
+
+    OSDisableScheduler();
+    __OSStopAudioSystem();
+    if (reset == 2 || (reset == 0 && bootThisDol_8035A5C0)) {
+        disableRecalibration = __PADDisableRecalibration(TRUE);
+    }
+    while (!wbCallResetFunctions(FALSE)) {
+    }
+    if (reset == 1 && forceMenu) {
+        u8 *sram = __OSLockSram();
+        sram[19] |= 0x40;
+        __OSUnlockSram(TRUE);
+        while (!__OSSyncSram()) {
+        }
+    }
+    OSDisableInterrupts();
+    wbCallResetFunctions(TRUE);
+    LCDisable();
+    if (reset == 1) {
+        OSDisableInterrupts();
+        __VIRegs[1] = 0;
+        ICFlashInvalidate();
+        Reset(resetCode * 8);
+    } else if (reset == 0) {
+        if ((*(u32 *)0x800030EC = bootThisDol_8035A5C0) != 0) {
+            __PADDisableRecalibration(disableRecalibration);
+        }
+        wbKillThreads();
+        OSEnableScheduler();
+        __OSReboot(resetCode, forceMenu);
+    }
+    wbKillThreads();
+    memset((void *)0x80000040, 0, 140);
+    memset((void *)0x800000D4, 0, 20);
+    memset((void *)0x800000F4, 0, 4);
+    memset((void *)0x80003000, 0, 192);
+    memset((void *)0x800030C8, 0, 12);
+    memset((void *)0x800030E2, 0, 1);
+    __PADDisableRecalibration(disableRecalibration);
+}
+#pragma pop
+
 #pragma push
 #pragma peephole off
 u32 OSGetResetCode(void) {
