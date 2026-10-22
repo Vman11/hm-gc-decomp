@@ -427,19 +427,23 @@ s32 fn_800DABB4(void *event) {
     } lbl_80323DD0;
     extern void *fn_80003488(void *, const void *, u32);
     s32 result = 0;
-    s32 nextEventID;
+    void *queue;
+
     fn_800DF2F8(&lbl_80323DD0);
-    if (lbl_80323DD0.count == 2) {
+    queue = &lbl_80323DD0;
+    if (((s32 *)queue)[1] == 2) {
         result = 0x100;
     } else {
-        nextEventID = (lbl_80323DD0.first + lbl_80323DD0.count) % 2;
-        fn_80003488(&lbl_80323DD0.events[nextEventID], event, 0xC);
-        lbl_80323DD0.events[nextEventID].eventID = lbl_80323DD0.eventID;
+        s32 index = (((s32 *)queue)[2] + ((s32 *)queue)[1]) % 2;
+        u8 *slot = (u8 *)queue + index * 0xC;
+        slot += 12;
+        fn_80003488(slot, event, 0xC);
+        lbl_80323DD0.events[index].eventID = lbl_80323DD0.eventID;
         lbl_80323DD0.eventID++;
         if (lbl_80323DD0.eventID < 0x100) {
             lbl_80323DD0.eventID = 0x100;
         }
-        lbl_80323DD0.count++;
+        ((s32 *)queue)[1]++;
     }
     fn_800DF2F0(&lbl_80323DD0);
     return result;
