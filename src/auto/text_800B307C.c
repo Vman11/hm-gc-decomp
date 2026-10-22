@@ -2046,7 +2046,8 @@ static void ClearArena(void) {
 }
 
 #pragma peephole off
-extern u16 DriveInfo_80307500[];
+u16 DriveInfo_80307500[0x10];
+u8 DriveBlock_80307520[0x30];
 
 void InquiryCallback(s32 result, s32 *block) {
     switch (block[3]) {
@@ -2058,6 +2059,164 @@ void InquiryCallback(s32 result, s32 *block) {
         break;
     }
 }
+static void OSExceptionInit(void);
+static inline u32 wbOSGetConsoleType(void) {
+    if (BootInfo_8035A520 == NULL || BootInfo_8035A520[11] == 0) {
+        return 0x10000002;
+    }
+    return BootInfo_8035A520[11];
+}
+
+const char *__OSVersion = "<< Dolphin SDK - OS\trelease build: Apr 17 2003 12:33:06 (0x2301) >>";
+
+void OSInit(void) {
+    extern int AreWeInitialized_8035A540;
+    extern u32 *BI2DebugFlag_8035A524;
+    extern u32 BI2DebugFlagHolder_8035A528;
+    extern s64 __OSStartTime;
+    extern s64 __OSGetSystemTime(void);
+    extern int OSDisableInterrupts(void);
+    extern int OSEnableInterrupts(void);
+    extern void PPCMtmmcr0(u32), PPCMtmmcr1(u32), PPCMtpmc1(u32), PPCMtpmc2(u32), PPCMtpmc3(u32), PPCMtpmc4(u32);
+    extern void PPCDisableSpeculation(void);
+    extern void PPCSetFpNonIEEEMode(void);
+    extern u32 PPCMfhid2(void);
+    extern void PPCMthid2(u32);
+    extern u32 __DVDLongFileNameFlag;
+    extern u32 __PADSpec;
+    extern u8 __ArenaLo[];
+    extern u8 __ArenaHi[];
+    extern u8 _stack_addr[];
+    extern void OSSetArenaLo(void *);
+    extern void OSSetArenaHi(void *);
+    extern void *OSGetArenaLo(void);
+    extern void *OSGetArenaHi(void);
+    extern void __OSInitSystemCall(void);
+    extern void OSInitAlarm(void);
+    extern void __OSModuleInit(void);
+    extern void __OSInterruptInit(void);
+    extern void __OSSetInterruptHandler(s16, void *);
+    extern void __OSResetSWInterruptHandler(s16, void *);
+    extern void __OSContextInit(void);
+    extern void __OSCacheInit(void);
+    extern void EXIInit(void);
+    extern void SIInit(void);
+    extern void __OSInitSram(void);
+    extern void __OSThreadInit(void);
+    extern void __OSInitAudioSystem(void);
+    extern int __OSInIPL;
+    extern void __OSInitMemoryProtection(void);
+    extern void OSReport(const char *, ...);
+    extern void OSRegisterVersion(const char *);
+    extern void EnableMetroTRKInterrupts(void);
+    extern void DVDInit(void);
+    extern int __OSIsGcam;
+    extern void DCInvalidateRange(void *, u32);
+    extern s32 DVDInquiryAsync(void *, void *, void *);
+    void *bi2StartAddr;
+    u32 consoleType;
+
+    if (AreWeInitialized_8035A540 == 0) {
+        AreWeInitialized_8035A540 = 1;
+        __OSStartTime = __OSGetSystemTime();
+        OSDisableInterrupts();
+        PPCMtmmcr0(0);
+        PPCMtmmcr1(0);
+        PPCMtpmc1(0);
+        PPCMtpmc2(0);
+        PPCMtpmc3(0);
+        PPCMtpmc4(0);
+        PPCDisableSpeculation();
+        PPCSetFpNonIEEEMode();
+        BI2DebugFlag_8035A524 = 0;
+        BootInfo_8035A520 = (u32 *)0x80000000;
+        __DVDLongFileNameFlag = 0;
+        bi2StartAddr = (void *)(*(u32 *)0x800000F4);
+        if (bi2StartAddr) {
+            BI2DebugFlag_8035A524 = (u32 *)((char *)bi2StartAddr + 0xC);
+            __PADSpec = ((u32 *)bi2StartAddr)[9];
+            *(u8 *)0x800030E8 = *BI2DebugFlag_8035A524;
+            *(u8 *)0x800030E9 = __PADSpec;
+        } else if (BootInfo_8035A520[13]) {
+            BI2DebugFlagHolder_8035A528 = *(u8 *)0x800030E8;
+            BI2DebugFlag_8035A524 = &BI2DebugFlagHolder_8035A528;
+            __PADSpec = *(u8 *)0x800030E9;
+        }
+        __DVDLongFileNameFlag = 1;
+        OSSetArenaLo((!BootInfo_8035A520[12]) ? (void *)__ArenaLo : (void *)BootInfo_8035A520[12]);
+        if ((!BootInfo_8035A520[12]) && (BI2DebugFlag_8035A524) && (*BI2DebugFlag_8035A524 < 2)) {
+            OSSetArenaLo((void *)(((u32)_stack_addr + 0x1F) & 0xFFFFFFE0));
+        }
+        OSSetArenaHi((!BootInfo_8035A520[13]) ? (void *)__ArenaHi : (void *)BootInfo_8035A520[13]);
+        OSExceptionInit();
+        __OSInitSystemCall();
+        OSInitAlarm();
+        __OSModuleInit();
+        __OSInterruptInit();
+        __OSSetInterruptHandler(0x16, __OSResetSWInterruptHandler);
+        __OSContextInit();
+        __OSCacheInit();
+        EXIInit();
+        SIInit();
+        __OSInitSram();
+        __OSThreadInit();
+        __OSInitAudioSystem();
+        PPCMthid2(PPCMfhid2() & ~0x40000000);
+        if (!__OSInIPL) {
+            __OSInitMemoryProtection();
+        }
+        OSReport("\nDolphin OS\n");
+        OSReport("Kernel built : %s %s\n", "Apr 17 2003", "12:33:06");
+        OSReport("Console Type : ");
+        consoleType = wbOSGetConsoleType();
+        switch (consoleType & 0xF0000000) {
+        case 0x00000000:
+            OSReport("Retail %d\n", consoleType);
+            break;
+        case 0x10000000:
+        case 0x20000000:
+            switch (consoleType & 0x0FFFFFFF) {
+            case 0x10000000:
+                OSReport("Mac Emulator\n");
+                break;
+            case 0x10000001:
+                OSReport("PC Emulator\n");
+                break;
+            case 0x10000002:
+                OSReport("EPPC Arthur\n");
+                break;
+            case 0x10000003:
+                OSReport("EPPC Minnow\n");
+                break;
+            default:
+                OSReport("Development HW%d (%08x)\n", (consoleType & 0xFFFFFFF) - 3, consoleType);
+                break;
+            }
+            break;
+        default:
+            OSReport("%08x\n", consoleType);
+            break;
+        }
+        OSReport("Memory %d MB\n", BootInfo_8035A520[10] >> 0x14U);
+        OSReport("Arena : 0x%x - 0x%x\n", OSGetArenaLo(), OSGetArenaHi());
+        OSRegisterVersion(__OSVersion);
+        if (BI2DebugFlag_8035A524 && ((*BI2DebugFlag_8035A524) >= 2)) {
+            EnableMetroTRKInterrupts();
+        }
+        ClearArena();
+        OSEnableInterrupts();
+        if (!__OSInIPL) {
+            DVDInit();
+            if (__OSIsGcam) {
+                *(u16 *)0x800030E6 = 0x9000;
+                return;
+            }
+            DCInvalidateRange(DriveInfo_80307500, 0x20);
+            DVDInquiryAsync(DriveBlock_80307520, DriveInfo_80307500, InquiryCallback);
+        }
+    }
+}
+
 static u32 __OSExceptionLocations[] = {
     0x00000100, 0x00000200, 0x00000300, 0x00000400, 0x00000500, 0x00000600, 0x00000700, 0x00000800,
     0x00000900, 0x00000C00, 0x00000D00, 0x00000F00, 0x00001300, 0x00001400, 0x00001700,
