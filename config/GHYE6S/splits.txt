@@ -34832,7 +34832,7 @@ auto/text_8024EECC.c:
 	extabindex  start:0x80029564 end:0x80029570
 	.text       start:0x8024EECC end:0x8024F13C
 
-auto/text_8024F13C.c:
+auto/text_8024F13C.cpp:
 	extab       start:0x800167A4 end:0x800167BC
 	extabindex  start:0x80029570 end:0x8002957C
 	.text       start:0x8024F13C end:0x8024F6D8
