@@ -114,6 +114,18 @@ typedef struct {
     s32 unk30;
 } Fn80283750Struct;
 
+void fn_8028C7F0(f32 *a);
+void fn_8028C998(f32 *a);
+void fn_8028F720(f32 *a);
+s32 fn_8027AA78(u8 *b, s32 on);
+void fn_80278F54(u8 *b);
+void *memcpy_np() asm("memcpy");
+static inline u32 cntlzw_inline(u32 x) {
+    u32 r;
+    asm("cntlzw %0,%1" : "=r"(r) : "r"(x));
+    return r;
+}
+
 void fn_80275F98();
 void fn_80276058(void *);
 void fn_8027564C(void *, int);
@@ -204,14 +216,14 @@ u32 fn_802752DC(u32 a, u32 b, u32 d) {
     hi = n >> 32;
     lo = n;
     if ((d & (d - 1)) == 0) {
-        s = __cntlzw(d);
+        s = cntlzw_inline(d);
         return (lo >> (31 - s)) | (hi << (s + 1));
     }
     inv = 0xFFFFFFFF / d;
     d16 = (d + 0xFFFF) >> 16;
     q = 0;
     if (d16 != 0) {
-        s = __cntlzw(hi);
+        s = cntlzw_inline(hi);
         q = (hi << s) / d16;
         sh = 16 - s;
         mask = sh >> 31;
@@ -256,7 +268,7 @@ u32 fn_80275578(u32 hi, u32 lo, u32 d) {
     s32 mask;
 
     if ((d & (d - 1)) == 0) {
-        s = __cntlzw(d);
+        s = cntlzw_inline(d);
         return (lo >> (31 - s)) | (hi << (s + 1));
     }
     inv = 0xFFFFFFFF / d;
@@ -264,7 +276,7 @@ u32 fn_80275578(u32 hi, u32 lo, u32 d) {
     q = 0;
     n = ((u64)hi << 32) | lo;
     if (d16 != 0) {
-        s = __cntlzw(hi);
+        s = cntlzw_inline(hi);
         q = (hi << s) / d16;
         sh = 16 - s;
         mask = sh >> 31;
@@ -843,7 +855,7 @@ s32 fn_8027A908(void *arg0, s8 *arg1) {
                     }
                     remaining -= spC;
                     if (M2C_FIELD(arg0, s32 *, 4) == 0x10) {
-                        memcpy(arg1, sp8, spC);
+                        memcpy_np(arg1, sp8, spC);
                     } else {
                         spC = (u32)spC >> 1;
                         dst = arg1;
@@ -2053,7 +2065,7 @@ void fn_80283750(Fn80283750Struct *arg0, s16 **arg1, s32 *arg2, s32 arg3, s32 *a
             arg0->unk14[i] = (arg0->unk14[i] * i + arg0->unk2C[i] * j) / half;
         }
     }
-    memcpy(arg0->unk2C, (u8 *)arg0->unk14 + (arg0->unk8 - arg0->unkC), arg0->unkC);
+    memcpy_np(arg0->unk2C, (u8 *)arg0->unk14 + (arg0->unk8 - arg0->unkC), arg0->unkC);
     if (arg2 != NULL) {
         *arg2 = arg0->unk8 - arg0->unkC;
     }
