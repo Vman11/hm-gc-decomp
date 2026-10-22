@@ -7766,9 +7766,18 @@ sdk/OSError.c:
 	.bss        start:0x80307550 end:0x80307598
 	.sdata      start:0x80359540 end:0x80359548
 
-auto/text_800B5B4C.c:
-	.text       start:0x800B5B4C end:0x800B7228
+sdk/OSFatal.c:
+	.text       start:0x800B5B4C end:0x800B67FC
+	.bss        start:0x80307598 end:0x80307880
+	.sdata      start:0x80359548 end:0x80359550
+	.sdata2     start:0x80362FF0 end:0x80363030
+
+sdk/OSFont.c:
+	.text       start:0x800B67FC end:0x800B7228
 	.data       start:0x802D7F30 end:0x802D8A40
+	.sdata      start:0x80359550 end:0x80359558
+	.sbss       start:0x8035A580 end:0x8035A590
+	.sdata2     start:0x80363030 end:0x80363038
 
 sdk/OSInterrupt.c:
 	.text       start:0x800B7228 end:0x800B7A94
