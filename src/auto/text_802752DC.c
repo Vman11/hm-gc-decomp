@@ -7892,15 +7892,14 @@ u8 *fn_80277218(void *name, u32 flags) {
     {
         u32 den = hdr.w[8];
         u32 num = hdr.w[7];
-        u32 r = (num + (den >> 1)) / den;
         L(0x28) = hdr.w[1];
         L(0xf0) = hdr.w[10];
         L(0xe8) = hdr.w[3];
         L(0x2bc) = num;
         L(0x2c0) = den;
-        L(0x2c4) = r;
+        L(0x2c4) = (num + (den >> 1)) / den;
         L(0xe4) = ((L(0xcc) >> 4) * L(0xd0)) >> 4;
-        if (r == 0) L(0x2c4) = 1;
+        if (L(0x2c4) == 0) L(0x2c4) = 1;
     }
     L(0x2c8) = (L(0x2c4) - 1) * 4;
     wD7218_plan((u8 *)&bk + 0xdc, L(0xe4) + 16);
@@ -7946,9 +7945,9 @@ u8 *fn_80277218(void *name, u32 flags) {
     if (flags & 0x4000000) {
         u32 n = B(0xf0);
         B(0x260) = (u32)((u8 *)name + 0x2c);
-        B(0x264) = (u32)((u8 *)name + n * 4 + 0x2c);
-        B(0x268) = (u32)((u8 *)name + n * 8 + 0x2c);
-        B(0x10c) = (u32)((u8 *)name + n * 12 + 0x2c);
+        B(0x264) = (u32)((u8 *)name + (n * 4 + 0x2c));
+        B(0x268) = (u32)((u8 *)name + (n * 8 + 0x2c));
+        B(0x10c) = (u32)((u8 *)name + (n * 12 + 0x2c));
     } else {
         u8 *io = b + 0x110;
         ((wDRead_77218)B(0x110))(io, -1, B(0x260), B(0xf0) * 4);
