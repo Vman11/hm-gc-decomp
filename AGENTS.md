@@ -85,6 +85,15 @@ After applying: `ninja`, then remove the touched units from `tools/rea/c2cpp_rej
 - **Scheduling only**: identical instructions in a different order (e.g. a void function whose epilogue restores r31 before `lwz r0`) can need `#pragma scheduling off` … `#pragma scheduling reset` around the function.
 - **Byte locals**: `u8` vs `s8`/`char`/`int` for a loaded byte changes register allocation even when the instructions are the same.
 
+- **More GC/1.3.2 tricks that matched large game functions** (library agent, 2026-10-22):
+  - In C++, `int` vs `s32` (`long`) on a parameter can change register coloring.
+  - Unfolded arithmetic in the original (`mulli 3; slwi 2`) comes from a repeated block in an inline helper.
+  - A float the original reloads at every use is `extern volatile f32`.
+  - String pools with gaps: a padding array plus a dead static function holding the filler literals.
+  - State-table switch walkers: tables as static arrays at their real offsets, and the loop written as
+    `for (q = b + idx; t > 0; q++) { if (*q > t) break; t -= b[idx++]; }`.
+  - Virtual calls that load through r12 only come out of C++ with real virtual classes.
+
 ## Linking units whose code already matches
 
 Many NonMatching units have every function at 100% and only fail the unit check (functions plus section layout vs
