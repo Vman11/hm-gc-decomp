@@ -236,6 +236,18 @@ static inline int __tolower_dec(int c) {
     return (c == -1 ? -1 : lbl_802E06C8[c]);
 }
 
+static inline int __fpclassifyd_dec(double x) {
+    switch (*(int *)&x & 0x7ff00000) {
+    case 0x7ff00000:
+        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 1;
+        return 2;
+    case 0:
+        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 5;
+        return 3;
+    }
+    return 4;
+}
+
 
 static void __rounddec(decimal *d, int digits) {
     if (digits > 0 && digits < d->sig.length) {
@@ -5124,18 +5136,6 @@ typedef struct decimal {
         unsigned char unused;
     } sig;
 } decimal;
-
-static inline int __fpclassifyd_dec(double x) {
-    switch (*(int *)&x & 0x7ff00000) {
-    case 0x7ff00000:
-        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 1;
-        return 2;
-    case 0:
-        if ((*(int *)&x & 0x000fffff) || *(1 + (int *)&x)) return 5;
-        return 3;
-    }
-    return 4;
-}
 #endif
 
 unsigned long long fn_800E2B94(double);
