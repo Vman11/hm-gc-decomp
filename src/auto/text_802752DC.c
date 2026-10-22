@@ -592,17 +592,6 @@ s32 fn_802767E0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
     return 1;
 }
 
-void *fn_80276930(u32 *arg0)
-{
-    if (arg0 == 0) {
-        lbl_802F3848[0] = 0;
-        lbl_802F3848[1] = 0;
-    } else {
-        lbl_802F3848[0] = arg0[0];
-        lbl_802F3848[1] = arg0[1];
-    }
-    return (void *)fn_802767E0;
-}
 
 void fn_802769B8(s32 arg0) {
     fn_800EB764(lbl_80357FC0, arg0);
@@ -6994,3 +6983,25 @@ end:
     return r;
 }
 #undef TB
+
+u8 *fn_80276970(u8 *s, u32 size) {
+    *(s32 *)(s + 0x2a8) += fn_80287804() + size;
+    return wC_fn_80287810(size);
+}
+
+s32 fn_802781F4(u8 *b, u8 *dest, s32 pitch, u32 height, u32 a7, u32 a8, u32 flags) {
+    return fn_80278234(b, dest, pitch, height, a7, a8, 0, 0, ((u32 *)b)[0], ((u32 *)b)[1], flags);
+}
+
+typedef struct { u32 a, b; } P8_80276930;
+extern P8_80276930 lbl_802F3848_p[] asm("lbl_802F3848");
+void *fn_80276930(u32 *arg0)
+{
+    if (arg0 == 0) {
+        lbl_802F3848_p[0].a = 0;
+        lbl_802F3848_p[0].b = 0;
+    } else {
+        lbl_802F3848_p[0] = *(P8_80276930 *)arg0;
+    }
+    return (void *)fn_802767E0;
+}
