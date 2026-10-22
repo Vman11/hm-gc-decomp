@@ -1,7 +1,5 @@
-auto/text_8007ED4C
-auto/text_80089FC4
-auto/text_8008A2B4
-auto/text_8008A5A4
-auto/text_80218720
-auto/text_8021CA10
-auto/text_8021CC7C
+auto/text_80057DDC
+auto/text_80083DAC
+auto/text_800A2AF0
+auto/text_800AB09C
+auto/text_801525F8
