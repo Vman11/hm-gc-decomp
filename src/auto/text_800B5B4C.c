@@ -589,6 +589,8 @@ extern u16 lbl_802D80B0[];
 
 
 extern s32 fn_800B9094(s32, s32, s32);
+#pragma push
+#pragma auto_inline off
 void fn_800B6B64(s32 arg0, s32 arg1, s32 arg2) {
     s32 n;
     while (arg1 > 0) {
@@ -604,6 +606,7 @@ void fn_800B6B64(s32 arg0, s32 arg1, s32 arg2) {
         arg0 += n;
     }
 }
+#pragma pop
 
 extern void **InterruptHandlerTable_8035A590;
 
@@ -1465,6 +1468,66 @@ static inline u16 wbOSGetFontEncode(void) {
 
 static inline BOOL wbIsSjisLeadByte(u8 c) {
     return (0x81 <= c && c <= 0x9F) || (0xE0 <= c && c <= 0xFC);
+}
+
+u32 fn_800B6BF0(u8 *fontData, u8 *tmp) {
+    extern u8 *lbl_8035A580;
+    extern u8 *lbl_8035A588;
+    extern s32 lbl_8035A58C;
+    extern u32 lbl_8035A584;
+    u32 size;
+
+    lbl_8035A584 = 0;
+    if (fn_800B6B0C() == 1) {
+        fn_800B6B64((s32)tmp, 0x4D000, 0x1AFF00);
+    } else {
+        fn_800B6B64((s32)tmp, 0x3000, 0x1FCF00);
+    }
+    if (tmp[0] == 'Y' && tmp[1] == 'a' && tmp[2] == 'y') {
+        size = *(u32 *)(tmp + 4);
+    } else {
+        size = 0;
+    }
+    if (size == 0) {
+        goto end;
+    }
+    fn_800B6998(tmp, fontData);
+    lbl_8035A580 = fontData;
+    lbl_8035A588 = fontData + *(u16 *)(fontData + 34);
+    lbl_8035A58C = *(u16 *)(fontData + 26) * *(u16 *)(fontData + 28);
+    if (wbOSGetFontEncode() == 1) {
+        int fontCode;
+        u8 *imageSrc;
+        int sheet;
+        int numChars;
+        int row;
+        int column;
+        int x;
+        int y;
+        u8 *src;
+        u16 imageT[4] = {0x2ABE, 0x003D, 0x003D, 0x003D};
+        u32 pad_; /* 2003 frame layout */
+
+        fontCode = fn_800B67FC(0x54);
+        sheet = fontCode / lbl_8035A58C;
+        numChars = fontCode - (sheet * lbl_8035A58C);
+        row = numChars / *(u16 *)(lbl_8035A580 + 26);
+        column = numChars - (row * *(u16 *)(lbl_8035A580 + 26));
+        row *= *(u16 *)(lbl_8035A580 + 18);
+        column *= *(u16 *)(lbl_8035A580 + 16);
+        imageSrc = lbl_8035A580 + *(u32 *)(lbl_8035A580 + 36);
+        imageSrc += ((sheet * *(u32 *)(lbl_8035A580 + 20)) >> 1);
+        for (y = 4; y < 8; y++) {
+            x = 0;
+            src = imageSrc + ((((*(u16 *)(lbl_8035A580 + 30) / 8) << 5) / 2) * ((row + y) / 8));
+            src += ((column + x) / 8) * 0x10;
+            src += ((row + y) % 8) * 2;
+            src += ((column + x) % 8) / 4;
+            *(u16 *)src = imageT[y - 4];
+        }
+    }
+end:
+    return size;
 }
 
 char *fn_800B6F24(char *string, void *image, int pos, int stride, s32 *width) {
