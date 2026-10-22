@@ -11,6 +11,9 @@ write_asm: true
 # Unreferenced functions the original link kept (the MW linker would dead-strip them once linked from C).
 force_active:
 - fn_8026848C
+- fn_800DF4D8
+- fn_800E1058
+- fn_800E1068
 block_relocations:
   # game data words that only look like pointers into AXOut/AXVPB .bss (odd addresses)
   - source: 0x802F450C

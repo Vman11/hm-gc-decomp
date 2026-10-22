@@ -8127,13 +8127,84 @@ sdk/GXPerf.c:
 	.data       start:0x802DFFE8 end:0x802E00D4
 
 auto/jt_802E00D4.c:
-	.data       start:0x802E00D4 end:0x802E0198
+	.data       start:0x802E00D4 end:0x802E0160
+
+trk/mainloop.c:
+	.text       start:0x800DAA80 end:0x800DAB78
+
+trk/nubevent.c:
+	.text       start:0x800DAB78 end:0x800DADA0
+
+trk/nubinit.c:
+	.text       start:0x800DADA0 end:0x800DAF24
+
+trk/msg.c:
+	.text       start:0x800DAF24 end:0x800DB100
+
+trk/msgbuf.c:
+	.text       start:0x800DB100 end:0x800DBCDC
+
+trk/serpoll.c:
+	.text       start:0x800DBCDC end:0x800DC0A8
+
+trk/usr_put.c:
+	.text       start:0x800DC0A8 end:0x800DC134
+
+trk/dispatch.c:
+	.text       start:0x800DC134 end:0x800DC1D0
+
+trk/msghndlr.c:
+	.text       start:0x800DC1D0 end:0x800DEA30
+	.data       start:0x802E0160 end:0x802E0198
 
 auto/jt_802E0198.c:
 	.data       start:0x802E0198 end:0x802E0238
 
-auto/text_800DAA80.c:
-	.text       start:0x800DAA80 end:0x800E1DA8
+trk/support.c:
+	.text       start:0x800DEA30 end:0x800DF2F0
+
+trk/mutex_TRK.c:
+	.text       start:0x800DF2F0 end:0x800DF308
+
+trk/notify.c:
+	.text       start:0x800DF308 end:0x800DF3E0
+
+trk/flush_cache.c:
+	.text       start:0x800DF3E0 end:0x800DF418
+
+trk/mem_TRK.c:
+	.text       start:0x800DF418 end:0x800DF4D0
+
+trk/targimpl.c:
+	.text       start:0x800DF4D0 end:0x800E1050
+	.rodata     start:0x8029BE28 end:0x8029BEA0
+
+trk/targsupp.c:
+	.text       start:0x800E1050 end:0x800E1070
+
+trk/dolphin_trk.c:
+	.text       start:0x800E1070 end:0x800E11C8
+
+trk/mpc_7xx_603e.c:
+	.text       start:0x800E11C8 end:0x800E1540
+
+trk/main_TRK.c:
+	.text       start:0x800E1540 end:0x800E1584
+
+trk/dolphin_trk_glue.c:
+	.text       start:0x800E1584 end:0x800E1A94
+
+trk/targcont.c:
+	.text       start:0x800E1A94 end:0x800E1AC8
+
+trk/target_options.c:
+	.text       start:0x800E1AC8 end:0x800E1AE4
+
+trk/mslsupp.c:
+	.text       start:0x800E1AE4 end:0x800E1CE0
+
+runtime/__va_arg.c:
+	.text       start:0x800E1CE0 end:0x800E1DA8
 
 auto/text_800E1DA8.cpp:
 	.text       start:0x800E1DA8 end:0x800E1DF0
