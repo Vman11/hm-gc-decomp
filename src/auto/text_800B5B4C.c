@@ -1272,6 +1272,123 @@ void fn_800B6024(GXColor fg, GXColor bg, u32 msg) {
     fn_800B50D8((u32)fn_800B6178, (u32)OSGetArenaHi());
 }
 
+volatile u32 __EXIRegsA[16] : 0xCC006800;
+u32 fn_800B6BF0(u8 *fontData, u8 *tmp);
+
+static inline void wbScreenClear(void *xfb, u16 xfbW, u16 xfbH, GXColor yuv) {
+    int i;
+    int j;
+    u8 *ptr;
+
+    ptr = xfb;
+    for (i = 0; i < xfbH; i++) {
+        for (j = 0; j < xfbW; j += 2) {
+            *ptr++ = yuv.r;
+            *ptr++ = yuv.g;
+            *ptr++ = yuv.r;
+            *ptr++ = yuv.b;
+        }
+    }
+}
+
+static inline GXColor wbRGB2YUV(GXColor rgb) {
+    f32 Y;
+    f32 Cb;
+    f32 Cr;
+    GXColor yuv;
+
+    Y  = 0.5f + (16.0f + ((0.098f * (f32) rgb.b) + ((0.257f * (f32) rgb.r) + (0.504f * (f32) rgb.g))));
+    Cb = 0.5f + (128.0f + ((0.439f * (f32) rgb.b) + ((-0.148f * (f32) rgb.r) - (0.291f * (f32) rgb.g))));
+    Cr = 0.5f + (128.0f + (((0.439f * (f32) rgb.r) - (0.368f * (f32) rgb.g)) - (0.071f * (f32) rgb.b)));
+    yuv.r = (Y > 235.0f) ? 235.0f : (Y < 16.0f) ? 16.0f : Y;
+    yuv.g = (Cb > 240.0f) ? 240.0f : (Cb < 16.0f) ? 16.0f : Cb;
+    yuv.b = (Cr > 240.0f) ? 240.0f : (Cr < 16.0f) ? 16.0f : Cr;
+    yuv.a = 0;
+    return yuv;
+}
+
+static inline WBYuv_ wbRGB2YUVw(GXColor rgb) {
+    f32 Y;
+    f32 Cb;
+    f32 Cr;
+    WBYuv_ yuv;
+
+    Y  = 0.5f + (16.0f + ((0.098f * (f32) rgb.b) + ((0.257f * (f32) rgb.r) + (0.504f * (f32) rgb.g))));
+    Cb = 0.5f + (128.0f + ((0.439f * (f32) rgb.b) + ((-0.148f * (f32) rgb.r) - (0.291f * (f32) rgb.g))));
+    Cr = 0.5f + (128.0f + (((0.439f * (f32) rgb.r) - (0.368f * (f32) rgb.g)) - (0.071f * (f32) rgb.b)));
+    yuv.r = (Y > 235.0f) ? 235.0f : (Y < 16.0f) ? 16.0f : Y;
+    yuv.g = (Cb > 240.0f) ? 240.0f : (Cb < 16.0f) ? 16.0f : Cb;
+    yuv.b = (Cr > 240.0f) ? 240.0f : (Cr < 16.0f) ? 16.0f : Cr;
+    yuv.a = 0;
+    return yuv;
+}
+
+void fn_800B6178(void) {
+    extern int OSEnableInterrupts(void);
+    extern int OSDisableInterrupts(void);
+    extern u32 strlen(const char *);
+    extern void *memmove(void *, const void *, u32);
+    extern void *fn_800B45C4(u32, u32);
+    extern void *OSGetArenaLo(void);
+    extern void fn_800F2540(s32, void *);
+    extern BOOL EXIDeselect(s32);
+    extern BOOL EXIUnlock(s32);
+    extern BOOL EXILock(s32, u32, void *);
+    extern void fn_800C2518(void *);
+    extern void fn_800C23E8(void);
+    extern u32 fn_800C2600(void);
+    extern void fn_800C2584(BOOL);
+    extern void DCFlushRange(void *, u32);
+    extern void OSReport(const char *, ...);
+    extern void PPCHalt(void);
+    u32 count;
+    u8 *fontData;
+    void *xfb;
+    u32 len;
+    u8 *fp;
+
+    OSEnableInterrupts();
+    fp = lbl_80307598;
+    len = strlen(*(char **)(fp + 8)) + 1;
+    *(void **)(fp + 8) = memmove(fn_800B45C4(len, 32), *(char **)(fp + 8), len);
+    fn_800F2540(0, NULL);
+    fn_800F2540(2, NULL);
+    while (!EXILock(0, 1, NULL)) {
+        while ((__EXIRegsA[3] & 1) == 1) {
+        }
+        EXIDeselect(0);
+        EXIUnlock(0);
+    }
+    EXIUnlock(0);
+    while ((__EXIRegsA[3] & 1) == 1) {
+    }
+    if (fn_800B6B0C() == 1) {
+        fontData = fn_800B45C4(0x90EE4, 32);
+    } else {
+        fontData = fn_800B45C4(0x10120, 32);
+    }
+    fn_800B6BF0(fontData, OSGetArenaLo());
+    xfb = fn_800B45C4(0x96000, 32);
+    wbScreenClear(xfb, 640, 480, wbRGB2YUV(*(GXColor *)(fp + 4)));
+    fn_800C2518(xfb);
+    fn_800B5F28(640, 480);
+    fn_800C23E8();
+    count = fn_800C2600();
+    do {
+    } while ((s32)(fn_800C2600() - count) < 2);
+    fn_800B5B4C(xfb, 640, 480, wbRGB2YUVw(*(GXColor *)(fp + 0)), 48, 100, *(u16 *)(fontData + 14), *(char **)(fp + 8));
+    DCFlushRange(xfb, 0x96000);
+    fn_800C2584(FALSE);
+    fn_800C23E8();
+    count = fn_800C2600();
+    do {
+    } while ((s32)(fn_800C2600() - count) < 1);
+    OSDisableInterrupts();
+    OSReport("%s\n", *(char **)(fp + 8));
+    PPCHalt();
+}
+
+
 #pragma pop
 
 
