@@ -1503,8 +1503,8 @@ void* memchr(const void* src, int val, unsigned long n) {
 
 void fn_800E8C8C(void *dst, const void *src, unsigned long n);
 void fn_800E8D38(void *dst, const void *src, unsigned long n);
-void fn_800E8DF8(u8 *d, const u8 *s, u32 n);
-void fn_800E8EA0(u8 *d, const u8 *s, u32 n);
+void fn_800E8DF8(void *d, const void *s, unsigned long n);
+void fn_800E8EA0(void *d, const void *s, unsigned long n);
 void *memmove(void *dst, const void *src, unsigned long n) {
     const unsigned char *p;
     unsigned char *q;
@@ -1539,42 +1539,68 @@ void *memmove(void *dst, const void *src, unsigned long n) {
     return dst;
 }
 
+#define cps ((unsigned char*)src)
+#define cpd ((unsigned char*)dst)
+#define lps ((unsigned long*)src)
+#define lpd ((unsigned long*)dst)
+#define deref_auto_inc(p) *++(p)
 void fn_800E8C8C(void* dst, const void* src, unsigned long n) {
-    unsigned long i;
-    int src_offset, left_shift, right_shift;
-    unsigned long v1, v2;
-    const char* cps = ((char*)src) + n;
-    char* cpd = ((char*)dst) + n;
+    u32 i, v1, v2;
+    u32 src_offset, left_shift, right_shift;
 
-    if ((i = ((unsigned long)cpd) & 3)) {
+    cps = ((u8*)src) + n;
+    cpd = ((u8*)dst) + n;
+
+    i = ((u32)cpd) & 3;
+
+    if (i) {
         n -= i;
-        do {
+
+        do
             *--cpd = *--cps;
-        } while (--i);
+        while (--i);
     }
-    src_offset = ((unsigned long)cps) & 3;
+
+    src_offset = ((u32)cps) & 3;
+
     left_shift = src_offset << 3;
     right_shift = 32 - left_shift;
+
     cps += 4 - src_offset;
+
     i = n >> 3;
-    v1 = *--((unsigned long*)cps);
+
+    v1 = *--lps;
+
     do {
-        v2 = *--((unsigned long*)cps);
-        *--((unsigned long*)cpd) = (v2 << left_shift) | (v1 >> right_shift);
-        v1 = *--((unsigned long*)cps);
-        *--((unsigned long*)cpd) = (v1 << left_shift) | (v2 >> right_shift);
+        v2 = *--lps;
+        *--lpd = (v2 << left_shift) | (v1 >> right_shift);
+        v1 = *--lps;
+        *--lpd = (v1 << left_shift) | (v2 >> right_shift);
     } while (--i);
+
     if (n & 4) {
-        v2 = *--((unsigned long*)cps);
-        *--((unsigned long*)cpd) = (v2 << left_shift) | (v1 >> right_shift);
+        v2 = *--lps;
+        *--lpd = (v2 << left_shift) | (v1 >> right_shift);
     }
-    if ((n &= 3)) {
+
+    n &= 3;
+
+    if (n) {
         cps += src_offset;
-        do {
+        do
             *--cpd = *--cps;
-        } while (--n);
+        while (--n);
     }
+
+    return;
 }
+#undef cps
+#undef cpd
+#undef lps
+#undef lpd
+#undef deref_auto_inc
+
 
 void fn_800E8D38(void *dst, const void *src, unsigned long n) {
     unsigned long i, v1, v2;
@@ -1632,111 +1658,127 @@ void fn_800E8D38(void *dst, const void *src, unsigned long n) {
 }
 
 #pragma pop
-void fn_800E8DF8(u8 *d, const u8 *s, u32 n) {
-    u32 a, b;
+#define cps ((unsigned char*)src)
+#define cpd ((unsigned char*)dst)
+#define lps ((unsigned long*)src)
+#define lpd ((unsigned long*)dst)
+#define deref_auto_inc(p) *++(p)
+void fn_800E8DF8(void* dst, const void* src, unsigned long n) {
     u32 i;
-    s += n;
-    d += n;
-    i = (u32)d & 3;
-    if (i != 0) {
-        n -= i;
-        do {
-            *--d = *--s;
-        } while (--i != 0);
-    }
-    i = n >> 5;
-    if (i != 0) {
-        do {
-            a = ((u32 *)s)[-1];
-            b = ((u32 *)s)[-2];
-            ((u32 *)d)[-1] = a;
-            a = ((u32 *)s)[-3];
-            ((u32 *)d)[-2] = b;
-            b = ((u32 *)s)[-4];
-            ((u32 *)d)[-3] = a;
-            a = ((u32 *)s)[-5];
-            ((u32 *)d)[-4] = b;
-            b = ((u32 *)s)[-6];
-            ((u32 *)d)[-5] = a;
-            a = ((u32 *)s)[-7];
-            ((u32 *)d)[-6] = b;
-            b = ((u32 *)s)[-8];
-            s -= 32;
-            ((u32 *)d)[-7] = a;
-            d -= 32;
-            *(u32 *)d = b;
-        } while (--i != 0);
-    }
-    i = (n >> 2) & 7;
-    if (i != 0) {
-        do {
-            s -= 4;
-            d -= 4;
-            *(u32 *)d = *(u32 *)s;
-        } while (--i != 0);
-    }
-    n &= 3;
-    if (n != 0) {
-        do {
-            *--d = *--s;
-        } while (--n != 0);
-    }
-}
 
-void fn_800E8EA0(u8 *d, const u8 *s, u32 n) {
-    u32 a, b;
-    u32 i;
-    i = (-(u32)d) & 3;
-    s -= 1;
-    d -= 1;
-    if (i != 0) {
+    cpd = ((u8*)dst) + n;
+    cps = ((u8*)src) + n;
+
+    i = ((u32)cpd) & 3;
+
+    if (i) {
         n -= i;
-        do {
-            *++d = *++s;
-        } while (--i != 0);
+
+        do
+            *--cpd = *--cps;
+        while (--i);
     }
+
     i = n >> 5;
-    s -= 3;
-    d -= 3;
-    if (i != 0) {
+
+    if (i)
         do {
-            a = ((u32 *)s)[1];
-            b = ((u32 *)s)[2];
-            ((u32 *)d)[1] = a;
-            a = ((u32 *)s)[3];
-            ((u32 *)d)[2] = b;
-            b = ((u32 *)s)[4];
-            ((u32 *)d)[3] = a;
-            a = ((u32 *)s)[5];
-            ((u32 *)d)[4] = b;
-            b = ((u32 *)s)[6];
-            ((u32 *)d)[5] = a;
-            a = ((u32 *)s)[7];
-            ((u32 *)d)[6] = b;
-            b = ((u32 *)s)[8];
-            s += 32;
-            ((u32 *)d)[7] = a;
-            d += 32;
-            *(u32 *)d = b;
-        } while (--i != 0);
-    }
-    i = (n >> 2) & 7;
-    if (i != 0) {
-        do {
-            s += 4;
-            d += 4;
-            *(u32 *)d = *(u32 *)s;
-        } while (--i != 0);
-    }
-    s += 3;
-    d += 3;
+            *--lpd = *--lps;
+            *--lpd = *--lps;
+            *--lpd = *--lps;
+            *--lpd = *--lps;
+            *--lpd = *--lps;
+            *--lpd = *--lps;
+            *--lpd = *--lps;
+            *--lpd = *--lps;
+        } while (--i);
+
+    i = (n & 31) >> 2;
+
+    if (i)
+        do
+            *--lpd = *--lps;
+        while (--i);
+
     n &= 3;
-    if (n != 0) {
-        do {
-            *++d = *++s;
-        } while (--n != 0);
-    }
+
+    if (n)
+        do
+            *--cpd = *--cps;
+        while (--n);
+
+    return;
 }
+#undef cps
+#undef cpd
+#undef lps
+#undef lpd
+#undef deref_auto_inc
+
+
+#define cps ((unsigned char*)src)
+#define cpd ((unsigned char*)dst)
+#define lps ((unsigned long*)src)
+#define lpd ((unsigned long*)dst)
+#define deref_auto_inc(p) *++(p)
+void fn_800E8EA0(void* dst, const void* src, unsigned long n) {
+    u32 i;
+
+    i = (-(u32)dst) & 3;
+
+    cps = ((u8*)src) - 1;
+    cpd = ((u8*)dst) - 1;
+
+    if (i) {
+        n -= i;
+
+        do
+            deref_auto_inc(cpd) = deref_auto_inc(cps);
+        while (--i);
+    }
+
+    lps = ((u32*)(cps + 1)) - 1;
+    lpd = ((u32*)(cpd + 1)) - 1;
+
+    i = n >> 5;
+
+    if (i)
+        do {
+            deref_auto_inc(lpd) = deref_auto_inc(lps);
+            deref_auto_inc(lpd) = deref_auto_inc(lps);
+            deref_auto_inc(lpd) = deref_auto_inc(lps);
+            deref_auto_inc(lpd) = deref_auto_inc(lps);
+            deref_auto_inc(lpd) = deref_auto_inc(lps);
+            deref_auto_inc(lpd) = deref_auto_inc(lps);
+            deref_auto_inc(lpd) = deref_auto_inc(lps);
+            deref_auto_inc(lpd) = deref_auto_inc(lps);
+        } while (--i);
+
+    i = (n & 31) >> 2;
+
+    if (i)
+        do
+            deref_auto_inc(lpd) = deref_auto_inc(lps);
+        while (--i);
+
+    cps = ((u8*)(lps + 1)) - 1;
+    cpd = ((u8*)(lpd + 1)) - 1;
+
+    n &= 3;
+
+    if (n)
+        do
+            deref_auto_inc(cpd) = deref_auto_inc(cps);
+        while (--n);
+
+    return;
+}
+#undef cps
+#undef cpd
+#undef lps
+#undef lpd
+#undef deref_auto_inc
+
 
 extern void __close_all(void);
 extern void (*__stdio_exit)(void);
@@ -3036,36 +3078,63 @@ char* fn_800EB720(char* dst, const char* src, u32 n) {
 }
 
 char* fn_800EB764(char* dst, const char* src) {
-    register unsigned char *destb, *fromb;
-    register unsigned long w, align;
+    char* ret = dst;
+    u8* d = (u8*)dst;
+    const u8* s = (const u8*)src;
+    u32 align;
+    u32 dstAlign;
+    u32 c;
+    u32 word;
+    u32 mask;
 
-    fromb = (unsigned char*)src;
-    destb = (unsigned char*)dst;
-    if ((align = ((int)fromb & 3)) != ((int)destb & 3)) goto bytecopy;
-    if (align) {
-        if ((*destb = *fromb) == 0) return dst;
-        for (align = 3 - align; align; align--) {
-            if ((*(++destb) = *(++fromb)) == 0) return dst;
-        }
-        ++destb;
-        ++fromb;
+    dstAlign = (u32)d & 3;
+    if (dstAlign != (align = (u32)s & 3)) {
+        goto adjust;
     }
-    w = *((unsigned long*)fromb);
-    if ((w + 0xfefefeff) & 0x80808080) goto bytecopy;
-    destb -= 4;
+
+    if (align != 0) {
+        c = *s;
+        *d = c;
+        if (c == 0) {
+            return ret;
+        }
+        for (align = 3 - align; align != 0; align--) {
+            c = *++s;
+            *++d = c;
+            if (c == 0) {
+                return ret;
+            }
+        }
+        d++;
+        s++;
+    }
+
+    word = *(const u32*)s;
+    mask = 0x80808080;
+    if (((word - 0x01010101) & mask) != 0) {
+        goto adjust;
+    }
+
+    d -= 4;
     do {
-        destb += 4;
-        *(unsigned long*)destb = w;
-        fromb += 4;
-        w = *(unsigned long*)fromb;
-    } while (!((w + 0xfefefeff) & 0x80808080));
-    destb += 4;
-bytecopy:
-    if ((*destb = *fromb) == 0) return dst;
+        *(u32*)(d += 4) = word;
+        word = *(const u32*)(s += 4);
+    } while (((word - 0x01010101) & mask) == 0);
+    d += 4;
+
+adjust:
+    c = *s;
+    *d = c;
+    if (c == 0) {
+        return ret;
+    }
+
     do {
-        if ((*(++destb) = *(++fromb)) == 0) return dst;
-    } while (1);
-    return dst;
+        c = *++s;
+        *++d = c;
+    } while (c != 0);
+
+    return ret;
 }
 
 typedef unsigned int size_t;
