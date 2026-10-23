@@ -5906,7 +5906,7 @@ auto/text_80098900.c:
 	extabindex  start:0x8001ABC4 end:0x8001ABD0
 	.text       start:0x80098900 end:0x80098A98
 
-auto/text_80098A98.c:
+auto/text_80098A98.cpp:
 	extab       start:0x800087CC end:0x800087D4
 	extabindex  start:0x8001ABD0 end:0x8001ABDC
 	.text       start:0x80098A98 end:0x80098DD4
