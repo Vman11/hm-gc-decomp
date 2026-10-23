@@ -58,7 +58,7 @@ auto/text_8002B14C.c:
 auto/text_8002B26C.cpp:
 	.text       start:0x8002B26C end:0x8002B42C
 
-auto/text_8002B42C.c:
+auto/text_8002B42C.cpp:
 	extab       start:0x80005720 end:0x80005728
 	extabindex  start:0x80017C00 end:0x80017C0C
 	.text       start:0x8002B42C end:0x8002B760
