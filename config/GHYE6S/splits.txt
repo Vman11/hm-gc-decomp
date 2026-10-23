@@ -719,14 +719,10 @@ auto/text_80039688.cpp:
 	.ctors      start:0x80293F10 end:0x80293F14
 
 auto/text_800396C0.cpp:
-	extab       start:0x80005C9C end:0x80005CA4
-	extabindex  start:0x80018104 end:0x80018110
-	.text       start:0x800396C0 end:0x8003984C
-
-auto/text_8003984C.cpp:
-	extab       start:0x80005CA4 end:0x80005CAC
-	extabindex  start:0x80018110 end:0x8001811C
-	.text       start:0x8003984C end:0x80039988
+	extab       start:0x80005C9C end:0x80005CAC
+	extabindex  start:0x80018104 end:0x8001811C
+	.text       start:0x800396C0 end:0x80039988
+	.sdata2     start:0x8035C070 end:0x8035C078
 
 auto/text_80039988.c:
 	extab       start:0x80005CAC end:0x80005CB4
@@ -31681,7 +31677,7 @@ auto/text_802223C0.cpp:
 	extabindex  start:0x80027B30 end:0x80027B3C
 	.text       start:0x802223C0 end:0x80222420
 
-auto/text_80222420.c:
+auto/text_80222420.cpp:
 	.text       start:0x80222420 end:0x80222514
 
 auto/text_80222514.c:

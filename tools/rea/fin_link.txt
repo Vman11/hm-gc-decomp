@@ -1,6 +1,15 @@
+auto/text_800396C0
 auto/text_800447E8
 auto/text_800501FC
 auto/text_80052028
+auto/text_8005D6D0
+auto/text_8006007C
 auto/text_8008CA0C
 auto/text_80090C68
 auto/text_800919A4
+auto/text_801462F0
+auto/text_8014ADB4
+auto/text_8014FFE8
+auto/text_80222420
+auto/text_80255BD4
+auto/text_8025BB30
