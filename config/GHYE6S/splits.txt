@@ -15205,12 +15205,12 @@ auto/text_80151168.c:
 	extabindex  start:0x8001F190 end:0x8001F19C
 	.text       start:0x80151168 end:0x80151204
 
-auto/text_80151204.c:
+auto/text_80151204.cpp:
 	extab       start:0x8000CA14 end:0x8000CA1C
 	extabindex  start:0x8001F19C end:0x8001F1A8
 	.text       start:0x80151204 end:0x801512E8
 
-auto/text_801512E8.c:
+auto/text_801512E8.cpp:
 	extab       start:0x8000CA1C end:0x8000CA24
 	extabindex  start:0x8001F1A8 end:0x8001F1B4
 	.text       start:0x801512E8 end:0x801513E0
@@ -17580,7 +17580,7 @@ auto/text_80174238.cpp:
 	extabindex  start:0x80020570 end:0x8002057C
 	.text       start:0x80174238 end:0x801742D8
 
-auto/text_801742D8.c:
+auto/text_801742D8.cpp:
 	extab       start:0x8000DEB8 end:0x8000DEC0
 	extabindex  start:0x8002057C end:0x80020588
 	.text       start:0x801742D8 end:0x801743B8
@@ -24053,7 +24053,7 @@ auto/text_801CCA8C.cpp:
 	extabindex  start:0x80023AE0 end:0x80023AEC
 	.text       start:0x801CCA8C end:0x801CCB84
 
-auto/text_801CCB84.c:
+auto/text_801CCB84.cpp:
 	extab       start:0x80011134 end:0x8001113C
 	extabindex  start:0x80023AEC end:0x80023AF8
 	.text       start:0x801CCB84 end:0x801CCC7C
@@ -27915,7 +27915,7 @@ auto/text_801FC7AC.cpp:
 auto/text_801FC7F8.cpp:
 	.text       start:0x801FC7F8 end:0x801FC834
 
-auto/text_801FC834.c:
+auto/text_801FC834.cpp:
 	extab       start:0x80013078 end:0x80013080
 	extabindex  start:0x80025BE0 end:0x80025BEC
 	.text       start:0x801FC834 end:0x801FC8F4
@@ -30354,7 +30354,7 @@ auto/text_802134DC.c:
 	extabindex  start:0x80026FE4 end:0x80026FF0
 	.text       start:0x802134DC end:0x80213620
 
-auto/text_80213620.c:
+auto/text_80213620.cpp:
 	extab       start:0x80014308 end:0x80014310
 	extabindex  start:0x80026FF0 end:0x80026FFC
 	.text       start:0x80213620 end:0x802136B8
@@ -31018,7 +31018,7 @@ auto/text_8021B384.c:
 	extabindex  start:0x80027590 end:0x8002759C
 	.text       start:0x8021B384 end:0x8021B4C8
 
-auto/text_8021B4C8.c:
+auto/text_8021B4C8.cpp:
 	extab       start:0x800147E8 end:0x800147F0
 	extabindex  start:0x8002759C end:0x800275A8
 	.text       start:0x8021B4C8 end:0x8021B560
