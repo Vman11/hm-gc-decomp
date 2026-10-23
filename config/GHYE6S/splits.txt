@@ -3235,7 +3235,7 @@ auto/text_80064B8C.c:
 auto/jt_802BD300.c:
 	.data       start:0x802BD300 end:0x802C1E70
 
-auto/text_80065740.c:
+auto/text_80065740.cpp:
 	extab       start:0x80007264 end:0x8000726C
 	extabindex  start:0x800195B0 end:0x800195BC
 	.text       start:0x80065740 end:0x80065B48
