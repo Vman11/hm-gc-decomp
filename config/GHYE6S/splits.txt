@@ -20289,7 +20289,7 @@ auto/text_80199FE8.cpp:
 	extabindex  start:0x80021C38 end:0x80021C44
 	.text       start:0x80199FE8 end:0x8019A058
 
-auto/text_8019A058.c:
+auto/text_8019A058.cpp:
 	extab       start:0x8000F5FC end:0x8000F604
 	extabindex  start:0x80021C44 end:0x80021C50
 	.text       start:0x8019A058 end:0x8019A348
