@@ -32288,13 +32288,10 @@ auto/text_8022AFE0.cpp:
 	extabindex  start:0x80028040 end:0x8002804C
 	.text       start:0x8022AFE0 end:0x8022B110
 
-auto/text_8022B110.c:
+auto/text_8022B110.cpp:
 	extab       start:0x800151DC end:0x800151E4
 	extabindex  start:0x8002804C end:0x80028058
-	.text       start:0x8022B110 end:0x8022B608
-
-auto/text_8022B608.c:
-	.text       start:0x8022B608 end:0x8022B618
+	.text       start:0x8022B110 end:0x8022B618
 
 auto/text_8022B618.cpp:
 	extab       start:0x800151E4 end:0x800151EC
