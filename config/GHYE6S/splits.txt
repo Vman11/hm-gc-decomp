@@ -34022,7 +34022,7 @@ auto/text_80243868.cpp:
 auto/text_80243990.c:
 	.text       start:0x80243990 end:0x802439BC
 
-auto/text_802439BC.c:
+auto/text_802439BC.cpp:
 	extab       start:0x80015F3C end:0x80015F44
 	extabindex  start:0x80028EC8 end:0x80028ED4
 	.text       start:0x802439BC end:0x80243F0C
