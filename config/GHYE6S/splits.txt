@@ -24261,7 +24261,7 @@ auto/text_801D03EC.c:
 	extabindex  start:0x80023C60 end:0x80023C6C
 	.text       start:0x801D03EC end:0x801D0620
 
-auto/text_801D0620.c:
+auto/text_801D0620.cpp:
 	extab       start:0x800112A8 end:0x800112B0
 	extabindex  start:0x80023C6C end:0x80023C78
 	.text       start:0x801D0620 end:0x801D08E8
