@@ -4,6 +4,3 @@ auto/text_80052028
 auto/text_8008CA0C
 auto/text_80090C68
 auto/text_800919A4
-auto/text_801F0980
-auto/text_802215DC
-auto/text_8022BF30

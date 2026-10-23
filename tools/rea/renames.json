@@ -1095,5 +1095,7 @@
  "dtor_8011A1B8": "__dt__9C8011A1B8Fv",
  "dtor_8011AABC": "__dt__9C8011AABCFv",
  "dtor_80119D80": "__dt__9C80119D80Fv",
- "dtor_8011AF8C": "__dt__9C8011AF8CFv"
+ "dtor_8011AF8C": "__dt__9C8011AF8CFv",
+ "fn_80271AD8": "__ct__9C80271AD8Fv",
+ "fn_80271A64": "__dt__9C80271AD8Fv"
 }
