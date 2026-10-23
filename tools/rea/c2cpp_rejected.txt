@@ -157,7 +157,6 @@ auto/text_801B30E0
 auto/text_801B31E0
 auto/text_801B36E4
 auto/text_801B3E98
-auto/text_801BA138
 auto/text_801BD4C8
 auto/text_801BD558
 auto/text_801BD864
