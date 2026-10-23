@@ -4007,7 +4007,7 @@ auto/text_8007BEEC.cpp:
 	.text       start:0x8007BEEC end:0x8007BF5C
 	.ctors      start:0x80293FDC end:0x80293FE0
 
-auto/text_8007BF5C.c:
+auto/text_8007BF5C.cpp:
 	extab       start:0x800078AC end:0x800078B4
 	extabindex  start:0x80019C4C end:0x80019C58
 	.text       start:0x8007BF5C end:0x8007C304
