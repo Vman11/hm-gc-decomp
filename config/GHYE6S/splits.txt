@@ -18709,7 +18709,7 @@ auto/text_80184D9C.cpp:
 	extabindex  start:0x80020EDC end:0x80020EE8
 	.text       start:0x80184D9C end:0x80184E3C
 
-auto/text_80184E3C.c:
+auto/text_80184E3C.cpp:
 	extab       start:0x8000E950 end:0x8000E96C
 	extabindex  start:0x80020EE8 end:0x80020EF4
 	.text       start:0x80184E3C end:0x80185038
