@@ -22483,7 +22483,7 @@ auto/text_801B52D4.cpp:
 	extabindex  start:0x80022DE4 end:0x80022DF0
 	.text       start:0x801B52D4 end:0x801B55D0
 
-auto/text_801B55D0.c:
+auto/text_801B55D0.cpp:
 	extab       start:0x80010754 end:0x8001075C
 	extabindex  start:0x80022DF0 end:0x80022DFC
 	.text       start:0x801B55D0 end:0x801B58B4
