@@ -8,7 +8,7 @@ extern u8 lbl_802F0DC0[];
 void __ct__9C80239B40Fv(u32 *);
 
 #pragma opt_propagation off
-u32 *fn_802271B4(u32 *param_1) {
+u32 *__ct__9C802271B4Fv(u32 *param_1) {
     u32 zero;
 
     __ct__9C80239B40Fv(param_1);

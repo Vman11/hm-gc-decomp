@@ -114,27 +114,6 @@ u32 fn_8014EC90(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out, 
     return code;
 }
 
-u32 fn_8014EE48(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out) {
-    u32 lo;
-    u32 hi;
-
-    out[0] = v[0] * m[0][0];
-    out[1] = v[0] * m[1][0];
-    out[2] = v[0] * m[2][0];
-    out[0] = v[1] * m[0][1] + out[0];
-    out[1] = v[1] * m[1][1] + out[1];
-    out[2] = v[1] * m[2][1] + out[2];
-    out[0] = v[2] * m[0][2] + out[0];
-    out[1] = v[2] * m[1][2] + out[1];
-    out[2] = v[2] * m[2][2] + out[2];
-    out[0] = out[0] + m[0][3];
-    out[1] = out[1] + m[1][3];
-    out[2] = out[2] + m[2][3];
-    lo = ((((u32 *)out)[1] >> 31) << 4) | ((((u32 *)out)[0] >> 31) << 2) | (((u32 *)out)[2] >> 31);
-    hi = (((u32)(0x3F800000 - ((s32 *)out)[1]) >> 31) << 5) | (((u32)(0x3F800000 - ((s32 *)out)[0]) >> 31) << 3) |
-         (((u32)(0x3F800000 - ((s32 *)out)[2]) >> 31) << 1);
-    return lo | (hi & ~(lo << 1));
-}
 
 u32 fn_8014EF58(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out, f32 *ndc) {
     extern f32 lbl_8036453C;
@@ -201,6 +180,35 @@ void fn_8014F198(f32 *m, const f32 *r, const f32 *s, const f32 *o, f32 n, f32 f)
     m[7] = lbl_80364544;
     m[11] = -(n * q);
     m[15] = lbl_80364544;
+}
+
+/* QV=2.0p1 */
+u32 fn_8014EE48(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out) {
+    u32 x, y, z;
+    u32 neg, over;
+
+    out[0] = v[0] * m[0][0];
+    out[1] = v[0] * m[1][0];
+    out[2] = v[0] * m[2][0];
+    out[0] = v[1] * m[0][1] + out[0];
+    out[1] = v[1] * m[1][1] + out[1];
+    out[2] = v[1] * m[2][1] + out[2];
+    out[0] = v[2] * m[0][2] + out[0];
+    out[1] = v[2] * m[1][2] + out[1];
+    out[2] = v[2] * m[2][2] + out[2];
+    out[0] = out[0] + m[0][3];
+    out[1] = out[1] + m[1][3];
+    out[2] = out[2] + m[2][3];
+    x = ((u32 *)out)[0];
+    y = ((u32 *)out)[1];
+    z = ((u32 *)out)[2];
+    neg = ((x >> 29) & 4);
+    over = (((0x3F800000 - x) >> 28) & 8);
+    neg |= ((y >> 27) & 16);
+    over |= (((0x3F800000 - y) >> 26) & 32);
+    neg |= (z >> 31);
+    over |= (((0x3F800000 - z) >> 30) & 2);
+    return neg | (over & ~(neg << 1));
 }
 
 } /* extern "C" */
