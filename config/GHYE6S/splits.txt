@@ -23339,7 +23339,7 @@ auto/text_801C28C0.c:
 	.text       start:0x801C28C0 end:0x801C2BB0
 	.data       start:0x802EBD24 end:0x802EBD64
 
-auto/text_801C2BB0.c:
+auto/text_801C2BB0.cpp:
 	extab       start:0x80010CA4 end:0x80010CAC
 	extabindex  start:0x800234EC end:0x800234F8
 	.text       start:0x801C2BB0 end:0x801C3050
