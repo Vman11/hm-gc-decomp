@@ -22938,7 +22938,7 @@ auto/text_801BBD50.cpp:
 auto/text_801BBDB4.c:
 	.text       start:0x801BBDB4 end:0x801BBDBC
 
-auto/text_801BBDBC.c:
+auto/text_801BBDBC.cpp:
 	extab       start:0x80010A40 end:0x80010A48
 	extabindex  start:0x800231BC end:0x800231C8
 	.text       start:0x801BBDBC end:0x801BBFFC
