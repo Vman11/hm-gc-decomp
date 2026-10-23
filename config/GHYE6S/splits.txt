@@ -9895,7 +9895,7 @@ auto/text_80104764.cpp:
 	extabindex  start:0x8001C6A0 end:0x8001C6AC
 	.text       start:0x80104764 end:0x80104870
 
-auto/text_80104870.c:
+auto/text_80104870.cpp:
 	extab       start:0x8000A024 end:0x8000A02C
 	extabindex  start:0x8001C6AC end:0x8001C6B8
 	.text       start:0x80104870 end:0x80104B48

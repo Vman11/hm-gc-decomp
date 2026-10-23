@@ -1990,6 +1990,7 @@ config.libs = [
             Object(Matching, "auto/text_801043B0.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801043E0.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80104764.cpp", extra_cflags=["-Cpp_exceptions on"]),
+            Object(NonMatching, "auto/text_80104870.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80104B48.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80104B74.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80104BCC.c"),
