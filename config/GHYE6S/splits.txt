@@ -26504,7 +26504,7 @@ auto/text_801EAA74.c:
 	extabindex  start:0x80024FE0 end:0x80024FEC
 	.text       start:0x801EAA74 end:0x801EAAE4
 
-auto/text_801EAAE4.c:
+auto/text_801EAAE4.cpp:
 	extab       start:0x800122E4 end:0x800122EC
 	extabindex  start:0x80024FEC end:0x80024FF8
 	.text       start:0x801EAAE4 end:0x801EAD30
