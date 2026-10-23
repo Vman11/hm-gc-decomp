@@ -4264,7 +4264,7 @@ auto/text_8007F500.cpp:
 	.text       start:0x8007F500 end:0x8007F574
 	.ctors      start:0x80293FEC end:0x80293FF0
 
-auto/text_8007F574.c:
+auto/text_8007F574.cpp:
 	extab       start:0x80007A88 end:0x80007A90
 	extabindex  start:0x80019E74 end:0x80019E80
 	.text       start:0x8007F574 end:0x8007F8F8
