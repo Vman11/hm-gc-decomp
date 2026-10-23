@@ -16,6 +16,17 @@ static const u32 wA_fmts[8] = { 0, 1, 2, 3, 4, 5, 6, 0xE };
 inline u32 wA_be32(char *b) { return b[3] + (b[2] << 8) + (b[1] << 16) + (b[0] << 24); }
 inline u32 wA_be16(u8 *b) { return b[1] + (b[0] << 8); }
 
+void fn_80148818(void);
+void fn_80207024(void);
+void fn_80206FD0(void);
+void fn_80206A1C(void);
+void fn_80206A14(void);
+void fn_80206A10(void);
+void fn_80206A08(void);
+void __dt__9C8016E11CFv(void);
+void fn_80206B70(u8 *p);
+void *__vt__9C8016E11C[11] = { 0, 0, (void *)fn_80206B70, (void *)__dt__9C8016E11CFv, (void *)fn_80148818, (void *)fn_80207024, (void *)fn_80206FD0, (void *)fn_80206A1C, (void *)fn_80206A14, (void *)fn_80206A10, (void *)fn_80206A08 };
+
 void fn_80206B70(u8 *p) {
     s32 got;
     char hdr[0x10];
