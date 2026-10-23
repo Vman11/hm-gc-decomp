@@ -24104,7 +24104,7 @@ auto/text_801CDA64.cpp:
 	extabindex  start:0x80023B28 end:0x80023B34
 	.text       start:0x801CDA64 end:0x801CDAB4
 
-auto/text_801CDAB4.c:
+auto/text_801CDAB4.cpp:
 	extab       start:0x8001118C end:0x80011194
 	extabindex  start:0x80023B34 end:0x80023B40
 	.text       start:0x801CDAB4 end:0x801CDDE4
