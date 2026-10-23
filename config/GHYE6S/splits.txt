@@ -18231,7 +18231,7 @@ auto/text_8017BCCC.c:
 	extabindex  start:0x80020AF8 end:0x80020B04
 	.text       start:0x8017BCCC end:0x8017C090
 
-auto/text_8017C090.c:
+auto/text_8017C090.cpp:
 	extab       start:0x8000E318 end:0x8000E320
 	extabindex  start:0x80020B04 end:0x80020B10
 	.text       start:0x8017C090 end:0x8017C324
