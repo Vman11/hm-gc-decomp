@@ -6280,7 +6280,7 @@ auto/text_8009F76C.cpp:
 	.text       start:0x8009F76C end:0x8009F7DC
 	.ctors      start:0x80294080 end:0x80294084
 
-auto/text_8009F7DC.c:
+auto/text_8009F7DC.cpp:
 	extab       start:0x80008BD0 end:0x80008BD8
 	extabindex  start:0x8001AED0 end:0x8001AEDC
 	.text       start:0x8009F7DC end:0x8009FB20
