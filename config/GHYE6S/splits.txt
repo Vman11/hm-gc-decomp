@@ -32123,7 +32123,7 @@ auto/text_802290E4.cpp:
 	extabindex  start:0x80027EE4 end:0x80027EF0
 	.text       start:0x802290E4 end:0x80229108
 
-auto/text_80229108.c:
+auto/text_80229108.cpp:
 	extab       start:0x800150C0 end:0x800150C8
 	extabindex  start:0x80027EF0 end:0x80027EFC
 	.text       start:0x80229108 end:0x80229734
