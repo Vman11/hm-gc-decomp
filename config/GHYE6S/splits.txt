@@ -6628,7 +6628,7 @@ auto/text_800A4938.cpp:
 	.text       start:0x800A4938 end:0x800A49A8
 	.ctors      start:0x80294094 end:0x80294098
 
-auto/text_800A49A8.c:
+auto/text_800A49A8.cpp:
 	extab       start:0x80008E80 end:0x80008E88
 	extabindex  start:0x8001B1D0 end:0x8001B1DC
 	.text       start:0x800A49A8 end:0x800A4D2C
