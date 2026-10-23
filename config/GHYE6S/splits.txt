@@ -35951,7 +35951,7 @@ auto/text_8025F9C8.cpp:
 auto/text_8025FF80.c:
 	.text       start:0x8025FF80 end:0x8025FF94
 
-auto/text_8025FF94.c:
+auto/text_8025FF94.cpp:
 	extab       start:0x80017290 end:0x80017298
 	extabindex  start:0x80029EA0 end:0x80029EAC
 	.text       start:0x8025FF94 end:0x802604AC
