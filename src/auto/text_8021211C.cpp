@@ -6,12 +6,12 @@ extern "C" {
 
 extern u8 lbl_802EFF28[];
 void __dl__FPv(void *);
-void dtor_8021ADD4(void *, int);
+void __dt__9C8021AE88Fv(void *, int);
 
 u32 * fn_8021211C(u32 *param_1, s16 param_2) {
     if (param_1 != (u32 *)0x0) {
         *param_1 = (u32)lbl_802EFF28;
-        dtor_8021ADD4(param_1, (int)(0));
+        __dt__9C8021AE88Fv(param_1, (int)(0));
         if (0 < param_2) {
             __dl__FPv(param_1);
         }

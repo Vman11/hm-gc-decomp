@@ -30210,14 +30210,10 @@ auto/text_80211A08.cpp:
 	.text       start:0x80211A08 end:0x80211A84
 
 auto/text_80211A84.cpp:
-	extab       start:0x800141A8 end:0x800141B0
-	extabindex  start:0x80026EB8 end:0x80026EC4
-	.text       start:0x80211A84 end:0x80211BB4
-
-auto/text_80211BB4.c:
-	extab       start:0x800141B0 end:0x8001420C
-	extabindex  start:0x80026EC4 end:0x80026ED0
-	.text       start:0x80211BB4 end:0x80211FB8
+	extab       start:0x800141A8 end:0x8001420C
+	extabindex  start:0x80026EB8 end:0x80026ED0
+	.text       start:0x80211A84 end:0x80211FB8
+	.rodata     start:0x802A7130 end:0x802A72C0
 
 auto/text_80211FB8.cpp:
 	extab       start:0x8001420C end:0x80014214

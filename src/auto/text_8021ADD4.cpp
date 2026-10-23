@@ -16,7 +16,7 @@ void __dl__FPv(void *);
 }
 struct V_8021ADD4 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(); };
 
-void *dtor_8021ADD4(u8 *p, s16 f) {
+void *__dt__9C8021AE88Fv(u8 *p, s16 f) {
     if (p != NULL) {
         *(void **)p = lbl_802F01F0;
         if (*(void **)(p + 36) != NULL) {
