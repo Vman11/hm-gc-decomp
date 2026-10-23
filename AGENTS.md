@@ -174,7 +174,7 @@ The decoded extab in `build/GHYE6S/asm/<unit>.s` says which C++ construct the or
 
 **Claimed game functions (2026-10-22):** the library agent now also works on game code, but only on the functions in
 `tools/decomp_agent/claimed_by_library_agent.txt`: units whose only unmatched functions are 1,000 bytes or larger
-(352 functions). Your `dumpasm2.py` loop works up from the smallest, so add that file's names to your skip.txt
+(352 functions), extended on 2026-10-23 to 500 bytes or larger. Re-run the awk line below after pulling. Your `dumpasm2.py` loop works up from the smallest, so add that file's names to your skip.txt
 (`awk '!/^#/{print $2}' tools/decomp_agent/claimed_by_library_agent.txt >> $DECOMP_SCRATCH/skip.txt`) and the two
 loops won't overlap. Pull often: both agents commit to `main`.
 
