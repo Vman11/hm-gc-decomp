@@ -26712,7 +26712,7 @@ auto/text_801ED29C.c:
 	.text       start:0x801ED29C end:0x801ED66C
 	.data       start:0x802EE53C end:0x802EE57C
 
-auto/text_801ED66C.c:
+auto/text_801ED66C.cpp:
 	extab       start:0x80012678 end:0x80012680
 	extabindex  start:0x800251A8 end:0x800251B4
 	.text       start:0x801ED66C end:0x801ED960
