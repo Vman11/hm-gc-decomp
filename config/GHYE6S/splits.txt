@@ -19169,7 +19169,7 @@ auto/text_8018AB8C.cpp:
 	extabindex  start:0x800212CC end:0x800212D8
 	.text       start:0x8018AB8C end:0x8018AC2C
 
-auto/text_8018AC2C.c:
+auto/text_8018AC2C.cpp:
 	extab       start:0x8000ECD0 end:0x8000ECEC
 	extabindex  start:0x800212D8 end:0x800212E4
 	.text       start:0x8018AC2C end:0x8018AE28
