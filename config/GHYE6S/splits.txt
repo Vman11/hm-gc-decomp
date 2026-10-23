@@ -32114,7 +32114,7 @@ auto/text_80228D7C.c:
 	extabindex  start:0x80027ECC end:0x80027ED8
 	.text       start:0x80228D7C end:0x80228EC8
 
-auto/text_80228EC8.c:
+auto/text_80228EC8.cpp:
 	extab       start:0x800150A0 end:0x800150B8
 	extabindex  start:0x80027ED8 end:0x80027EE4
 	.text       start:0x80228EC8 end:0x802290E4
