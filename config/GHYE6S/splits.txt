@@ -25723,7 +25723,7 @@ auto/text_801E4768.cpp:
 auto/text_801E47B8.c:
 	.text       start:0x801E47B8 end:0x801E47DC
 
-auto/text_801E47DC.c:
+auto/text_801E47DC.cpp:
 	extab       start:0x80011D0C end:0x80011D14
 	extabindex  start:0x80024908 end:0x80024914
 	.text       start:0x801E47DC end:0x801E4A94
