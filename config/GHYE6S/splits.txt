@@ -35943,7 +35943,7 @@ auto/text_8025F990.cpp:
 	.text       start:0x8025F990 end:0x8025F9C8
 	.ctors      start:0x80294368 end:0x8029436C
 
-auto/text_8025F9C8.c:
+auto/text_8025F9C8.cpp:
 	extab       start:0x80017288 end:0x80017290
 	extabindex  start:0x80029E94 end:0x80029EA0
 	.text       start:0x8025F9C8 end:0x8025FF80
