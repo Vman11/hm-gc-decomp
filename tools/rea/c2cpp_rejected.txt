@@ -124,6 +124,7 @@ auto/text_8015DE54
 auto/text_80161210
 auto/text_8016E11C
 auto/text_8016E24C
+auto/text_80176314
 auto/text_80178198
 auto/text_80179E70
 auto/text_80179FE4
