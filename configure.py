@@ -4423,6 +4423,7 @@ config.libs = [
             Object(NonMatching, "auto/text_801BBDBC.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801BBFFC.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"]),
             Object(NonMatching, "auto/text_801BC0CC.c"),
+            Object(NonMatching, "auto/text_801BC288.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801BC494.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801BC7D8.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801BC86C.cpp", extra_cflags=["-Cpp_exceptions on"]),

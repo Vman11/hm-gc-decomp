@@ -22953,7 +22953,7 @@ auto/text_801BC0CC.c:
 	extabindex  start:0x800231D4 end:0x800231E0
 	.text       start:0x801BC0CC end:0x801BC288
 
-auto/text_801BC288.c:
+auto/text_801BC288.cpp:
 	extab       start:0x80010A58 end:0x80010A60
 	extabindex  start:0x800231E0 end:0x800231EC
 	.text       start:0x801BC288 end:0x801BC494
