@@ -3945,7 +3945,7 @@ auto/text_8007B4AC.cpp:
 	extabindex  start:0x80019BC8 end:0x80019BD4
 	.text       start:0x8007B4AC end:0x8007B5FC
 
-auto/text_8007B5FC.c:
+auto/text_8007B5FC.cpp:
 	extab       start:0x80007828 end:0x80007830
 	extabindex  start:0x80019BD4 end:0x80019BE0
 	.text       start:0x8007B5FC end:0x8007B958
