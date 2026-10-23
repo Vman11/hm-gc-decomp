@@ -1,0 +1,22 @@
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+#include "common.h"
+
+extern "C" {
+
+extern char lbl_80295040[];
+extern char lbl_8035C3E0[4];
+s32 fn_8023F52C(void *p, char *a, char *b, char *name, s32 x, s32 y);
+void fn_8023F214(void *p);
+
+#pragma opt_propagation off
+void fn_80041404(u8 *p) {
+    char *base = lbl_80295040;
+    *(s32 *)(p + 0x118) = fn_8023F52C(p, lbl_8035C3E0, lbl_8035C3E0, base + 144, 1, 0);
+    *(s32 *)(p + 0x11c) = fn_8023F52C(p, lbl_8035C3E0, lbl_8035C3E0, base + 160, 1, 0);
+    *(s32 *)(p + 0x120) = fn_8023F52C(p, lbl_8035C3E0, lbl_8035C3E0, base + 172, 1, 0);
+    fn_8023F214(p);
+}
+#pragma opt_propagation reset
+
+} /* extern "C" */

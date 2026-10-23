@@ -27,7 +27,7 @@ void fn_8019998C(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 4) = arg2;
 }
 
-void fn_80199998(void *arg0, void *arg1, void *arg2) {
+void fn_80199998(void *arg0, const void *arg1, void *arg2) {
     extern f32 lbl_80330648[];
     extern Plane lbl_80330654;
     lbl_80330648[0] = M2C_FIELD(arg1, f32 *, 96);

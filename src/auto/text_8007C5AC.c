@@ -17,9 +17,9 @@ extern char lbl_8035F8E0[];
 static s32 data_000[4] = { 0, 0xFA, 0x1F4, 0x2EE };
 static char data_010[12] = "UI\\MEMCARD\\";
 static char data_01C[31][8] = {
-    "ATTIC", "BALLROOM", "CHILDREN", "CONSERV", "DINROOM", "FOYER", "GALLERY", "GRAVEYD",
+    "ATTIC", {'B', 'A', 'L', 'L', 'R', 'O', 'O', 'M'}, {'C', 'H', 'I', 'L', 'D', 'R', 'E', 'N'}, "CONSERV", "DINROOM", "FOYER", "GALLERY", "GRAVEYD",
     "GROOM", "GRTHALL", "GUEST", "HALLAB", "HALLCD", "KITCHEN", "LAB", "MUSEUM",
-    "MAID", "MASTRBED", "MAUSOLM", "MEASURE", "TOYROOM", "OBSERV", "PANTRY", "PARLOR",
+    "MAID", {'M', 'A', 'S', 'T', 'R', 'B', 'E', 'D'}, "MAUSOLM", "MEASURE", "TOYROOM", "OBSERV", "PANTRY", "PARLOR",
     "SITTING", "STRETCH", "SUNROOM", "WINTER", "TITLE", "SPIRIT", "GLOBAL"
 };
 static s32 data_114[3][3] = { { 0, 0x28, 0 }, { 0, 0x28, 0 }, { 0, 0x28, 0 } };

@@ -7,7 +7,7 @@ extern "C" {
 extern u8 lbl_802F15C8[];
 void __ct__9C80239B40Fv(void);
 
-u32 * fn_8022FDC8(u32 *param_1) {
+u32 * __ct__9C8022FDC8Fv(u32 *param_1) {
     __ct__9C80239B40Fv();
     *param_1 = (u32)lbl_802F15C8;
     *(u8 *)(param_1 + 0x95) = 0;
