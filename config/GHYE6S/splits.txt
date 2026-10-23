@@ -31462,7 +31462,7 @@ auto/text_802200D8.cpp:
 	extabindex  start:0x80027968 end:0x80027974
 	.text       start:0x802200D8 end:0x80220138
 
-auto/text_80220138.c:
+auto/text_80220138.cpp:
 	extab       start:0x80014AE0 end:0x80014B14
 	extabindex  start:0x80027974 end:0x80027980
 	.text       start:0x80220138 end:0x80220560
