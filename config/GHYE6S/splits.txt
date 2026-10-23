@@ -28992,10 +28992,11 @@ auto/text_80206A1C.cpp:
 	extabindex  start:0x800264B0 end:0x800264BC
 	.text       start:0x80206A1C end:0x80206B70
 
-auto/text_80206B70.c:
+auto/text_80206B70.cpp:
 	extab       start:0x800138DC end:0x800138E4
 	extabindex  start:0x800264BC end:0x800264C8
 	.text       start:0x80206B70 end:0x80206FD0
+	.rodata     start:0x802A6828 end:0x802A68C0
 	.data       start:0x802EF8D4 end:0x802EF910
 
 auto/jt_802EF910.c:
