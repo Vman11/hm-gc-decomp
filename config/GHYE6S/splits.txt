@@ -24251,7 +24251,7 @@ auto/text_801CFFB8.c:
 	extabindex  start:0x80023C48 end:0x80023C54
 	.text       start:0x801CFFB8 end:0x801D01BC
 
-auto/text_801D01BC.c:
+auto/text_801D01BC.cpp:
 	extab       start:0x80011298 end:0x800112A0
 	extabindex  start:0x80023C54 end:0x80023C60
 	.text       start:0x801D01BC end:0x801D03EC
