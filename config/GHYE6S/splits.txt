@@ -23886,7 +23886,7 @@ auto/text_801CA588.c:
 	extabindex  start:0x80023978 end:0x80023984
 	.text       start:0x801CA588 end:0x801CA6CC
 
-auto/text_801CA6CC.c:
+auto/text_801CA6CC.cpp:
 	extab       start:0x80010FFC end:0x80011004
 	extabindex  start:0x80023984 end:0x80023990
 	.text       start:0x801CA6CC end:0x801CA9E0
