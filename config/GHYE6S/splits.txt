@@ -20607,7 +20607,7 @@ auto/text_8019E3E0.cpp:
 	.text       start:0x8019E3E0 end:0x8019E3F0
 	.ctors      start:0x80294138 end:0x8029413C
 
-auto/text_8019E3F0.c:
+auto/text_8019E3F0.cpp:
 	extab       start:0x8000F868 end:0x8000F884
 	extabindex  start:0x80021EFC end:0x80021F08
 	.text       start:0x8019E3F0 end:0x8019E610
