@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+extern "C" {
+
 typedef struct {
     u8 pad[88];
     f32 x;
@@ -58,3 +60,5 @@ s32 fn_801BA138(S801BA138 *p) {
     }
     return 0;
 }
+
+} /* extern "C" */

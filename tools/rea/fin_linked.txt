@@ -1,8 +1,9 @@
-auto/text_801007D0
-auto/text_8014AB2C
-auto/text_801554E4
-auto/text_80186D00
-auto/text_801A4F5C
-auto/text_801AA7F4
-auto/text_8024B0AC
-auto/text_80273A88
+auto/text_80079824
+auto/text_801BA138
+auto/text_80225D08
+auto/text_8023C1BC
+auto/text_802509C0
+auto/text_80259220
+auto/text_8025B028
+auto/text_80261DEC
+auto/text_80273098
