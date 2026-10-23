@@ -24707,7 +24707,7 @@ auto/text_801D99B4.cpp:
 	extabindex  start:0x80024050 end:0x8002405C
 	.text       start:0x801D99B4 end:0x801D9B10
 
-auto/text_801D9B10.c:
+auto/text_801D9B10.cpp:
 	extab       start:0x80011590 end:0x80011598
 	extabindex  start:0x8002405C end:0x80024068
 	.text       start:0x801D9B10 end:0x801D9D80
