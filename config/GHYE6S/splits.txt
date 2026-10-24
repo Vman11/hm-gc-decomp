@@ -10912,7 +10912,7 @@ auto/text_80110030.cpp:
 	extabindex  start:0x8001CED4 end:0x8001CEE0
 	.text       start:0x80110030 end:0x80110064
 
-auto/text_80110064.c:
+auto/text_80110064.cpp:
 	extab       start:0x8000A960 end:0x8000A968
 	extabindex  start:0x8001CEE0 end:0x8001CEEC
 	.text       start:0x80110064 end:0x801103B4
