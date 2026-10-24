@@ -29963,7 +29963,7 @@ auto/text_8020FFDC.cpp:
 	extabindex  start:0x80026CA8 end:0x80026CB4
 	.text       start:0x8020FFDC end:0x80210068
 
-auto/text_80210068.c:
+auto/text_80210068.cpp:
 	extab       start:0x80014008 end:0x80014024
 	extabindex  start:0x80026CB4 end:0x80026CC0
 	.text       start:0x80210068 end:0x8021035C
