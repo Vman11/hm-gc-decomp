@@ -5955,7 +5955,7 @@ auto/text_80099D18.c:
 	extabindex  start:0x8001AC24 end:0x8001AC30
 	.text       start:0x80099D18 end:0x80099EEC
 
-auto/text_80099EEC.c:
+auto/text_80099EEC.cpp:
 	extab       start:0x80008830 end:0x80008838
 	extabindex  start:0x8001AC30 end:0x8001AC3C
 	.text       start:0x80099EEC end:0x8009A3D8
