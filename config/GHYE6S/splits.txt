@@ -24093,7 +24093,7 @@ auto/text_801CD014.cpp:
 auto/jt_802EC75C.c:
 	.data       start:0x802EC75C end:0x802ECB50
 
-auto/text_801CD688.c:
+auto/text_801CD688.cpp:
 	extab       start:0x80011154 end:0x80011184
 	extabindex  start:0x80023B1C end:0x80023B28
 	.text       start:0x801CD688 end:0x801CDA60
