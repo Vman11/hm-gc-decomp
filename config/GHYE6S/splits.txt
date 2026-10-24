@@ -20899,7 +20899,7 @@ auto/text_801A0DE8.cpp:
 	extabindex  start:0x80022178 end:0x80022184
 	.text       start:0x801A0DE8 end:0x801A1060
 
-auto/text_801A1060.c:
+auto/text_801A1060.cpp:
 	extab       start:0x8000FAA0 end:0x8000FAEC
 	extabindex  start:0x80022184 end:0x80022190
 	.text       start:0x801A1060 end:0x801A1444

@@ -4093,7 +4093,7 @@ config.libs = [
             Object(Matching, "auto/text_801A0D94.c"),
             Object(Matching, "auto/text_801A0DA4.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801A0DE8.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"], extab_padding=[0xB1, 0x02]),
-            Object(NonMatching, "auto/text_801A1060.c"),
+            Object(NonMatching, "auto/text_801A1060.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"]),
             Object(Matching, "auto/text_801A1444.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801A1480.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801A14C4.cpp", extra_cflags=["-Cpp_exceptions on"]),
