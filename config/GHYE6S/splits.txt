@@ -9722,7 +9722,7 @@ auto/text_80102E34.cpp:
 	extabindex  start:0x8001C52C end:0x8001C538
 	.text       start:0x80102E34 end:0x80102EC0
 
-auto/text_80102EC0.c:
+auto/text_80102EC0.cpp:
 	extab       start:0x80009EF0 end:0x80009F34
 	extabindex  start:0x8001C538 end:0x8001C544
 	.text       start:0x80102EC0 end:0x80103304
