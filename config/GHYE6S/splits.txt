@@ -14683,7 +14683,7 @@ auto/text_80148B68.c:
 	.text       start:0x80148B68 end:0x80148E6C
 	.data       start:0x802E64B8 end:0x802E64D4
 
-auto/text_80148E6C.c:
+auto/text_80148E6C.cpp:
 	extab       start:0x8000C674 end:0x8000C67C
 	extabindex  start:0x8001ED88 end:0x8001ED94
 	.text       start:0x80148E6C end:0x80149168
