@@ -14213,7 +14213,7 @@ auto/text_8013C2DC.cpp:
 auto/text_8013C324.c:
 	.text       start:0x8013C324 end:0x8013C334
 
-auto/text_8013C334.c:
+auto/text_8013C334.cpp:
 	extab       start:0x8000C278 end:0x8000C280
 	extabindex  start:0x8001E9B0 end:0x8001E9BC
 	.text       start:0x8013C334 end:0x8013C63C
