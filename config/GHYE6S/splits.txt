@@ -28638,7 +28638,7 @@ auto/text_802021A8.c:
 	extabindex  start:0x800261C8 end:0x800261D4
 	.text       start:0x802021A8 end:0x802022C8
 
-auto/text_802022C8.c:
+auto/text_802022C8.cpp:
 	extab       start:0x80013620 end:0x80013628
 	extabindex  start:0x800261D4 end:0x800261E0
 	.text       start:0x802022C8 end:0x802025B8
