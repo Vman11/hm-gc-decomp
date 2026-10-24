@@ -2169,7 +2169,7 @@ auto/text_8004E930.cpp:
 	.text       start:0x8004E930 end:0x8004E9A4
 	.ctors      start:0x80293F84 end:0x80293F88
 
-auto/text_8004E9A4.c:
+auto/text_8004E9A4.cpp:
 	extab       start:0x8000669C end:0x800066A4
 	extabindex  start:0x80018CB0 end:0x80018CBC
 	.text       start:0x8004E9A4 end:0x8004EC98
