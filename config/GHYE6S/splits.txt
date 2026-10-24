@@ -25387,7 +25387,7 @@ auto/text_801E1138.cpp:
 auto/text_801E11A0.cpp:
 	.text       start:0x801E11A0 end:0x801E11D8
 
-auto/text_801E11D8.c:
+auto/text_801E11D8.cpp:
 	extab       start:0x800119E0 end:0x800119E8
 	extabindex  start:0x8002462C end:0x80024638
 	.text       start:0x801E11D8 end:0x801E13D0
