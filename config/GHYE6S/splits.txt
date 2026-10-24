@@ -99,7 +99,7 @@ auto/text_8002C4DC.cpp:
 	extabindex  start:0x80017C48 end:0x80017C54
 	.text       start:0x8002C4DC end:0x8002C5A4
 
-auto/text_8002C5A4.c:
+auto/text_8002C5A4.cpp:
 	extab       start:0x80005758 end:0x80005760
 	extabindex  start:0x80017C54 end:0x80017C60
 	.text       start:0x8002C5A4 end:0x8002CA0C
