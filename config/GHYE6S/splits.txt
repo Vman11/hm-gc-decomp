@@ -1529,7 +1529,7 @@ auto/text_8004486C.cpp:
 	.text       start:0x8004486C end:0x800448DC
 	.ctors      start:0x80293F54 end:0x80293F58
 
-auto/text_800448DC.c:
+auto/text_800448DC.cpp:
 	extab       start:0x8000620C end:0x80006214
 	extabindex  start:0x80018788 end:0x80018794
 	.text       start:0x800448DC end:0x80044AD4
