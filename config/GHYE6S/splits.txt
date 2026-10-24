@@ -3658,7 +3658,7 @@ auto/text_8007225C.c:
 auto/text_80072388.cpp:
 	.text       start:0x80072388 end:0x800724AC
 
-auto/text_800724AC.c:
+auto/text_800724AC.cpp:
 	extab       start:0x80007558 end:0x80007560
 	extabindex  start:0x80019964 end:0x80019970
 	.text       start:0x800724AC end:0x80072944
