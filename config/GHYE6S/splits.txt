@@ -1288,7 +1288,7 @@ auto/text_8004101C.cpp:
 	.text       start:0x8004101C end:0x80041054
 	.ctors      start:0x80293F40 end:0x80293F44
 
-auto/text_80041054.c:
+auto/text_80041054.cpp:
 	extab       start:0x80006054 end:0x8000605C
 	extabindex  start:0x80018590 end:0x8001859C
 	.text       start:0x80041054 end:0x80041348
