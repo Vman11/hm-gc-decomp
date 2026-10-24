@@ -35190,10 +35190,11 @@ auto/text_80252D78.cpp:
 	.text       start:0x80252D78 end:0x80252DB0
 	.ctors      start:0x80294324 end:0x80294328
 
-auto/text_80252DB0.c:
+auto/text_80252DB0.cpp:
 	extab       start:0x80016B70 end:0x80016B78
 	extabindex  start:0x80029864 end:0x80029870
 	.text       start:0x80252DB0 end:0x80253250
+	.sdata2     start:0x80366570 end:0x80366588
 
 auto/text_80253250.cpp:
 	extab       start:0x80016B78 end:0x80016B80
