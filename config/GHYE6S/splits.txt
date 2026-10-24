@@ -22544,10 +22544,11 @@ auto/text_801B7254.c:
 	extabindex  start:0x80022E74 end:0x80022E80
 	.text       start:0x801B7254 end:0x801B79E4
 
-auto/text_801B79E4.c:
+auto/text_801B79E4.cpp:
 	extab       start:0x800107B4 end:0x800107BC
 	extabindex  start:0x80022E80 end:0x80022E8C
 	.text       start:0x801B79E4 end:0x801B7FC0
+	.sdata2     start:0x80364F60 end:0x80364F68
 
 auto/text_801B7FC0.cpp:
 	extab       start:0x800107BC end:0x800107C4
