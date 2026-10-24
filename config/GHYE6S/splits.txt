@@ -1616,7 +1616,7 @@ auto/text_800452D0.cpp:
 	.text       start:0x800452D0 end:0x80045340
 	.ctors      start:0x80293F5C end:0x80293F60
 
-auto/text_80045340.c:
+auto/text_80045340.cpp:
 	extab       start:0x800062A4 end:0x800062AC
 	extabindex  start:0x8001883C end:0x80018848
 	.text       start:0x80045340 end:0x8004556C
