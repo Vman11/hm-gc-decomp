@@ -17336,7 +17336,7 @@ auto/text_8016E750.c:
 	extabindex  start:0x80020378 end:0x80020384
 	.text       start:0x8016E750 end:0x8016EAAC
 
-auto/text_8016EAAC.c:
+auto/text_8016EAAC.cpp:
 	extab       start:0x8000DD08 end:0x8000DD10
 	extabindex  start:0x80020384 end:0x80020390
 	.text       start:0x8016EAAC end:0x8016F10C
