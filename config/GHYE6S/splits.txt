@@ -31234,7 +31234,7 @@ auto/text_8021CD34.cpp:
 auto/text_8021CD88.c:
 	.text       start:0x8021CD88 end:0x8021CD98
 
-auto/text_8021CD98.c:
+auto/text_8021CD98.cpp:
 	extab       start:0x80014938 end:0x80014950
 	extabindex  start:0x80027764 end:0x80027770
 	.text       start:0x8021CD98 end:0x8021D080
