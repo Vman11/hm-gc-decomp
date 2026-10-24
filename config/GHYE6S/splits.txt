@@ -28679,7 +28679,7 @@ auto/text_80203170.cpp:
 auto/text_802031E0.c:
 	.text       start:0x802031E0 end:0x802031E4
 
-auto/text_802031E4.c:
+auto/text_802031E4.cpp:
 	extab       start:0x80013694 end:0x800136CC
 	extabindex  start:0x80026228 end:0x80026234
 	.text       start:0x802031E4 end:0x802035C4
