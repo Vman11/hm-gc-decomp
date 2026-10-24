@@ -4312,7 +4312,7 @@ auto/text_8007FC10.cpp:
 	.text       start:0x8007FC10 end:0x8007FC84
 	.ctors      start:0x80293FF0 end:0x80293FF4
 
-auto/text_8007FC84.c:
+auto/text_8007FC84.cpp:
 	extab       start:0x80007AD8 end:0x80007AE0
 	extabindex  start:0x80019ED4 end:0x80019EE0
 	.text       start:0x8007FC84 end:0x8007FF68
