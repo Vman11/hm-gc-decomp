@@ -30438,10 +30438,11 @@ auto/text_80214124.cpp:
 	extabindex  start:0x800270A4 end:0x800270B0
 	.text       start:0x80214124 end:0x802141B0
 
-auto/text_802141B0.c:
+auto/text_802141B0.cpp:
 	extab       start:0x80014388 end:0x800143A4
 	extabindex  start:0x800270B0 end:0x800270BC
 	.text       start:0x802141B0 end:0x80214468
+	.rodata     start:0x802A7428 end:0x802A74F0
 
 auto/text_80214468.cpp:
 	extab       start:0x800143A4 end:0x800143AC
