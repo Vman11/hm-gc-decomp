@@ -5208,7 +5208,7 @@ auto/text_8008DED8.cpp:
 	.text       start:0x8008DED8 end:0x8008DF48
 	.ctors      start:0x80294034 end:0x80294038
 
-auto/text_8008DF48.c:
+auto/text_8008DF48.cpp:
 	extab       start:0x8000823C end:0x800082B4
 	extabindex  start:0x8001A648 end:0x8001A654
 	.text       start:0x8008DF48 end:0x8008E324
