@@ -6,7 +6,7 @@ extern "C" {
 
 void fn_8014AAE4(int);
 
-u32 * fn_80196530(u32 *param_1) {
+u32 * __ct__9C80196530Fv(u32 *param_1) {
     *param_1 = 0;
     param_1[1] = 0;
     param_1[2] = 0;

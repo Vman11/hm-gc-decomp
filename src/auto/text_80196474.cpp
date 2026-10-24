@@ -9,7 +9,7 @@ void fn_8014AAE4(u32 *);
 struct VCall_fn_80196474_0 { virtual void p0(); virtual void m(u32 **); };
 struct C80196474_8 { u8 pad[4]; C80196474_8(); };
 
-u32 *fn_80196474(u32 *param_1, s16 param_2) {
+u32 *__dt__9C80196530Fv(u32 *param_1, s16 param_2) {
     u32 **o;
 
     if (param_1 != 0) {

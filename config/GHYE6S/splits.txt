@@ -20072,7 +20072,7 @@ auto/text_80197448.cpp:
 	extabindex  start:0x80021A64 end:0x80021A70
 	.text       start:0x80197448 end:0x80197514
 
-auto/text_80197514.c:
+auto/text_80197514.cpp:
 	extab       start:0x8000F4B0 end:0x8000F4CC
 	extabindex  start:0x80021A70 end:0x80021A7C
 	.text       start:0x80197514 end:0x8019777C

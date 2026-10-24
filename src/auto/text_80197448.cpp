@@ -6,13 +6,13 @@ extern "C" {
 
 extern volatile f32 lbl_80364C1C;
 extern f32 lbl_80364C20;
-void fn_80196474(void);
+void __dt__9C80196530Fv(void);
 void fn_800E1E88(void *, void *);
 void fn_801A15D8(void *);
 
 void fn_80197448(u8 *p) {
     if (*(void **)(p + 164) != 0) {
-        fn_800E1E88(*(void **)(p + 164), (void *)fn_80196474);
+        fn_800E1E88(*(void **)(p + 164), (void *)__dt__9C80196530Fv);
     }
     fn_801A15D8(p);
     *(s32 *)(p + 144) = 0;
