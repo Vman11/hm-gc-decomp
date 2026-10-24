@@ -24193,7 +24193,7 @@ auto/text_801CEB9C.cpp:
 auto/text_801CECE8.c:
 	.text       start:0x801CECE8 end:0x801CECFC
 
-auto/text_801CECFC.c:
+auto/text_801CECFC.cpp:
 	extab       start:0x80011240 end:0x80011248
 	extabindex  start:0x80023BD0 end:0x80023BDC
 	.text       start:0x801CECFC end:0x801CF1FC
