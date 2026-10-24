@@ -14283,7 +14283,7 @@ auto/text_8013D97C.c:
 	extabindex  start:0x8001EA34 end:0x8001EA40
 	.text       start:0x8013D97C end:0x8013DB38
 
-auto/text_8013DB38.c:
+auto/text_8013DB38.cpp:
 	extab       start:0x8000C350 end:0x8000C358
 	extabindex  start:0x8001EA40 end:0x8001EA4C
 	.text       start:0x8013DB38 end:0x8013DD80
