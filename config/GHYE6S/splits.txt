@@ -31759,7 +31759,7 @@ auto/text_8022345C.cpp:
 	extabindex  start:0x80027BC0 end:0x80027BCC
 	.text       start:0x8022345C end:0x802234B0
 
-auto/text_802234B0.c:
+auto/text_802234B0.cpp:
 	extab       start:0x80014CBC end:0x80014CC4
 	extabindex  start:0x80027BCC end:0x80027BD8
 	.text       start:0x802234B0 end:0x802237B8
