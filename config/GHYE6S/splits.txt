@@ -33109,7 +33109,7 @@ auto/text_80239DB4.cpp:
 	extabindex  start:0x80028730 end:0x8002873C
 	.text       start:0x80239DB4 end:0x80239E04
 
-auto/text_80239E04.c:
+auto/text_80239E04.cpp:
 	extab       start:0x80015958 end:0x80015970
 	extabindex  start:0x8002873C end:0x80028748
 	.text       start:0x80239E04 end:0x8023A138
