@@ -9,14 +9,14 @@ extern u8 lbl_802BCCA8[];
 extern volatile f32 lbl_8035E4A8;
 extern f32 lbl_8035E4CC;
 extern void *lbl_8035B320;
-void fn_80233124(void *);
+void __ct__9C80233124Fv(void *);
 void fn_800604C4(s32, s32, s32, s32);
 void fn_800F7EC0(void *);
 void fn_800F7E98(void);
 } /* extern "C" */
 
 struct C80233124 {
-    C80233124() { fn_80233124(this); }
+    C80233124() { __ct__9C80233124Fv(this); }
     ~C80233124();
 };
 

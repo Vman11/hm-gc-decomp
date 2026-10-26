@@ -5,7 +5,7 @@
 extern "C" {
 
 /* QV=2.0p1 */
-void fn_80233124(void *);
+void __ct__9C80233124Fv(void *);
 extern u8 lbl_802BCC00[];
 extern f32 lbl_8035E438;
 } /* extern "C" */
@@ -24,7 +24,7 @@ struct C8005D3E0 {
     s32 f828;
     s32 f832;
     C8005D3E0() {
-        fn_80233124(this);
+        __ct__9C80233124Fv(this);
         vt = lbl_802BCC00;
         f772 = 0;
         f776 = 0;
