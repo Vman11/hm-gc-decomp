@@ -1,2 +1,4 @@
-auto/text_800F7138
-auto/text_80210480
+auto/text_80038078
+auto/text_8008C3B8
+auto/text_80115C58
+auto/text_80149FE8
