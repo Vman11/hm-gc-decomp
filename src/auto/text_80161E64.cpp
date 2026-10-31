@@ -6,7 +6,8 @@ extern "C" {
 
 struct R { u8 pad_[292]; virtual void s0(); virtual void s1(); virtual void s2(void *, int, int); virtual void s3(); virtual void err(int); virtual u32 next(); };
 struct C801632EC { u32 f0; s32 a[4]; s32 f20, f24, f28; u8 b32; s32 f36; s32 c[4]; s32 f56, f60, f64; u8 b68; s32 f72, f76, f80, f84, f88; C801632EC(); };
-struct T { u8 pad[16]; s32 m[3][4]; u8 n64; C801632EC *p68; u8 n72; s32 fn_80162FBC(R *); };
+struct T { u8 pad[16]; s32 m[3][4]; u8 n64; C801632EC *p68; u8 n72; };
+s32 fn_80162FBC(T *, R *);
 extern void *lbl_8035AC20;
 extern u32 lbl_80364654, lbl_80364658, lbl_8036465C, lbl_80364660;
 u32 fn_800FADA8(R *);
@@ -194,7 +195,7 @@ void fn_80161E64(T *t, void *u, R *r) {
                     case 70: t->p68[i].f64 = m4(r); break;
                     case 71: t->p68[i].b68 = 1; break;
                     case 72: t->p68[i].f72 = m5(r); break;
-                    case 77: t->p68[i].f76 = t->fn_80162FBC(r); break;
+                    case 77: t->p68[i].f76 = fn_80162FBC(t, r); break;
                     case 78: t->p68[i].f80 = m6(r); break;
                     case 79: t->p68[i].f88 = fn_800FB33C(r); break;
                     case 80: t->p68[i].f84 = fn_800FB33C(r); break;
