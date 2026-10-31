@@ -7213,6 +7213,7 @@ config.libs = [
             Object(Matching, "auto/text_8025BA80.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8025BAC4.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8025BB30.cpp", extra_cflags=["-Cpp_exceptions on"], mw_version="GC/2.0p1", extab_padding=[0xB0, 0x02]),
+            Object(NonMatching, "auto/text_8025BC78.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8025C0FC.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8025C178.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8025C248.cpp", extra_cflags=["-Cpp_exceptions on"]),
