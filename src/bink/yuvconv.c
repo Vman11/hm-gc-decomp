@@ -2,8 +2,8 @@
 #include "bink_common.h"
 
 void fn_8028B134(s32 count, u32 *dst, u32 *src, u32 *p3, u32 *p4) {
-    s32 n = (count >> 1) - 1;
-    if (count >> 1) do {
+    s32 n = count >> 1;
+    while (--n != -1) {
         u32 a = *src;
         u32 b = *p3;
         u32 c = *p4;
@@ -16,13 +16,14 @@ void fn_8028B134(s32 count, u32 *dst, u32 *src, u32 *p3, u32 *p4) {
         *++dst = ((a << 16) & 0xFF000000) + ((b << 16) & 0xFF0000) + ((a << 8) & 0xFF00) + (c & 0xFF);
         src++;
         dst++;
-    } while (n-- != 0);
+    }
     if (count & 1) {
         u32 a = *src;
         u16 b = *(u16 *)p3;
         u16 c = *(u16 *)p4;
+        u32 x0 = (a & 0xFF000000) + ((b << 8) & 0xFF0000) + ((a >> 8) & 0xFF00) + (c >> 8);
         dst[1] = ((a << 16) & 0xFF000000) + ((b & 0xFF) << 16) + ((a << 8) & 0xFF00) + (c & 0xFF);
-        dst[0] = (a & 0xFF000000) + ((b << 8) & 0xFF0000) + ((a >> 8) & 0xFF00) + (c >> 8);
+        dst[0] = x0;
     }
 }
 
@@ -31,7 +32,7 @@ void fn_8028B264(s32 n, u32* dst, u32* y, u32* u, u32* v) {
     u32 uu, vv, yy, c;
 
     i = n >> 1;
-    while (i--) {
+    while (--i != -1) {
         uu = *u++;
         vv = *v++;
         yy = *y++;
@@ -52,6 +53,7 @@ void fn_8028B264(s32 n, u32* dst, u32* y, u32* u, u32* v) {
     if (n & 1) {
         u16 uh = *(u16*)u;
         u16 vh = *(u16*)v;
+        u32 c, yy;
         yy = *y;
         c = ((uh << 8) & 0xFF0000) + (vh >> 8);
         *dst++ = (yy & 0xFF000000) + ((yy & 0xFF000000) >> 16) + c;
@@ -84,12 +86,53 @@ void fn_8028B480(s32 n, u32 *dst, u32 *src) {
     }
 }
 
+static inline u32 wR(BitBuf *bs, u32 n) {
+    u32 bits = bs->bits;
+    u32 v;
+    if (bits >= n) {
+        u32 buf = bs->buf;
+        bs->bits = bits - n;
+        v = buf & (0xFFFFFFFF >> (32 - n));
+        bs->buf = buf >> n;
+    } else {
+        u32 *p = bs->ptr;
+        u32 buf = bs->buf;
+        u32 w = *p;
+        bs->bits = bits - (n - 32);
+        bs->ptr = p + 1;
+        v = (buf | (w << bits)) & (0xFFFFFFFF >> (32 - n));
+        n -= bits;
+        bs->buf = w >> n;
+    }
+    return v;
+}
+
+static inline void wW(BitBuf *bs, u32 v, u32 n) {
+    u32 bits = bs->bits;
+    u32 buf;
+    v &= lbl_802AB0C0[n];
+    buf = bs->buf | (v << bits);
+    bits += n;
+    bs->buf = buf;
+    bs->bits = bits;
+    if (bits > 31) {
+        *bs->ptr = buf;
+        bs->ptr++;
+        bs->bits -= 32;
+        if (bs->bits != 0) {
+            n -= bs->bits;
+            bs->buf = v >> n;
+        } else {
+            bs->buf = 0;
+        }
+    }
+}
 void fn_8028B510(BitBuf *dst, BitBuf *src, u32 n) {
     for (; n > 7; n -= 8) {
-        BitBuf_Write(dst, BitBuf_Read(src, 8), 8);
+        wW(dst, wR(src, 8), 8);
     }
     if (n == 0) {
         return;
     }
-    BitBuf_Write(dst, BitBuf_Read(src, n), n);
+    wW(dst, wR(src, n), n);
 }

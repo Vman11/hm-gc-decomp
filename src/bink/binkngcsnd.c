@@ -229,26 +229,28 @@ void fn_80275D6C(s16 *src, u8 *left, u8 *right, u32 count) {
 s32 fn_80275DD8(void *arg0, u32 size, void *cb) {
     StreamBuf *s = arg0;
     u32 len;
+#define F4 (*(volatile u32 *)&s->unkF4)
 
     len = (size / s->unkE0) * s->unkE0;
-    if (s->unkF4 + len > s->unkDC) {
-        len = s->unkDC - s->unkF4;
+    if (F4 + len > s->unkDC) {
+        len = s->unkDC - F4;
     }
     if (s->unkCC != 0) {
-        DCFlushRangeNoSync((void *)(s->unkE8 + s->unkF4), len);
+        DCFlushRangeNoSync((void *)(s->unkE8 + F4), len);
     }
-    DCFlushRangeNoSync((void *)(s->unkE4 + s->unkF4), len);
+    DCFlushRangeNoSync((void *)(s->unkE4 + F4), len);
     fn_800B2EA8();
     if (s->unkCC != 0) {
-        fn_800C6D6C(&s->req2, 0, 0, 1, s->unkE8 + s->unkF4, s->unkD4 + s->unkF4, len, 0);
+        fn_800C6D6C(&s->req2, 0, 0, 1, s->unkE8 + F4, s->unkD4 + F4, len, 0);
     }
     s->req.owner = s;
-    fn_800C6D6C(&s->req, (u32)s, 0, 1, s->unkE4 + s->unkF4, s->unkD0 + s->unkF4, len, cb);
-    s->unkF4 += len;
-    if (s->unkF4 >= s->unkDC) {
-        s->unkF4 -= s->unkDC;
+    fn_800C6D6C(&s->req, (u32)s, 0, 1, s->unkE4 + F4, s->unkD0 + F4, len, cb);
+    F4 += len;
+    if (F4 >= s->unkDC) {
+        F4 -= s->unkDC;
     }
     return len;
+#undef F4
 }
 
 void fn_80275F08(void *arg0) {
@@ -277,18 +279,16 @@ void *arg0;
 
 void fn_80275FC0(void *arg0) {
     u8 *p = arg0;
-    void *callback;
     u32 size = *(u32 *)(p + 0x100);
-    if (size >= *(u32 *)(p + 0x108) && *(s32 *)(p + 0xFC) == 0 && *(s32 *)(p + 0xC4) == 0) {
-        *(s32 *)(p + 0xC4) = 1;
-        if (*(s32 *)(p + 0xF8) == 0) {
+    if (size >= *(u32 *)(p + 0x108) && *(s32 *)(p + 0xFC) == 0 && *(volatile s32 *)(p + 0xC4) == 0) {
+        *(volatile s32 *)(p + 0xC4) = 1;
+        if (*(volatile s32 *)(p + 0xF8) == 0) {
             *(s32 *)(p + 0xF8) = 1;
-            callback = fn_80275F18;
+            *(volatile u32 *)(p + 0x100) -= fn_80275DD8(p, size, fn_80275F18);
         } else {
-            callback = fn_80275F08;
+            *(volatile u32 *)(p + 0x100) -= fn_80275DD8(p, size, fn_80275F08);
         }
-        *(u32 *)(p + 0x100) -= fn_80275DD8(p, size, callback);
-        *(u32 *)(p + 0x108) = *(u32 *)(p + 0xE0);
+        *(volatile u32 *)(p + 0x108) = *(volatile u32 *)(p + 0xE0);
     }
 }
 
@@ -471,7 +471,7 @@ s32 fn_802766C8(u8 *arg0, s32 arg1) {
             *(s32 *)(arg0 + 0x108) = *(s32 *)(arg0 + 0x104);
             *(s32 *)(arg0 + 0x100) = 0;
             *(s32 *)(arg0 + 0xF0) = 0;
-            fn_802756B8(arg0 + 0x78, *(s32 *)(arg0 + 0x70), 1, *(s32 *)(arg0 + 0x104));
+            ((void (*)(void *, int, int))fn_802756B8)(arg0 + 0x78, *(s32 *)(arg0 + 0x70), 1);
         }
     } else if (*(s32 *)(arg0 + 0x60) == 1) {
         fn_8027564C(arg0 + 0x78, 0);
@@ -499,10 +499,11 @@ s32 fn_802767E0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
     void *f;
     s32 a, b, c;
 
+    ((void *(*)())memset)(arg0, 0, 376);
     *(s32 *)(arg0 + 0x6C) = arg1;
     *(s32 *)(arg0 + 0x78) = 0x7FFF;
-    *(s32 *)(arg0 + 0x80) = 0x67F8;
     *(s32 *)(arg0 + 0xFC) = 0;
+    *(s32 *)(arg0 + 0x80) = 0x67F8;
     *(s32 *)(arg0 + 0x60) = 1;
     *(void **)(arg0 + 0x0) = fn_802760B4;
     *(void **)(arg0 + 0x4) = fn_802762D8;
@@ -510,12 +511,14 @@ s32 fn_802767E0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
     *(s32 *)(arg0 + 0x70) = arg2;
     *(s32 *)(arg0 + 0x74) = arg3;
     *(s32 *)(arg0 + 0x7C) = 0x67F8;
-    if (arg3 == 1) {
-        f = fn_802762FC;
-    } else if (arg2 == 8) {
-        f = fn_80276488;
+    if (arg3 != 1) {
+        if (arg2 == 8) {
+            f = fn_80276488;
+        } else {
+            f = fn_802763BC;
+        }
     } else {
-        f = fn_802763BC;
+        f = fn_802762FC;
     }
     *(void **)(arg0 + 0x8) = f;
     *(void **)(arg0 + 0xC) = fn_80276554;
