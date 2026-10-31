@@ -10966,7 +10966,7 @@ auto/text_80111134.cpp:
 	extabindex  start:0x8001CF4C end:0x8001CF58
 	.text       start:0x80111134 end:0x8011131C
 
-auto/text_8011131C.c:
+auto/text_8011131C.cpp:
 	extab       start:0x8000A9C4 end:0x8000AAE4
 	extabindex  start:0x8001CF58 end:0x8001CF64
 	.text       start:0x8011131C end:0x80111BC0
