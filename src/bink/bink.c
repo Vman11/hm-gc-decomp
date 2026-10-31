@@ -66,6 +66,67 @@ u32 fn_80276AB8(u8 *p) {
     return 0;
 }
 
+typedef struct BTrk {
+    s32 (*ready)(struct BTrk *);
+    s32 (*get)(struct BTrk *, u8 **, u32 *);
+    void (*done)(struct BTrk *, u32);
+    u8 pad0C[0x2C - 0x0C];
+    u8 *start;
+    u8 *end;
+    u8 pad34[4];
+    u8 *rd;
+    u8 pad3C[4];
+    u32 left;
+    s32 cvt;
+    s32 lim;
+    u8 pad4C[0x54 - 0x4C];
+    u32 thr;
+    u32 mask;
+    u8 pad5C[376 - 0x5C];
+} BTrk;
+#define TRK(i) (&(*(BTrk **)(b + 768))[i])
+#define CVT ((u8 *(*)(u8 *, u8 *, u32))fn_80276A90)
+#define CPY ((void *(*)())memcpy)
+void fn_80276B84(void *bv) {
+    u8 *b = bv;
+    u32 i;
+    u8 *buf;
+    u32 size;
+    if (TRK(*(u32 *)(b + 760) - 1)->ready == 0) return;
+    if (fn_80283DFC(wCa_802F3860_7925C[0], b + 844) == 0) return;
+    for (i = 0; i < *(u32 *)(b + 760); i++) {
+        while (TRK(i)->left > TRK(i)->thr || (*(s32 *)(b + 12) > TRK(i)->lim && TRK(i)->left != 0)) {
+            u32 n;
+            if (TRK(i)->get(TRK(i), &buf, &size) == 0) break;
+            if (TRK(i)->cvt) size += size;
+            if (size > TRK(i)->left) size = TRK(i)->left;
+            if (!(*(s32 *)(b + 12) > TRK(i)->lim)) size &= TRK(i)->mask << TRK(i)->cvt;
+            TRK(i)->left -= size;
+            n = TRK(i)->end - TRK(i)->rd;
+            if (n < size) {
+                if (n) {
+                    if (TRK(i)->cvt) buf = CVT(buf, TRK(i)->rd, n);
+                    else { CPY(buf, TRK(i)->rd, n); buf += n; }
+                }
+                if (TRK(i)->cvt) CVT(buf, TRK(i)->start, size - n);
+                else CPY(buf, TRK(i)->start, size - n);
+                TRK(i)->rd = TRK(i)->start + (size - n);
+            } else {
+                if (TRK(i)->cvt) CVT(buf, TRK(i)->rd, size);
+                else CPY(buf, TRK(i)->rd, size);
+                TRK(i)->rd += size;
+            }
+            if (TRK(i)->cvt) size >>= 1;
+            TRK(i)->done(TRK(i), size);
+            if (TRK(i)->ready(TRK(i)) == 0) break;
+        }
+    }
+    fn_80283F38(wCa_802F3860_7925C[0], b + 844);
+}
+#undef TRK
+#undef CVT
+#undef CPY
+
 void fn_80276E38(u8* arg0) {
     if (*(s32*)(arg0 + 0x280) == 0) {
         *(s32*)(arg0 + 0x280) = fn_802753F0();
@@ -1057,6 +1118,89 @@ void fn_80279AFC(u8 *b, u32 *o, u32 frames) {
 }
 #undef D
 
+s32 fn_80279C80(s32 *out, u8 *map, s32 pitch, s32 *r) {
+    s32 y, bw, bh, i, j, x, w, h;
+    u8 *p;
+    map += r[0] / 16;
+
+    map += (r[1] / 16) * pitch;
+    bh = r[3] / 16;
+    bw = r[2] / 16;
+    for (j = 0, p = map; j < bh; j++, p += pitch)
+        for (i = 0; i < bw; i++)
+            if (p[i]) goto top;
+    return 0;
+top:
+    map += pitch * j;
+    bh -= j;
+    j *= 16;
+    out[1] = j + r[1];
+    out[3] = h = r[3] - j;
+    if (h > 1) {
+        for (j = 0, p = map + (bh - 1) * pitch; j < bh; j++, p -= pitch)
+            for (i = 0; i < bw; i++)
+                if (p[i]) goto bot;
+    bot:
+        bh -= j;
+        out[3] = h - j * 16;
+    }
+    x = r[0];
+    for (i = 0; i < bw; i++)
+        for (j = 0, p = map + i; j < bh; j++, p += pitch)
+            if (*p) goto left;
+left:
+    bw -= i;
+    map += i;
+    i *= 16;
+    out[0] = i + x;
+    out[2] = w = r[2] - i;
+    if (w > 1) {
+        for (i = bw - 1, bw = i; i >= 0; i--)
+            for (j = 0, p = map + i; j < bh; j++, p += pitch)
+                if (*p) goto right;
+    right:
+        out[2] = w - (bw - i) * 16;
+    }
+    return 1;
+}
+
+typedef struct BRect { s32 x, y, w, h; } BRect;
+s32 fn_80279C80(s32 *out, u8 *map, s32 pitch, s32 *r);
+s32 fn_80279E90(BRect *o1, BRect *o2, BRect *r, u8 *map, s32 pitch) {
+    BRect a, b, t;
+    s32 best, s;
+    if (r->w > 31) {
+        t = *r;
+        best = (t.w / 2 + 15) & ~15;
+        t.w = best;
+        fn_80279C80((s32 *)o1, map, pitch, (s32 *)&t);
+        t = *r;
+        t.w -= best;
+        t.x += best;
+        fn_80279C80((s32 *)o2, map, pitch, (s32 *)&t);
+        best = r->w * r->h - o1->w * o1->h - o2->w * o2->h;
+    } else {
+        best = 0;
+    }
+    if (r->h > 31) {
+        t = *r;
+        s = (t.h / 2 + 15) & ~15;
+        t.h = s;
+        fn_80279C80((s32 *)&a, map, pitch, (s32 *)&t);
+        t = *r;
+        t.h -= s;
+        t.y += s;
+        fn_80279C80((s32 *)&b, map, pitch, (s32 *)&t);
+        s = r->w * r->h - a.w * a.h - b.w * b.h;
+        if (s > best) {
+            *o1 = a;
+            *o2 = b;
+            return s;
+        }
+    }
+    return best;
+}
+
 void fn_8027A4BC(u8 *p) {
     if (*(s32 *)(p + 760) != 0) {
         fn_80276B84(p);
@@ -1148,6 +1292,33 @@ u32 fn_8027A75C(u8 *p, s32 i) {
     if (p != 0) {
         return (*(u32 **)(p + 616))[i];
     }
+    return 0;
+}
+
+typedef struct SndTrk { u32 rate; u32 bits; u32 chans; u32 size; u8 *b; void *snd; u32 idx; } SndTrk;
+u8 *fn_8027A77C(u8 *b, u32 idx) {
+    void *snd;
+    SndTrk *o;
+    u32 f;
+    if (b == 0 || idx >= *(u32 *)(b + 240)) return 0;
+    f = ((volatile u32 *)*(u32 **)(b + 612))[idx];
+    if ((s32)f >= 0 && !(f & 0x10000000)) goto fail;
+    f = (*(u32 **)(b + 612))[idx];
+    snd = (void *)wD7218_sndfmt(f & 0xFFFF, ((f >> 29) & 1) + 1, ((s32)f >= 0 && (f & 0x10000000)) ? 1 : 0);
+    if (snd == 0) return 0;
+    o = (SndTrk *)fn_80276970(b, 28);
+    if (o == 0) { fn_8028389C(snd); goto fail; }
+    wD7218_memset(o, 0, 28);
+    o->snd = snd;
+    o->b = b;
+    o->rate = (*(u32 **)(b + 612))[idx] & 0xFFFF;
+    o->bits = (((*(u32 **)(b + 612))[idx] >> 27) & 8) + 8;
+    o->chans = (((*(u32 **)(b + 612))[idx] >> 29) & 1) + 1;
+    o->size = ((*(u32 **)(b + 608))[idx] + 3) & ~3;
+    if (o->bits == 8) o->size >>= 1;
+    o->idx = idx;
+    return (u8 *)o;
+fail:
     return 0;
 }
 
