@@ -2343,7 +2343,7 @@ auto/text_800520A4.cpp:
 	.text       start:0x800520A4 end:0x80052118
 	.ctors      start:0x80293F90 end:0x80293F94
 
-auto/text_80052118.c:
+auto/text_80052118.cpp:
 	extab       start:0x800067E4 end:0x800067EC
 	extabindex  start:0x80018E18 end:0x80018E24
 	.text       start:0x80052118 end:0x8005327C
