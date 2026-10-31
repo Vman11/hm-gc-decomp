@@ -7440,7 +7440,7 @@ config.libs = [
             Object(Matching, "auto/text_80273D98.c"),
             Object(Matching, "auto/text_80273DD8.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(NonMatching, "auto/text_80273E10.c"),
-            Object(NonMatching, "auto/text_802752DC.c", mw_version="ProDG/3.5"),
+            Object(NonMatching, "auto/text_802752DC.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0"]),
         ],
     },
 ]
