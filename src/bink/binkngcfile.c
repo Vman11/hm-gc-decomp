@@ -337,17 +337,17 @@ u32 fn_8027B4CC(void *arg0, void *arg1) {
 
 void fn_8027B4D8(u8 *p, u8 *buf, u32 size, s32 a, s32 b) {
     s32 e = OSDisableInterrupts();
-    size &= ~0xFFF;
-    *(volatile u32 *)(p + 0x98) = size;
-    *(volatile u32 *)(p + 0x3C) = size;
+    u32 s = size & ~0xFFF;
+    *(volatile u32 *)(p + 0x98) = s;
+    *(volatile u32 *)(p + 0x3C) = s;
     *(s32 *)(p + 0xB0) = a;
     *(s32 *)(p + 0xB4) = b;
     *(u8 **)(p + 0xC8) = p;
+    *(volatile s32 *)(p + 0x48) = 0;
     *(u8 **)(p + 0x9C) = buf;
     *(u8 **)(p + 0x94) = buf;
     *(u8 **)(p + 0xA4) = buf;
-    *(u8 **)(p + 0xA0) = buf + size;
-    *(volatile s32 *)(p + 0x48) = 0;
+    *(u8 **)(p + 0xA0) = buf + s;
     ((void (*)(s32))OSRestoreInterrupts)(e);
 }
 

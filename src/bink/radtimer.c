@@ -2,11 +2,11 @@
 #include "bink_common.h"
 
 u32 fn_802752DC(u32 a, u32 b, u32 d) {
-    u32 hi, lo, inv, d16, q, th, tl; s32 s, mask;
+    u32 hi, lo, inv, d16, q, tl, th; s32 s, mask;
     BINK_MUL(hi, lo, a, b);
     if ((d & (d - 1)) == 0) {
-        s = cntlzw_inline(d);
-        q = (lo >> (31 - s)) | (hi << (s + 1));
+        s32 z = cntlzw_inline(d);
+        q = (lo >> (31 - z)) | (hi << (z + 1));
     } else {
         inv = 0xFFFFFFFF / d;
         d16 = (d + 0xFFFF) >> 16;
@@ -16,7 +16,8 @@ u32 fn_802752DC(u32 a, u32 b, u32 d) {
             q = (hi << s) / d16;
             s = 16 - s;
             mask = s >> 31;
-            q = (q >> (-s & mask)) << (s & ~mask);
+            q >>= (-s & mask);
+            q <<= (s & ~mask);
             BINK_MUL(th, tl, q, d);
             BINK_SUB(hi, lo, th, tl);
         }
@@ -91,36 +92,32 @@ void fn_8027552C(u64 *p) {
 }
 
 u32 fn_80275578(u32 hi, u32 lo, u32 d) {
-    u64 n;
-    u32 inv;
-    u32 d16;
-    u32 q;
-    s32 s;
-    s32 sh;
-    s32 mask;
-
+    u32 inv, d16, q, tl, th; s32 s, mask;
     if ((d & (d - 1)) == 0) {
-        s = cntlzw_inline(d);
-        return (lo >> (31 - s)) | (hi << (s + 1));
+        s32 z = cntlzw_inline(d);
+        return (lo >> (31 - z)) | (hi << (z + 1));
+    } else {
+        inv = 0xFFFFFFFF / d;
+        d16 = (d + 0xFFFF) >> 16;
+        q = 0;
+        if (d16 != 0) {
+            s = cntlzw_inline(hi);
+            q = (hi << s) / d16;
+            s = 16 - s;
+            mask = s >> 31;
+            q >>= (-s & mask);
+            q <<= (s & ~mask);
+            BINK_MUL(th, tl, q, d);
+            BINK_SUB(hi, lo, th, tl);
+        }
+        while (hi != 0) {
+            u32 t = inv * hi;
+            BINK_MUL(th, tl, t, d);
+            BINK_SUB(hi, lo, th, tl);
+            q += t;
+        }
+        return q + lo / d;
     }
-    inv = 0xFFFFFFFF / d;
-    d16 = (d + 0xFFFF) >> 16;
-    q = 0;
-    n = ((u64)hi << 32) | lo;
-    if (d16 != 0) {
-        s = cntlzw_inline(hi);
-        q = (hi << s) / d16;
-        sh = 16 - s;
-        mask = sh >> 31;
-        q = (q >> (-sh & mask)) << (sh & ~mask);
-        n -= (u64)q * d;
-    }
-    while ((u32)(n >> 32) != 0) {
-        u32 t = inv * (u32)(n >> 32);
-        n -= (u64)t * d;
-        q += t;
-    }
-    return q + (u32)n / d;
 }
 
 void fn_8027562C(u32 *dst) {
