@@ -1,6 +1,8 @@
 /* RAD Bink: 0x802752DC-0x8027564C */
 #include "bink_common.h"
 
+s64 lbl_802F3840 = 0;
+
 u32 fn_802752DC(u32 a, u32 b, u32 d) {
     u32 hi, lo, inv, d16, q, tl, th; s32 s, mask;
     BINK_MUL(hi, lo, a, b);
@@ -56,7 +58,7 @@ s32 fn_802753F0(void) {
         lbl_802F3840 = now;
     }
     now -= lbl_802F3840;
-    t = (u32)(now >> 32) * 0x19E40;
+    t = (u32)((now >> 32) * 0x19E40);
     now -= (u64)t * 40500;
     return (u32)(((u64)now * 0xCF2049A1ULL) >> 47) + t;
 }
