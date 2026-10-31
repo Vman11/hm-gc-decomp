@@ -28819,7 +28819,7 @@ auto/text_80204C1C.cpp:
 	extabindex  start:0x80026318 end:0x80026324
 	.text       start:0x80204C1C end:0x80204DB0
 
-auto/text_80204DB0.c:
+auto/text_80204DB0.cpp:
 	extab       start:0x800137CC end:0x800137D4
 	extabindex  start:0x80026324 end:0x80026330
 	.text       start:0x80204DB0 end:0x802050E0
