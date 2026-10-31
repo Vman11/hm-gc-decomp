@@ -1,6 +1,14 @@
 /* RAD Bink: 0x802876F8-0x802878C0 */
 #include "bink_common.h"
 
+u8 lbl_803590EC[0x80];
+u8 lbl_8035916C[0x80];
+u32 lbl_80301D20 = 0;
+s32 lbl_80301D24 = 0;
+u8 **lbl_80301D28 = (u8 **)lbl_803590EC;
+u32 *lbl_80301D2C = (u32 *)lbl_8035916C;
+s32 popmal_cap[2] asm("lbl_80301D30") = {32, 0};
+
 void fn_802876F8(u8 *arg0, u32 size) {
     void *memcpy();
     if (lbl_80301D30 == lbl_80301D24) {

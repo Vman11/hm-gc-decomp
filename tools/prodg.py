@@ -28,6 +28,9 @@ with tempfile.TemporaryDirectory(prefix="prodg-") as tmp:
         sys.exit(code)
     os.makedirs(os.path.dirname(out), exist_ok=True)
     shutil.move(obj, out)
+    # MWLD's dtk-generated linker script has no .sbss2 output section; ngccc always emits an empty one
+    if os.environ.get("PRODG_OBJCOPY"):
+        subprocess.check_call([os.environ["PRODG_OBJCOPY"], "-R", ".sbss2", out])
     deps = [src]
     for name in os.listdir(tmp):
         if name.endswith(".d"):

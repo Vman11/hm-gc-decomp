@@ -738,10 +738,10 @@ def generate_build_ninja(
     n.newline()
 
     # ProDG (SN Systems' GCC) build: files whose mw_version is ProDG/<version> (decomp.wtf)
-    prodg_implicit: List[Optional[Path]] = [compilers_implicit, wrapper_implicit, Path("tools/prodg.py")]
+    prodg_implicit: List[Optional[Path]] = [compilers_implicit, wrapper_implicit, binutils_implicit, Path("tools/prodg.py")]
     n.rule(
         name="prodg",
-        command=f"$python tools/prodg.py {wrapper_cmd}{compilers / '$mw_version' / 'ngccc.exe'} $in $out $cflags",
+        command=f"PRODG_OBJCOPY={binutils / 'powerpc-eabi-objcopy'} $python tools/prodg.py {wrapper_cmd}{compilers / '$mw_version' / 'ngccc.exe'} $in $out $cflags",
         description="PRODG $out",
         depfile="$basefile.d",
         deps="gcc",

@@ -1,6 +1,9 @@
 /* RAD Bink: 0x8027B6C0-0x8027B7EC */
 #include "bink_common.h"
 
+s32 lbl_802F7298 = 0;
+s32 lbl_802F729C = 0;
+
 void fn_8027B6C0(s32 a, s32 b) {
     wCa_802F7298[0] = a;
     wCa_802F729C[0] = b;
