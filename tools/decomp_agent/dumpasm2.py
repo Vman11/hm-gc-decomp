@@ -9,7 +9,7 @@ rows=[]
 for u in r['units']:
     un=u['name'][5:]
     if not un.startswith('auto/'): continue
-    if un in ('auto/text_800B2E70','auto/text_802752DC','auto/text_800DAA80'): continue
+    if un in ('auto/text_800B2E70','auto/text_802752DC','auto/text_800DAA80') or un.startswith('bink/'): continue
     for f in u.get('functions',[]):
         if (f.get('fuzzy_match_percent') or 0)<100 and f['name'] not in skip: rows.append((int(f.get('size',0)),f['name'],un))
 rows.sort()

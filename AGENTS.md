@@ -12,7 +12,7 @@ This is the matching decompilation of The Haunted Mansion (GameCube, GHYE6S). Re
   - `src/sdk/*` (SDK EXI/SI/DB units split out of text_800E40A0)
   - `auto/text_80273E10` (asm-heavy low-level SDK)
   - `auto/text_800DAA80` (MetroTRK)
-  - `auto/text_802752DC` (RAD Bink, `ProDG/3.5`)
+  - `bink/*` (RAD Bink, `ProDG/3.5`; was `auto/text_802752DC`, split into 16 TUs)
 
   If you need a symbol or declaration from one of them, declare it locally in your own unit.
 - Game code compiles with **GC/1.3.2**, flags `-O4,p -inline auto` (see `configure.py`). Some units are C++ (`-Cpp_exceptions on`) and some also need `-use_lmw_stmw on`.

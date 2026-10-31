@@ -37070,7 +37070,7 @@ auto/text_80273808.cpp:
 	.data       start:0x802F3778 end:0x802F3794
 
 auto/jt_802F3794.c:
-	.data       start:0x802F3794 end:0x80301D38
+	.data       start:0x802F3794 end:0x802F3840
 
 auto/text_80273970.c:
 	.text       start:0x80273970 end:0x802739A0
@@ -37118,8 +37118,73 @@ auto/text_80273DD8.cpp:
 auto/text_80273E10.c:
 	.text       start:0x80273E10 end:0x802752DC
 
-auto/text_802752DC.c:
-	.text       start:0x802752DC end:0x80293ED8
+bink/radtimer.c:
+	.text       start:0x802752DC end:0x8027564C
+	.data       start:0x802F3840 end:0x802F3848
+
+bink/binkngcsnd.c:
+	.text       start:0x8027564C end:0x80276970
+	.rodata     start:0x802AAA98 end:0x802AAAE0
+	.data       start:0x802F3848 end:0x802F3850
+
+bink/bink.c:
+	.text       start:0x80276970 end:0x8027ABEC
+	.rodata     start:0x802AAAE0 end:0x802AAB60
+	.data       start:0x802F3850 end:0x802F7298
+	.bss        start:0x80357FC0 end:0x803580C4
+
+bink/binkngcfile.c:
+	.text       start:0x8027ABEC end:0x8027B6C0
+
+bink/radmem.c:
+	.text       start:0x8027B6C0 end:0x8027B7EC
+	.data       start:0x802F7298 end:0x802F72A0
+
+bink/expand.c:
+	.text       start:0x8027B7EC end:0x8027D75C
+	.data       start:0x802F72A0 end:0x80301920
+	.bss        start:0x803580C4 end:0x803590EC
+
+bink/yuvblit.c:
+	.text       start:0x8027D75C end:0x80282BE0
+	.data       start:0x80301920 end:0x80301BA0
+
+bink/binkacd.c:
+	.text       start:0x80282BE0 end:0x8028389C
+	.rodata     start:0x802AAB60 end:0x802AABE0
+	.data       start:0x80301BA0 end:0x80301CE0
+
+bink/radthread.c:
+	.text       start:0x8028389C end:0x80284068
+
+bink/binkdec.c:
+	.text       start:0x80284068 end:0x802876F8
+	.rodata     start:0x802AABE0 end:0x802AB0C0
+	.data       start:0x80301CE0 end:0x80301D20
+
+bink/popmal.c:
+	.text       start:0x802876F8 end:0x802878C0
+	.data       start:0x80301D20 end:0x80301D38
+	.bss        start:0x803590EC end:0x803591EC
+
+bink/yuvblit2.c:
+	.text       start:0x802878C0 end:0x8028B134
+
+bink/yuvconv.c:
+	.text       start:0x8028B134 end:0x8028B6F4
+	.rodata     start:0x802AB0C0 end:0x802AB240
+
+bink/fft.c:
+	.text       start:0x8028B6F4 end:0x8028F9D8
+	.rodata     start:0x802AB240 end:0x802AB2C0
+
+bink/binkdct.c:
+	.text       start:0x8028F9D8 end:0x80290650
+	.rodata     start:0x802AB2C0 end:0x802AF340
+
+bink/binkidct.c:
+	.text       start:0x80290650 end:0x80293ED8
+	.rodata     start:0x802AF340 end:0x802AF7A0
 
 runtime/__mem.c:
 	.init       start:0x80005504 end:0x8000563C

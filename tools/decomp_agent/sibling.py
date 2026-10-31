@@ -13,7 +13,7 @@ def extract(src,fn):
 for n,s,h,g,m in d:
     if not m: continue
     sfn,sun=m
-    if sun in ('auto/text_800B2E70','auto/text_802752DC'): continue
+    if sun in ('auto/text_800B2E70','auto/text_802752DC') or sun.startswith('bink/'): continue
     sp=[f'src/{sun}.cpp',f'src/{sun}.c']; sp=[p for p in sp if os.path.exists(p)]
     if not sp: continue
     src=open(sp[0]).read(); body=extract(src,sfn)
