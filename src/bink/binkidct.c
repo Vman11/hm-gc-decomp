@@ -156,6 +156,103 @@ void fn_8029086C(s32 *data, s8 *in) {
 }
 
 void fn_80293258(u16 *);
+int abs(int);
+extern u8 lbl_802AF340[];
+#define MX(a, b) ((a) < (b) ? (b) : (a))
+#define MXE(q, e) { u8 x_ = (e); if (q < x_) q = x_; }
+#define ONE(L, K) \
+    b = (K) ? *++bp : *bp; \
+    e = b | ((pos << 10) + 0x300); \
+    if ((e & 0xFF) != (L)) *--head = e; \
+    else cnt += (L); \
+    pos++;
+#define PASS(L) \
+    for (p = head; p < end;) { \
+        v = *p; \
+        if (v == 0) { p++; continue; } \
+        cnt++; \
+        if ((u8)v != (L)) { p++; continue; } \
+        switch (v & 0x300) { \
+        case 0x000: \
+            pos = v >> 10; \
+            k = pos >> 4; \
+            *p = h[k] + ((pos + 4) << 10) + 0x100; \
+            goto C##L; \
+        case 0x100: \
+            pos = v >> 10; \
+            k = pos >> 2; \
+            *p = g[k - 1] + (pos << 10) + 0x200; \
+            *end++ = g[k] + ((pos + 4) << 10) + 0x200; \
+            *end++ = g[k + 1] + ((pos + 8) << 10) + 0x200; \
+            *end++ = g[k + 2] + ((pos + 12) << 10) + 0x200; \
+            break; \
+        case 0x200: \
+            *p = 0; \
+            pos = v >> 10; \
+            p++; \
+        C##L: \
+            cnt += 4; \
+            bp = bits + pos; ONE(L, 0) ONE(L, 1) ONE(L, 2) ONE(L, 3) \
+            break; \
+        case 0x300: \
+            *p = 0; \
+            cnt += (L); \
+            p++; \
+            break; \
+        default: \
+            p++; \
+        } \
+    }
+
+u32 fn_80290AAC(s16 *in) {
+    u16 list[132];
+    u8 bits[64];
+    u8 g[16];
+    u8 h[4];
+    u16 *head, *end, *p;
+    u8 *bp;
+    u32 cnt;
+    u8 mx, lvl; u32 b, m;
+    u16 v, pos, k; u32 e;
+    s32 i;
+    mx = 0;
+    for (i = 1; i < 64; i++) {
+        u8 t = 32 - cntlzw_inline((u16)abs(in[lbl_802AF340[i]]));
+        if (t > mx) mx = t;
+        bits[i] = t;
+    }
+    for (i = 4; i < 64; i += 4) {
+        u8 q = bits[i];
+        q = MX(q, bits[i + 1]);
+        q = MX(q, bits[i + 2]);
+        q = MX(q, bits[i + 3]);
+        g[i / 4 - 1] = q;
+    }
+    m = MX(g[1], g[2]); m = MX(m, g[3]); h[0] = MX(m, g[4]);
+    m = MX(g[6], g[7]); m = MX(m, g[8]); h[1] = MX(m, g[9]);
+    m = MX(g[11], g[12]); m = MX(m, g[13]); h[2] = MX(m, g[14]);
+    cnt = 4;
+    head = &list[68];
+    head[0] = (h[0] > g[0] ? h[0] : g[0]) | (4 << 10);
+    head[1] = (h[1] > g[5] ? h[1] : g[5]) | (24 << 10);
+    head[2] = (h[2] > g[10] ? h[2] : g[10]) | (44 << 10);
+    head[3] = bits[1] + 0x700;
+    head[4] = bits[2] + 0xB00;
+    head[5] = bits[3] + 0xF00;
+    end = head + 6;
+    for (lvl = mx; lvl > 1; lvl--) {
+        PASS(lvl)
+    }
+    if (mx != 0) {
+        PASS(1)
+    }
+    return cnt;
+}
+#undef MX
+#undef MXE
+#undef ONE
+#undef PASS
+
 void fn_80293964(u16 *dst) {
     u16 t[32];
     u16 *d;
