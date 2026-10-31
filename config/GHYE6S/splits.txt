@@ -8273,7 +8273,13 @@ auto/text_800E24F0.c:
 	.text       start:0x800E24F0 end:0x800E25E0
 
 runtime/arith.c:
-	.text       start:0x800E25E0 end:0x800E2C68
+	.text       start:0x800E25E0 end:0x800E2C60
+
+runtime/__init_cpp_exceptions.cpp:
+	.text       start:0x800E2C60 end:0x800E2CDC
+	.ctors      start:0x80293EE0 end:0x80293EE4
+	.dtors      start:0x802943E0 end:0x802943E8
+	.sdata      start:0x80359680 end:0x80359688
 
 runtime/Gecko_ExceptionPPC.cp:
 	extab       start:0x80009720 end:0x80009794
