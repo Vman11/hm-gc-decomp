@@ -12921,7 +12921,7 @@ auto/text_8012A2E8.c:
 	extabindex  start:0x8001DF90 end:0x8001DF9C
 	.text       start:0x8012A2E8 end:0x8012ACAC
 
-auto/text_8012ACAC.c:
+auto/text_8012ACAC.cpp:
 	extab       start:0x8000B790 end:0x8000B878
 	extabindex  start:0x8001DF9C end:0x8001DFA8
 	.text       start:0x8012ACAC end:0x8012C1E8
