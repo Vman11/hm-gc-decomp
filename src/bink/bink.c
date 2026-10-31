@@ -1211,6 +1211,84 @@ s32 fn_80279E90(BRect *o1, BRect *o2, BRect *r, u8 *map, s32 pitch) {
     return best;
 }
 
+#define RC(i) (((BRect *)(b + 52))[i])
+#define NR (*(s32 *)(b + 180))
+s32 fn_8027A0D0(u8 *b, u32 flags) {
+    BRect a[8], o1[8], o2[8];
+    s32 area[8];
+    s32 i, j, best, max, k;
+    if (!(flags & 0x4000000)) {
+        if (!(flags & 0x80000) && !(*(u32 *)(b + 32) & 0x80000) && *(s32 *)(b + 772) != 0) return 0;
+    } else if (NR != -1) {
+        goto done;
+    }
+    a[0].w = *(s32 *)(b + 204);
+    a[0].x = 0;
+    a[0].h = *(s32 *)(b + 208);
+    a[0].y = 0;
+    NR = fn_80279C80((s32 *)(b + 52), *(u8 **)(b + 220), *(s32 *)(b + 224), (s32 *)a);
+    if (!(flags & 0x8000000) && NR != 0) {
+        a[0] = RC(0);
+        area[0] = fn_80279E90(&o1[0], &o2[0], &a[0], *(u8 **)(b + 220), *(s32 *)(b + 224));
+        for (;;) {
+            best = -1;
+            max = 0;
+            for (i = 0; i < NR; i++) {
+                if (area[i] > max) {
+                    max = area[i];
+                    best = i;
+                }
+            }
+            if (best == -1) break;
+            a[best] = o1[best];
+            a[NR] = o2[best];
+            if (++NR == 8) break;
+            area[best] = fn_80279E90(&o1[best], &o2[best], &a[best], *(u8 **)(b + 220), *(s32 *)(b + 224));
+            best = NR - 1;
+            area[best] = fn_80279E90(&o1[best], &o2[best], &a[best], *(u8 **)(b + 220), *(s32 *)(b + 224));
+        }
+    }
+    for (i = 0; i < NR; i++) {
+        u32 min = 0x7FFF0000;
+        s32 m = 0;
+        u32 f = *(u32 *)(b + 744);
+        for (j = 0; j < NR; j++) {
+            u32 key = (a[j].y << 16) + a[j].x;
+            if (key < min) {
+                min = key;
+                m = j;
+            }
+        }
+        switch (f & 0x70000000) {
+        case 0x10000000:
+        case 0x20000000:
+            a[m].y *= 2;
+            a[m].h *= 2;
+            break;
+        case 0x30000000:
+            a[m].x *= 2;
+            a[m].w *= 2;
+            break;
+        case 0x40000000:
+        case 0x50000000:
+            a[m].x *= 2;
+            a[m].w *= 2;
+            a[m].y *= 2;
+            a[m].h *= 2;
+            break;
+        }
+        if ((u32)(a[m].x + a[m].w) > *(u32 *)(b + 0)) a[m].w -= a[m].x + a[m].w - *(u32 *)(b + 0);
+        if ((u32)(a[m].y + a[m].h) > *(u32 *)(b + 4)) a[m].h -= a[m].y + a[m].h - *(u32 *)(b + 4);
+        RC(i) = a[m];
+        a[m].x = 0;
+        a[m].y = 0x7FFFFFFF;
+    }
+done:
+    return NR;
+}
+#undef RC
+#undef NR
+
 void fn_8027A4BC(u8 *p) {
     if (*(s32 *)(p + 760) != 0) {
         fn_80276B84(p);

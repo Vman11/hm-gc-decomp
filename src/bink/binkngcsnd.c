@@ -467,10 +467,10 @@ s32 fn_802766C8(u8 *arg0, s32 arg1) {
         if (*(s32 *)(arg0 + 0x60) == 0) {
             *(s32 *)(arg0 + 0x60) = 1;
             *(s32 *)(arg0 + 0xF8) = 0;
-            *(s32 *)(arg0 + 0xF4) = 0;
-            *(s32 *)(arg0 + 0x108) = *(s32 *)(arg0 + 0x104);
             *(s32 *)(arg0 + 0x100) = 0;
             *(s32 *)(arg0 + 0xF0) = 0;
+            *(s32 *)(arg0 + 0xF4) = 0;
+            *(s32 *)(arg0 + 0x108) = *(s32 *)(arg0 + 0x104);
             ((void (*)(void *, int, int))fn_802756B8)(arg0 + 0x78, *(s32 *)(arg0 + 0x70), 1);
         }
     } else if (*(s32 *)(arg0 + 0x60) == 1) {
@@ -502,12 +502,12 @@ s32 fn_802767E0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
     ((void *(*)())memset)(arg0, 0, 376);
     *(s32 *)(arg0 + 0x6C) = arg1;
     *(s32 *)(arg0 + 0x78) = 0x7FFF;
+    *(s32 *)(arg0 + 0x5C) = 0;
     *(s32 *)(arg0 + 0xFC) = 0;
-    *(s32 *)(arg0 + 0x80) = 0x67F8;
     *(s32 *)(arg0 + 0x60) = 1;
     *(void **)(arg0 + 0x0) = fn_802760B4;
     *(void **)(arg0 + 0x4) = fn_802762D8;
-    *(s32 *)(arg0 + 0x5C) = 0;
+    *(s32 *)(arg0 + 0x80) = 0x67F8;
     *(s32 *)(arg0 + 0x70) = arg2;
     *(s32 *)(arg0 + 0x74) = arg3;
     *(s32 *)(arg0 + 0x7C) = 0x67F8;
@@ -527,16 +527,9 @@ s32 fn_802767E0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
     *(void **)(arg0 + 0x18) = fn_802766C8;
     *(void **)(arg0 + 0x1C) = fn_802767C0;
     if (arg5 != NULL) {
-        c = *(s32 *)(arg5 + 0x18);
-        a = *(s32 *)(arg5 + 0x8);
-        b = *(s32 *)(arg5 + 0x14);
+        if (fn_802758B4(arg0, *(s32 *)(arg5 + 0x8), *(s32 *)(arg5 + 0x14), *(s32 *)(arg5 + 0x18)) == 0) return 0;
     } else {
-        a = 0;
-        b = 0;
-        c = 0;
-    }
-    if (fn_802758B4(arg0, a, b, c) == 0) {
-        return 0;
+        if (fn_802758B4(arg0, 0, 0, 0) == 0) return 0;
     }
     *(s32 *)(arg0 + 0x64) = 0;
     return 1;
