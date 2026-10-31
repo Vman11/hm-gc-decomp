@@ -87,6 +87,8 @@ typedef struct BTrk {
 #define TRK(i) (&(*(BTrk **)(b + 768))[i])
 #define CVT ((u8 *(*)(u8 *, u8 *, u32))fn_80276A90)
 #define CPY ((void *(*)())memcpy)
+/* identity inline: its RTL pushes the loop's 3rd test past expand_end_loop's 30-insn scan, so it stays at the top */
+static inline u32 pad(u32 x) { u32 a = x, c = a, d = c, e = d, f = e, g = f; return g; }
 void fn_80276B84(void *bv) {
     u8 *b = bv;
     u32 i;
@@ -95,7 +97,7 @@ void fn_80276B84(void *bv) {
     if (TRK(*(u32 *)(b + 760) - 1)->ready == 0) return;
     if (fn_80283DFC(wCa_802F3860_7925C[0], b + 844) == 0) return;
     for (i = 0; i < *(u32 *)(b + 760); i++) {
-        while (TRK(i)->left > TRK(i)->thr || (*(s32 *)(b + 12) > TRK(i)->lim && TRK(i)->left != 0)) {
+        while (pad(TRK(i)->left) > TRK(i)->thr || (*(s32 *)(b + 12) > TRK(i)->lim && TRK(i)->left != 0)) {
             u32 n;
             if (TRK(i)->get(TRK(i), &buf, &size) == 0) break;
             if (TRK(i)->cvt) size += size;
@@ -1119,30 +1121,38 @@ void fn_80279AFC(u8 *b, u32 *o, u32 frames) {
 #undef D
 
 s32 fn_80279C80(s32 *out, u8 *map, s32 pitch, s32 *r) {
-    s32 y, bw, bh, i, j, x, w, h;
+    s32 bw;
+    s32 bh;
+    s32 i;
+    s32 j;
+    s32 x;
+    s32 w;
+    s32 h;
     u8 *p;
     map += r[0] / 16;
 
     map += (r[1] / 16) * pitch;
     bh = r[3] / 16;
     bw = r[2] / 16;
-    for (j = 0, p = map; j < bh; j++, p += pitch)
+    for (j = 0, p = map; j < bh; j++, p += pitch) {
         for (i = 0; i < bw; i++)
-            if (p[i]) goto top;
+            if (p[i]) break;
+        if (i < bw) goto top;
+    }
     return 0;
 top:
     map += pitch * j;
     bh -= j;
     j *= 16;
     out[1] = j + r[1];
-    out[3] = h = r[3] - j;
-    if (h > 1) {
+    out[3] = r[3] - j;
+    if (out[3] > 1) {
         for (j = 0, p = map + (bh - 1) * pitch; j < bh; j++, p -= pitch)
             for (i = 0; i < bw; i++)
                 if (p[i]) goto bot;
     bot:
         bh -= j;
-        out[3] = h - j * 16;
+        out[3] = out[3] - j * 16;
     }
     x = r[0];
     for (i = 0; i < bw; i++)
@@ -1153,13 +1163,13 @@ left:
     map += i;
     i *= 16;
     out[0] = i + x;
-    out[2] = w = r[2] - i;
-    if (w > 1) {
+    out[2] = r[2] - i;
+    if (out[2] > 1) {
         for (i = bw - 1, bw = i; i >= 0; i--)
             for (j = 0, p = map + i; j < bh; j++, p += pitch)
                 if (*p) goto right;
     right:
-        out[2] = w - (bw - i) * 16;
+        out[2] = out[2] - (bw - i) * 16;
     }
     return 1;
 }
@@ -1302,9 +1312,11 @@ u8 *fn_8027A77C(u8 *b, u32 idx) {
     u32 f;
     if (b == 0 || idx >= *(u32 *)(b + 240)) return 0;
     f = ((volatile u32 *)*(u32 **)(b + 612))[idx];
-    if ((s32)f >= 0 && !(f & 0x10000000)) goto fail;
-    f = (*(u32 **)(b + 612))[idx];
-    snd = (void *)wD7218_sndfmt(f & 0xFFFF, ((f >> 29) & 1) + 1, ((s32)f >= 0 && (f & 0x10000000)) ? 1 : 0);
+    if ((s32)f >= 0 && !(f & 0x10000000)) return 0;
+    {
+    u32 g = (*(u32 **)(b + 612))[idx];
+    snd = (void *)wD7218_sndfmt(g & 0xFFFF, ((g >> 29) & 1) + 1, ((s32)g >= 0 && (g & 0x10000000)) ? 1 : 0);
+    }
     if (snd == 0) return 0;
     o = (SndTrk *)fn_80276970(b, 28);
     if (o == 0) { fn_8028389C(snd); goto fail; }

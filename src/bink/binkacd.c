@@ -103,8 +103,8 @@ AcdState *fn_802833CC(u32 rate, u32 chans, u32 flags) {
     o->p1 = p1;
     o->p2 = p2;
     o->p3 = p3;
-    o->flags = flags;
     o->p4 = p4;
+    o->flags = flags;
     o->chans = chans;
     o->bands = i;
     o->n = n;
