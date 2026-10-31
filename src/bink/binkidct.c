@@ -1,114 +1,167 @@
 /* RAD Bink: 0x80290650-0x80293ED8 */
 #include "bink_common.h"
 
-void fn_8029086C(s32* data, s8* in) {
+void fn_80290650(s32 *data, u8 *in) {
     s32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
     s32 tmp10, tmp11, tmp12, tmp13;
     s32 z1, z2, z3, z4, z5, z11, z13;
-    s32* p;
+    s32 *p = data;
     int i;
 
-    p = data;
     for (i = 8; i > 0; i--) {
-        tmp0 = in[0] + in[7];
-        tmp7 = in[0] - in[7];
-        tmp1 = in[1] + in[6];
-        tmp6 = in[1] - in[6];
-        tmp2 = in[2] + in[5];
-        tmp5 = in[2] - in[5];
-        tmp3 = in[3] + in[4];
-        tmp4 = in[3] - in[4];
-        tmp0 <<= 8;
-        tmp1 <<= 8;
-        tmp2 <<= 8;
-        tmp3 <<= 8;
-        tmp4 <<= 8;
-        tmp5 <<= 8;
-        tmp6 <<= 8;
-        tmp7 <<= 8;
-
+        tmp0 = (in[0] + in[7]) << 8;
+        tmp7 = (in[0] - in[7]) << 8;
+        tmp1 = (in[1] + in[6]) << 8;
+        tmp6 = (in[1] - in[6]) << 8;
+        tmp2 = (in[2] + in[5]) << 8;
+        tmp5 = (in[2] - in[5]) << 8;
+        tmp3 = (in[3] + in[4]) << 8;
+        tmp4 = (in[3] - in[4]) << 8;
         tmp10 = tmp0 + tmp3;
         tmp13 = tmp0 - tmp3;
         tmp11 = tmp1 + tmp2;
         tmp12 = tmp1 - tmp2;
-
         p[0] = tmp10 + tmp11;
         p[4] = tmp10 - tmp11;
-
-        z1 = ((tmp12 + tmp13) * 0x5A8) >> 11;
+        z1 = ((tmp12 + tmp13) * 1448) >> 11;
         p[2] = tmp13 + z1;
         p[6] = tmp13 - z1;
-
         tmp10 = tmp4 + tmp5;
         tmp11 = tmp5 + tmp6;
         tmp12 = tmp6 + tmp7;
-
-        z5 = ((tmp10 - tmp12) * 0x310) >> 11;
-        z2 = ((tmp10 * 0x454) >> 11) + z5;
-        z4 = ((tmp12 * 0xA74) >> 11) + z5;
-        z3 = (tmp11 * 0x5A8) >> 11;
-
+        z5 = ((tmp10 - tmp12) * 784) >> 11;
+        z2 = ((tmp10 * 1108) >> 11) + z5;
+        z4 = ((tmp12 * 2676) >> 11) + z5;
+        z3 = (tmp11 * 1448) >> 11;
         z11 = tmp7 + z3;
         z13 = tmp7 - z3;
-
         p[5] = z13 + z2;
         p[3] = z13 - z2;
         p[1] = z11 + z4;
         p[7] = z11 - z4;
-
         p += 8;
         in += 8;
     }
-
     p = data;
     for (i = 8; i > 0; i--) {
-        tmp0 = p[8 * 0] + p[8 * 7];
-        tmp7 = p[8 * 0] - p[8 * 7];
-        tmp1 = p[8 * 1] + p[8 * 6];
-        tmp6 = p[8 * 1] - p[8 * 6];
-        tmp2 = p[8 * 2] + p[8 * 5];
-        tmp5 = p[8 * 2] - p[8 * 5];
-        tmp3 = p[8 * 3] + p[8 * 4];
-        tmp4 = p[8 * 3] - p[8 * 4];
-
+        tmp0 = p[0] + p[56];
+        tmp7 = p[0] - p[56];
+        tmp1 = p[8] + p[48];
+        tmp6 = p[8] - p[48];
+        tmp2 = p[16] + p[40];
+        tmp5 = p[16] - p[40];
+        tmp3 = p[24] + p[32];
+        tmp4 = p[24] - p[32];
         tmp10 = tmp0 + tmp3;
         tmp13 = tmp0 - tmp3;
         tmp11 = tmp1 + tmp2;
         tmp12 = tmp1 - tmp2;
-
-        p[8 * 0] = tmp10 + tmp11;
-        p[8 * 4] = tmp10 - tmp11;
-
-        z1 = ((tmp12 + tmp13) * 0x5A8) >> 11;
-        p[8 * 2] = tmp13 + z1;
-        p[8 * 6] = tmp13 - z1;
-
+        p[0] = tmp10 + tmp11;
+        p[32] = tmp10 - tmp11;
+        z1 = ((tmp12 + tmp13) * 1448) >> 11;
+        p[16] = tmp13 + z1;
+        p[48] = tmp13 - z1;
         tmp10 = tmp4 + tmp5;
         tmp11 = tmp5 + tmp6;
         tmp12 = tmp6 + tmp7;
-
-        z5 = ((tmp10 - tmp12) * 0x310) >> 11;
-        z2 = ((tmp10 * 0x454) >> 11) + z5;
-        z4 = ((tmp12 * 0xA74) >> 11) + z5;
-        z3 = (tmp11 * 0x5A8) >> 11;
-
+        z5 = ((tmp10 - tmp12) * 784) >> 11;
+        z2 = ((tmp10 * 1108) >> 11) + z5;
+        z4 = ((tmp12 * 2676) >> 11) + z5;
+        z3 = (tmp11 * 1448) >> 11;
         z11 = tmp7 + z3;
         z13 = tmp7 - z3;
-
-        p[8 * 5] = z13 + z2;
-        p[8 * 3] = z13 - z2;
-        p[8 * 1] = z11 + z4;
-        p[8 * 7] = z11 - z4;
-
+        p[40] = z13 + z2;
+        p[24] = z13 - z2;
+        p[8] = z11 + z4;
+        p[56] = z11 - z4;
         p++;
     }
 }
 
+void fn_8029086C(s32 *data, s8 *in) {
+    s32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
+    s32 tmp10, tmp11, tmp12, tmp13;
+    s32 z1, z2, z3, z4, z5, z11, z13;
+    s32 *p = data;
+    int i;
+
+    for (i = 8; i > 0; i--) {
+        tmp0 = (in[0] + in[7]) << 8;
+        tmp7 = (in[0] - in[7]) << 8;
+        tmp1 = (in[1] + in[6]) << 8;
+        tmp6 = (in[1] - in[6]) << 8;
+        tmp2 = (in[2] + in[5]) << 8;
+        tmp5 = (in[2] - in[5]) << 8;
+        tmp3 = (in[3] + in[4]) << 8;
+        tmp4 = (in[3] - in[4]) << 8;
+        tmp10 = tmp0 + tmp3;
+        tmp13 = tmp0 - tmp3;
+        tmp11 = tmp1 + tmp2;
+        tmp12 = tmp1 - tmp2;
+        p[0] = tmp10 + tmp11;
+        p[4] = tmp10 - tmp11;
+        z1 = ((tmp12 + tmp13) * 1448) >> 11;
+        p[2] = tmp13 + z1;
+        p[6] = tmp13 - z1;
+        tmp10 = tmp4 + tmp5;
+        tmp11 = tmp5 + tmp6;
+        tmp12 = tmp6 + tmp7;
+        z5 = ((tmp10 - tmp12) * 784) >> 11;
+        z2 = ((tmp10 * 1108) >> 11) + z5;
+        z4 = ((tmp12 * 2676) >> 11) + z5;
+        z3 = (tmp11 * 1448) >> 11;
+        z11 = tmp7 + z3;
+        z13 = tmp7 - z3;
+        p[5] = z13 + z2;
+        p[3] = z13 - z2;
+        p[1] = z11 + z4;
+        p[7] = z11 - z4;
+        p += 8;
+        in += 8;
+    }
+    p = data;
+    for (i = 8; i > 0; i--) {
+        tmp0 = p[0] + p[56];
+        tmp7 = p[0] - p[56];
+        tmp1 = p[8] + p[48];
+        tmp6 = p[8] - p[48];
+        tmp2 = p[16] + p[40];
+        tmp5 = p[16] - p[40];
+        tmp3 = p[24] + p[32];
+        tmp4 = p[24] - p[32];
+        tmp10 = tmp0 + tmp3;
+        tmp13 = tmp0 - tmp3;
+        tmp11 = tmp1 + tmp2;
+        tmp12 = tmp1 - tmp2;
+        p[0] = tmp10 + tmp11;
+        p[32] = tmp10 - tmp11;
+        z1 = ((tmp12 + tmp13) * 1448) >> 11;
+        p[16] = tmp13 + z1;
+        p[48] = tmp13 - z1;
+        tmp10 = tmp4 + tmp5;
+        tmp11 = tmp5 + tmp6;
+        tmp12 = tmp6 + tmp7;
+        z5 = ((tmp10 - tmp12) * 784) >> 11;
+        z2 = ((tmp10 * 1108) >> 11) + z5;
+        z4 = ((tmp12 * 2676) >> 11) + z5;
+        z3 = (tmp11 * 1448) >> 11;
+        z11 = tmp7 + z3;
+        z13 = tmp7 - z3;
+        p[40] = z13 + z2;
+        p[24] = z13 - z2;
+        p[8] = z11 + z4;
+        p[56] = z11 - z4;
+        p++;
+    }
+}
+
+void fn_80293258(u16 *);
 void fn_80293964(u16 *dst) {
     u16 t[32];
     u16 *d;
     u16 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16;
     d = dst;
+    fn_80293258(t);
     a0 = t[0]; a1 = t[2]; a2 = t[4]; a3 = t[6];
     a4 = t[1]; a5 = t[3]; a6 = t[5]; a7 = t[7];
     a8 = t[12]; a9 = t[22]; a10 = t[8]; a11 = t[10];
@@ -127,4 +180,80 @@ void fn_80293964(u16 *dst) {
     d[21] = a4; d[22] = a5; d[23] = a6; d[24] = a7;
     d[25] = a8; d[26] = a9; d[27] = a10; d[28] = a11;
     d[29] = a12; d[30] = a13; d[31] = a14;
+}
+void fn_80293A94(u8 *dst, s32 pitch, s32 a, s32 b, u8 *add) {
+    u8 t[64];
+    u8 *d = dst;
+    ((void (*)(u8 *, s32, s32))fn_80293258)(t, a, b);
+    d[0] = t[0] + add[0];
+    d[1] = t[1] + add[1];
+    d[2] = t[4] + add[2];
+    d[3] = t[5] + add[3];
+    d[4] = t[8] + add[4];
+    d[5] = t[9] + add[5];
+    d[6] = t[12] + add[6];
+    d[7] = t[13] + add[7];
+    d += pitch;
+    d[0] = t[2] + add[8];
+    d[1] = t[3] + add[9];
+    d[2] = t[6] + add[10];
+    d[3] = t[7] + add[11];
+    d[4] = t[10] + add[12];
+    d[5] = t[11] + add[13];
+    d[6] = t[14] + add[14];
+    d[7] = t[15] + add[15];
+    d += pitch;
+    d[0] = t[24] + add[16];
+    d[1] = t[25] + add[17];
+    d[2] = t[44] + add[18];
+    d[3] = t[45] + add[19];
+    d[4] = t[16] + add[20];
+    d[5] = t[17] + add[21];
+    d[6] = t[20] + add[22];
+    d[7] = t[21] + add[23];
+    d += pitch;
+    d[0] = t[26] + add[24];
+    d[1] = t[27] + add[25];
+    d[2] = t[46] + add[26];
+    d[3] = t[47] + add[27];
+    d[4] = t[18] + add[28];
+    d[5] = t[19] + add[29];
+    d[6] = t[22] + add[30];
+    d[7] = t[23] + add[31];
+    d += pitch;
+    d[0] = t[28] + add[32];
+    d[1] = t[29] + add[33];
+    d[2] = t[32] + add[34];
+    d[3] = t[33] + add[35];
+    d[4] = t[48] + add[36];
+    d[5] = t[49] + add[37];
+    d[6] = t[52] + add[38];
+    d[7] = t[53] + add[39];
+    d += pitch;
+    d[0] = t[30] + add[40];
+    d[1] = t[31] + add[41];
+    d[2] = t[34] + add[42];
+    d[3] = t[35] + add[43];
+    d[4] = t[50] + add[44];
+    d[5] = t[51] + add[45];
+    d[6] = t[54] + add[46];
+    d[7] = t[55] + add[47];
+    d += pitch;
+    d[0] = t[36] + add[48];
+    d[1] = t[37] + add[49];
+    d[2] = t[40] + add[50];
+    d[3] = t[41] + add[51];
+    d[4] = t[56] + add[52];
+    d[5] = t[57] + add[53];
+    d[6] = t[60] + add[54];
+    d[7] = t[61] + add[55];
+    d += pitch;
+    d[0] = t[38] + add[56];
+    d[1] = t[39] + add[57];
+    d[2] = t[42] + add[58];
+    d[3] = t[43] + add[59];
+    d[4] = t[58] + add[60];
+    d[5] = t[59] + add[61];
+    d[6] = t[62] + add[62];
+    d[7] = t[63] + add[63];
 }
