@@ -1903,7 +1903,7 @@ auto/text_800496A8.cpp:
 	.text       start:0x800496A8 end:0x80049718
 	.ctors      start:0x80293F70 end:0x80293F74
 
-auto/text_80049718.c:
+auto/text_80049718.cpp:
 	extab       start:0x800064A4 end:0x800064AC
 	extabindex  start:0x80018A88 end:0x80018A94
 	.text       start:0x80049718 end:0x8004A538
