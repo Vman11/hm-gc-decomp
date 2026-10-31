@@ -16701,7 +16701,7 @@ auto/text_80161244.c:
 	.text       start:0x80161244 end:0x80161E64
 	.data       start:0x802E7418 end:0x802E7550
 
-auto/text_80161E64.c:
+auto/text_80161E64.cpp:
 	extab       start:0x8000D748 end:0x8000D764
 	extabindex  start:0x8001FE5C end:0x8001FE68
 	.text       start:0x80161E64 end:0x80162FBC
