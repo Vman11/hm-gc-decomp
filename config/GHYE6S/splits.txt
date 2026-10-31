@@ -7821,8 +7821,14 @@ sdk/OSTime.c:
 	.text       start:0x800BA564 end:0x800BA9E0
 	.data       start:0x802D8A80 end:0x802D8AE0
 
-auto/text_800BA9E0.c:
-	.text       start:0x800BA9E0 end:0x800BAA78
+sdk/__start.c:
+	.init       start:0x80003100 end:0x80003400
+	.text       start:0x800BA9E0 end:0x800BA9E4
+	.sbss       start:0x8035A5F8 end:0x8035A600
+
+sdk/__ppc_eabi_init.c:
+	.init       start:0x80003400 end:0x80003458
+	.text       start:0x800BA9E4 end:0x800BAA78
 
 sdk/sp.c:
 	.text       start:0x800BAA78 end:0x800BB284
@@ -8173,6 +8179,7 @@ trk/flush_cache.c:
 	.text       start:0x800DF3E0 end:0x800DF418
 
 trk/mem_TRK.c:
+	.init       start:0x80003458 end:0x800034AC
 	.text       start:0x800DF418 end:0x800DF4D0
 
 trk/targimpl.c:
@@ -8182,7 +8189,11 @@ trk/targimpl.c:
 trk/targsupp.c:
 	.text       start:0x800E1050 end:0x800E1070
 
+trk/__exception.s:
+	.init       start:0x800034AC end:0x800053E0
+
 trk/dolphin_trk.c:
+	.init       start:0x800053E0 end:0x80005504
 	.text       start:0x800E1070 end:0x800E11C8
 
 trk/mpc_7xx_603e.c:
@@ -37109,3 +37120,6 @@ auto/text_80273E10.c:
 
 auto/text_802752DC.c:
 	.text       start:0x802752DC end:0x80293ED8
+
+runtime/__mem.c:
+	.init       start:0x80005504 end:0x8000563C

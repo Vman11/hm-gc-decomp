@@ -587,3 +587,36 @@ void fn_800DF418(void *dest, int val, u32 count) {
     }
 }
 #pragma pop
+
+/* .init: TRK_memset / TRK_memcpy */
+__declspec(section ".init") asm void fn_80003458(void) {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r3
+    bl fn_800DF418
+    lwz r0, 0x14(r1)
+    mr r3, r31
+    lwz r31, 0xc(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+__declspec(section ".init") asm void fn_80003488(void) {
+    nofralloc
+    subi r4, r4, 0x1
+    subi r6, r3, 0x1
+    addi r5, r5, 0x1
+    b L_800034A0
+L_80003498:
+    lbzu r0, 0x1(r4)
+    stbu r0, 0x1(r6)
+L_800034A0:
+    subic. r5, r5, 0x1
+    bne L_80003498
+    blr
+}
+
