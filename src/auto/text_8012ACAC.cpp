@@ -91,6 +91,9 @@ static inline void rds(R *r, char **&g, u16 &n) {
     for (i = 0; i < n; i++) fn_800FB0F8(r, &g[i]);
     fn_800F7E98();
 }
+void fn_80129C48(void);
+void fn_8012C1E8(void);
+void *lbl_802E4418[25] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (void *)fn_8012C1E8, (void *)fn_80129C48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 void fn_8012ACAC(T *t, A0 *a, char *b, u32 c, u32 d) {
     C80215F50 ld;
     void *g;
