@@ -83,6 +83,72 @@ void fn_802846E4(u8 *a, void *b, u8 *c) {
     *(s32 *)(c + 384) = 0;
 }
 
+typedef struct BBundle {
+    u8 *cur;
+    u8 *end;
+    u8 pad8[8];
+    u8 map[16];
+    u32 hbits;
+    u8 *tab;
+    u32 nbits;
+    u8 *data;
+} BBundle;
+#define HUFF(S) \
+    if (bs->bits >= hbits) { \
+        u32 e = tab[bs->buf & (~0u >> (32 - hbits))]; \
+        S = t->map[e & 15]; \
+        e >>= 4; \
+        bs->buf >>= e; \
+        bs->bits -= e; \
+    } else { \
+        u32 w = *bs->ptr, c = bs->bits; \
+        u32 b0 = bs->buf; \
+        u32 e = tab[(b0 | (w << c)) & (~0u >> (32 - hbits))]; \
+        S = t->map[e & 15]; \
+        e >>= 4; \
+        if (c >= e) { \
+            bs->buf = b0 >> e; \
+            bs->bits = c - e; \
+        } else { \
+            bs->buf = w >> (e - c); \
+            bs->bits = c - (e - 32); \
+            bs->ptr++; \
+        } \
+    }
+void fn_802852FC(BBundle *t, BitBuf *bs) {
+    u32 v;
+    if (t->cur != t->end) return;
+    if (bs->bits >= t->nbits) {
+        u32 b0 = bs->buf, m = ~0u >> (32 - t->nbits);
+        bs->buf = b0 >> t->nbits;
+        v = b0 & m;
+        bs->bits -= t->nbits;
+    } else {
+        u32 *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p, m = ~0u >> (32 - t->nbits);
+        bs->buf = w >> (t->nbits - c);
+        v = (b0 | (w << c)) & m;
+        bs->ptr = ++p;
+        bs->bits = c - (t->nbits - 32);
+    }
+    if (v != 0) {
+        u8 *out = t->data;
+        u32 hbits = t->hbits;
+        u8 *tab = t->tab;
+        t->cur = out;
+        t->end = out + v;
+        while (v--) {
+            u32 lo, hi;
+            HUFF(lo)
+            HUFF(hi)
+            *out++ = lo | (hi << 4);
+        }
+    } else {
+        t->end = t->data;
+        t->cur = t->data + 4;
+    }
+}
+#undef HUFF
+
 u32 fn_80285CE0(u32 arg0, u32 arg1, u32 arg2, u32 arg3) {
     if (arg2 <= 8) {
         arg2 = 8;
