@@ -7,14 +7,14 @@ extern "C" {
 /* QV=2.0p1 */
 extern u8 lbl_802E28C8[];
 void fn_8010CB34(void *, s32, s32, s32);
-void __ct__9C8010CE30Fv(void *);
+void __ct__9B8010CE30Fv(void *);
 } /* extern "C" */
 
 struct B8010CE30 {
     u8 pad[24];
     void *vt;
     B8010CE30() {
-        __ct__9C8010CE30Fv(this);
+        __ct__9B8010CE30Fv(this);
     }
     ~B8010CE30();
 };

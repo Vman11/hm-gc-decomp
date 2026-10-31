@@ -8,7 +8,7 @@ extern u8 lbl_802E28D8[];
 void __dl__FPv(int);
 void __dla__FPv(int);
 
-u32 * fn_8010CDAC(u32 *param_1, s16 param_2) {
+u32 * __dt__9B8010CE30Fv(u32 *param_1, s16 param_2) {
     if (param_1 != (u32 *)0x0) {
         param_1[6] = (u32)lbl_802E28D8;
         if (param_1[1] != 0) {

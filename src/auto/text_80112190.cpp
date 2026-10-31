@@ -16,7 +16,7 @@ struct V80112190 {
 
 void __dt__9C8010C41CFv(void *p, s16 f);
 void __dt__9C8010C958Fv(void *p, s16 f);
-void fn_8010CDAC(void *p, s16 f);
+void __dt__9B8010CE30Fv(void *p, s16 f);
 void fn_800E1E88(void *block, void *dtor);
 void fn_8010C840(E8010C840 *p);
 void fn_8010CD58(E8010CD58 *p);
@@ -46,7 +46,7 @@ void fn_80112190(A80112190 *a) {
         }
         if (a->arr10 != 0) fn_800E1E88(a->arr10, (void *)__dt__9C8010C41CFv);
         if (a->arr14 != 0) fn_800E1E88(a->arr14, (void *)__dt__9C8010C958Fv);
-        if (a->arr18 != 0) fn_800E1E88(a->arr18, (void *)fn_8010CDAC);
+        if (a->arr18 != 0) fn_800E1E88(a->arr18, (void *)__dt__9B8010CE30Fv);
         if (a->child != 0) {
             fn_80112190(a->child);
             __dl__FPv(a->child);

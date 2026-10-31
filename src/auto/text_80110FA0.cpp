@@ -7,7 +7,7 @@ extern "C" {
 extern u8 lbl_802E28C8[];
 extern u8 __vt__9C80111028[];
 void __dl__FPv(int);
-void fn_8010CDAC(int, int);
+void __dt__9B8010CE30Fv(int, int);
 void fn_80110E5C(int);
 
 s32 __dt__9C80111028Fv(s32 param_1, s16 param_2) {
@@ -18,7 +18,7 @@ s32 __dt__9C80111028Fv(s32 param_1, s16 param_2) {
         }
         if (param_1 + 8 != 0) {
             *(u8 **)(param_1 + 0x20) = lbl_802E28C8;
-            fn_8010CDAC((int)(param_1 + 8), (int)(0));
+            __dt__9B8010CE30Fv((int)(param_1 + 8), (int)(0));
         }
         if (0 < param_2) {
             __dl__FPv((int)(param_1));
