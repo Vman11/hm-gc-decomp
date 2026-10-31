@@ -37,6 +37,53 @@ void fn_8028B6F4(s32 n, s32 isgn, f32 *a, s32 *ip, f32 *w) {
     }
 }
 
+void fn_8028B870(s32 n, s32 isgn, f32 *a, s32 *ip, f32 *w) {
+    s32 j, nw, nc;
+    f32 xr;
+
+    nw = ip[0];
+    if (n > (nw << 2)) {
+        nw = n >> 2;
+        fn_8028BA78(nw, ip, w);
+    }
+    nc = ip[1];
+    if (n > nc) {
+        nc = n;
+        fn_8028BCC0(nc, ip, w + nw);
+    }
+    if (isgn < 0) {
+        xr = a[n - 1];
+        for (j = n - 2; j >= 2; j -= 2) {
+            a[j + 1] = a[j] - a[j - 1];
+            a[j] += a[j - 1];
+        }
+        a[1] = a[0] - xr;
+        a[0] += xr;
+        if (n > 4) {
+            fn_8028F890(n, a, nc, w + nw);
+            fn_8028BF5C(n, a, ip + 2, nw, w);
+        } else if (n == 4) {
+            fn_8028BF5C(n, a, ip + 2, nw, w);
+        }
+    }
+    fn_8028F948(n, a, nc, w + nw);
+    if (isgn >= 0) {
+        if (n > 4) {
+            fn_8028BDF4(n, a, ip + 2, nw, w);
+            fn_8028F7D8(n, a, nc, w + nw);
+        } else if (n == 4) {
+            fn_8028BDF4(n, a, ip + 2, nw, w);
+        }
+        xr = a[0] - a[1];
+        a[0] += a[1];
+        for (j = 2; j < n; j += 2) {
+            a[j - 1] = a[j] - a[j + 1];
+            a[j] += a[j + 1];
+        }
+        a[n - 1] = xr;
+    }
+}
+
 void fn_8028BA78(s32 nw, s32 *ip, f32 *w) {
     s32 j, nwh, nw0, nw1;
     f32 delta, wn4r, wk1r, wk1i, wk3r, wk3i;
