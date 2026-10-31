@@ -88,6 +88,11 @@ static inline u8 mC(R *r) {
     }
     return v;
 }
+void __dt__9C80130DA8Fv(void);
+void fn_8012FDD4(void);
+void fn_8012FDE4(void);
+void fn_8012FE00(void);
+void *lbl_802E4910[7] = { 0, 0, 0, (void *)__dt__9C80130DA8Fv, (void *)fn_8012FE00, (void *)fn_8012FDE4, (void *)fn_8012FDD4 };
 void fn_801300B8(T *t, B *b, A *a, R *r, char *name) {
     u32 n;
     u32 tok;
