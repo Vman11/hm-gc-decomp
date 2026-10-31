@@ -59,6 +59,20 @@ s32 fn_8027AC20(void *arg0, u32 arg1, u8 *arg2, u32 arg3) {
     return total;
 }
 
+u32 fn_8027AD10(u8 *p, s32 pos, void *dst) {
+    u32 n, left;
+    if (pos != -1 && *(volatile s32 *)(p + 0x88) != pos) {
+        *(volatile s32 *)(p + 0x88) = pos;
+    }
+    n = ((u32 (*)(void *, u32, void *))fn_8027AC20)(p + 0x4C, *(volatile s32 *)(p + 0x88) + *(s32 *)(p + 0xAC), dst);
+    *(volatile s32 *)(p + 0x88) += n;
+    *(s32 *)(p + 0x90) = *(volatile s32 *)(p + 0x88);
+    left = *(u32 *)(p + 0xB0) - *(u32 *)(p + 0x90);
+    *(u32 *)(p + 0x44) = left < *(volatile u32 *)(p + 0x3C) ? left : *(volatile u32 *)(p + 0x3C);
+    fn_8027ABEC(dst, n);
+    return n;
+}
+
 void fn_8027ADB0(u8 *p, s32 a, s32 b) {
     s32 t = fn_802752DC(a, 1000, *(s32 *)(p + 180));
     s32 last = fn_802753F0();
@@ -76,61 +90,62 @@ void fn_8027ADB0(u8 *p, s32 a, s32 b) {
     }
 }
 
-void fn_8027AE40(s32 arg0, void *arg1) {
-    void fn_8027ADB0(u8 *, s32, s32);
+void fn_8027AE40(s32 n, void *arg1) {
     M2C_UNK memmove(u32, s32, s32);
-    s32 temp_r10;
-    s32 temp_r11;
-    s32 temp_r3_2;
-    s32 temp_r9;
-    s32 var_r30;
-    u32 temp_r3;
-    u32 temp_r9_2;
-    void *temp_r31;
+    u8 *p = M2C_FIELD(arg1, u8 **, 0x7C);
+    s32 t;
+    s32 pend;
+    s32 z;
+    u32 q;
+    s32 t2;
 
-    temp_r31 = M2C_FIELD(arg1, void **, 0x7C);
-    var_r30 = arg0;
-    temp_r10 = M2C_FIELD(temp_r31, s32 *, 0xBC);
-    if (temp_r10 == 0) {
-        temp_r11 = M2C_FIELD(temp_r31, s32 *, 0x8C);
-        if ((var_r30 != 0x1000) && ((s32) ((M2C_FIELD(temp_r31, s32 *, 0xB0) - M2C_FIELD(temp_r31, s32 *, 0x88)) + temp_r11) != var_r30)) {
-            M2C_FIELD(temp_r31, s32 *, 0x20) = temp_r10;
-            M2C_FIELD(temp_r31, s32 *, 0x1C) = 1;
+#define F(o) (*(s32 *)(p + (o)))
+#define U(o) (*(u32 *)(p + (o)))
+#define VF(o) (*(volatile s32 *)(p + (o)))
+#define VU(o) (*(volatile u32 *)(p + (o)))
+    z = F(0xBC);
+    if (z == 0) {
+        if (n != 0x1000 && (F(0xB0) - VF(0x88)) + F(0x8C) != n) {
+            VF(0x20) = z;
+            VF(0x1C) = 1;
             return;
         }
-        if (temp_r11 != 0) {
-            temp_r3 = M2C_FIELD(temp_r31, u32 *, 0xA4);
-            memmove(temp_r3, temp_r3 + temp_r11, M2C_FIELD(temp_r31, s32 *, 0xB0) - M2C_FIELD(temp_r31, s32 *, 0x88));
-            temp_r9 = M2C_FIELD(temp_r31, s32 *, 0x8C);
-            M2C_FIELD(temp_r31, s32 *, 0x8C) = 0;
-            var_r30 -= temp_r9;
+        if (F(0x8C) != 0) {
+            memmove(U(0xA4), U(0xA4) + F(0x8C), F(0xB0) - VF(0x88));
+            t2 = F(0x8C);
+            F(0x8C) = 0;
+            n -= t2;
         }
-        M2C_FIELD(temp_r31, s32 *, 0x24) = (s32) (M2C_FIELD(temp_r31, s32 *, 0x24) + var_r30);
-        temp_r9_2 = M2C_FIELD(temp_r31, u32 *, 0xA4) + var_r30;
-        M2C_FIELD(temp_r31, u32 *, 0xA4) = temp_r9_2;
-        M2C_FIELD(temp_r31, s32 *, 0x88) = (s32) (M2C_FIELD(temp_r31, s32 *, 0x88) + var_r30);
-        if (temp_r9_2 >= (u32) M2C_FIELD(temp_r31, u32 *, 0xA0)) {
-            M2C_FIELD(temp_r31, u32 *, 0xA4) = (u32) M2C_FIELD(temp_r31, u32 *, 0x9C);
+        VF(0x24) += n;
+        q = U(0xA4) + n;
+        U(0xA4) = q;
+        VF(0x88) += n;
+        if (q >= U(0xA0)) {
+            U(0xA4) = U(0x9C);
         }
-        M2C_FIELD(temp_r31, s32 *, 0x98) = (s32) (M2C_FIELD(temp_r31, s32 *, 0x98) - var_r30);
-        M2C_FIELD(temp_r31, u32 *, 0x48) = (u32) (M2C_FIELD(temp_r31, u32 *, 0x48) + var_r30);
-        if ((u32) M2C_FIELD(temp_r31, u32 *, 0x48) > (u32) M2C_FIELD(temp_r31, u32 *, 0x40)) {
-            M2C_FIELD(temp_r31, u32 *, 0x40) = (u32) M2C_FIELD(temp_r31, u32 *, 0x48);
+        VF(0x98) -= n;
+        VU(0x48) += n;
+        if (VU(0x48) > VU(0x40)) {
+            VU(0x40) = VU(0x48);
         }
-        if ((s32) M2C_FIELD(temp_r31, s32 *, 0xB4) != 0) {
-            fn_8027ADB0(temp_r31, var_r30, M2C_FIELD(temp_r31, s32 *, 0xC4));
+        if (F(0xB4) != 0) {
+            fn_8027ADB0(p, n, F(0xC4));
         }
-        temp_r3_2 = fn_802753F0() - M2C_FIELD(temp_r31, s32 *, 0xC4);
-        M2C_FIELD(temp_r31, s32 *, 0xC4) = temp_r3_2;
-        M2C_FIELD(temp_r31, s32 *, 0x2C) = (s32) (M2C_FIELD(temp_r31, s32 *, 0x2C) + temp_r3_2);
-        if (((s32) M2C_FIELD(temp_r31, s32 *, 0xC0) != 0) || ((s32) M2C_FIELD(temp_r31, s32 *, 0x28) != 0)) {
-            M2C_FIELD(temp_r31, s32 *, 0x38) = (s32) (M2C_FIELD(temp_r31, s32 *, 0x38) + temp_r3_2);
+        t = fn_802753F0() - F(0xC4);
+        F(0xC4) = t;
+        F(0x2C) += t;
+        if (F(0xC0) != 0 || F(0x28) != 0) {
+            F(0x38) += t;
         } else {
-            M2C_FIELD(temp_r31, s32 *, 0x34) = (s32) (M2C_FIELD(temp_r31, s32 *, 0x34) + temp_r3_2);
+            F(0x34) += t;
         }
-        M2C_FIELD(temp_r31, s32 *, 0x20) = 0;
-        fn_8027AFC0(temp_r31);
+        F(0x20) = 0;
+        fn_8027AFC0(p);
     }
+#undef F
+#undef U
+#undef VF
+#undef VU
 }
 
 void fn_8027AFC0(void *arg0) {
@@ -207,8 +222,133 @@ void fn_8027B168(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0xBC) = 0;
 }
 
+u32 fn_8027B1BC(u8 *p, s32 unused, u32 pos, u8 *dst, u32 size) {
+    u8 *start = dst;
+    u32 total = 0;
+    u32 t0, t1, t2, n, avail, seg, d, q, left;
+    s32 e;
+
+#define F(o) (*(s32 *)(p + (o)))
+#define U(o) (*(u32 *)(p + (o)))
+#define VF(o) (*(volatile s32 *)(p + (o)))
+#define VU(o) (*(volatile u32 *)(p + (o)))
+#define RESTORE(x) ((void (*)(s32))OSRestoreInterrupts)(x)
+#define MEMCPY ((void *(*)())memcpy)
+    if (VF(0x1C) != 0) {
+        return 0;
+    }
+    t0 = fn_802753F0();
+    if (pos != (u32)-1 && U(0x90) != pos) {
+        if (pos > U(0x90) && pos <= VU(0x88)) {
+            e = OSDisableInterrupts();
+            n = pos - U(0x90);
+            VU(0x98) += n;
+            q = U(0x94) + n;
+            U(0x90) = pos;
+            U(0x94) = q;
+            VU(0x48) -= n;
+            if (q > U(0xA0)) {
+                U(0x94) = q - VU(0x3C);
+            }
+            RESTORE(e);
+        } else {
+            fn_8027B168(p);
+            e = OSDisableInterrupts();
+            VU(0x88) = pos;
+            U(0x90) = pos;
+            VU(0x98) = VU(0x3C);
+            VU(0x48) = 0;
+            U(0xA4) = U(0x94) = U(0x9C);
+            RESTORE(e);
+        }
+    }
+    if (U(0x9C) == 0) {
+        t1 = fn_802753F0();
+        n = fn_8027AC20(p + 0x4C, VU(0x88), dst, size);
+        if (n < size) {
+            VF(0x1C) = 1;
+        }
+        VU(0x88) += n;
+        U(0x90) += n;
+        VU(0x24) += n;
+        total = n;
+        if (F(0xB4) != 0) {
+            fn_8027ADB0(p, total, t1);
+        }
+        t2 = fn_802753F0();
+        d = t2 - t1;
+        q = t2 - t0;
+        VU(0x2C) += d;
+        VU(0x30) += q;
+    } else {
+        while (size != 0 && VF(0x1C) == 0) {
+            fn_8027AFC0(p);
+            avail = VU(0x48);
+            if (avail == 0) {
+                continue;
+            }
+            if (avail > size) {
+                avail = size;
+            }
+            size -= avail;
+            total += avail;
+            U(0x90) += avail;
+            seg = U(0xA0) - U(0x94);
+            if (seg <= avail) {
+                MEMCPY(dst, U(0x94), seg);
+                dst += seg;
+                avail -= seg;
+                U(0x94) = U(0x9C);
+                e = OSDisableInterrupts();
+                VU(0x48) -= seg;
+                VU(0x98) += seg;
+                RESTORE(e);
+            }
+            if (avail != 0) {
+                MEMCPY(dst, U(0x94), avail);
+                dst += avail;
+                U(0x94) += avail;
+                e = OSDisableInterrupts();
+                VU(0x48) -= avail;
+                VU(0x98) += avail;
+                RESTORE(e);
+            }
+        }
+        VU(0x30) += fn_802753F0() - t0;
+    }
+    n = U(0xB0) - U(0x90);
+    VU(0x44) = n < VU(0x3C) ? n : VU(0x3C);
+    if (VU(0x48) + 0x1000 > VU(0x44)) {
+        VU(0x44) = VU(0x48);
+    }
+    fn_8027ABEC((s32 *)start, total);
+    return total;
+#undef F
+#undef U
+#undef VF
+#undef VU
+#undef RESTORE
+#undef MEMCPY
+}
+
 u32 fn_8027B4CC(void *arg0, void *arg1) {
     return ((u32)arg1 + 0xFFF) & ~0xFFF;
+}
+
+void fn_8027B4D8(u8 *p, u8 *buf, u32 size, s32 a, s32 b) {
+    s32 e = OSDisableInterrupts();
+    size &= ~0xFFF;
+    *(volatile u32 *)(p + 0x98) = size;
+    *(volatile u32 *)(p + 0x3C) = size;
+    *(s32 *)(p + 0xB0) = a;
+    *(s32 *)(p + 0xB4) = b;
+    *(u8 **)(p + 0xC8) = p;
+    *(u8 **)(p + 0x9C) = buf;
+    *(u8 **)(p + 0x94) = buf;
+    *(u8 **)(p + 0xA4) = buf;
+    *(u8 **)(p + 0xA0) = buf + size;
+    *(volatile s32 *)(p + 0x48) = 0;
+    ((void (*)(s32))OSRestoreInterrupts)(e);
 }
 
 void fn_8027B54C(void *arg0) {
