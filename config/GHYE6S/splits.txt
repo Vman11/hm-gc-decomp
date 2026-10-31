@@ -2691,7 +2691,7 @@ auto/text_8005B390.c:
 auto/jt_802BCC00.c:
 	.data       start:0x802BCC00 end:0x802BCE08
 
-auto/text_8005BA4C.c:
+auto/text_8005BA4C.cpp:
 	extab       start:0x80006A8C end:0x80006AB4
 	extabindex  start:0x8001910C end:0x80019118
 	.text       start:0x8005BA4C end:0x8005BE14
