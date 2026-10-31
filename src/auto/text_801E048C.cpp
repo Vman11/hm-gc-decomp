@@ -9,7 +9,7 @@ extern f32 lbl_80365290;
 extern f32 lbl_8036528C;
 void __ct__9C801EFA90Fv(void *);
 
-void *fn_801E048C(u8 *p) {
+void *__ct__9C801E048CFv(u8 *p) {
     __ct__9C801EFA90Fv(p);
     *(void * *)(p + 0) = lbl_802ED5D0;
     *(s32 *)(p + 44) = 0;

@@ -8,7 +8,7 @@ extern u8 lbl_802EDDA4[];
 extern volatile f32 lbl_80365340;
 void __ct__9C801EFA90Fv(void *);
 
-void *fn_801E87C8(u8 *p) {
+void *__ct__9C801E87C8Fv(u8 *p) {
     __ct__9C801EFA90Fv(p);
     *(void * *)(p + 0) = lbl_802EDDA4;
     *(s32 *)(p + 4) = 18;

@@ -14,7 +14,7 @@ void __dl__FPv(int);
 void __dt__9C801EB864Fv(int, int);
 struct VCall_fn_801E6C0C_0 { char vptr_pad[0x14]; virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(); };
 
-s32 fn_801E6C0C(s32 param_1, s16 param_2) {
+s32 __dt__9C801E6C80Fv(s32 param_1, s16 param_2) {
     if (param_1 != 0) {
         *(u8 **)(param_1 + 0x14) = __vt__9C801E6C80;
         ((VCall_fn_801E6C0C_0 *)(param_1))->m();

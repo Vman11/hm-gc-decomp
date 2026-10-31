@@ -9,7 +9,7 @@ void __dl__FPv(void *);
 void fn_801EF83C(void *);
 void fn_801F77F8(void *, int);
 
-u32 * fn_801F6B40(u32 *param_1, s16 param_2) {
+u32 * __dt__9C801F6BA8Fv(u32 *param_1, s16 param_2) {
     if (param_1 != (u32 *)0x0) {
         *param_1 = (u32)lbl_802EEAB8;
         fn_801EF83C(param_1);
