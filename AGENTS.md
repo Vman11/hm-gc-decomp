@@ -181,3 +181,5 @@ loops won't overlap. Pull often: both agents commit to `main`.
 The library-unit agent works in this repo too and commits its own batches. Commit only your own units: `git add` specific paths rather than `-A`. If a library unit shows up as modified in `git status`, leave it alone.
 
 **Absorbed units (2026-10-30):** `text_80268290` was merged into `text_80268178.cpp` (one TU, namespace-wrapped, with `-use_lmw_stmw on`; `fn_80268290` is in `force_active`). The `text_80268290` unit no longer exists.
+
+**Renamed ctor/dtor placeholders (2026-10-31, user-approved):** `fn_8010CDAC` -> `__dt__9B8010CE30Fv` and `__ct__9C8010CE30Fv` -> `__ct__9B8010CE30Fv` (base class; `__dt__9C8010CE30Fv` at 0x8010C9E0 is the derived dtor), updated in `text_8010CDAC`, `text_8010CE30`, `text_80110FA0`, `text_80111028`, `text_80112190`; plus 38 `new[]` pairs used by `fn_801EB890`/`fn_801F7E0C` (e.g. `fn_801E6C0C` -> `__dt__9C801E6C80Fv`, `fn_801EB420`/`fn_801EB3AC` -> `__ct__/__dt__9C801EB420Fv`), renamed to `__ct__/__dt__9C<ctor addr>Fv` in symbols.txt and all src (`text_801ECB44`, `text_801F7B04`, and each pair's own unit).
