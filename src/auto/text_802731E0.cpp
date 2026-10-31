@@ -38,8 +38,15 @@ double fn_800EFA20(double);
 DbgN *fn_800F8274(void *, const char *);
 s32 fn_80253664(DbgN *, s32);
 extern V3 lbl_80357E90, lbl_80357AF8, lbl_80357AEC, lbl_80357B10;
-extern f32 lbl_80366FC8, lbl_80366FCC, lbl_80366FD0, lbl_80366FD4, lbl_80366FD8, lbl_80366FE4, lbl_80366FE8;
-extern char lbl_80366FDC[7];
+#pragma explicit_zero_data on
+__declspec(section ".sdata2") f32 lbl_80366FC8 = 2.0f;
+__declspec(section ".sdata2") f32 lbl_80366FCC = 1.0f;
+__declspec(section ".sdata2") f32 lbl_80366FD0 = 0.0f;
+__declspec(section ".sdata2") f32 lbl_80366FD4 = 18.0f;
+__declspec(section ".sdata2") f32 lbl_80366FD8 = 57.29578f;
+__declspec(section ".sdata2") char lbl_80366FDC[7] = "gdebug";
+__declspec(section ".sdata2") f32 lbl_80366FE4 = -5e-6f;
+__declspec(section ".sdata2") f32 lbl_80366FE8 = 5e-6f;
 extern void *lbl_8035B5E4;
 extern s32 lbl_8035B830;
 extern s8 lbl_8035B834;
@@ -81,7 +88,7 @@ void fn_802731E0(Obj *o, f32 dt)
     lbl_80357AEC.x = o->u.x; lbl_80357AEC.y = o->u.y; lbl_80357AEC.z = o->u.z;
     lbl_80357B10.x = o->w.x; lbl_80357B10.y = o->w.y; lbl_80357B10.z = o->w.z;
     fn_80256F8C(o, dt);
-    d = fn_800F8274(lbl_8035B5E4, "gdebug");
+    d = fn_800F8274(lbl_8035B5E4, lbl_80366FDC);
     if (!lbl_8035B834) { lbl_8035B830 = 0; lbl_8035B834 = 1; }
     if (d && d->on) {
         if (!((f32)fn_80253664(d, 80) >= lbl_80366FE4) || !((f32)fn_80253664(d, 80) <= lbl_80366FE8)) {

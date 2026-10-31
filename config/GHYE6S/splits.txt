@@ -37006,6 +37006,7 @@ auto/text_802731E0.cpp:
 	extab       start:0x80017AF4 end:0x80017AFC
 	extabindex  start:0x8002A794 end:0x8002A7A0
 	.text       start:0x802731E0 end:0x80273554
+	.sdata2     start:0x80366FC8 end:0x80366FF8
 
 auto/text_80273554.cpp:
 	extab       start:0x80017AFC end:0x80017B04
