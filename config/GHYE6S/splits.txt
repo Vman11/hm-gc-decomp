@@ -21435,7 +21435,7 @@ auto/text_801A53C0.cpp:
 auto/text_801A5550.c:
 	.text       start:0x801A5550 end:0x801A5560
 
-auto/text_801A5560.c:
+auto/text_801A5560.cpp:
 	extab       start:0x8000FE4C end:0x8000FF44
 	extabindex  start:0x80022598 end:0x800225A4
 	.text       start:0x801A5560 end:0x801A62DC
