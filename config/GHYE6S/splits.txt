@@ -625,7 +625,7 @@ auto/text_80038078.cpp:
 auto/text_80038474.c:
 	.text       start:0x80038474 end:0x800384A4
 
-auto/text_800384A4.c:
+auto/text_800384A4.cpp:
 	extab       start:0x80005C14 end:0x80005C1C
 	extabindex  start:0x80018068 end:0x80018074
 	.text       start:0x800384A4 end:0x8003881C
