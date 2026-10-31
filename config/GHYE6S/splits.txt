@@ -31291,7 +31291,7 @@ auto/text_8021D874.cpp:
 	extabindex  start:0x800277B8 end:0x800277C4
 	.text       start:0x8021D874 end:0x8021D988
 
-auto/text_8021D988.c:
+auto/text_8021D988.cpp:
 	extab       start:0x80014988 end:0x80014990
 	extabindex  start:0x800277C4 end:0x800277D0
 	.text       start:0x8021D988 end:0x8021DACC
