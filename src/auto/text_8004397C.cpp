@@ -605,3 +605,135 @@ s32 * fn_80044664(s32 *param_1, s16 param_2) {
 }
 
 } /* namespace m80044664 */
+#pragma opt_propagation reset
+
+
+#pragma optEH2 on
+
+extern "C" {
+
+extern void *lbl_8035B530;
+void fn_800604C4(s32, s32, s32, s32);
+void fn_800F7EC0(void *);
+void fn_800F7E98(void);
+void fn_8004445C(void *);
+
+} /* extern "C" */
+
+struct C8024262C {
+    C8024262C();
+    ~C8024262C();
+};
+
+struct C800446D8 : C8024262C {
+    u8 pad[0x160];
+    C800446D8() {
+        *(void **)this = (void *)::lbl_802B3728;
+        fn_8004445C(this);
+    }
+};
+
+extern "C" void *fn_800446D8(void) {
+    C800446D8 *r;
+    if (lbl_8035B530 == NULL) {
+        fn_800604C4(-2, 0, 0, 0);
+    }
+    fn_800F7EC0(lbl_8035B530);
+    r = new C800446D8;
+    fn_800F7E98();
+    if (r == NULL) {
+        fn_800604C4(-4, 0, 0, 0);
+    }
+    return r;
+}
+
+namespace m80044770 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+s32 fn_802421C0(void *, s32);
+
+s32 fn_80044770(void *p, s32 a) {
+    switch (a) {
+    case 5:
+        return fn_802421C0(p, 0);
+    case 6:
+        return fn_802421C0(p, 1);
+    case 7:
+        return fn_802421C0(p, 2);
+    case 8:
+        return fn_802421C0(p, 3);
+    }
+    return 1;
+}
+
+} /* extern "C" */
+
+} /* namespace m80044770 */
+
+namespace m800447E8 {
+// dtk: data-align 4
+/* Functions from 0x800447E8 to 0x8004486C, found by decomp-toolkit. */
+
+extern "C" {
+
+extern "C" {
+
+}
+
+
+extern "C" int fn_800447E8(void *arg0, u32 arg1) {
+    void *p = *(void **)((u8 *)arg0 + 0x98);
+    if (p != NULL) {
+        return (*(int **)((u8 *)p + 0xC))[arg1];
+    }
+    switch (arg1) {
+    case 0: return 0;
+    case 1: return 1;
+    case 2: return 0;
+    case 3: return 0;
+    case 4: return 0;
+    case 5: return 0;
+    case 6: return 0;
+    case 7: return 1;
+    default: return 1;
+    }
+}
+
+} /* extern "C" */
+
+} /* namespace m800447E8 */
+
+namespace m8004486C {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035A0F4;
+extern volatile f32 lbl_8035A0F0;
+extern volatile f64 lbl_8035CA88;
+double fn_800EFDA4(double);
+void *fn_8023DC5C(void *, void *, void *, void *, s32);
+void __register_global_object(void *, void *, void *);
+extern u8 lbl_8030271C[];
+extern u8 lbl_80295650[];
+extern u32 lbl_8035CA90;
+void fn_800446D8(void);
+void fn_800375E4(void);
+extern u8 lbl_80302710[];
+
+void fn_8004486C(void) {
+    lbl_8035A0F4 = lbl_803596E0[0];
+    lbl_8035A0F0 = fn_800EFDA4(lbl_8035CA88);
+    __register_global_object(fn_8023DC5C(lbl_8030271C, lbl_80295650, &lbl_8035CA90, (void *)fn_800446D8, 352), (void *)fn_800375E4, lbl_80302710);
+}
+
+__declspec(section ".ctors") static void (*const ctor_8004486C)(void) = fn_8004486C;
+
+} /* extern "C" */
+
+} /* namespace m8004486C */
