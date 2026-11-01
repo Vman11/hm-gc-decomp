@@ -1329,7 +1329,7 @@ auto/text_800416BC.cpp:
 	.text       start:0x800416BC end:0x80041730
 	.ctors      start:0x80293F44 end:0x80293F48
 
-auto/text_80041730.c:
+auto/text_80041730.cpp:
 	extab       start:0x8000609C end:0x800060A4
 	extabindex  start:0x800185E4 end:0x800185F0
 	.text       start:0x80041730 end:0x80042750
