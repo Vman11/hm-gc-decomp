@@ -70,12 +70,13 @@ typedef struct BTrk {
     s32 (*ready)(struct BTrk *);
     s32 (*get)(struct BTrk *, u8 **, u32 *);
     void (*done)(struct BTrk *, u32);
-    u8 pad0C[0x2C - 0x0C];
+    u8 pad0C[0x28 - 0x0C];
+    u32 size;
     u8 *start;
     u8 *end;
-    u8 pad34[4];
+    u8 *wr;
     u8 *rd;
-    u8 pad3C[4];
+    Fn80283750Struct *dec;
     u32 left;
     s32 cvt;
     s32 lim;
@@ -696,6 +697,147 @@ draw:
     return skipped;
 }
 #undef F
+
+#define K8(i) ((BTrk *)((i) * 376 + BB(768)))
+#define BB(o) (*(u32 *)(b + (o)))
+extern void *k_385C[] asm("lbl_802F385C");
+void *memmove(void *, const void *, u32);
+s32 fn_80278920(u8 *b) {
+    s32 locked = 0;
+    u8 *p;
+    s32 i;
+    s32 j;
+    u32 t;
+    if (b == 0 || *(s32 *)(b + 748) == *(s32 *)(b + 12)) return 0;
+    if (BB(756) != 0) {
+        BB(756) = locked;
+        if (BB(672) != 0) {
+            fn_8027AA78(b, 0);
+            fn_8027AA78(b, 1);
+        }
+        BB(640) = locked;
+        BB(824) = locked;
+    }
+    BB(776) = 0;
+    BB(312) = 1;
+    BB(632) = fn_802753F0();
+    memmove((u32 *)BB(716) + 1, (u32 *)BB(716), BB(712));
+    memmove((u32 *)BB(724) + 1, (u32 *)BB(724), BB(712));
+    memmove((u32 *)BB(720) + 1, (u32 *)BB(720), BB(712));
+    memmove((u32 *)BB(728) + 1, (u32 *)BB(728), BB(712));
+    memmove((u32 *)BB(732) + 1, (u32 *)BB(732), BB(712));
+    memmove((u32 *)BB(736) + 1, (u32 *)BB(736), BB(712));
+    memmove((u32 *)BB(740) + 1, (u32 *)BB(740), BB(712));
+    *(u32 *)BB(716) = BB(632);
+    *(u32 *)BB(724) = BB(684);
+    *(u32 *)BB(720) = BB(688);
+    *(u32 *)BB(728) = BB(692);
+    { u32 x = BB(320); *(u32 *)BB(732) = x; }
+    { u32 x = BB(324); *(u32 *)BB(736) = x; }
+    *(u32 *)BB(740) = BB(328);
+    j = BB(628);
+    if (j == 0) {
+        ((u32 *)BB(716))[1] = BB(632) - fn_802752DC(1000, BB(704), BB(700));
+        BB(324) = j;
+        BB(328) = j;
+        BB(628) = BB(632);
+    } else if (BB(760) != 0) {
+        fn_80276B84(b);
+    }
+    BB(652) = BB(632);
+    p = (u8 *)BB(260);
+    if (BB(300) != 0) BB(28) = 1;
+    if (BB(28) != 0) return 1;
+    for (i = 0; i < *(s32 *)(b + 240); i++) {
+        u32 size = *(u32 *)p;
+        u8 *next;
+        p += 4;
+        for (j = 0; j < *(s32 *)(b + 760); j++) {
+            if (((s32 *)BB(604))[j] == i) goto found;
+        }
+        j = -1;
+    found:
+        next = p + size;
+        if (j != -1 && size != 0) {
+            s16 *buf;
+            s32 len;
+            u8 *src;
+            u32 rem;
+            src = p;
+            rem = *(u32 *)p;
+            src = p + 4;
+            if (locked == 0) {
+                locked = 1;
+                fn_80283E90(wCa_802F3860_7925C[0], b + 844);
+            }
+            while (rem != 0) {
+                BTrk *k = K8(j);
+                u32 space = k->size - k->left;
+                fn_80283750(k->dec, &buf, &len, (s32)src, (s32 *)&src);
+                if ((u32)len > rem) len = rem;
+                rem -= len;
+                if ((u32)len > space) {
+                    space = len - space;
+                    K8(j)->rd += space;
+                    K8(j)->left -= space;
+                    if (K8(j)->rd > K8(j)->end) K8(j)->rd -= K8(j)->size;
+                }
+                K8(j)->left += len;
+                space = K8(j)->end - K8(j)->wr;
+                if (space < (u32)len) {
+                    if (space != 0) {
+                        CPY(K8(j)->wr, buf, space);
+                        len -= space;
+                        buf = (s16 *)((u8 *)buf + space);
+                    }
+                    CPY(K8(j)->start, buf, len);
+                    K8(j)->wr = K8(j)->start + len;
+                } else {
+                    CPY(K8(j)->wr, buf, len);
+                    K8(j)->wr += len;
+                }
+            }
+        }
+        p = next;
+    }
+    if (locked != 0) fn_80283F38(wCa_802F3860_7925C[0], b + 844);
+    t = fn_802753F0();
+    if (BB(676) != 0) {
+        u32 k;
+        u8 **y, **a;
+        if (BB(772) == 0) memset((void *)BB(220), 0, (BB(204) >> 4) * (BB(208) >> 4));
+        if (BB(264) == 0 && BB(304) == 0 && (BB(344) + 1) * 100 / (BB(340) + 1) <= 74) {
+            if (fn_80283DFC((s32)k_385C[0], b + 524) != 0) {
+                (*(void (**)(u8 *))(b + 288))(b + 272);
+                fn_80283F38(k_385C[0], b + 524);
+            } else if (!(BB(32) & 0x08000000)) {
+                fn_8028405C();
+            }
+        }
+        y = (u8 **)(b + 188);
+        a = (u8 **)(b + 196);
+        k = BB(184);
+        fn_80287540(*(u8 **)((u8 *)y + ((k ^ 1) << 2)), *(u8 **)((u8 *)y + (k << 2)), *(u8 **)((u8 *)a + ((k ^ 1) << 2)), *(u8 **)((u8 *)a + (k << 2)),
+                    BB(220), BB(596), BB(600), BB(204), BB(208), p, ((u32 *)BB(268))[BB(12) - 1] & 1, (u32)(b + 784), BB(32), BB(36));
+        BB(184) ^= 1;
+    }
+    if (BB(760) != 0) fn_80276B84(b);
+    *(s32 *)(b + 180) = -1;
+    BB(624)++;
+    fn_80276E38(b);
+    {
+        u32 now = fn_802753F0();
+        BB(688) += t - BB(632);
+        BB(684) += now - t;
+        BB(748) = BB(12);
+        BB(16) = BB(12);
+        BB(636) = now;
+        BB(312) = 0;
+    }
+    return 0;
+}
+#undef K8
+#undef BB
 
 void fn_80278F28(void *arg0, s32 arg1) {
     s32 old = *(s32 *)((u8 *)arg0 + 0x27C);
