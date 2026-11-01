@@ -5011,9 +5011,6 @@ auto/text_8008BB08.c:
 	.text       start:0x8008BB08 end:0x8008BEA0
 	.data       start:0x802C7140 end:0x802C7160
 
-auto/jt_802C7160.c:
-	.data       start:0x802C7160 end:0x802C75A8
-
 auto/text_8008BEA0.cpp:
 	extab       start:0x800080F8 end:0x80008100
 	extabindex  start:0x8001A504 end:0x8001A510
@@ -5063,11 +5060,11 @@ auto/text_8008C344.cpp:
 	.text       start:0x8008C344 end:0x8008C3B8
 	.ctors      start:0x8029402C end:0x80294030
 
-auto/text_8008C3B8.c:
+auto/text_8008C3B8.cpp:
 	extab       start:0x80008164 end:0x8000816C
 	extabindex  start:0x8001A570 end:0x8001A57C
 	.text       start:0x8008C3B8 end:0x8008C6E4
-	.data       start:0x802C75A8 end:0x802C75C4
+	.data       start:0x802C7160 end:0x802C75C4
 
 auto/text_8008C6E4.cpp:
 	extab       start:0x8000816C end:0x80008174
