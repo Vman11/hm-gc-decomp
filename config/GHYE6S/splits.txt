@@ -15465,7 +15465,7 @@ auto/text_80156110.cpp:
 	.data       start:0x802E69C8 end:0x802E69F4
 
 auto/jt_802E69F4.c:
-	.data       start:0x802E69F4 end:0x802E7418
+	.data       start:0x802E69F4 end:0x802E6FB0
 
 auto/text_8015641C.cpp:
 	extab       start:0x8000CC64 end:0x8000CC6C
@@ -16453,6 +16453,10 @@ auto/text_8015FAA4.cpp:
 	extab       start:0x8000D58C end:0x8000D594
 	extabindex  start:0x8001FCE8 end:0x8001FCF4
 	.text       start:0x8015FAA4 end:0x8015FD18
+	.data       start:0x802E6FB0 end:0x802E7028
+
+auto/jt_802E7028.c:
+	.data       start:0x802E7028 end:0x802E7418
 
 auto/text_8015FD18.cpp:
 	extab       start:0x8000D594 end:0x8000D59C

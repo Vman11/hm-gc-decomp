@@ -27,13 +27,20 @@ struct P {
     u8 pad84[4];
     T12 pmf;
 };
-static T12 sTbl[6] = {1};
+void fn_8015F600();
+void fn_8015F658();
+void fn_8015F6B0();
+void fn_8015F708();
+void fn_8015F760();
+void fn_8015F7B4();
+T12 lbl_802E6FB0[6] = { 0x0, 0xFFFFFFFF, (u32)&fn_8015F600, 0x0, 0xFFFFFFFF, (u32)&fn_8015F7B4, 0x0, 0xFFFFFFFF, (u32)&fn_8015F760, 0x0, 0xFFFFFFFF, (u32)&fn_8015F708, 0x0, 0xFFFFFFFF, (u32)&fn_8015F6B0, 0x0, 0xFFFFFFFF, (u32)&fn_8015F658 };
+void *wAX_802E6FF8[12] = { (void *)0x0, (void *)0xFFFFFFFF, (void *)&fn_8015F600, (void *)0x0, (void *)0xFFFFFFFF, (void *)&fn_8015F708, (void *)0x0, (void *)0xFFFFFFFF, (void *)&fn_8015F6B0, (void *)0x0, (void *)0xFFFFFFFF, (void *)&fn_8015F658 };
 extern char lbl_802A04DC[], lbl_802A04E8[];
 void fn_80217D7C(u8 *, void *, Q *, int, u16, u32);
 void fn_80217954(u8 *, void *, Q *, int, u16 *, u16, u32);
 
 void fn_8015FAA4(P *p, void *x) {
-    T12 *t = sTbl;
+    T12 *t = lbl_802E6FB0;
     u16 fl = p->fl36;
     Q *q;
     if (fl & 0x80) {
