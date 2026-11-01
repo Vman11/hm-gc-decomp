@@ -20,4 +20,8 @@ def tryset(us):
     setm(us,False)
     if len(us)==1: print('FAIL',us,flush=True); return []
     h=len(us)//2; return tryset(us[:h])+tryset(us[h:])
+cfg=open('configure.py').read()
+for u in sys.argv[1:]:
+    if not any(f'Object(NonMatching, "{u}{e}"' in cfg for e in ('.c','.cpp')):
+        sys.exit(f'promote.py: no NonMatching entry for {u} (missing auto/ prefix, or already Matching?)')
 good=tryset(sys.argv[1:]); ok(); print('linked',good)
