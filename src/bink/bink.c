@@ -1078,8 +1078,6 @@ typedef struct BTrk {
 #define TRK(i) (&(*(BTrk **)(b + 768))[i])
 #define CVT ((u8 *(*)(u8 *, u8 *, u32))fn_80276A90)
 #define CPY ((void *(*)())memcpy)
-/* identity inline: its RTL pushes the loop's 3rd test past expand_end_loop's 30-insn scan, so it stays at the top */
-static inline u32 pad(u32 x) { u32 a = x, c = a, d = c, e = d, f = e, g = f; return g; }
 void fn_80276B84(void *bv) {
     u8 *b = bv;
     u32 i;
@@ -1088,7 +1086,7 @@ void fn_80276B84(void *bv) {
     if (TRK(*(u32 *)(b + 760) - 1)->ready == 0) return;
     if (fn_80283DFC(wCa_802F3860_7925C[0], b + 844) == 0) return;
     for (i = 0; i < *(u32 *)(b + 760); i++) {
-        while (pad(TRK(i)->left) > TRK(i)->thr || (*(s32 *)(b + 12) > TRK(i)->lim && TRK(i)->left != 0)) {
+        while (TRK(i)->ready(TRK(i)) != 0 && (TRK(i)->left > TRK(i)->thr || (*(s32 *)(b + 12) > TRK(i)->lim && TRK(i)->left != 0))) {
             u32 n;
             if (TRK(i)->get(TRK(i), &buf, &size) == 0) break;
             if (TRK(i)->cvt) size += size;
@@ -1111,7 +1109,6 @@ void fn_80276B84(void *bv) {
             }
             if (TRK(i)->cvt) size >>= 1;
             TRK(i)->done(TRK(i), size);
-            if (TRK(i)->ready(TRK(i)) == 0) break;
         }
     }
     fn_80283F38(wCa_802F3860_7925C[0], b + 844);
@@ -2373,11 +2370,8 @@ s32 fn_8027A0D0(u8 *b, u32 flags) {
     BRect a[8], o1[8], o2[8];
     s32 area[8];
     s32 i, j, best, max, k;
-    if (!(flags & 0x4000000)) {
-        if (!(flags & 0x80000) && !(*(u32 *)(b + 32) & 0x80000) && *(s32 *)(b + 772) != 0) return 0;
-    } else if (NR != -1) {
-        goto done;
-    }
+    if ((flags & 0x4000000) || (!(flags & 0x80000) && !(*(u32 *)(b + 32) & 0x80000) && *(s32 *)(b + 772) != 0)) return 0;
+    if (NR != -1) goto done;
     a[0].w = *(s32 *)(b + 204);
     a[0].y = 0;
     a[0].x = 0;

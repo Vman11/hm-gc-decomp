@@ -7438,7 +7438,7 @@ config.libs = [
             Object(NonMatching, "auto/text_80273E10.c"),
             Object(Matching, "bink/radtimer.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(Matching, "bink/binkngcsnd.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
-            Object(NonMatching, "bink/bink.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
+            Object(Matching, "bink/bink.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(Matching, "bink/binkngcfile.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(Matching, "bink/radmem.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(NonMatching, "bink/expand.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
