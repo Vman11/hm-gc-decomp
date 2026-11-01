@@ -703,6 +703,7 @@ draw:
 #define BB(o) (*(u32 *)(b + (o)))
 extern void *k_385C[] asm("lbl_802F385C");
 void *memmove(void *, const void *, u32);
+#define CPY ((void *(*)())memcpy)
 s32 fn_80278920(u8 *b) {
     s32 locked = 0;
     u8 *p;
@@ -758,8 +759,9 @@ s32 fn_80278920(u8 *b) {
         }
         j = -1;
     found:
+        if (j == -1) { next = p + size; goto skip; }
         next = p + size;
-        if (j != -1 && size != 0) {
+        if (size != 0) {
             s16 *buf;
             s32 len;
             u8 *src;
@@ -799,6 +801,7 @@ s32 fn_80278920(u8 *b) {
                 }
             }
         }
+    skip:
         p = next;
     }
     if (locked != 0) fn_80283F38(wCa_802F3860_7925C[0], b + 844);
@@ -837,6 +840,7 @@ s32 fn_80278920(u8 *b) {
     }
     return 0;
 }
+#undef CPY
 #undef K8
 #undef BB
 
