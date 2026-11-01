@@ -55,7 +55,11 @@ extern Glob *lbl_8035B308;
 extern void *lbl_8035B7BC;
 extern void *lbl_8035B65C;
 extern s32 lbl_8035A238;
-extern f32 lbl_80365A58, lbl_80365A64;
+#pragma explicit_zero_data on
+__declspec(section ".sdata2") f32 lbl_80365A58 = 0.0f;
+__declspec(section ".sdata2") char lbl_80365A5C[8] = "balllnd";
+__declspec(section ".sdata2") f32 lbl_80365A64 = 1.0f;
+#pragma explicit_zero_data reset
 extern char lbl_802A821C[];
 
 inline void GetPos(Body *b, V3 *p)
@@ -86,7 +90,7 @@ void fn_80222840(Obj *o, const char *s)
                         if (r) { d = r->a; a = r->b; b = r->c; }
                     }
                     if (lbl_8035A238 && fn_800F6CD0(name, lbl_802A821C))
-                        d = fn_8026D254(lbl_8035B7BC, "balllnd");
+                        d = fn_8026D254(lbl_8035B7BC, lbl_80365A5C);
                 }
                 if (d == 0) {
                     Ent5 *r = fn_8026D1A8(lbl_8035B7BC, name);
