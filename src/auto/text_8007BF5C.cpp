@@ -4,10 +4,6 @@
 
 extern "C" {
 
-static u8 sPad[696] = {1};
-static s32 tA[7] = {1};
-static s32 tB[14] = {1};
-static s32 tC[34] = {1};
 struct VO {
     virtual void v0();
     virtual void v1();
@@ -72,6 +68,36 @@ void fn_80249008(u8 *, int);
 static inline void Play(u8 *p) {
     if (S32(308) && U32(320)) fn_802490E0(p, 0, (*(f32 **)(U32(300) + 12))[U32(324)]);
 }
+void fn_8003F140();
+void fn_8003F18C();
+void fn_8003F1DC();
+void fn_8007BF5C(u8 *p, s32 n);
+void fn_8007C304();
+void fn_8007C360();
+void fn_8007C3BC();
+void fn_8007C550();
+void fn_8007C668();
+void fn_8007C724();
+void fn_8007C830();
+void fn_8023D198();
+void fn_8023F5F4();
+void fn_80240054();
+void fn_802416D4();
+void fn_80241D80();
+void fn_80242210();
+void fn_80249AC4();
+extern char lbl_802986EC[];
+extern char lbl_802986F8[];
+extern char lbl_80298704[];
+extern char lbl_8035F8C8[];
+extern char lbl_8035F8D0[];
+extern char lbl_8035F8D8[];
+extern char lbl_8035F8E0[];
+void *lbl_802C3040[174] = { (void *)0x0, (void *)0xFA, (void *)0x1F4, (void *)0x2EE, (void *)0x55495C4D, (void *)0x454D4341, (void *)0x52445C00, (void *)0x41545449, (void *)0x43000000, (void *)0x42414C4C, (void *)0x524F4F4D, (void *)0x4348494C, (void *)0x4452454E, (void *)0x434F4E53, (void *)0x45525600, (void *)0x44494E52, (void *)0x4F4F4D00, (void *)0x464F5945, (void *)0x52000000, (void *)0x47414C4C, (void *)0x45525900, (void *)0x47524156, (void *)0x45594400, (void *)0x47524F4F, (void *)0x4D000000, (void *)0x47525448, (void *)0x414C4C00, (void *)0x47554553, (void *)0x54000000, (void *)0x48414C4C, (void *)0x41420000, (void *)0x48414C4C, (void *)0x43440000, (void *)0x4B495443, (void *)0x48454E00, (void *)0x4C414200, (void *)0x0, (void *)0x4D555345, (void *)0x554D0000, (void *)0x4D414944, (void *)0x0, (void *)0x4D415354, (void *)0x52424544, (void *)0x4D415553, (void *)0x4F4C4D00, (void *)0x4D454153, (void *)0x55524500, (void *)0x544F5952, (void *)0x4F4F4D00, (void *)0x4F425345, (void *)0x52560000, (void *)0x50414E54, (void *)0x52590000, (void *)0x5041524C, (void *)0x4F520000, (void *)0x53495454, (void *)0x494E4700, (void *)0x53545245, (void *)0x54434800, (void *)0x53554E52, (void *)0x4F4F4D00, (void *)0x57494E54, (void *)0x45520000, (void *)0x5449544C, (void *)0x45000000, (void *)0x53504952, (void *)0x49540000, (void *)0x474C4F42, (void *)0x414C0000, (void *)0x0, (void *)0x28, (void *)0x0, (void *)0x0, (void *)0x28, (void *)0x0, (void *)0x0, (void *)0x28, (void *)0x0, (void *)0x0, (void *)0x3F800000, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x40000000, (void *)0x0, (void *)0x3F800000, (void *)0x3F800000, (void *)0x0, (void *)0xBF800000, (void *)0x3F800000, (void *)0x0, (void *)0x0, (void *)0x3F800000, (void *)0x3F800000, (void *)0x0, (void *)0x3F800000, (void *)0xBF800000, (void *)0x0, (void *)0x6, (void *)0x9, (void *)0xC, (void *)0xF, (void *)0x12, (void *)0x15, (void *)0x18, (void *)0x1B, (void *)0x0, (void *)0x6, (void *)0x9, (void *)0xC, (void *)0xF, (void *)0x12, (void *)0x15, (void *)0x18, (void *)0x1B, (void *)0x0, (void *)0x6, (void *)0x40, (void *)0x43, (void *)0x46, (void *)0x49, (void *)0x4C, (void *)0x4F, (void *)0x52, (void *)0x55, (void *)0x1E, (void *)0x21, (void *)0x24, (void *)0x27, (void *)0x2A, (void *)0x2D, (void *)0x30, (void *)0x33, (void *)0x0, (void *)0x0, (void *)0x0, (void *)&lbl_802986EC, (void *)&lbl_8035F8C8, (void *)&lbl_8035F8D0, (void *)&lbl_8035F8D8, (void *)&lbl_802986F8, (void *)&lbl_80298704, (void *)&lbl_802986EC, (void *)&lbl_8035F8E0, (void *)&lbl_8035F8C8, (void *)0x0, (void *)0x1, (void *)&lbl_8035F8D0, (void *)0x1, (void *)0x1, (void *)&lbl_8035F8D8, (void *)0x2, (void *)0x1, (void *)&lbl_802986F8, (void *)0x3, (void *)0x1, (void *)&lbl_80298704, (void *)0x4, (void *)0x1, (void *)&lbl_802986EC, (void *)0x5, (void *)0x1, (void *)&lbl_8035F8E0, (void *)0x6, (void *)0x1, (void *)0x0, (void *)0x1, (void *)0x2, (void *)0x3, (void *)0x4, (void *)0x5, (void *)0x6 };
+static s32 tA[7] = { 0, 2, 4, 6, 8, 10, 12 };
+static s32 tB[14] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+static s32 tC[14] = { 0, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7 };
+void *lbl_802C3384[20] = { (void *)0x0, (void *)0x0, (void *)&fn_8007C724, (void *)&fn_80249AC4, (void *)&fn_8007C668, (void *)&fn_80242210, (void *)&fn_8007C550, (void *)&fn_8023D198, (void *)&fn_8007C830, (void *)&fn_8007BF5C, (void *)&fn_80241D80, (void *)&fn_8003F140, (void *)&fn_8003F18C, (void *)&fn_8007C3BC, (void *)&fn_8007C304, (void *)&fn_802416D4, (void *)&fn_8003F1DC, (void *)&fn_80240054, (void *)&fn_8023F5F4, (void *)&fn_8007C360 };
 void fn_8007BF5C(u8 *p, s32 n) {
     s32 *q;
     s32 i;
