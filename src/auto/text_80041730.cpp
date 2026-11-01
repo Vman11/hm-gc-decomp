@@ -750,3 +750,45 @@ void *fn_800429A4(void) {
 #pragma opt_propagation reset
 
 } /* extern "C" */
+#pragma opt_propagation reset
+
+namespace m80042AF0 {
+/* Functions from 0x80042AF0 to 0x80042AF8, found by decomp-toolkit. */
+
+extern "C" s32 fn_80042AF0(void) {
+    return 1;
+}
+
+} /* namespace m80042AF0 */
+
+namespace m80042AF8 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035A0DC;
+extern volatile f32 lbl_8035A0D8;
+__declspec(section ".sdata2") f64 lbl_8035C7D0 = 0.3490658402442932;
+double fn_800EFDA4(double);
+void *fn_8023DC5C(void *, void *, void *, void *, s32);
+void __register_global_object(void *, void *, void *);
+extern u8 lbl_803026BC[];
+extern const char lbl_80295350[9] = "Behavior";
+__declspec(section ".sdata2") char lbl_8035C7D8[8] = "BCamera";
+void fn_800429A4(void);
+void fn_800375E4(void);
+extern u8 lbl_803026B0[];
+
+void fn_80042AF8(void) {
+    lbl_8035A0DC = lbl_803596E0[0];
+    lbl_8035A0D8 = fn_800EFDA4(*(volatile f64 *)&lbl_8035C7D0);
+    __register_global_object(fn_8023DC5C(lbl_803026BC, (void *)lbl_80295350, lbl_8035C7D8, (void *)fn_800429A4, 312), (void *)fn_800375E4, lbl_803026B0);
+}
+
+__declspec(section ".ctors") static void (*const ctor_80042AF8)(void) = fn_80042AF8;
+
+} /* extern "C" */
+
+} /* namespace m80042AF8 */
