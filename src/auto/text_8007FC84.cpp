@@ -1,5 +1,6 @@
 #include "common.h"
 namespace m8007FC84 {
+namespace m8007FC84 {
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -248,10 +249,12 @@ void fn_800F7E98(void);
 
 } /* extern "C" */
 
+} /* namespace m8007FC84 */
 struct C8024262C {
     C8024262C();
     ~C8024262C();
 };
+namespace m8007FC84 {
 
 struct C8008007C : C8024262C {
     u8 pad[288];
@@ -302,3 +305,63 @@ void *fn_8008007C(void) {
 } /* extern "C" */
 
 
+
+} /* namespace m8007FC84 */
+
+namespace m800801B4 {
+/* Functions from 0x800801B4 to 0x8008021C, found by decomp-toolkit. */
+
+extern "C" {
+
+s32 fn_800801B4(void) {
+    return 1;
+}
+
+s32 fn_800801BC(void *arg0, s32 idx) {
+    void *ptr = *(void **)((u8 *)arg0 + 0x98);
+    if (ptr != NULL) {
+        return *(s32 *)((*(u32 *)((u8 *)ptr + 0xC)) + idx * 4);
+    }
+    switch (idx) {
+    case 0: return 0;
+    case 1: return 0;
+    case 2: return 0;
+    default: return 1;
+    }
+}
+
+} /* extern "C" */
+
+} /* namespace m800801B4 */
+
+namespace m8008021C {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035A304;
+extern volatile f32 lbl_8035A300;
+__declspec(section ".sdata2") f64 lbl_8035FB40 = 0.3490658402442932;
+double fn_800EFDA4(double);
+void *fn_8023DC5C(void *, void *, void *, void *, s32);
+void __register_global_object(void *, void *, void *);
+extern u8 lbl_803069D4[];
+extern const char lbl_80298A50[16] = "Behavior";
+__declspec(section ".sdata2") char lbl_8035FB48[8] = "BRObj";
+void fn_8008007C(void);
+void fn_800375E4(void);
+extern u8 lbl_803069C8[];
+
+void fn_8008021C(void) {
+    lbl_8035A304 = lbl_803596E0[0];
+    lbl_8035A300 = fn_800EFDA4(*(volatile f64 *)&lbl_8035FB40);
+    __register_global_object(fn_8023DC5C(lbl_803069D4, (void *)lbl_80298A50, (void *)lbl_8035FB48, (void *)fn_8008007C, 288), (void *)fn_800375E4, lbl_803069C8);
+}
+
+__declspec(section ".ctors") static void (*const ctor_8008021C)(void) = fn_8008021C;
+
+} /* extern "C" */
+
+} /* namespace m8008021C */
