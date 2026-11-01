@@ -28603,20 +28603,11 @@ auto/text_80201F68.cpp:
 	extabindex  start:0x800261BC end:0x800261C8
 	.text       start:0x80201F68 end:0x802021A8
 
-auto/text_802021A8.c:
-	extab       start:0x80013618 end:0x80013620
-	extabindex  start:0x800261C8 end:0x800261D4
-	.text       start:0x802021A8 end:0x802022C8
-
-auto/text_802022C8.cpp:
-	extab       start:0x80013620 end:0x80013628
-	extabindex  start:0x800261D4 end:0x800261E0
-	.text       start:0x802022C8 end:0x802025B8
-
-auto/text_802025B8.cpp:
-	extab       start:0x80013628 end:0x80013630
-	extabindex  start:0x800261E0 end:0x800261EC
-	.text       start:0x802025B8 end:0x80202958
+auto/text_802021A8.cpp:
+	extab       start:0x80013618 end:0x80013630
+	extabindex  start:0x800261C8 end:0x800261EC
+	.text       start:0x802021A8 end:0x80202958
+	.sdata2     start:0x80365728 end:0x80365730
 
 auto/text_80202958.cpp:
 	extab       start:0x80013630 end:0x80013638
