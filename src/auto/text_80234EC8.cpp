@@ -51,7 +51,7 @@ static inline void clr_80234EC8(S80234EC8 *s) {
 }
 
 extern "C" {
-S80234EC8 *fn_80234EC8(S80234EC8 *self) {
+S80234EC8 *__ct__9C80234EC8Fv(S80234EC8 *self) {
     __ct__9C80239B40Fv(self);
     self->vt = lbl_802F17C8;
     clr_80234EC8(self);
