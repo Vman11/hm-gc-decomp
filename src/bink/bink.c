@@ -258,6 +258,8 @@ void fn_802771D4(u8* arg0, s32 arg1) {
 #define L(o) (*(u32 *)((u8 *)&bk + (o)))
 #define B(o) (*(u32 *)(b + (o)))
 #define H(o) (hdr.w[((o) - 0x398 + 8) / 4])
+/* scalar view of wD7218_tracknum: a fixed scalar lets loop.c hoist the bound past the struct-field stores */
+extern s32 wD7218_ntracks asm("lbl_802F3870");
 u8 *fn_80277218(void *name, u32 flags) {
     wDBink_77218 bk;
     wDBinkHdr_77218 hdr;
@@ -269,7 +271,7 @@ u8 *fn_80277218(void *name, u32 flags) {
     s32 simulate;
 
     if (!(flags & 0x4000)) {
-        wD7218_tracknum[0] = 1;
+        wD7218_ntracks = 1;
         wD7218_tracks[0] = 0;
     }
     wD7218_memset(pbk = &bk, 0, 0x38c);
@@ -303,16 +305,16 @@ u8 *fn_80277218(void *name, u32 flags) {
         u32 cw = (((w + 1) >> 1) + 7) & ~7;
         u32 ch = (((h + 1) >> 1) + 7) & ~7;
         u32 f = (flags & 0x8FFFFFFF) | (hf & 0x20000);
-        L(0xd0) = ch + ch;
-        L(0xe0) = (cw + cw) >> 4;
-        L(0x0) = w;
-        L(0x4) = h;
         L(0x254) = w;
         L(0x258) = h;
         L(0x24) = hf;
         L(0xd4) = cw;
         L(0xd8) = ch;
         L(0xcc) = cw + cw;
+        L(0xd0) = ch + ch;
+        L(0xe0) = L(0xcc) >> 4;
+        L(0x0) = w;
+        L(0x4) = h;
         L(0x20) = f;
         if (!(hf & 0x100000)) L(0x20) = f & ~0x100000;
     }
@@ -320,7 +322,7 @@ u8 *fn_80277218(void *name, u32 flags) {
         u32 s = flags & 0x70000000;
         if (s != 0x70000000) {
             if (s != 0) L(0x20) |= s;
-            else L(0x20) |= hdr.w[9] & 0x70000000;
+            else L(0x20) |= *(volatile u32 *)&hdr.w[9] & 0x70000000;
             switch (L(0x20) & 0x70000000) {
             case 0x10000000:
             case 0x20000000:
@@ -366,7 +368,7 @@ u8 *fn_80277218(void *name, u32 flags) {
         if (L(0x2c4) == 0) L(0x2c4) = 1;
     }
     L(0x2c8) = (L(0x2c4) - 1) * 4;
-    wD7218_plan((u8 *)&bk + 0xdc, L(0xe4) + 16);
+    wD7218_plan((u8 *)&bk + 0xdc, *(volatile u32 *)&L(0xe4) + 16);
     wD7218_plan((u8 *)&bk + 0x2cc, L(0x2c4) * 4);
     wD7218_plan((u8 *)&bk + 0x2d0, L(0x2c4) * 4);
     wD7218_plan((u8 *)&bk + 0x2d4, L(0x2c4) * 4);
@@ -374,8 +376,8 @@ u8 *fn_80277218(void *name, u32 flags) {
     wD7218_plan((u8 *)&bk + 0x2dc, L(0x2c4) * 4);
     wD7218_plan((u8 *)&bk + 0x2e0, L(0x2c4) * 4);
     wD7218_plan((u8 *)&bk + 0x2e4, L(0x2c4) * 4);
-    wD7218_plan((u8 *)&bk + 0x300, wD7218_tracknum[0] ? wD7218_tracknum[0] * 0x178 : 0x178);
-    wD7218_plan((u8 *)&bk + 0x25c, wD7218_tracknum[0] * 4);
+    wD7218_plan((u8 *)&bk + 0x300, wD7218_ntracks ? wD7218_ntracks * 0x178 : 0x178);
+    wD7218_plan((u8 *)&bk + 0x25c, wD7218_ntracks * 4);
     wD7218_plan2((u8 *)&bk + 0x310, L(0xcc));
     wD7218_plan((u8 *)&bk + 0x310, L(0x310));
     wD7218_plan((u8 *)&bk + 0x314, L(0x314));
@@ -486,25 +488,23 @@ u8 *fn_80277218(void *name, u32 flags) {
     B(0x2f8) = 0;
     {
         u32 n;
-        if (B(0xf0) != 0 && (n = wD7218_tracknum[0]) != 0)
-        for (i = 0; i < n; i++) {
+        if (B(0xf0) != 0 && wD7218_ntracks != 0)
+        for (i = 0; i < wD7218_ntracks; i++) {
             s32 j;
             for (j = 0; j < (s32)B(0xf0); j++) {
                 if (((s32 *)B(0x268))[j] == wD7218_tracks[i]) {
-                    u32 k = B(0x2f8);
-                    ((s32 *)B(0x25c))[k] = j;
-                    B(0x2f8) = k + 1;
+                    ((s32 *)B(0x25c))[((wDBink_77218 *)b)->w[0x2f8 / 4]++] = j;
                     break;
                 }
             }
         }
     }
     wD7218_tracks[0] = 0;
-    wD7218_tracknum[0] = 1;
+    wD7218_ntracks = 1;
 #define TRK ((u8 *)(i * 0x178 + B(0x300)))
 #define FL (((u32 *)B(0x264))[((s32 *)B(0x25c))[i]])
 #define T(o) (*(u32 *)(TRK + (o)))
-    for (i = 0; i < B(0x2f8);) {
+    for (i = 0; i < ((wDBink_77218 *)b)->w[0x2f8 / 4];) {
         u32 rate;
         T(0x2c) = 0;
         if (((s32)FL < 0 || (FL & 0x10000000)) && wD7218_sndopen[0] != 0) {
@@ -521,8 +521,9 @@ u8 *fn_80277218(void *name, u32 flags) {
                 if (*(u32 *)(p + 0x2c) == 0) {
                     ((wDOne_77218) * (u32 *)(p + 0x1c))(p);
                 } else {
+                    u32 t = (((FL >> 27) & 8) + 8) == 8;
                     wD7218_sndcount[0]++;
-                    *(u32 *)(p + 0x44) = (((FL >> 27) & 8) + 8) == 8;
+                    *(u32 *)(p + 0x44) = t;
                     T(0x30) = T(0x2c) + T(0x28);
                     T(0x34) = T(0x2c);
                     T(0x38) = T(0x2c);
