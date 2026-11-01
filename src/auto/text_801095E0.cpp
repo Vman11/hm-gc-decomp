@@ -12,7 +12,7 @@ extern char lbl_802E25CC[];
 extern char lbl_802E2568[];
 extern u32 lbl_8035AAB4;
 extern u32 lbl_8035AAB8;
-struct C8010C41C { u32 a, b; void *vt; C8010C41C(); };
+struct C8010C41C { u32 a, b; void *vt; C8010C41C(); ~C8010C41C(); };
 struct C800FBA24 { u8 d[20]; C800FBA24(); };
 struct C800FB754 { u8 d[20]; C800FB754(); };
 struct C8011497C { u8 d[16]; C8011497C(); };
