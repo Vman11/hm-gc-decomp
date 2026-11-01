@@ -13,14 +13,15 @@ void wAE_F9D8(u8 *out, s32 pitch, s16 *in_, s32 *q_) {
     s32 z5, z10, z11, z12, z13;
     s32 d0, d1, d2, d3, d4, d5, d6, d7;
     int i;
+    u8 *o;
 
+    o = out;
     w = ws;
     for (i = 8; i > 0; i--) {
         if ((in[8] | in[16] | in[24] | in[32] | in[40] | in[48] | in[56]) == 0) {
             s32 dc = (in[0] * q[0]) >> 11;
             in++;
             q++;
-            w[56] = dc;
             w[0] = dc;
             w[8] = dc;
             w[16] = dc;
@@ -28,6 +29,7 @@ void wAE_F9D8(u8 *out, s32 pitch, s16 *in_, s32 *q_) {
             w[32] = dc;
             w[40] = dc;
             w[48] = dc;
+            w[56] = dc;
         } else {
             d0 = (in[0] * q[0]) >> 11;
             d1 = (in[8] * q[8]) >> 11;
@@ -74,6 +76,7 @@ void wAE_F9D8(u8 *out, s32 pitch, s16 *in_, s32 *q_) {
         w++;
     }
     w = ws;
+    o = out;
     for (i = 8; i > 0; i--) {
         tmp10 = w[0] + w[4];
         tmp11 = w[0] - w[4];
@@ -97,16 +100,16 @@ void wAE_F9D8(u8 *out, s32 pitch, s16 *in_, s32 *q_) {
         tmp[5] = tmp11 - tmp[6];
         tmp[4] = tmp10 + tmp[5];
 
-        out[0] = (tmp[0] + tmp[7] + 127) >> 8;
-        out[7] = (tmp[0] - tmp[7] + 127) >> 8;
-        out[1] = (tmp[1] + tmp[6] + 127) >> 8;
-        out[6] = (tmp[1] - tmp[6] + 127) >> 8;
-        out[2] = (tmp[2] + tmp[5] + 127) >> 8;
-        out[5] = (tmp[2] - tmp[5] + 127) >> 8;
-        out[4] = (tmp[3] + tmp[4] + 127) >> 8;
-        out[3] = (tmp[3] - tmp[4] + 127) >> 8;
+        o[0] = (tmp[0] + tmp[7] + 127) >> 8;
+        o[7] = (tmp[0] - tmp[7] + 127) >> 8;
+        o[1] = (tmp[1] + tmp[6] + 127) >> 8;
+        o[6] = (tmp[1] - tmp[6] + 127) >> 8;
+        o[2] = (tmp[2] + tmp[5] + 127) >> 8;
+        o[5] = (tmp[2] - tmp[5] + 127) >> 8;
+        o[4] = (tmp[3] + tmp[4] + 127) >> 8;
+        o[3] = (tmp[3] - tmp[4] + 127) >> 8;
         w += 8;
-        out += pitch;
+        o += pitch;
     }
 }
 
@@ -253,5 +256,116 @@ void wBA_FDB4(u8 *out, s32 pitch, s16 *in_, s32 *q_) {
         p += 8;
         o0 = (u32 *)((u8 *)o0 + pitch2);
         o1 = (u32 *)((u8 *)o1 + pitch2);
+    }
+}
+
+void fn_80290220(u8 *out, s32 pitch, s16 *in, s32 idx, u8 *pred) {
+    s32 *q = (s32 *)lbl_802AD300[idx];
+
+    s32 tmp[8];
+    s32 ws[64];
+    s32 *w;
+    s32 tmp10, tmp11, tmp12, tmp13;
+    s32 z5, z10, z11, z12, z13;
+    s32 d0, d1, d2, d3, d4, d5, d6, d7;
+    int i;
+    u8 *o;
+
+    o = out;
+    w = ws;
+    for (i = 8; i > 0; i--) {
+        if ((in[8] | in[16] | in[24] | in[32] | in[40] | in[48] | in[56]) == 0) {
+            s32 dc = (in[0] * q[0]) >> 11;
+            in++;
+            q++;
+            w[0] = dc;
+            w[8] = dc;
+            w[16] = dc;
+            w[24] = dc;
+            w[32] = dc;
+            w[40] = dc;
+            w[48] = dc;
+            w[56] = dc;
+        } else {
+            d0 = (in[0] * q[0]) >> 11;
+            d1 = (in[8] * q[8]) >> 11;
+            d2 = (in[16] * q[16]) >> 11;
+            d3 = (in[24] * q[24]) >> 11;
+            d4 = (in[32] * q[32]) >> 11;
+            d5 = (in[40] * q[40]) >> 11;
+            d6 = (in[48] * q[48]) >> 11;
+            d7 = (in[56] * q[56]) >> 11;
+            in++;
+            q++;
+
+            tmp10 = d0 + d4;
+            tmp11 = d0 - d4;
+            tmp13 = d2 + d6;
+            tmp12 = (((d2 - d6) * 2896) >> 11) - tmp13;
+            tmp[0] = tmp10 + tmp13;
+            tmp[3] = tmp10 - tmp13;
+            tmp[1] = tmp11 + tmp12;
+            tmp[2] = tmp11 - tmp12;
+
+            z13 = d5 + d3;
+            z10 = d5 - d3;
+            z11 = d1 + d7;
+            z12 = d1 - d7;
+            tmp[7] = z11 + z13;
+            tmp11 = ((z11 - z13) * 2896) >> 11;
+            z5 = ((z10 + z12) * 3784) >> 11;
+            tmp10 = ((z12 * 2217) >> 11) - z5;
+            tmp12 = ((z10 * -5352) >> 11) + z5;
+            tmp[6] = tmp12 - tmp[7];
+            tmp[5] = tmp11 - tmp[6];
+            tmp[4] = tmp10 + tmp[5];
+
+            w[0] = tmp[0] + tmp[7];
+            w[56] = tmp[0] - tmp[7];
+            w[8] = tmp[1] + tmp[6];
+            w[48] = tmp[1] - tmp[6];
+            w[16] = tmp[2] + tmp[5];
+            w[40] = tmp[2] - tmp[5];
+            w[32] = tmp[3] + tmp[4];
+            w[24] = tmp[3] - tmp[4];
+        }
+        w++;
+    }
+    w = ws;
+    o = out;
+    for (i = 8; i > 0; i--) {
+        tmp10 = w[0] + w[4];
+        tmp11 = w[0] - w[4];
+        tmp13 = w[2] + w[6];
+        tmp12 = (((w[2] - w[6]) * 2896) >> 11) - tmp13;
+        tmp[0] = tmp10 + tmp13;
+        tmp[3] = tmp10 - tmp13;
+        tmp[1] = tmp11 + tmp12;
+        tmp[2] = tmp11 - tmp12;
+
+        z13 = w[5] + w[3];
+        z10 = w[5] - w[3];
+        z11 = w[1] + w[7];
+        z12 = w[1] - w[7];
+        tmp[7] = z11 + z13;
+        tmp11 = ((z11 - z13) * 2896) >> 11;
+        z5 = ((z10 + z12) * 3784) >> 11;
+        tmp10 = ((z12 * 2217) >> 11) - z5;
+        tmp12 = ((z10 * -5352) >> 11) + z5;
+        tmp[6] = tmp12 - tmp[7];
+        tmp[5] = tmp11 - tmp[6];
+        tmp[4] = tmp10 + tmp[5];
+
+        o[0] = pred[0] + ((tmp[0] + tmp[7] + 127) >> 8);
+        o[7] = pred[7] + ((tmp[0] - tmp[7] + 127) >> 8);
+        o[1] = pred[1] + ((tmp[1] + tmp[6] + 127) >> 8);
+        o[6] = pred[6] + ((tmp[1] - tmp[6] + 127) >> 8);
+        o[2] = pred[2] + ((tmp[2] + tmp[5] + 127) >> 8);
+        o[5] = pred[5] + ((tmp[2] - tmp[5] + 127) >> 8);
+        o[4] = pred[4] + ((tmp[3] + tmp[4] + 127) >> 8);
+        o[3] = pred[3] + ((tmp[3] - tmp[4] + 127) >> 8);
+        w += 8;
+        pred += 8;
+        o += pitch;
     }
 }
