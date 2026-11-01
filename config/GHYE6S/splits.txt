@@ -1293,7 +1293,7 @@ auto/text_80041054.cpp:
 	.data       start:0x802B09B8 end:0x802B0E1C
 
 auto/jt_802B0E1C.c:
-	.data       start:0x802B0E1C end:0x802B239C
+	.data       start:0x802B0E1C end:0x802B0E20
 
 auto/text_80041348.cpp:
 	extab       start:0x8000605C end:0x80006064
@@ -1330,48 +1330,12 @@ auto/text_800416BC.cpp:
 	.ctors      start:0x80293F44 end:0x80293F48
 
 auto/text_80041730.cpp:
-	extab       start:0x8000609C end:0x800060A4
-	extabindex  start:0x800185E4 end:0x800185F0
-	.text       start:0x80041730 end:0x80042750
-	.data       start:0x802B239C end:0x802B2538
-
-auto/jt_802B2538.c:
-	.data       start:0x802B2538 end:0x802B2588
-
-auto/text_80042750.cpp:
-	extab       start:0x800060A4 end:0x800060AC
-	extabindex  start:0x800185F0 end:0x800185FC
-	.text       start:0x80042750 end:0x800427DC
-
-auto/text_800427DC.cpp:
-	extab       start:0x800060AC end:0x800060B4
-	extabindex  start:0x800185FC end:0x80018608
-	.text       start:0x800427DC end:0x80042868
-
-auto/text_80042868.cpp:
-	extab       start:0x800060B4 end:0x800060BC
-	extabindex  start:0x80018608 end:0x80018614
-	.text       start:0x80042868 end:0x8004289C
-
-auto/text_8004289C.cpp:
-	extab       start:0x800060BC end:0x800060C4
-	extabindex  start:0x80018614 end:0x80018620
-	.text       start:0x8004289C end:0x800428BC
-
-auto/text_800428BC.cpp:
-	extab       start:0x800060C4 end:0x800060CC
-	extabindex  start:0x80018620 end:0x8001862C
-	.text       start:0x800428BC end:0x80042944
-
-auto/text_80042944.cpp:
-	extab       start:0x800060CC end:0x800060D4
-	extabindex  start:0x8001862C end:0x80018638
-	.text       start:0x80042944 end:0x800429A4
-
-auto/text_800429A4.cpp:
-	extab       start:0x800060D4 end:0x800060EC
-	extabindex  start:0x80018638 end:0x80018644
-	.text       start:0x800429A4 end:0x80042AF0
+	extab       start:0x8000609C end:0x800060EC
+	extabindex  start:0x800185E4 end:0x80018644
+	.text       start:0x80041730 end:0x80042AF0
+	.rodata     start:0x80295110 end:0x80295350
+	.data       start:0x802B0E20 end:0x802B2588
+	.sdata2     start:0x8035C400 end:0x8035C7D0
 
 auto/text_80042AF0.c:
 	.text       start:0x80042AF0 end:0x80042AF8
