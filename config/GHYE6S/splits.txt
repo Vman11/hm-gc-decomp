@@ -27303,14 +27303,9 @@ auto/text_801F6258.cpp:
 	.text       start:0x801F6258 end:0x801F6334
 
 auto/text_801F6334.cpp:
-	extab       start:0x80012B14 end:0x80012B2C
-	extabindex  start:0x8002585C end:0x80025868
-	.text       start:0x801F6334 end:0x801F6554
-
-auto/text_801F6554.cpp:
-	extab       start:0x80012B2C end:0x80012B34
-	extabindex  start:0x80025868 end:0x80025874
-	.text       start:0x801F6554 end:0x801F6590
+	extab       start:0x80012B14 end:0x80012B34
+	extabindex  start:0x8002585C end:0x80025874
+	.text       start:0x801F6334 end:0x801F6590
 
 auto/text_801F6590.cpp:
 	extab       start:0x80012B34 end:0x80012B4C
