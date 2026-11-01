@@ -314,3 +314,124 @@ void fn_800B1530(void *p) {
 } /* extern "C" */
 
 } /* namespace m800B1530 */
+#pragma opt_propagation reset
+
+namespace m800B168C {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+void __dl__FPv(int);
+void __dt__9C8024262CFv(int, int);
+struct VCall_fn_800B168C_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(); };
+
+s32 * fn_800B168C(s32 *param_1, s16 param_2) {
+    if (param_1 != (s32 *)0x0) {
+        *param_1 = (s32)m800B10B8::lbl_802D6CB0;
+        ((VCall_fn_800B168C_0 *)(param_1))->m();
+        __dt__9C8024262CFv((int)(param_1), (int)(0));
+        if (0 < param_2) {
+            __dl__FPv((int)(param_1));
+        }
+    }
+    return param_1;
+}
+}
+
+} /* namespace m800B168C */
+
+
+#pragma optEH2 on
+
+extern "C" {
+
+extern void *lbl_8035B530;
+void fn_800604C4(s32, s32, s32, s32);
+void fn_800F7EC0(void *);
+void fn_800F7E98(void);
+void fn_800B1478(void *);
+
+} /* extern "C" */
+
+struct C8024262C {
+    C8024262C();
+    ~C8024262C();
+};
+
+struct C800B1700 : C8024262C {
+    u8 pad[0x144];
+    C800B1700() {
+        *(void **)this = (void *)m800B10B8::lbl_802D6CB0;
+        fn_800B1478(this);
+    }
+};
+
+extern "C" void *fn_800B1700(void) {
+    C800B1700 *r;
+    if (lbl_8035B530 == NULL) {
+        fn_800604C4(-2, 0, 0, 0);
+    }
+    fn_800F7EC0(lbl_8035B530);
+    r = new C800B1700;
+    fn_800F7E98();
+    if (r == NULL) {
+        fn_800604C4(-4, 0, 0, 0);
+    }
+    return r;
+}
+
+namespace m800B1798 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+s32 fn_802421C0(void *, s32);
+
+s32 fn_800B1798(void *p, s32 a) {
+    switch (a) {
+    case 1:
+        return fn_802421C0(p, 0);
+    }
+    return 1;
+}
+
+} /* extern "C" */
+
+} /* namespace m800B1798 */
+
+namespace m800B17D0 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035A504;
+extern volatile f32 lbl_8035A500;
+__declspec(section ".sdata2") f64 lbl_80362EA0 = 0.3490658402442932;
+double fn_800EFDA4(double);
+void *fn_8023DC5C(void *, void *, void *, void *, s32);
+void __register_global_object(void *, void *, void *);
+extern u8 lbl_80307474[];
+extern const char lbl_8029BBA0[9] = "Behavior";
+extern const char lbl_8029BBAC[9] = "BFallRgn";
+void fn_800B1700(void);
+void fn_800375E4(void);
+extern u8 lbl_80307468[];
+
+void fn_800B17D0(void) {
+    lbl_8035A504 = lbl_803596E0[0];
+    lbl_8035A500 = fn_800EFDA4(*(volatile f64 *)&lbl_80362EA0);
+    __register_global_object(fn_8023DC5C(lbl_80307474, (void *)lbl_8029BBA0, (void *)lbl_8029BBAC, (void *)fn_800B1700, 324), (void *)fn_800375E4, lbl_80307468);
+}
+
+__declspec(section ".ctors") static void (*const ctor_800B17D0)(void) = fn_800B17D0;
+
+} /* extern "C" */
+
+} /* namespace m800B17D0 */
