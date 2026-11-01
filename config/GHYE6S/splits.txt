@@ -2349,7 +2349,7 @@ auto/text_800572DC.cpp:
 	extabindex  start:0x80018F50 end:0x80018F5C
 	.text       start:0x800572DC end:0x8005748C
 
-auto/text_8005748C.c:
+auto/text_8005748C.cpp:
 	extab       start:0x800068F0 end:0x800068F8
 	extabindex  start:0x80018F5C end:0x80018F68
 	.text       start:0x8005748C end:0x80057908
