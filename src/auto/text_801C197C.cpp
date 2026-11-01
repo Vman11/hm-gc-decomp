@@ -9,9 +9,9 @@ struct Node { u8 pad[0x80]; virtual void v0(); virtual void v1(); virtual void v
 #define NEXT(n) (*(Node **)((u8 *)(n) + 0x134))
 #define CHILD(n) (*(Node **)((u8 *)(n) + 0x138))
 s32 fn_801BDAD0(f32 x, f32 y, Node *n);
-Node *fn_801C1758(Node *n) { return CHILD(n); }
-BOOL fn_801C1760(Node *n) { return FLAGS(n) & 2; }
-Node *fn_801C176C(Node *n) { return NEXT(n); }
+__declspec(weak) Node *fn_801C1758(Node *n) { return CHILD(n); }
+__declspec(weak) BOOL fn_801C1760(Node *n) { return FLAGS(n) & 2; }
+__declspec(weak) Node *fn_801C176C(Node *n) { return NEXT(n); }
 
 void fn_801C197C(f32 x, f32 y, s32 a, s32 b, Node *n) {
     for (; n != 0; n = fn_801C176C(n)) {
