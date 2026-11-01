@@ -3334,7 +3334,7 @@ auto/text_8006908C.cpp:
 	.text       start:0x8006908C end:0x800690FC
 	.ctors      start:0x80293FC4 end:0x80293FC8
 
-auto/text_800690FC.c:
+auto/text_800690FC.cpp:
 	extab       start:0x8000733C end:0x80007344
 	extabindex  start:0x800196A0 end:0x800196AC
 	.text       start:0x800690FC end:0x8006B5A4
