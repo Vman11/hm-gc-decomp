@@ -1,6 +1,8 @@
 /* RAD Bink: 0x8027564C-0x80276970 */
 #include "bink_common.h"
 
+asm(".data\n.globl lbl_802F3848\nlbl_802F3848: .long 0\n.globl lbl_802F384C\nlbl_802F384C: .long 0\n.text");
+
 void fn_8027564C(void *arg0, int arg1) {
     if (*(s32 *)((u8 *)arg0 + 0x50) != 0) {
         fn_800C9A0C(*(s32 *)((u8 *)arg0 + 0x50), arg1);
@@ -465,14 +467,14 @@ void fn_802765E8(u8 *p, s32 pan) {
 s32 fn_802766C8(u8 *arg0, s32 arg1) {
     if (arg1 != 0) {
         if (*(s32 *)(arg0 + 0x60) == 0) {
-            s32 v = *(volatile s32 *)(arg0 + 0x104);
+            s32 v = *(s32 *)(arg0 + 0x104);
             *(volatile s32 *)(arg0 + 0xF8) = 0;
             *(s32 *)(arg0 + 0x100) = 0;
             *(s32 *)(arg0 + 0xF0) = 0;
+            *(volatile s32 *)(arg0 + 0x60) = 1;
             *(s32 *)(arg0 + 0xF4) = 0;
-            *(s32 *)(arg0 + 0x60) = 1;
             *(s32 *)(arg0 + 0x108) = v;
-            ((void (*)(void *, int, int))fn_802756B8)(arg0 + 0x78, *(volatile s32 *)(arg0 + 0x70), 1);
+            ((void (*)(void *, int, int))fn_802756B8)(arg0 + 0x78, *(s32 *)(arg0 + 0x70), 1);
         }
     } else if (*(s32 *)(arg0 + 0x60) == 1) {
         fn_8027564C(arg0 + 0x78, 0);
@@ -504,13 +506,13 @@ s32 fn_802767E0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
     *(s32 *)(arg0 + 0x6C) = arg1;
     *(s32 *)(arg0 + 0x78) = 0x7FFF;
     *(s32 *)(arg0 + 0x5C) = 0;
+    *(s32 *)(arg0 + 0x70) = arg2;
+    *(s32 *)(arg0 + 0x74) = arg3;
+    *(s32 *)(arg0 + 0x80) = *(s32 *)(arg0 + 0x7C) = 0x67F8;
     *(s32 *)(arg0 + 0xFC) = 0;
     *(s32 *)(arg0 + 0x60) = 1;
     *(void **)(arg0 + 0x0) = fn_802760B4;
     *(void **)(arg0 + 0x4) = fn_802762D8;
-    *(s32 *)(arg0 + 0x70) = arg2;
-    *(s32 *)(arg0 + 0x74) = arg3;
-    *(s32 *)(arg0 + 0x80) = *(s32 *)(arg0 + 0x7C) = 0x67F8;
     if (arg3 != 1) {
         if (arg2 == 8) {
             f = fn_80276488;
