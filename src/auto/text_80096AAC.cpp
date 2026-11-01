@@ -135,6 +135,8 @@ __declspec(section ".sdata2") char lbl_803614B8[8] = {0};
 __declspec(section ".sdata2") f64 lbl_803614C0 = 0.5;
 __declspec(section ".sdata2") f64 lbl_803614C8 = 3.0;
 __declspec(section ".sdata2") char lbl_803614D0[8] = {0x48, 0x50, 0x32, 0x00, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") f64 lbl_803614D8 = 0.3490658402442932;
+__declspec(section ".sdata2") char lbl_803614E0[8] = "BWorm";
 }
 
 namespace m80096AAC {
@@ -1082,3 +1084,170 @@ void fn_80098A98(u8 *p) {
 } /* extern "C" */
 
 } /* namespace m80098A98 */
+#pragma opt_propagation reset
+
+namespace m80098DD4 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+void __dl__FPv(int);
+void __dt__9C8024262CFv(int, int);
+struct VCall_fn_80098DD4_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(); };
+
+s32 * fn_80098DD4(s32 *param_1, s16 param_2) {
+    if (param_1 != (s32 *)0x0) {
+        *param_1 = (s32)m80096AAC::lbl_802CD4FC;
+        ((VCall_fn_80098DD4_0 *)(param_1))->m();
+        __dt__9C8024262CFv((int)(param_1), (int)(0));
+        if (0 < param_2) {
+            __dl__FPv((int)(param_1));
+        }
+    }
+    return param_1;
+}
+}
+
+} /* namespace m80098DD4 */
+
+
+#pragma optEH2 on
+
+extern "C" {
+
+extern void *lbl_8035B530;
+void fn_800604C4(s32, s32, s32, s32);
+void fn_800F7EC0(void *);
+void fn_800F7E98(void);
+void fn_80098900(void *);
+
+} /* extern "C" */
+
+struct C8024262C {
+    C8024262C();
+    ~C8024262C();
+};
+
+struct C80098E48 : C8024262C {
+    u8 pad[0x1E0];
+    C80098E48() {
+        *(void **)this = (void *)m80096AAC::lbl_802CD4FC;
+        fn_80098900(this);
+    }
+};
+
+extern "C" void *fn_80098E48(void) {
+    C80098E48 *r;
+    if (lbl_8035B530 == NULL) {
+        fn_800604C4(-2, 0, 0, 0);
+    }
+    fn_800F7EC0(lbl_8035B530);
+    r = new C80098E48;
+    fn_800F7E98();
+    if (r == NULL) {
+        fn_800604C4(-4, 0, 0, 0);
+    }
+    return r;
+}
+
+namespace m80098EE0 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+s32 fn_802421C0(void *, s32);
+
+s32 fn_80098EE0(void *p, s32 a) {
+    switch (a) {
+    case 5:
+        return fn_802421C0(p, 0);
+    case 6:
+        return fn_802421C0(p, 2);
+    case 7:
+        return fn_802421C0(p, 2);
+    }
+    return 1;
+}
+
+} /* extern "C" */
+
+} /* namespace m80098EE0 */
+
+namespace m80098F48 {
+/* Functions from 0x80098F48 to 0x8009902C, found by decomp-toolkit. */
+
+extern "C" {
+
+extern "C" {
+
+}
+
+
+extern "C" int fn_80098F48(void *arg0, u32 arg1) {
+    void *p = *(void **)((u8 *)arg0 + 0x98);
+    if (p != NULL) {
+        return (*(int **)((u8 *)p + 0xC))[arg1];
+    }
+    switch (arg1) {
+    case 0: return 0;
+    case 1: return 0;
+    case 2: return 0;
+    case 3: return 0;
+    case 4: return 0;
+    case 5: return 0;
+    case 6: return 0;
+    case 7: return 1;
+    case 8: return 1;
+    case 9: return 0;
+    case 10: return 0;
+    case 11: return 0;
+    case 12: return 0;
+    case 13: return 0;
+    case 14: return 1;
+    case 15: return 0;
+    case 16: return 0;
+    case 17: return 0;
+    case 18: return 0;
+    case 19: return 0;
+    default: return 1;
+    }
+}
+
+} /* extern "C" */
+
+} /* namespace m80098F48 */
+
+namespace m8009902C {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035A3F4;
+extern volatile f32 lbl_8035A3F0;
+double fn_800EFDA4(double);
+void *fn_8023DC5C(void *, void *, void *, void *, s32);
+void __register_global_object(void *, void *, void *);
+extern u8 lbl_80306F14[];
+extern const char lbl_8029A1BC[9] = "Behavior";
+void fn_80098E48(void);
+void fn_800375E4(void);
+extern u8 lbl_80306F08[];
+
+void fn_8009902C(void) {
+    lbl_8035A3F4 = lbl_803596E0[0];
+    lbl_8035A3F0 = fn_800EFDA4(*(volatile f64 *)&lbl_803614D8);
+    __register_global_object(fn_8023DC5C(lbl_80306F14, (void *)lbl_8029A1BC, lbl_803614E0, (void *)fn_80098E48, 480), (void *)fn_800375E4, lbl_80306F08);
+}
+
+__declspec(section ".ctors") static void (*const ctor_8009902C)(void) = fn_8009902C;
+
+} /* extern "C" */
+
+} /* namespace m8009902C */
