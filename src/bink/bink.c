@@ -734,7 +734,7 @@ s32 fn_80278920(u8 *b) {
     *(u32 *)BB(724) = BB(684);
     *(u32 *)BB(720) = BB(688);
     *(u32 *)BB(728) = BB(692);
-    { u32 x = BB(320); *(u32 *)BB(732) = x; }
+    { u32 x = *(volatile u32 *)&BB(320); *(u32 *)*(volatile u32 *)&BB(732) = x; }
     { u32 x = BB(324); *(u32 *)BB(736) = x; }
     *(u32 *)BB(740) = BB(328);
     j = BB(628);
@@ -941,13 +941,12 @@ u32 fn_80279100(u8 *p, u32 pos, u32 flags) {
                 if (j < *(u32 *)(p + 8) && ((*(u32 **)(p + 0x10C))[j++] & 1)) {
                     return j;
                 }
-            } else {
-                if (j >= *(u32 *)(p + 8)) {
-                    return 0;
-                }
+            } else if (j < *(u32 *)(p + 8)) {
                 if ((*(u32 **)(p + 0x10C))[j++] & 1) {
                     return j;
                 }
+            } else {
+                return 0;
             }
         }
     }
@@ -1214,7 +1213,10 @@ void fn_80279948(u8 *arg0, s32 *arg1) {
         arg1[13] = *(s32 *)(arg0 + 0x2B4);
         arg1[26] += *(s32 *)(arg0 + 0x2A8);
         arg1[27] = *(s32 *)(arg0 + 0x250);
-        arg1[19] = fn_802752DC(*(u32 *)(arg0 + 0x134), 1000, *(u32 *)(arg0 + 0x13C) + 1);
+        {
+            u32 a = *(volatile u32 *)(arg0 + 0x134);
+            arg1[19] = fn_802752DC(a, 1000, *(volatile u32 *)(arg0 + 0x13C) + 1);
+        }
         arg1[14] = *(s32 *)(arg0 + 0x140);
         arg1[17] = *(s32 *)(arg0 + 0x144);
         arg1[18] = *(s32 *)(arg0 + 0x148);
@@ -1284,9 +1286,9 @@ s32 fn_80279C80(s32 *out, u8 *map, s32 pitch, s32 *r) {
     bh = r[3] / 16;
     bw = r[2] / 16;
     for (j = 0, p = map; j < bh; j++, p += pitch) {
-        for (i = 0; i < bw; i++)
-            if (p[i]) break;
-        if (i < bw) goto top;
+        for (i = 0; i < bw; i++) {
+            if (p[i]) goto top;
+        }
     }
     return 0;
 top:
@@ -1296,17 +1298,21 @@ top:
     out[1] = j + r[1];
     out[3] = r[3] - j;
     if (out[3] > 1) {
-        for (j = 0, p = map + (bh - 1) * pitch; j < bh; j++, p -= pitch)
-            for (i = 0; i < bw; i++)
+        for (j = 0, p = map + (bh - 1) * pitch; j < bh; j++, p -= pitch) {
+            for (i = 0; i < bw; i++) {
                 if (p[i]) goto bot;
+            }
+        }
     bot:
         bh -= j;
         out[3] = out[3] - j * 16;
     }
     x = r[0];
-    for (i = 0; i < bw; i++)
-        for (j = 0, p = map + i; j < bh; j++, p += pitch)
+    for (i = 0; i < bw; i++) {
+        for (j = 0, p = map + i; j < bh; j++, p += pitch) {
             if (*p) goto left;
+        }
+    }
 left:
     bw -= i;
     map += i;
@@ -1314,9 +1320,17 @@ left:
     out[0] = i + x;
     out[2] = r[2] - i;
     if (out[2] > 1) {
-        for (i = bw - 1, bw = i; i >= 0; i--)
-            for (j = 0, p = map + i; j < bh; j++, p += pitch)
-                if (*p) goto right;
+        if ((i = bw - 1) < 0) {
+            bw = i;
+            goto right;
+        }
+        bw = i;
+    loop:
+        for (j = 0, p = map + i; j < bh; j++, p += pitch) {
+            if (*p) goto right;
+        }
+        i--;
+        if (i >= 0) goto loop;
     right:
         out[2] = out[2] - (bw - i) * 16;
     }
