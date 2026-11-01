@@ -3905,7 +3905,7 @@ auto/text_80079A2C.cpp:
 	.text       start:0x80079A2C end:0x80079A9C
 	.ctors      start:0x80293FD4 end:0x80293FD8
 
-auto/text_80079A9C.c:
+auto/text_80079A9C.cpp:
 	extab       start:0x800077F0 end:0x800077F8
 	extabindex  start:0x80019B80 end:0x80019B8C
 	.text       start:0x80079A9C end:0x8007AB24
