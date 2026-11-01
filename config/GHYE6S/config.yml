@@ -10,6 +10,8 @@ detect_strings: true
 write_asm: true
 # Unreferenced functions the original link kept (the MW linker would dead-strip them once linked from C).
 force_active:
+- lbl_802CAB98
+- lbl_802CAED4
 - lbl_802C96A0
 - lbl_802C9A24
 - lbl_802C5100
