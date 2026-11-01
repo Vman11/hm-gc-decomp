@@ -1049,3 +1049,109 @@ extern "C" void *fn_800AE7E4(void) {
     }
     return r;
 }
+#pragma opt_propagation reset
+
+namespace m800AE87C {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+s32 fn_802421C0(void *, s32);
+
+s32 fn_800AE87C(void *p, s32 a) {
+    switch (a) {
+    case 10:
+        return fn_802421C0(p, 1);
+    case 11:
+        return fn_802421C0(p, 2);
+    case 12:
+        return fn_802421C0(p, 3);
+    }
+    return 1;
+}
+
+} /* extern "C" */
+
+} /* namespace m800AE87C */
+
+namespace m800AE8E4 {
+/* Functions from 0x800AE8E4 to 0x800AE9F0, found by decomp-toolkit. */
+
+extern "C" {
+
+extern "C" {
+
+}
+
+
+extern "C" int fn_800AE8E4(void *arg0, unsigned int arg1) {
+    int *p = *(int **)((char *)arg0 + 0x98);
+    if (p != 0) {
+        return ((int *)p[3])[arg1];
+    }
+    switch (arg1) {
+    case 0: return 1;
+    case 1: return 0;
+    case 2: return 0;
+    case 3: return 1;
+    case 4: return 0;
+    case 5: return 0;
+    case 6: return 0;
+    case 7: return 1;
+    case 8: return 1;
+    case 9: return 0;
+    case 10: return 0;
+    case 11: return 0;
+    case 12: return 0;
+    case 13: return 0;
+    case 14: return 0;
+    case 15: return 0;
+    case 16: return 0;
+    case 17: return 0;
+    case 18: return 0;
+    case 19: return 0;
+    case 20: return 0;
+    case 21: return 0;
+    case 22: return 0;
+    case 23: return 0;
+    case 24: return 0;
+    default: return 1;
+    }
+}
+
+} /* extern "C" */
+
+} /* namespace m800AE8E4 */
+
+namespace m800AE9F0 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035A4D4;
+extern volatile f32 lbl_8035A4D0;
+__declspec(section ".sdata2") f64 lbl_803629A0 = 0.3490658402442932;
+double fn_800EFDA4(double);
+void *fn_8023DC5C(void *, void *, void *, void *, s32);
+void __register_global_object(void *, void *, void *);
+extern u8 lbl_80307354[];
+extern const char lbl_8029B768[9] = "Behavior";
+extern const char lbl_8029B774[9] = "BAtticus";
+void fn_800AE7E4(void);
+void fn_800375E4(void);
+extern u8 lbl_80307348[];
+
+void fn_800AE9F0(void) {
+    lbl_8035A4D4 = lbl_803596E0[0];
+    lbl_8035A4D0 = fn_800EFDA4(*(volatile f64 *)&lbl_803629A0);
+    __register_global_object(fn_8023DC5C(lbl_80307354, (void *)lbl_8029B768, (void *)lbl_8029B774, (void *)fn_800AE7E4, 400), (void *)fn_800375E4, lbl_80307348);
+}
+
+__declspec(section ".ctors") static void (*const ctor_800AE9F0)(void) = fn_800AE9F0;
+
+} /* extern "C" */
+
+} /* namespace m800AE9F0 */
