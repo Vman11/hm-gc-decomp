@@ -650,8 +650,8 @@ void fn_80282A9C(s32 a0,s32 a1,s32 a2,s32 a3,s32 a4,s32 a5,s32 a6,s32 a7,s32 a8,
 void fn_80282B08(s32 a,s32 b,s32 c,s32 d,s32 e,s32 f,s32 g,s32 h,s32 i,s32 j,s32 k,s32 l,s32 m,s32 n,s32 o);
 void fn_80282B74(s32 a0,s32 a1,s32 a2,s32 a3,s32 a4,s32 a5,s32 a6,s32 a7,s32 a8,s32 a9,s32 a10,s32 a11,s32 a12,s32 a13);
 f32 fn_80282BE0(s32 arg0);
-void fn_80282C34(s16 *dst, f32 *src, s32 count, f32 scale);
-void fn_80282C94(s16 *dst, f32 *src, s32 count, f32 scale);
+void fn_80282C34(s16 *dst, f32 *src, f32 scale, s32 count);
+void fn_80282C94(s16 *dst, f32 *src, f32 scale, s32 count);
 void fn_80283750(Fn80283750Struct *arg0, s16 **arg1, s32 *arg2, s32 arg3, s32 *arg4);
 void fn_8028389C(void *p);
 s32 fn_802838BC(s32 arg0, s32 arg1);

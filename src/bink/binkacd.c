@@ -7,7 +7,7 @@ f32 fn_80282BE0(s32 arg0) {
     return result;
 }
 
-void fn_80282C34(s16 *dst, f32 *src, s32 count, f32 scale) {
+void fn_80282C34(s16 *dst, f32 *src, f32 scale, s32 count) {
     s32 i;
     for (i = count; i != 0; i--) {
         s32 n = (s32)(*src * scale);
@@ -22,22 +22,125 @@ void fn_80282C34(s16 *dst, f32 *src, s32 count, f32 scale) {
     }
 }
 
-void fn_80282C94(s16 *dst, f32 *src, s32 count, f32 scale) {
- s32 remain = count - 1;
- if(count != 0) {
- do {
- s32 v = (s32)(*src * scale);
- s32 out;
- if(v <= 0x7FFE) { out = -0x8000; if(v > -0x8000) out = v; }
- else out = 0x7FFF;
- *dst++ = out;
- v = (s32)(src[count] * scale);
- if(v <= 0x7FFE) { out = -0x8000; if(v > -0x8000) out = v; }
- else out = 0x7FFF;
- *dst++ = out;
- src++;
- } while(remain-- != 0);
- }
+void fn_80282C94(s16 *dst, f32 *src, f32 scale, s32 count) {
+    s32 i = count - 1;
+    if (count != 0) do {
+        s32 n;
+        s16 *out;
+        s32 v;
+        s16 *o2 = dst++;
+        n = (s32)(*src * scale);
+        if (n <= 0x7FFE) {
+            if (n > -0x8000) v = n;
+            else v = -0x8000;
+        } else v = 0x7FFF;
+        *o2 = v;
+        n = (s32)(src[count] * scale);
+        out = dst++;
+        if (n <= 0x7FFE) {
+            if (n > -0x8000) v = n;
+            else v = -0x8000;
+        } else v = 0x7FFF;
+        *out = v;
+        src++;
+        i--;
+    } while (i + 1 != 0);
+}
+
+extern u8 lbl_80301BA0[];
+#define GETBIT(bs) ((bs)->bits ? ({ u32 c_ = (bs)->buf; (bs)->bits--; (bs)->buf = c_ >> 1; c_ & 1; }) \
+    : ({ u32 *p_ = (bs)->ptr; u32 w_ = *p_; (bs)->bits = 31; (bs)->ptr = p_ + 1; (bs)->buf = w_ >> 1; w_ & 1; }))
+#define GETBITS(bs, n) ((bs)->bits >= n ? ({ u32 c_ = (bs)->buf; (bs)->bits -= n; (bs)->buf = c_ >> n; c_ & ((1 << n) - 1); }) \
+    : ({ u32 *p_ = (bs)->ptr; u32 b_ = (bs)->bits; u32 c_ = (bs)->buf; u32 w_ = *p_; (bs)->bits = b_ + (32 - n); (bs)->ptr = p_ + 1; (bs)->buf = w_ >> (n - b_); w_ <<= b_; (c_ | w_) & ((1 << n) - 1); }))
+static inline u32 rdn(BitBuf *bs, u32 n, u32 m, u32 t_) {
+    u32 bits = bs->bits;
+    u32 v;
+    if (bits >= n) {
+        u32 buf = bs->buf;
+        bs->bits = bits - n;
+        v = buf & m;
+        bs->buf = buf >> n;
+    } else {
+        u32 *p = bs->ptr;
+        u32 buf = bs->buf;
+        u32 w = *p;
+        bs->bits = bits - t_;
+        bs->ptr = p + 1;
+        bs->buf = w >> (n - bits);
+        w <<= bits;
+        v = (buf | w) & m;
+    }
+    return v;
+}
+void fn_80282D40(f32 *coeffs, u32 n, BitBuf *bs, f32 *quant, u32 *bands) {
+    f32 q = 0.0f;
+    u32 k = 0;
+    u32 i, j, width;
+    f32 *dst;
+    while (bands[k] * 2 < 2) { q = quant[k]; k++; }
+    dst = coeffs + 2;
+    for (i = 2; i < n; ) {
+        if (GETBIT(bs)) { j = GETBITS(bs, 4); j = i + lbl_80301BA0[j] * 8; }
+        else j = i + 8;
+        if (j > n) j = n;
+        width = GETBITS(bs, 4);
+        if (width == 0) {
+            memset(dst, 0, (j - i) * 4);
+            dst += j - i;
+            i = j;
+            while (i > bands[k] * 2) { q = quant[k]; k++; }
+        } else {
+            if (i < j) {
+            u32 m = 0xFFFFFFFF >> (32 - width);
+            u32 t_ = width - 32;
+            do {
+                u32 c;
+                if (i == bands[k] * 2) { q = quant[k]; k++; }
+                c = rdn(bs, width, m, t_);
+                if (c) {
+                    s32 s = -(s32)GETBIT(bs);
+                    *dst = (f32)(s32)((c ^ s) - s) * q;
+                } else *dst = 0.0f;
+                dst++;
+                i++;
+            } while (i < j);
+            }
+        }
+    }
+}
+
+void fn_8028B870(s32 n, s32 isgn, f32 *a, s32 *ip, f32 *w);
+s32 fn_802830B4(s32 n, f32 scale, s32 chans, s32 flags, s32 ip, s32 w, s16 *out, s32 data, s32 nbands, s32 bands) {
+    f32 quant[25];
+    BitBuf bs;
+    f32 coeffs[4096];
+    f32 *dst;
+    f32 *start;
+    u32 ch, i;
+    bs.unk4 = (u32)data;
+    bs.ptr = (u32 *)data;
+    bs.bits = 0;
+    bs.buf = 0;
+    if (flags & 1) GETBITS(&bs, 2);
+    dst = coeffs;
+    for (ch = 0; ch < (u32)chans; ch++) {
+        i = GETBITS(&bs, 29);
+        dst[0] = fn_80282BE0(i);
+        i = GETBITS(&bs, 29);
+        dst[1] = fn_80282BE0(i);
+        for (i = 0; i < (u32)nbands; i++) {
+            s32 v = GETBITS(&bs, 8);
+            quant[i] = powf(10.0f, (f32)v * 0.664f * 0.1f);
+        }
+        fn_80282D40(dst, n, &bs, quant, (u32 *)bands);
+        if (flags & 1) fn_8028B870(n, 1, dst, (s32 *)ip, (f32 *)w);
+        else fn_8028B6F4(n, -1, dst, (s32 *)ip, (f32 *)w);
+        dst += n;
+    }
+    if (chans == 1) fn_80282C34(out, coeffs, scale, n);
+    else fn_80282C94(out, coeffs, scale, n);
+    bs.bits = 0;
+    return (((u32)bs.ptr - bs.unk4) * 8 - bs.bits) / 8;
 }
 
 extern u32 lbl_80301BB0[];
@@ -125,15 +228,14 @@ void fn_80283750(Fn80283750Struct *arg0, s16 **arg1, s32 *arg2, s32 arg3, s32 *a
     s32 ret;
     u32 i;
     u32 half;
-    u32 j;
 
     ret = fn_802830B4(arg0->unk0, arg0->unk4, arg0->unk10, arg0->unk30, arg0->unk24, arg0->unk28, arg0->unk14, arg3, arg0->unk1C, arg0->unk20);
     if (arg0->unk18 != 0) {
         arg0->unk18 = 0;
     } else {
         half = arg0->unkC >> 1;
-        for (i = 0, j = half; i < half; i++, j--) {
-            arg0->unk14[i] = (arg0->unk14[i] * i + arg0->unk2C[i] * j) / half;
+        for (i = 0; i < half; i++) {
+            arg0->unk14[i] = (arg0->unk14[i] * i + arg0->unk2C[i] * (half - i)) / half;
         }
     }
     memcpy_np(arg0->unk2C, (u8 *)arg0->unk14 + (arg0->unk8 - arg0->unkC), arg0->unkC);
