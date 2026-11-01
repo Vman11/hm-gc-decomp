@@ -1540,7 +1540,7 @@ u8 *fn_80277218(void *name, u32 flags) {
         B(0x2a0) = 1;
         if (tm == 0) {
             wD7218_timer[0] = wD7218_timeropen(-13);
-            wD7218_timerinit();
+            wD7218_timerinit(wD7218_timer[0]);
         }
         wD7218_timeradd(wD7218_timer[0], b + 0x34c, (void *)wD7218_802771B8, (void *)wD7218_802771D4);
     }
