@@ -509,7 +509,7 @@ void fn_80276FB4(s32 arg0);
 void fn_80276FC0(s32 v);
 void fn_80276FCC(s32 v);
 void fn_80276FD8(u32 count, u32 *src);
-void fn_80277020(s32 n, u32 *arr, s32 k, s32 *outIdx, s32 *outFlag);
+u32 fn_80277020(s32 n, u32 *arr, s32 k, s32 *outIdx, s32 *outFlag);
 void fn_80277114(u8 *p);
 void fn_80277140(u8 *p);
 void fn_8027716C(u8 *p);

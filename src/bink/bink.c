@@ -158,8 +158,8 @@ void fn_80276E80(u8 *arg0, s32 arg1) {
         }
     }
     if (*(s32 *)(arg0 + 0x108) != 0) {
-        offsets = *(u32 **)(arg0 + 0x10C);
-        *(s32 *)(arg0 + 0x104) = *(s32 *)(arg0 + 0x108) + ((*(u32 *)((arg1 << 2) + (u8 *)offsets) & ~1) - (offsets[0] & ~1));
+        u32 *o = *(u32 **)(arg0 + 0x10C);
+        *(s32 *)(arg0 + 0x104) = *(s32 *)(arg0 + 0x108) + ((o[arg1] & ~1) - (o[0] & ~1));
     } else {
         offsets = *(u32 **)(arg0 + 0x10C);
         (*(void (**)(u8 *, s32, u32, s32, u32))(arg0 + 0x114))(arg0 + 0x110, arg1, offsets[arg1] & ~1, *(s32 *)(arg0 + 0x104), (offsets[arg1 + 1] & ~1) - (offsets[arg1] & ~1));
@@ -198,7 +198,7 @@ void fn_80276FD8(u32 count, u32 *src) {
     }
 }
 
-void fn_80277020(s32 n, u32 *arr, s32 k, s32 *outIdx, s32 *outFlag) {
+u32 fn_80277020(s32 n, u32 *arr, s32 k, s32 *outIdx, s32 *outFlag) {
     s32 i;
     u32 max = 0;
     s32 idx = 0;
@@ -212,7 +212,7 @@ void fn_80277020(s32 n, u32 *arr, s32 k, s32 *outIdx, s32 *outFlag) {
         }
     }
     if (max == 0) {
-        fn_802752DC(arr[n] - arr[0], k, n);
+        max = fn_802752DC(arr[n] - arr[0], k, n);
     }
     for (i = 0; i < n; i++) {
         if (!(arr[i] & 1)) {
@@ -222,6 +222,7 @@ void fn_80277020(s32 n, u32 *arr, s32 k, s32 *outIdx, s32 *outFlag) {
     }
     *outFlag = flag;
     *outIdx = idx;
+    return max;
 }
 
 void fn_80277114(u8 *p) {
@@ -910,7 +911,7 @@ u32 fn_80279100(u8 *p, u32 pos, u32 flags) {
     if (!(flags & 0x80) && ((*(u32 **)(p + 0x10C))[pos - 1] & 1)) {
         return pos;
     }
-    switch (flags & 0x7F) {
+    switch ((s32)(flags & 0x7F)) {
     case 0:
         for (i = pos - 2; i > 0; i--) {
             if ((*(u32 **)(p + 0x10C))[i] & 1) {
@@ -926,8 +927,9 @@ u32 fn_80279100(u8 *p, u32 pos, u32 flags) {
         }
         break;
     case 2:
+        i = pos - 2;
         j = pos;
-        for (i = pos - 2;; i--) {
+        for (;; i--) {
             if (i >= 0) {
                 if ((*(u32 **)(p + 0x10C))[i] & 1) {
                     return i + 1;
@@ -1192,6 +1194,7 @@ void fn_80279948(u8 *arg0, s32 *arg1) {
         now = fn_802753F0();
         fn_80278F28(arg0, now);
         fn_8027964C(arg0, now);
+        ((void *(*)())memset)(arg1, 0, 124);
         arg1[5] = *(s32 *)(arg0 + 0x14);
         arg1[6] = *(s32 *)(arg0 + 0x18);
         arg1[11] = *(s32 *)(arg0 + 0x30C);
@@ -1564,6 +1567,7 @@ void fn_8027A8BC(u8 *p) {
     }
 }
 
+typedef struct { u8 pad[0xF0]; s32 nF0; u8 pad2[0x10]; s32 *p104; } A908H;
 s32 fn_8027A908(void *arg0, s8 *arg1) {
     s32 *sp10;
     s32 spC;
@@ -1577,10 +1581,11 @@ s32 fn_8027A908(void *arg0, s8 *arg1) {
     s8 *dst;
 
     if (arg0 != NULL) {
-        sp10 = M2C_FIELD(M2C_FIELD(arg0, void **, 0x10), s32 **, 0x104);
-        for (i = 0; i < M2C_FIELD(M2C_FIELD(arg0, void **, 0x10), s32 *, 0xF0); i++) {
+        sp10 = M2C_FIELD(arg0, A908H **, 0x10)->p104;
+        for (i = 0; i < M2C_FIELD(arg0, A908H **, 0x10)->nF0; i++) {
+            s32 cur = M2C_FIELD(arg0, s32 *, 0x18);
             size = *sp10++;
-            if (i == M2C_FIELD(arg0, s32 *, 0x18) && size != 0) {
+            if (i == cur && size != 0) {
                 remaining = *sp10++;
                 total = 0;
                 while (remaining != 0) {
@@ -1596,11 +1601,13 @@ s32 fn_8027A908(void *arg0, s8 *arg1) {
                         dst = arg1;
                         src = sp8;
                         for (j = 0; j < (u32)spC; j++) {
-                            *dst++ = (*src++ >> 8) + 0x80;
+                            s32 v = *src++ >> 8;
+                            v += 0x80;
+                            *dst++ = v;
                         }
                     }
-                    total += spC;
                     arg1 += spC;
+                    total += spC;
                 }
                 return total;
             }
