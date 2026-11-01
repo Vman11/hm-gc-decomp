@@ -1,6 +1,16 @@
 #include "common.h"
 
 extern "C" {
+__declspec(section ".sdata2") char lbl_8035D138[8] = "INIT";
+__declspec(section ".sdata2") char lbl_8035D140[4] = "ON";
+__declspec(section ".sdata2") char lbl_8035D144[4] = "OFF";
+__declspec(section ".sdata2") char lbl_8035D148[8] = "EXIT";
+__declspec(section ".sdata2") char lbl_8035D150[8] = "LIGHTON";
+__declspec(section ".sdata2") char lbl_8035D158[8] = "FLASHON";
+__declspec(section ".sdata2") char lbl_8035D160[8] = "FLSHON";
+__declspec(section ".sdata2") char lbl_8035D168[8] = "FLSHOFF";
+__declspec(section ".sdata2") char lbl_8035D170[8] = "AMCYCON";
+__declspec(section ".sdata2") char lbl_8035D178[8] = "SOUNDON";
 __declspec(section ".sdata2") u32 lbl_8035D180 = 0x800;
 __declspec(section ".sdata2") char lbl_8035D184[4] = {0};
 __declspec(section ".sdata2") char lbl_8035D188[4] = {0x00, 0x00, 0x00, 0x00};
@@ -82,14 +92,6 @@ void fn_80240054();
 void fn_802416D4();
 void fn_80241D80();
 void fn_80249AC4();
-extern char lbl_8035D138[];
-extern char lbl_8035D140[];
-extern char lbl_8035D144[];
-extern char lbl_8035D148[];
-extern char lbl_8035D150[];
-extern char lbl_8035D158[];
-extern char lbl_8035D170[];
-extern char lbl_8035D178[];
 extern const char lbl_80295A90[12] = "LIGHTOFF";
 extern const char lbl_80295A9C[12] = "FLASHOFF";
 extern const char lbl_80295AA8[12] = "AMCYCOFF";
@@ -371,3 +373,328 @@ void fn_80048528(S *p, f32 dt) {
 } /* extern "C" */
 
 } /* namespace m80048528 */
+
+namespace m80048A50 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern s32 lbl_8035B65C;
+void fn_8019AD10(int, int);
+void fn_80242210(int);
+
+void fn_80048A50(s32 param_1) {
+    if ((*(u32 *)(param_1 + 0x18c) != 0) && (*(u32 *)(*(u32 *)(param_1 + 0x18c) + 0x40) != 0)) {
+        fn_8019AD10((int)(*(u32 *)(lbl_8035B65C + 0xc)), (int)(*(u32 *)(param_1 + 0x18c)));
+        fn_8019AD10((int)(*(u32 *)(*(u32 *)(lbl_8035B65C + 0x74) + 0x1e4)), (int)(*(u32 *)(param_1 + 0x18c)));
+    }
+    fn_80242210((int)(param_1));
+}
+
+} /* extern "C" */
+
+} /* namespace m80048A50 */
+
+namespace m80048AB8 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+extern char lbl_80295A90[];
+extern char lbl_8035D150[0x8];
+extern char lbl_8035D160[0x8];
+extern char lbl_8035D168[0x8];
+struct VCall_fn_80048AB8_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+struct VCall_fn_80048AB8_1 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+struct VCall_fn_80048AB8_2 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+struct VCall_fn_80048AB8_3 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+
+void fn_80048AB8(s32 *param_1) {
+    ((VCall_fn_80048AB8_0 *)(param_1))->m((s32)(lbl_8035D150)); /* "LIGHTON" */
+    ((VCall_fn_80048AB8_1 *)(param_1))->m((s32)(lbl_80295A90)); /* "LIGHTOFF" */
+    ((VCall_fn_80048AB8_2 *)(param_1))->m((s32)(lbl_8035D160)); /* "FLSHON" */
+    ((VCall_fn_80048AB8_3 *)(param_1))->m((s32)(lbl_8035D168)); /* "FLSHOFF" */
+}
+}
+
+} /* namespace m80048AB8 */
+
+namespace m80048B40 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+extern char lbl_80295A90[];
+extern char lbl_8035D150[0x8];
+extern char lbl_8035D160[0x8];
+extern char lbl_8035D168[0x8];
+struct VCall_fn_80048B40_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+struct VCall_fn_80048B40_1 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+struct VCall_fn_80048B40_2 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+struct VCall_fn_80048B40_3 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+
+void fn_80048B40(s32 *param_1) {
+    ((VCall_fn_80048B40_0 *)(param_1))->m((s32)(lbl_8035D150)); /* "LIGHTON" */
+    ((VCall_fn_80048B40_1 *)(param_1))->m((s32)(lbl_80295A90)); /* "LIGHTOFF" */
+    ((VCall_fn_80048B40_2 *)(param_1))->m((s32)(lbl_8035D160)); /* "FLSHON" */
+    ((VCall_fn_80048B40_3 *)(param_1))->m((s32)(lbl_8035D168)); /* "FLSHOFF" */
+}
+}
+
+} /* namespace m80048B40 */
+
+namespace m80048BC8 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_8035D184;
+void fn_80241E0C(void *);
+
+void fn_80048BC8(u8 *p) {
+    *(s32 *)(p + 280) = 0;
+    *(s32 *)(p + 284) = 0;
+    *(s32 *)(p + 288) = 0;
+    *(s32 *)(p + 292) = 0;
+    *(s32 *)(p + 296) = 0;
+    *(s32 *)(p + 300) = 0;
+    *(s32 *)(p + 304) = 0;
+    *(s32 *)(p + 308) = 0;
+    *(s32 *)(p + 312) = 0;
+    *(s32 *)(p + 316) = 0;
+    *(s32 *)(p + 320) = 0;
+    *(f32 *)(p + 336) = lbl_8035D184;
+    *(s32 *)(p + 368) = 0;
+    *(s32 *)(p + 372) = 0;
+    *(s32 *)(p + 392) = 0;
+    *(s32 *)(p + 396) = 0;
+    *(s32 *)(p + 420) = 0;
+    *(s32 *)(p + 424) = 0;
+    *(s32 *)(p + 428) = 0;
+    *(s32 *)(p + 432) = 0;
+    fn_80241E0C(p);
+}
+
+} /* extern "C" */
+
+} /* namespace m80048BC8 */
+
+namespace m80048C40 {
+/* Functions from 0x80048C40 to 0x80048D10, found by decomp-toolkit. */
+
+extern "C" {
+
+extern u8 lbl_802B5970[];
+extern f32 lbl_8035D184;
+
+#pragma opt_propagation off
+void fn_80048C40(u8 *p) {
+    u8 *base = lbl_802B5970;
+    M2C_FIELD(p, s32 *, 84) = 12;
+    M2C_FIELD(p, s32 *, 44) = 12;
+    M2C_FIELD(p, s32 *, 104) = 3;
+    M2C_FIELD(p, s32 *, 92) = 0;
+    M2C_FIELD(p, s32 *, 128) = 0;
+    M2C_FIELD(p, s32 *, 124) = 0;
+    M2C_FIELD(p, s32 *, 132) = 0;
+    M2C_FIELD(p, s32 *, 136) = 0;
+    M2C_FIELD(p, s32 *, 140) = 0;
+    M2C_FIELD(p, s32 *, 148) = 0;
+    M2C_FIELD(p, u8 **, 88) = base + 552;
+    M2C_FIELD(p, u8 **, 40) = base + 600;
+    M2C_FIELD(p, u8 **, 48) = base + 744;
+    M2C_FIELD(p, u8 **, 108) = base + 540;
+    M2C_FIELD(p, s32 *, 120) = 0;
+    M2C_FIELD(p, s32 *, 196) = 0;
+    M2C_FIELD(p, s32 *, 200) = 0;
+    M2C_FIELD(p, s32 *, 204) = 0;
+    M2C_FIELD(p, s32 *, 244) = 0;
+    M2C_FIELD(p, s32 *, 252) = 0;
+    M2C_FIELD(p, s32 *, 268) = 0;
+    M2C_FIELD(p, s32 *, 280) = 0;
+    M2C_FIELD(p, s32 *, 284) = 0;
+    M2C_FIELD(p, s32 *, 288) = 0;
+    M2C_FIELD(p, s32 *, 292) = 0;
+    M2C_FIELD(p, s32 *, 296) = 0;
+    M2C_FIELD(p, s32 *, 300) = 0;
+    M2C_FIELD(p, s32 *, 304) = 0;
+    M2C_FIELD(p, s32 *, 308) = 0;
+    M2C_FIELD(p, s32 *, 312) = 0;
+    M2C_FIELD(p, s32 *, 316) = 0;
+    M2C_FIELD(p, s32 *, 320) = 0;
+    M2C_FIELD(p, f32 *, 336) = lbl_8035D184;
+    M2C_FIELD(p, s32 *, 368) = 0;
+    M2C_FIELD(p, s32 *, 372) = 0;
+    M2C_FIELD(p, s32 *, 392) = 0;
+    M2C_FIELD(p, s32 *, 396) = 0;
+    M2C_FIELD(p, s32 *, 420) = 0;
+    M2C_FIELD(p, s32 *, 424) = 0;
+    M2C_FIELD(p, s32 *, 428) = 0;
+    M2C_FIELD(p, s32 *, 432) = 0;
+}
+#pragma opt_propagation reset
+
+} /* extern "C" */
+
+} /* namespace m80048C40 */
+
+namespace m80048D10 {
+extern "C" {
+__declspec(section ".sdata2") char lbl_8035D1C8[8] = "Flicker";
+__declspec(section ".sdata2") char lbl_8035D1D0[8] = "Sound";
+extern const char lbl_80295B24[0x5C] = {0x4C, 0x69, 0x67, 0x68, 0x74, 0x4F, 0x6E, 0x4C, 0x69, 0x67, 0x68, 0x74, 0x00, 0x00, 0x00, 0x00, 0x4C, 0x69, 0x67, 0x68, 0x74, 0x4F, 0x66, 0x66, 0x4C, 0x69, 0x67, 0x68, 0x74, 0x00, 0x00, 0x00, 0x41, 0x63, 0x74, 0x6F, 0x72, 0x52, 0x65, 0x6C, 0x61, 0x74, 0x69, 0x76, 0x65, 0x00, 0x00, 0x00, 0x4C, 0x69, 0x67, 0x68, 0x74, 0x46, 0x6C, 0x61, 0x73, 0x68, 0x00, 0x00, 0x49, 0x67, 0x6E, 0x69, 0x74, 0x65, 0x53, 0x6F, 0x75, 0x6E, 0x64, 0x00, 0x41, 0x6D, 0x62, 0x69, 0x65, 0x6E, 0x74, 0x43, 0x79, 0x63, 0x6C, 0x65, 0x54, 0x69, 0x6D, 0x65, 0x00, 0x00, 0x00, 0x00};
+}
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+#pragma opt_propagation off
+extern char lbl_8035D188[4];
+extern char lbl_8035D18C[8];
+extern char lbl_80295A90[];
+u32 fn_8023F52C(void *, char *, char *, char *, s32, s32);
+void fn_8023F214(void *);
+
+void fn_80048D10(u8 *p) {
+    char *s = lbl_80295A90;
+    *(u32 *)(p + 0x118) = fn_8023F52C(p, lbl_8035D188, lbl_8035D188, lbl_8035D1C8, 0, 0);
+    *(u32 *)(p + 0x11c) = fn_8023F52C(p, lbl_8035D188, lbl_8035D188, s + 148, 0, 0);
+    *(u32 *)(p + 0x120) = fn_8023F52C(p, lbl_8035D188, lbl_8035D188, s + 164, 0, 0);
+    *(u32 *)(p + 0x124) = fn_8023F52C(p, lbl_8035D188, lbl_8035D188, s + 180, 0, 0);
+    *(u32 *)(p + 0x128) = fn_8023F52C(p, lbl_8035D188, lbl_8035D188, s + 196, 0, 0);
+    *(u32 *)(p + 0x12c) = fn_8023F52C(p, lbl_8035D188, lbl_8035D188, s + 208, 0, 0);
+    *(u32 *)(p + 0x130) = fn_8023F52C(p, lbl_8035D188, lbl_8035D188, lbl_8035D1D0, 0, 0);
+    *(u32 *)(p + 0x1b0) = fn_8023F52C(p, lbl_8035D188, lbl_8035D18C, s + 220, 0, 0);
+    fn_8023F214(p);
+}
+#pragma opt_propagation reset
+
+} /* extern "C" */
+
+} /* namespace m80048D10 */
+
+namespace m80048E4C {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+extern u8 lbl_802B5D70[];
+void __dl__FPv(int);
+void __dt__9C8024262CFv(int, int);
+struct VCall_fn_80048E4C_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(); };
+
+s32 * fn_80048E4C(s32 *param_1, s16 param_2) {
+    if (param_1 != (s32 *)0x0) {
+        *param_1 = (s32)lbl_802B5D70;
+        ((VCall_fn_80048E4C_0 *)(param_1))->m();
+        __dt__9C8024262CFv((int)(param_1), (int)(0));
+        if (0 < param_2) {
+            __dl__FPv((int)(param_1));
+        }
+    }
+    return param_1;
+}
+}
+
+} /* namespace m80048E4C */
+
+
+#pragma optEH2 on
+
+extern "C" {
+
+extern void *lbl_8035B530;
+extern u8 lbl_802B5D70[];
+void fn_800604C4(s32, s32, s32, s32);
+void fn_800F7EC0(void *);
+void fn_800F7E98(void);
+void fn_80048C40(void *);
+
+} /* extern "C" */
+
+struct C8024262C {
+    C8024262C();
+    ~C8024262C();
+};
+
+struct C80048EC0 : C8024262C {
+    u8 pad[0x1B4];
+    C80048EC0() {
+        *(void **)this = lbl_802B5D70;
+        fn_80048C40(this);
+    }
+};
+
+extern "C" void *fn_80048EC0(void) {
+    C80048EC0 *r;
+    if (lbl_8035B530 == NULL) {
+        fn_800604C4(-2, 0, 0, 0);
+    }
+    fn_800F7EC0(lbl_8035B530);
+    r = new C80048EC0;
+    fn_800F7E98();
+    if (r == NULL) {
+        fn_800604C4(-4, 0, 0, 0);
+    }
+    return r;
+}
+
+
+namespace m80048F58 {
+extern "C" {
+/* Functions from 0x80048F58 to 0x80048F60, found by decomp-toolkit. */
+
+s32 fn_80048F58(void) {
+    return 1;
+}
+
+}
+
+} /* namespace m80048F58 */
+
+namespace m80048F60 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035A124;
+extern volatile f32 lbl_8035A120;
+__declspec(section ".sdata2") f64 lbl_8035D1D8 = 0.3490658402442932;
+double fn_800EFDA4(double);
+void *fn_8023DC5C(void *, void *, void *, void *, s32);
+void __register_global_object(void *, void *, void *);
+extern u8 lbl_8030283C[];
+extern const char lbl_80295B80[9] = "Behavior";
+__declspec(section ".sdata2") char lbl_8035D1E0[8] = "BLite";
+void fn_80048EC0(void);
+void fn_800375E4(void);
+extern u8 lbl_80302830[];
+
+void fn_80048F60(void) {
+    lbl_8035A124 = lbl_803596E0[0];
+    lbl_8035A120 = fn_800EFDA4(*(volatile f64 *)&lbl_8035D1D8);
+    __register_global_object(fn_8023DC5C(lbl_8030283C, (void *)lbl_80295B80, lbl_8035D1E0, (void *)fn_80048EC0, 436), (void *)fn_800375E4, lbl_80302830);
+}
+
+__declspec(section ".ctors") static void (*const ctor_80048F60)(void) = fn_80048F60;
+
+} /* extern "C" */
+
+} /* namespace m80048F60 */

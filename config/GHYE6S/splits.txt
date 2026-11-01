@@ -1658,59 +1658,13 @@ auto/text_80047D30.cpp:
 	.ctors      start:0x80293F68 end:0x80293F6C
 
 auto/text_80047DA0.cpp:
-	extab       start:0x800063D8 end:0x800063F0
-	extabindex  start:0x800189A4 end:0x800189C8
-	.text       start:0x80047DA0 end:0x80048A50
-	.rodata     start:0x80295A90 end:0x80295B24
-	.data       start:0x802B5970 end:0x802B5E10
-	.sdata2     start:0x8035D180 end:0x8035D1C8
-
-auto/text_80048A50.cpp:
-	extab       start:0x800063F0 end:0x800063F8
-	extabindex  start:0x800189C8 end:0x800189D4
-	.text       start:0x80048A50 end:0x80048AB8
-
-auto/text_80048AB8.cpp:
-	extab       start:0x800063F8 end:0x80006400
-	extabindex  start:0x800189D4 end:0x800189E0
-	.text       start:0x80048AB8 end:0x80048B40
-
-auto/text_80048B40.cpp:
-	extab       start:0x80006400 end:0x80006408
-	extabindex  start:0x800189E0 end:0x800189EC
-	.text       start:0x80048B40 end:0x80048BC8
-
-auto/text_80048BC8.cpp:
-	extab       start:0x80006408 end:0x80006410
-	extabindex  start:0x800189EC end:0x800189F8
-	.text       start:0x80048BC8 end:0x80048C40
-
-auto/text_80048C40.cpp:
-	.text       start:0x80048C40 end:0x80048D10
-
-auto/text_80048D10.cpp:
-	extab       start:0x80006410 end:0x80006418
-	extabindex  start:0x800189F8 end:0x80018A04
-	.text       start:0x80048D10 end:0x80048E4C
-
-auto/text_80048E4C.cpp:
-	extab       start:0x80006418 end:0x80006420
-	extabindex  start:0x80018A04 end:0x80018A10
-	.text       start:0x80048E4C end:0x80048EC0
-
-auto/text_80048EC0.cpp:
-	extab       start:0x80006420 end:0x8000644C
-	extabindex  start:0x80018A10 end:0x80018A1C
-	.text       start:0x80048EC0 end:0x80048F58
-
-auto/text_80048F58.c:
-	.text       start:0x80048F58 end:0x80048F60
-
-auto/text_80048F60.cpp:
-	extab       start:0x8000644C end:0x80006454
-	extabindex  start:0x80018A1C end:0x80018A28
-	.text       start:0x80048F60 end:0x80048FD0
+	extab       start:0x800063D8 end:0x80006454
+	extabindex  start:0x800189A4 end:0x80018A28
+	.text       start:0x80047DA0 end:0x80048FD0
 	.ctors      start:0x80293F6C end:0x80293F70
+	.rodata     start:0x80295A90 end:0x80295B90
+	.data       start:0x802B5970 end:0x802B5E10
+	.sdata2     start:0x8035D138 end:0x8035D1E8
 
 auto/text_80048FD0.cpp:
 	extab       start:0x80006454 end:0x8000645C
