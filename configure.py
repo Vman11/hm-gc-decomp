@@ -5359,7 +5359,7 @@ config.libs = [
             Object(Matching, "auto/text_801E9A20.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801E9BE4.cpp", extra_cflags=["-Cpp_exceptions on"], mw_version="GC/2.0p1"),
             Object(Matching, "auto/text_801E9CD4.cpp", extra_cflags=["-Cpp_exceptions on"], mw_version="GC/2.0p1"),
-            Object(NonMatching, "auto/text_801E9EB4.cpp", extra_cflags=["-Cpp_exceptions on"]),
+            Object(Matching, "auto/text_801E9EB4.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801EA144.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801EA194.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801EA2AC.cpp", extra_cflags=["-Cpp_exceptions on"]),

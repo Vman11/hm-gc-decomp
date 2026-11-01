@@ -8,7 +8,7 @@ extern "C" {
 struct R;
 extern u8 __vt__9C80129A9C[];
 void __ct__9C80105074Fv(void *);
-void __dt__9C8010500CFv(void *, int);
+void __dt__9C8010500CFv(void *, s16);
 void fn_800FB064(R *, char *);
 void *fn_800F9398(void *, char *);
 void *fn_800F9788(void *, char *, char *);
@@ -16,15 +16,21 @@ void fn_80101124(void *, R *);
 void fn_800FF9E8(void *, R *);
 void fn_801EF720(void *, R *, int);
 struct V3 { f32 x, y, z; };
+} /* extern "C" */
+struct C80105818 {
+    u8 pad[36];
+    u8 *vt;
+    C80105818() { __ct__9C80105074Fv(this); vt = __vt__9C80129A9C; }
+    ~C80105818() { vt = __vt__9C80129A9C; __dt__9C8010500CFv(this, 0); }
+};
+extern "C" {
 static inline void *find(u8 *m, char *g, char *n) { if ((u32)g == 0 || !g[0]) return fn_800F9398(m + 144, n); return fn_800F9788(m + 168, g, n); }
 void fn_801E9EB4(u8 *p, R *r, int tok) {
-    u8 obj[40];
+    C80105818 obj;
     V3 v;
     char b16[8];
     char b8[8];
     void *x;
-    __ct__9C80105074Fv(obj);
-    *(u8 **)(obj + 36) = __vt__9C80129A9C;
     switch (tok) {
     case 125:
         fn_80101124(p + 96, r);
@@ -63,8 +69,6 @@ void fn_801E9EB4(u8 *p, R *r, int tok) {
     case 182: F(p,12,int) = 44; break;
     default: fn_801EF720(p, r, tok); break;
     }
-    *(u8 **)(obj + 36) = __vt__9C80129A9C;
-    __dt__9C8010500CFv(obj, 0);
 }
 
 } /* extern "C" */
