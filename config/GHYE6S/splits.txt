@@ -25423,19 +25423,10 @@ auto/text_801E1D20.cpp:
 	.text       start:0x801E1D20 end:0x801E1DF0
 
 auto/text_801E1DF0.cpp:
-	extab       start:0x80011A78 end:0x80011A80
-	extabindex  start:0x800246F8 end:0x80024704
-	.text       start:0x801E1DF0 end:0x801E1F94
-
-auto/text_801E1F94.cpp:
-	extab       start:0x80011A80 end:0x80011AA8
-	extabindex  start:0x80024704 end:0x80024710
-	.text       start:0x801E1F94 end:0x801E20BC
-
-auto/text_801E20BC.c:
-	extab       start:0x80011AA8 end:0x80011AE0
-	extabindex  start:0x80024710 end:0x8002471C
-	.text       start:0x801E20BC end:0x801E2448
+	extab       start:0x80011A78 end:0x80011AE0
+	extabindex  start:0x800246F8 end:0x8002471C
+	.text       start:0x801E1DF0 end:0x801E2448
+	.sdata2     start:0x803652B8 end:0x803652C8
 
 auto/text_801E2448.cpp:
 	.text       start:0x801E2448 end:0x801E24A8
