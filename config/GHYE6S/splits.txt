@@ -3551,7 +3551,7 @@ auto/text_80070CC0.cpp:
 	.data       start:0x802C2238 end:0x802C2414
 
 auto/jt_802C2414.c:
-	.data       start:0x802C2414 end:0x802C2AE0
+	.data       start:0x802C2414 end:0x802C25B8
 
 auto/text_800710BC.cpp:
 	extab       start:0x800074D0 end:0x800074D8
@@ -3899,7 +3899,8 @@ auto/text_80079A9C.cpp:
 	extab       start:0x800077F0 end:0x800077F8
 	extabindex  start:0x80019B80 end:0x80019B8C
 	.text       start:0x80079A9C end:0x8007AB24
-	.data       start:0x802C2AE0 end:0x802C2B34
+	.data       start:0x802C25B8 end:0x802C2B34
+	.sdata2     start:0x8035F788 end:0x8035F790
 
 auto/jt_802C2B34.c:
 	.data       start:0x802C2B34 end:0x802C2F80
