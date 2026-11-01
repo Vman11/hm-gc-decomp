@@ -1372,9 +1372,9 @@ s32 fn_8027A0D0(u8 *b, u32 flags) {
         goto done;
     }
     a[0].w = *(s32 *)(b + 204);
+    a[0].y = 0;
     a[0].x = 0;
     a[0].h = *(s32 *)(b + 208);
-    a[0].y = 0;
     NR = fn_80279C80((s32 *)(b + 52), *(u8 **)(b + 220), *(s32 *)(b + 224), (s32 *)a);
     if (!(flags & 0x8000000) && NR != 0) {
         a[0] = RC(0);
@@ -1398,9 +1398,9 @@ s32 fn_8027A0D0(u8 *b, u32 flags) {
         }
     }
     for (i = 0; i < NR; i++) {
+        u32 f;
         u32 min = 0x7FFF0000;
         s32 m = 0;
-        u32 f = *(u32 *)(b + 744);
         for (j = 0; j < NR; j++) {
             u32 key = (a[j].y << 16) + a[j].x;
             if (key < min) {
@@ -1408,6 +1408,7 @@ s32 fn_8027A0D0(u8 *b, u32 flags) {
                 m = j;
             }
         }
+        f = *(u32 *)(b + 744);
         switch (f & 0x70000000) {
         case 0x10000000:
         case 0x20000000:
@@ -1428,7 +1429,7 @@ s32 fn_8027A0D0(u8 *b, u32 flags) {
         }
         if ((u32)(a[m].x + a[m].w) > *(u32 *)(b + 0)) a[m].w -= a[m].x + a[m].w - *(u32 *)(b + 0);
         if ((u32)(a[m].y + a[m].h) > *(u32 *)(b + 4)) a[m].h -= a[m].y + a[m].h - *(u32 *)(b + 4);
-        RC(i) = a[m];
+        { BRect *d = (BRect *)(b + i * 16 + 52); *d = a[m]; }
         a[m].x = 0;
         a[m].y = 0x7FFFFFFF;
     }
