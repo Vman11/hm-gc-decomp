@@ -5639,9 +5639,6 @@ auto/text_80095FA4.cpp:
 	.text       start:0x80095FA4 end:0x80096274
 	.data       start:0x802CBE48 end:0x802CC2B8
 
-auto/jt_802CC2B8.c:
-	.data       start:0x802CC2B8 end:0x802CD54C
-
 auto/text_80096274.cpp:
 	extab       start:0x80008738 end:0x80008740
 	extabindex  start:0x8001AB28 end:0x8001AB34
@@ -5688,45 +5685,12 @@ auto/text_80096A38.cpp:
 	.ctors      start:0x80294064 end:0x80294068
 
 auto/text_80096AAC.cpp:
-	extab       start:0x80008794 end:0x8000879C
-	extabindex  start:0x8001AB7C end:0x8001AB88
-	.text       start:0x80096AAC end:0x800981E4
-	.data       start:0x802CD54C end:0x802CD678
-
-auto/text_800981E4.cpp:
-	extab       start:0x8000879C end:0x800087A4
-	extabindex  start:0x8001AB88 end:0x8001AB94
-	.text       start:0x800981E4 end:0x80098240
-
-auto/text_80098240.cpp:
-	extab       start:0x800087A4 end:0x800087AC
-	extabindex  start:0x8001AB94 end:0x8001ABA0
-	.text       start:0x80098240 end:0x8009829C
-
-auto/text_8009829C.cpp:
-	extab       start:0x800087AC end:0x800087B4
-	extabindex  start:0x8001ABA0 end:0x8001ABAC
-	.text       start:0x8009829C end:0x80098470
-
-auto/text_80098470.c:
-	extab       start:0x800087B4 end:0x800087BC
-	extabindex  start:0x8001ABAC end:0x8001ABB8
-	.text       start:0x80098470 end:0x80098804
-
-auto/text_80098804.cpp:
-	extab       start:0x800087BC end:0x800087C4
-	extabindex  start:0x8001ABB8 end:0x8001ABC4
-	.text       start:0x80098804 end:0x80098900
-
-auto/text_80098900.cpp:
-	extab       start:0x800087C4 end:0x800087CC
-	extabindex  start:0x8001ABC4 end:0x8001ABD0
-	.text       start:0x80098900 end:0x80098A98
-
-auto/text_80098A98.cpp:
-	extab       start:0x800087CC end:0x800087D4
-	extabindex  start:0x8001ABD0 end:0x8001ABDC
-	.text       start:0x80098A98 end:0x80098DD4
+	extab       start:0x80008794 end:0x800087D4
+	extabindex  start:0x8001AB7C end:0x8001ABDC
+	.text       start:0x80096AAC end:0x80098DD4
+	.rodata     start:0x80299DC8 end:0x8029A1BC
+	.data       start:0x802CC2B8 end:0x802CD678
+	.sdata2     start:0x803610D8 end:0x803614D8
 
 auto/text_80098DD4.cpp:
 	extab       start:0x800087D4 end:0x800087DC
