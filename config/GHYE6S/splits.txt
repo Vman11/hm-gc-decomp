@@ -899,7 +899,7 @@ auto/text_8003B3B0.cpp:
 	.text       start:0x8003B3B0 end:0x8003B3E8
 	.ctors      start:0x80293F28 end:0x80293F2C
 
-auto/text_8003B3E8.c:
+auto/text_8003B3E8.cpp:
 	extab       start:0x80005DEC end:0x80005DF4
 	extabindex  start:0x8001826C end:0x80018278
 	.text       start:0x8003B3E8 end:0x8003B5F8
