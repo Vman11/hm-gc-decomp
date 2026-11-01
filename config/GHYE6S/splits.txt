@@ -5843,7 +5843,7 @@ auto/text_80096A38.cpp:
 	.text       start:0x80096A38 end:0x80096AAC
 	.ctors      start:0x80294064 end:0x80294068
 
-auto/text_80096AAC.c:
+auto/text_80096AAC.cpp:
 	extab       start:0x80008794 end:0x8000879C
 	extabindex  start:0x8001AB7C end:0x8001AB88
 	.text       start:0x80096AAC end:0x800981E4
