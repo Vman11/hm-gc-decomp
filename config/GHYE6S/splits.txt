@@ -2331,9 +2331,6 @@ auto/text_80052028.cpp:
 	.text       start:0x80052028 end:0x800520A4
 	.data       start:0x802BA1FC end:0x802BA218
 
-auto/jt_802BA218.c:
-	.data       start:0x802BA218 end:0x802BAF08
-
 auto/text_800520A4.cpp:
 	extab       start:0x800067DC end:0x800067E4
 	extabindex  start:0x80018E0C end:0x80018E18
@@ -2344,7 +2341,7 @@ auto/text_80052118.cpp:
 	extab       start:0x800067E4 end:0x800067EC
 	extabindex  start:0x80018E18 end:0x80018E24
 	.text       start:0x80052118 end:0x8005327C
-	.data       start:0x802BAF08 end:0x802BB020
+	.data       start:0x802BA218 end:0x802BB020
 
 auto/text_8005327C.cpp:
 	extab       start:0x800067EC end:0x800067F4
