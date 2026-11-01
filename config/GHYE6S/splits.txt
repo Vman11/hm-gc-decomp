@@ -914,7 +914,7 @@ auto/text_8003B87C.cpp:
 	extabindex  start:0x80018284 end:0x80018290
 	.text       start:0x8003B87C end:0x8003BA20
 
-auto/text_8003BA20.c:
+auto/text_8003BA20.cpp:
 	extab       start:0x80005E04 end:0x80005E0C
 	extabindex  start:0x80018290 end:0x8001829C
 	.text       start:0x8003BA20 end:0x8003BC2C
