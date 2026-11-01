@@ -1264,7 +1264,7 @@ u8 *fn_80277218(void *name, u32 flags) {
         wD7218_ntracks = 1;
         wD7218_tracks[0] = 0;
     }
-    wD7218_memset(pbk = &bk, 0, 0x38c);
+    { wDBink_77218 *t = &bk; wD7218_memset(t, 0, 0x38c); }
     L(0x2b8) = wD7218_now();
     wD7218_err[0] = 0;
     if (flags & 0x4000000) {
@@ -1390,6 +1390,7 @@ u8 *fn_80277218(void *name, u32 flags) {
         wD7218_seterr(wD7218_s3);
         goto fail;
     }
+    pbk = &bk;
     *(wDBink_77218 *)b = *pbk;
     B(0x128) = (u32)b;
     *(s32 *)B(0x2d0) = 0;
