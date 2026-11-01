@@ -7037,9 +7037,6 @@ auto/text_800AA770.c:
 	.text       start:0x800AA770 end:0x800AAB54
 	.data       start:0x802D2A5C end:0x802D2A78
 
-auto/jt_802D2A78.c:
-	.data       start:0x802D2A78 end:0x802D3178
-
 auto/text_800AAB54.cpp:
 	extab       start:0x80009230 end:0x80009238
 	extabindex  start:0x8001B5B4 end:0x8001B5C0
@@ -7084,12 +7081,12 @@ auto/text_800AB02C.cpp:
 	.text       start:0x800AB02C end:0x800AB09C
 	.ctors      start:0x802940BC end:0x802940C0
 
-auto/text_800AB09C.c:
+auto/text_800AB09C.cpp:
 	extab       start:0x80009280 end:0x80009288
 	extabindex  start:0x8001B614 end:0x8001B620
 	.text       start:0x800AB09C end:0x800AB5BC
-	.data       start:0x802D3178 end:0x802D3204
-	.sdata2     start:0x803622FC end:0x80362308
+	.data       start:0x802D2A78 end:0x802D3204
+	.sdata2     start:0x803622F8 end:0x80362308
 
 auto/jt_802D3204.c:
 	.data       start:0x802D3204 end:0x802D39D8
