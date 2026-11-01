@@ -7127,7 +7127,7 @@ auto/text_800AB844.c:
 	.data       start:0x802D39D8 end:0x802D3A4C
 
 auto/jt_802D3A4C.c:
-	.data       start:0x802D3A4C end:0x802D4BF0
+	.data       start:0x802D3A4C end:0x802D3A50
 
 auto/text_800ABEDC.cpp:
 	extab       start:0x800092C8 end:0x800092D0
@@ -7179,50 +7179,12 @@ auto/text_800AC430.cpp:
 	.ctors      start:0x802940C4 end:0x802940C8
 
 auto/text_800AC4A0.cpp:
-	extab       start:0x80009320 end:0x80009328
-	extabindex  start:0x8001B6D4 end:0x8001B6E0
-	.text       start:0x800AC4A0 end:0x800AE100
-	.data       start:0x802D4BF0 end:0x802D4D28
-
-auto/text_800AE100.cpp:
-	extab       start:0x80009328 end:0x80009330
-	extabindex  start:0x8001B6E0 end:0x8001B6EC
-	.text       start:0x800AE100 end:0x800AE1DC
-
-auto/text_800AE1DC.cpp:
-	extab       start:0x80009330 end:0x80009338
-	extabindex  start:0x8001B6EC end:0x8001B6F8
-	.text       start:0x800AE1DC end:0x800AE2B8
-
-auto/text_800AE2B8.cpp:
-	extab       start:0x80009338 end:0x80009340
-	extabindex  start:0x8001B6F8 end:0x8001B704
-	.text       start:0x800AE2B8 end:0x800AE408
-
-auto/text_800AE408.cpp:
-	extab       start:0x80009340 end:0x80009348
-	extabindex  start:0x8001B704 end:0x8001B710
-	.text       start:0x800AE408 end:0x800AE4AC
-
-auto/text_800AE4AC.cpp:
-	extab       start:0x80009348 end:0x80009350
-	extabindex  start:0x8001B710 end:0x8001B71C
-	.text       start:0x800AE4AC end:0x800AE5F4
-
-auto/text_800AE5F4.cpp:
-	extab       start:0x80009350 end:0x80009358
-	extabindex  start:0x8001B71C end:0x8001B728
-	.text       start:0x800AE5F4 end:0x800AE770
-
-auto/text_800AE770.cpp:
-	extab       start:0x80009358 end:0x80009360
-	extabindex  start:0x8001B728 end:0x8001B734
-	.text       start:0x800AE770 end:0x800AE7E4
-
-auto/text_800AE7E4.cpp:
-	extab       start:0x80009360 end:0x8000938C
-	extabindex  start:0x8001B734 end:0x8001B740
-	.text       start:0x800AE7E4 end:0x800AE87C
+	extab       start:0x80009320 end:0x8000938C
+	extabindex  start:0x8001B6D4 end:0x8001B740
+	.text       start:0x800AC4A0 end:0x800AE87C
+	.rodata     start:0x8029B3E0 end:0x8029B768
+	.data       start:0x802D3A50 end:0x802D4D28
+	.sdata2     start:0x80362568 end:0x803629A0
 
 auto/text_800AE87C.cpp:
 	extab       start:0x8000938C end:0x80009394

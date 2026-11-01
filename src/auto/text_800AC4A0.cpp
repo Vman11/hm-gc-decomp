@@ -1,6 +1,152 @@
+#include "common.h"
+
+extern "C" {
+__declspec(section ".sdata2") char lbl_80362568[8] = {0x4D, 0x50, 0x61, 0x74, 0x68, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362570[8] = {0x4D, 0x41, 0x69, 0x6D, 0x69, 0x6E, 0x67, 0x00};
+__declspec(section ".sdata2") char lbl_80362578[8] = {0x49, 0x44, 0x4C, 0x45, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362580[8] = {0x61, 0x74, 0x74, 0x69, 0x63, 0x75, 0x73, 0x00};
+__declspec(section ".sdata2") char lbl_80362588[8] = {0x41, 0x5F, 0x69, 0x64, 0x6C, 0x65, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362590[8] = {0x46, 0x41, 0x44, 0x45, 0x49, 0x4E, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362598[8] = {0x46, 0x41, 0x44, 0x45, 0x4F, 0x55, 0x54, 0x00};
+__declspec(section ".sdata2") char lbl_803625A0[8] = {0x46, 0x49, 0x52, 0x45, 0x31, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803625A8[8] = {0x41, 0x5F, 0x66, 0x69, 0x72, 0x65, 0x31, 0x00};
+__declspec(section ".sdata2") char lbl_803625B0[8] = {0x46, 0x49, 0x52, 0x45, 0x33, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803625B8[8] = {0x41, 0x5F, 0x66, 0x69, 0x72, 0x65, 0x33, 0x00};
+__declspec(section ".sdata2") char lbl_803625C0[8] = {0x53, 0x55, 0x4D, 0x4D, 0x4F, 0x4E, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803625C8[8] = {0x41, 0x5F, 0x73, 0x75, 0x6D, 0x6F, 0x6E, 0x00};
+__declspec(section ".sdata2") char lbl_803625D0[8] = {0x43, 0x48, 0x55, 0x43, 0x4B, 0x4C, 0x45, 0x00};
+__declspec(section ".sdata2") char lbl_803625D8[4] = {0x48, 0x49, 0x54, 0x00};
+__declspec(section ".sdata2") char lbl_803625DC[8] = {0x41, 0x5F, 0x68, 0x69, 0x74, 0x31, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803625E4[8] = {0x48, 0x49, 0x54, 0x42, 0x49, 0x47, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803625EC[8] = {0x41, 0x5F, 0x68, 0x69, 0x74, 0x32, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803625F4[8] = {0x42, 0x41, 0x43, 0x4B, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803625FC[8] = {0x41, 0x5F, 0x62, 0x61, 0x63, 0x6B, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362604[4] = {0x47, 0x45, 0x4D, 0x00};
+__declspec(section ".sdata2") char lbl_80362608[8] = {0x4C, 0x41, 0x55, 0x47, 0x48, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362610[8] = {0x41, 0x5F, 0x6C, 0x61, 0x75, 0x67, 0x68, 0x00};
+__declspec(section ".sdata2") char lbl_80362618[8] = {0x43, 0x41, 0x54, 0x56, 0x53, 0x30, 0x33, 0x00};
+__declspec(section ".sdata2") char lbl_80362620[8] = {0x43, 0x41, 0x54, 0x56, 0x53, 0x30, 0x34, 0x00};
+__declspec(section ".sdata2") char lbl_80362628[8] = {0x43, 0x41, 0x54, 0x56, 0x53, 0x30, 0x35, 0x00};
+__declspec(section ".sdata2") char lbl_80362630[8] = {0x43, 0x54, 0x41, 0x56, 0x53, 0x30, 0x36, 0x00};
+__declspec(section ".sdata2") char lbl_80362638[8] = {0x43, 0x54, 0x41, 0x56, 0x53, 0x30, 0x37, 0x00};
+__declspec(section ".sdata2") char lbl_80362640[8] = {0x43, 0x41, 0x54, 0x56, 0x53, 0x30, 0x38, 0x00};
+__declspec(section ".sdata2") char lbl_80362648[8] = {0x43, 0x41, 0x54, 0x56, 0x53, 0x30, 0x39, 0x00};
+__declspec(section ".sdata2") char lbl_80362650[8] = {0x49, 0x44, 0x4C, 0x45, 0x32, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362658[8] = {0x49, 0x64, 0x6C, 0x65, 0x5F, 0x32, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362660[8] = {0x49, 0x44, 0x4C, 0x45, 0x32, 0x42, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362668[8] = {0x49, 0x64, 0x6C, 0x65, 0x5F, 0x32, 0x62, 0x00};
+__declspec(section ".sdata2") char lbl_80362670[8] = {0x49, 0x44, 0x4C, 0x45, 0x33, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362678[8] = {0x49, 0x64, 0x6C, 0x65, 0x5F, 0x33, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362680[8] = {0x47, 0x4E, 0x41, 0x54, 0x30, 0x31, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362688[8] = {0x47, 0x4E, 0x41, 0x54, 0x30, 0x32, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362690[8] = {0x47, 0x4E, 0x41, 0x54, 0x30, 0x33, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362698[8] = {0x47, 0x4E, 0x53, 0x48, 0x30, 0x31, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626A0[8] = {0x47, 0x4E, 0x53, 0x48, 0x30, 0x32, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626A8[8] = {0x47, 0x4E, 0x53, 0x48, 0x30, 0x33, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626B0[8] = {0x47, 0x4E, 0x42, 0x48, 0x30, 0x31, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626B8[8] = {0x47, 0x4E, 0x42, 0x48, 0x30, 0x32, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626C0[8] = {0x47, 0x4E, 0x42, 0x48, 0x30, 0x33, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626C8[8] = {0x41, 0x50, 0x50, 0x45, 0x41, 0x52, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626D0[4] = {0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626D4[8] = {0x48, 0x49, 0x54, 0x30, 0x31, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626DC[8] = {0x48, 0x49, 0x54, 0x30, 0x32, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626E4[8] = {0x57, 0x4F, 0x52, 0x4D, 0x30, 0x31, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626EC[8] = {0x57, 0x4F, 0x52, 0x4D, 0x30, 0x32, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803626F4[8] = {0x5A, 0x45, 0x4B, 0x45, 0x44, 0x49, 0x45, 0x00};
+__declspec(section ".sdata2") char lbl_803626FC[8] = {0x44, 0x45, 0x41, 0x44, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362704[8] = {0x44, 0x49, 0x53, 0x41, 0x50, 0x50, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_8036270C[8] = {0x61, 0x74, 0x74, 0x64, 0x69, 0x73, 0x31, 0x00};
+__declspec(section ".sdata2") char lbl_80362714[8] = {0x61, 0x74, 0x74, 0x66, 0x72, 0x62, 0x6C, 0x00};
+__declspec(section ".sdata2") char lbl_8036271C[8] = {0x61, 0x74, 0x74, 0x66, 0x72, 0x62, 0x32, 0x00};
+__declspec(section ".sdata2") char lbl_80362724[8] = {0x50, 0x6C, 0x61, 0x79, 0x65, 0x72, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_8036272C[8] = {0x53, 0x68, 0x6F, 0x74, 0x73, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362734[8] = {0x50, 0x6C, 0x72, 0x53, 0x68, 0x6F, 0x74, 0x00};
+__declspec(section ".sdata2") char lbl_8036273C[8] = {0x53, 0x68, 0x6F, 0x74, 0x73, 0x32, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362744[8] = {0x53, 0x68, 0x6F, 0x74, 0x73, 0x33, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_8036274C[8] = {0x4C, 0x65, 0x6F, 0x74, 0x61, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362754[8] = {0x50, 0x61, 0x74, 0x68, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_8036275C[8] = {0x46, 0x41, 0x44, 0x45, 0x4F, 0x56, 0x52, 0x00};
+__declspec(section ".sdata2") char lbl_80362764[8] = {0x53, 0x4C, 0x4F, 0x57, 0x4F, 0x56, 0x52, 0x00};
+__declspec(section ".sdata2") char lbl_8036276C[8] = {0x53, 0x50, 0x57, 0x4E, 0x4F, 0x56, 0x52, 0x00};
+__declspec(section ".sdata2") char lbl_80362774[8] = {0x44, 0x45, 0x41, 0x44, 0x4F, 0x56, 0x52, 0x00};
+__declspec(section ".sdata2") char lbl_8036277C[8] = {0x41, 0x74, 0x44, 0x73, 0x70, 0x72, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362784[8] = {0x41, 0x74, 0x44, 0x73, 0x70, 0x72, 0x32, 0x00};
+__declspec(section ".sdata2") char lbl_8036278C[8] = {0x41, 0x74, 0x44, 0x73, 0x70, 0x72, 0x33, 0x00};
+__declspec(section ".sdata2") char lbl_80362794[8] = {0x41, 0x74, 0x44, 0x73, 0x70, 0x72, 0x34, 0x00};
+__declspec(section ".sdata2") char lbl_8036279C[8] = {0x49, 0x4E, 0x49, 0x54, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803627A4[8] = {0x49, 0x4E, 0x56, 0x49, 0x53, 0x4F, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803627AC[8] = {0x50, 0x41, 0x54, 0x48, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803627B4[8] = {0x45, 0x58, 0x49, 0x54, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803627BC[8] = {0x41, 0x54, 0x54, 0x49, 0x43, 0x55, 0x53, 0x00};
+__declspec(section ".sdata2") char lbl_803627C4[8] = {0x46, 0x69, 0x72, 0x65, 0x31, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803627CC[8] = {0x46, 0x69, 0x72, 0x65, 0x33, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803627D4[8] = {0x4E, 0x45, 0x41, 0x52, 0x47, 0x30, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803627DC[8] = {0x44, 0x41, 0x4D, 0x41, 0x47, 0x45, 0x44, 0x00};
+__declspec(section ".sdata2") char lbl_803627E4[8] = {0x53, 0x54, 0x43, 0x48, 0x48, 0x49, 0x54, 0x00};
+__declspec(section ".sdata2") char lbl_803627EC[8] = {0x48, 0x49, 0x44, 0x45, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803627F4[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x30, 0x00};
+__declspec(section ".sdata2") char lbl_803627FC[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x31, 0x00};
+__declspec(section ".sdata2") char lbl_80362804[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x32, 0x00};
+__declspec(section ".sdata2") char lbl_8036280C[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x33, 0x00};
+__declspec(section ".sdata2") char lbl_80362814[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x34, 0x00};
+__declspec(section ".sdata2") char lbl_8036281C[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x35, 0x00};
+__declspec(section ".sdata2") char lbl_80362824[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x36, 0x00};
+__declspec(section ".sdata2") char lbl_8036282C[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x37, 0x00};
+__declspec(section ".sdata2") char lbl_80362834[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x38, 0x00};
+__declspec(section ".sdata2") char lbl_8036283C[8] = {0x43, 0x48, 0x47, 0x50, 0x54, 0x48, 0x39, 0x00};
+__declspec(section ".sdata2") char lbl_80362844[8] = {0x43, 0x48, 0x47, 0x41, 0x4E, 0x49, 0x4D, 0x00};
+__declspec(section ".sdata2") char lbl_8036284C[8] = {0x43, 0x49, 0x4E, 0x4F, 0x4E, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362854[8] = {0x43, 0x49, 0x4E, 0x4F, 0x46, 0x46, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_8036285C[8] = {0x4C, 0x49, 0x47, 0x48, 0x54, 0x4F, 0x4E, 0x00};
+__declspec(section ".sdata2") char lbl_80362864[8] = {0x4D, 0x47, 0x53, 0x70, 0x77, 0x6E, 0x30, 0x00};
+__declspec(section ".sdata2") char lbl_8036286C[8] = {0x50, 0x55, 0x52, 0x47, 0x45, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") f32 lbl_80362874 = 1.0f;
+__declspec(section ".sdata2") char lbl_80362878[4] = {0};
+__declspec(section ".sdata2") f32 lbl_8036287C = 0.800000011920929f;
+__declspec(section ".sdata2") f32 lbl_80362880 = 0.20000000298023224f;
+__declspec(section ".sdata2") f32 lbl_80362884 = 0.5f;
+__declspec(section ".sdata2") char lbl_80362888[8] = {0x53, 0x50, 0x41, 0x57, 0x4E, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362890[8] = {0x62, 0x6F, 0x6E, 0x65, 0x33, 0x30, 0x52, 0x00};
+__declspec(section ".sdata2") char lbl_80362898[8] = {0x41, 0x74, 0x74, 0x46, 0x62, 0x6C, 0x6C, 0x00};
+__declspec(section ".sdata2") f32 lbl_803628A0 = 30.0f;
+__declspec(section ".sdata2") f32 lbl_803628A4 = 0.25f;
+__declspec(section ".sdata2") f32 lbl_803628A8 = 0.699999988079071f;
+__declspec(section ".sdata2") f32 lbl_803628AC = 1000.0f;
+__declspec(section ".sdata2") f64 lbl_803628B0 = 0.5;
+__declspec(section ".sdata2") f64 lbl_803628B8 = 3.0;
+__declspec(section ".sdata2") char lbl_803628C0[8] = {0x50, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x30, 0x00};
+__declspec(section ".sdata2") char lbl_803628C8[8] = {0x50, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x31, 0x00};
+__declspec(section ".sdata2") char lbl_803628D0[8] = {0x50, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x32, 0x00};
+__declspec(section ".sdata2") char lbl_803628D8[8] = {0x50, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x33, 0x00};
+__declspec(section ".sdata2") char lbl_803628E0[8] = {0x67, 0x72, 0x70, 0x34, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803628E8[8] = {0x67, 0x72, 0x70, 0x35, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803628F0[8] = {0x67, 0x72, 0x70, 0x36, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_803628F8[8] = {0x67, 0x72, 0x70, 0x37, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362900[8] = {0x67, 0x72, 0x70, 0x38, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362908[8] = {0x67, 0x72, 0x70, 0x39, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362910[8] = {0x67, 0x72, 0x70, 0x31, 0x30, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362918[8] = {0x67, 0x72, 0x70, 0x31, 0x31, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362920[8] = {0x67, 0x72, 0x70, 0x31, 0x32, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362928[8] = {0x67, 0x72, 0x70, 0x31, 0x33, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362930[8] = {0x67, 0x72, 0x70, 0x31, 0x34, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362938[8] = {0x67, 0x72, 0x70, 0x31, 0x35, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362940[8] = {0x67, 0x72, 0x70, 0x31, 0x36, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362948[8] = {0x67, 0x72, 0x70, 0x31, 0x37, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362950[8] = {0x67, 0x72, 0x70, 0x31, 0x38, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362958[8] = {0x67, 0x72, 0x70, 0x31, 0x39, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362960[8] = {0x67, 0x72, 0x70, 0x32, 0x30, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362968[8] = {0x67, 0x72, 0x70, 0x32, 0x31, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362970[8] = {0x67, 0x72, 0x70, 0x32, 0x32, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362978[8] = {0x67, 0x72, 0x70, 0x32, 0x33, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362980[8] = {0x67, 0x72, 0x70, 0x32, 0x34, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362988[8] = {0x52, 0x45, 0x53, 0x45, 0x54, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362990[8] = {0x7A, 0x65, 0x6B, 0x65, 0x00, 0x00, 0x00, 0x00};
+__declspec(section ".sdata2") char lbl_80362998[8] = {0x62, 0x46, 0x69, 0x67, 0x68, 0x74, 0x00, 0x00};
+}
+
+namespace m800AC4A0 {
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-#include "common.h"
 
 extern "C" {
 
@@ -10,12 +156,7 @@ struct VO { virtual void v2(); virtual void v3(); virtual void v4(); virtual voi
 struct VE { virtual void e2(); virtual void e3(); virtual void e4(); virtual void e5(); virtual void e6(); virtual void e7(); virtual void e8(); virtual void e9(); virtual void e10(); virtual void e11(); virtual void e12(); virtual void e13(); virtual void e14(); virtual void e15(); virtual void e16(); virtual void e17(); virtual void e18(); virtual void e19(); virtual void e20(); virtual void e21(); virtual void e22(); virtual void e23(); virtual void e24(); virtual void e25(); virtual void e26(); virtual void e27(); virtual void e28(); virtual void e29(); virtual void e30(); virtual void e31(); virtual void e32(); virtual void e33(); virtual void e34(); virtual void e35(); virtual void e36(); virtual void e37(); virtual void e38(); virtual void e39(); virtual void fire(u32 o, void *pos, char *grp, char *bone); virtual void ball(u32 o, f32 k, int a, char *grp, char *bone); };
 struct VB8 { u8 pad_[8]; };
 struct VR : VB8 { virtual void r2(); virtual void r3(); virtual void r4(); virtual void r5(); virtual void r6(); virtual u32 get(int a); };
-static u8 sPad[2568] = {1};
-static s32 tA[56] = {1};
-static s32 tB[205] = {1};
-static s32 tC[205] = {1};
 typedef struct { f32 x, y, z; } V3;
-const char *wG_strpool_800AC4A0[] = { "MStation", "A_Dsapir", "A_Dsapi2", "FADELOOP", "A_Dsloop", "SUMMLOOP", "A_sumnLp", "A_chukle", "A_gematk", "CINEMA01", "CATVS01B", "CINEMA03", "CINEMA04", "CINEMA05", "CINEMA06", "CINEMA07", "CINEMA08", "CINEMA09", "OOTNS235", "OOTNS238", "OOTNS239", "OOTNS241", "OOTNS242", "OOTNS243", "OOTNS244", "OOTNS245", "OOTNS246", "ZEKEHURT", "PlrShot4", "PlrShot2", "PlrShot5", "PlrShot3", "PlrShot6", "LightTog", "SPATKOVR", "CFADEOVR", "INVISOVR", "ANIMOVER", "ACTIVATE", "STRT_COL", "PLYRDEAD", "PLYRLIVE", "PATHOVER", "CHGPTH10", "CHGPTH11", "CHGPTH12", "CHGPTH13", "CHGPTH14", "CHGPTH15", "CHGPTH16", "CHGPTH17", "CHGPTH18", "CHGPTH19", "CHGPTH20", "CHGPTH21", "CHGPTH22", "CHGPTH23", "CHGPTH24", "CHGANIMF", "LIGHTOFF" };
 extern u32 lbl_8035B308;
 extern u8 *lbl_8035A1DC;
 extern int lbl_80359F2C;
@@ -24,10 +165,7 @@ extern void *lbl_8035B65C;
 extern int lbl_8035B374;
 extern int lbl_8035A0A4;
 extern int lbl_8035A02C;
-extern f32 lbl_80362874, lbl_80362878, lbl_8036287C, lbl_80362880, lbl_80362884, lbl_803628A0, lbl_803628A4, lbl_803628A8, lbl_803628AC;
-extern f64 lbl_803628B0, lbl_803628B8;
-extern char lbl_803626D0[4], lbl_80362864[4], lbl_8036286C[4], lbl_80362888[4], lbl_80362890[4], lbl_80362898[4], lbl_80362988[4];
-extern char lbl_803628C0[4], lbl_803628C8[4], lbl_803628D0[4], lbl_803628D8[4], lbl_803628E0[4], lbl_803628E8[4], lbl_803628F0[4], lbl_803628F8[4], lbl_80362900[4], lbl_80362908[4], lbl_80362910[4], lbl_80362918[4], lbl_80362920[4], lbl_80362928[4], lbl_80362930[4], lbl_80362938[4], lbl_80362940[4], lbl_80362948[4], lbl_80362950[4], lbl_80362958[4], lbl_80362960[4], lbl_80362968[4], lbl_80362970[4], lbl_80362978[4], lbl_80362980[4];
+extern f32 lbl_80362878;
 u32 rand(void);
 void __ct__9C80253F24Fiiii(void *, void *, s32, s32, void *);
 VR *fn_80207198(void *, const char *, int);
@@ -171,6 +309,29 @@ static inline void path(int p, char *s) {
     fn_80240948(p, s, 0);
 }
 
+void fn_8003F140();
+void fn_8003F18C();
+void fn_8003F1DC();
+void fn_800AC4A0(int p, int st);
+void fn_800AE100();
+void fn_800AE1DC();
+void fn_800AE2B8();
+void fn_800AE408();
+void fn_800AE5F4();
+void fn_800AE770();
+void fn_800AE87C();
+void fn_800AE8E4();
+void fn_8023D198();
+void fn_80240054();
+void fn_802416D4();
+void fn_80241D80();
+void fn_80242210();
+void fn_80249AC4();
+void *lbl_802D3A50[642] = { (void *)0x0, (void *)0xFA, (void *)0x1F4, (void *)0x2EE, (void *)0x55495C4D, (void *)0x454D4341, (void *)0x52445C00, (void *)0x41545449, (void *)0x43000000, (void *)0x42414C4C, (void *)0x524F4F4D, (void *)0x4348494C, (void *)0x4452454E, (void *)0x434F4E53, (void *)0x45525600, (void *)0x44494E52, (void *)0x4F4F4D00, (void *)0x464F5945, (void *)0x52000000, (void *)0x47414C4C, (void *)0x45525900, (void *)0x47524156, (void *)0x45594400, (void *)0x47524F4F, (void *)0x4D000000, (void *)0x47525448, (void *)0x414C4C00, (void *)0x47554553, (void *)0x54000000, (void *)0x48414C4C, (void *)0x41420000, (void *)0x48414C4C, (void *)0x43440000, (void *)0x4B495443, (void *)0x48454E00, (void *)0x4C414200, (void *)0x0, (void *)0x4D555345, (void *)0x554D0000, (void *)0x4D414944, (void *)0x0, (void *)0x4D415354, (void *)0x52424544, (void *)0x4D415553, (void *)0x4F4C4D00, (void *)0x4D454153, (void *)0x55524500, (void *)0x544F5952, (void *)0x4F4F4D00, (void *)0x4F425345, (void *)0x52560000, (void *)0x50414E54, (void *)0x52590000, (void *)0x5041524C, (void *)0x4F520000, (void *)0x53495454, (void *)0x494E4700, (void *)0x53545245, (void *)0x54434800, (void *)0x53554E52, (void *)0x4F4F4D00, (void *)0x57494E54, (void *)0x45520000, (void *)0x5449544C, (void *)0x45000000, (void *)0x53504952, (void *)0x49540000, (void *)0x474C4F42, (void *)0x414C0000, (void *)0x0, (void *)0x28, (void *)0x0, (void *)0x0, (void *)0x28, (void *)0x0, (void *)0x0, (void *)0x28, (void *)0x0, (void *)0x0, (void *)0x3F800000, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x40000000, (void *)0x0, (void *)0x3F800000, (void *)0x3F800000, (void *)0x0, (void *)0xBF800000, (void *)0x3F800000, (void *)0x0, (void *)0x0, (void *)0x3F800000, (void *)0x3F800000, (void *)0x0, (void *)0x3F800000, (void *)0xBF800000, (void *)0x0, (void *)0x6, (void *)0x9, (void *)0xC, (void *)0xF, (void *)0x12, (void *)0x15, (void *)0x18, (void *)0x1B, (void *)0x0, (void *)0x6, (void *)0x9, (void *)0xC, (void *)0xF, (void *)0x12, (void *)0x15, (void *)0x18, (void *)0x1B, (void *)0x0, (void *)0x6, (void *)0x40, (void *)0x43, (void *)0x46, (void *)0x49, (void *)0x4C, (void *)0x4F, (void *)0x52, (void *)0x55, (void *)0x1E, (void *)0x21, (void *)0x24, (void *)0x27, (void *)0x2A, (void *)0x2D, (void *)0x30, (void *)0x33, (void *)"MStation", (void *)&lbl_80362568, (void *)&lbl_80362570, (void *)&lbl_80362578, (void *)&lbl_80362580, (void *)&lbl_80362588, (void *)&lbl_80362590, (void *)&lbl_80362580, (void *)"A_Dsapir", (void *)&lbl_80362598, (void *)&lbl_80362580, (void *)"A_Dsapi2", (void *)"FADELOOP", (void *)&lbl_80362580, (void *)"A_Dsloop", (void *)&lbl_803625A0, (void *)&lbl_80362580, (void *)&lbl_803625A8, (void *)&lbl_803625B0, (void *)&lbl_80362580, (void *)&lbl_803625B8, (void *)&lbl_803625C0, (void *)&lbl_80362580, (void *)&lbl_803625C8, (void *)"SUMMLOOP", (void *)&lbl_80362580, (void *)"A_sumnLp", (void *)&lbl_803625D0, (void *)&lbl_80362580, (void *)"A_chukle", (void *)&lbl_803625D8, (void *)&lbl_80362580, (void *)&lbl_803625DC, (void *)&lbl_803625E4, (void *)&lbl_80362580, (void *)&lbl_803625EC, (void *)&lbl_803625F4, (void *)&lbl_80362580, (void *)&lbl_803625FC, (void *)&lbl_80362604, (void *)&lbl_80362580, (void *)"A_gematk", (void *)&lbl_80362608, (void *)&lbl_80362580, (void *)&lbl_80362610, (void *)"CINEMA01", (void *)&lbl_80362580, (void *)"CATVS01B", (void *)"CINEMA03", (void *)&lbl_80362580, (void *)&lbl_80362618, (void *)"CINEMA04", (void *)&lbl_80362580, (void *)&lbl_80362620, (void *)"CINEMA05", (void *)&lbl_80362580, (void *)&lbl_80362628, (void *)"CINEMA06", (void *)&lbl_80362580, (void *)&lbl_80362630, (void *)"CINEMA07", (void *)&lbl_80362580, (void *)&lbl_80362638, (void *)"CINEMA08", (void *)&lbl_80362580, (void *)&lbl_80362640, (void *)"CINEMA09", (void *)&lbl_80362580, (void *)&lbl_80362648, (void *)&lbl_80362650, (void *)&lbl_80362580, (void *)&lbl_80362658, (void *)&lbl_80362660, (void *)&lbl_80362580, (void *)&lbl_80362668, (void *)&lbl_80362670, (void *)&lbl_80362580, (void *)&lbl_80362678, (void *)&lbl_80362680, (void *)"OOTNS235", (void *)0x0, (void *)&lbl_80362688, (void *)"OOTNS238", (void *)0x0, (void *)&lbl_80362690, (void *)"OOTNS239", (void *)0x0, (void *)&lbl_80362698, (void *)"OOTNS241", (void *)0x0, (void *)&lbl_803626A0, (void *)"OOTNS242", (void *)0x0, (void *)&lbl_803626A8, (void *)"OOTNS243", (void *)0x0, (void *)&lbl_803626B0, (void *)"OOTNS244", (void *)0x0, (void *)&lbl_803626B8, (void *)"OOTNS245", (void *)0x0, (void *)&lbl_803626C0, (void *)"OOTNS246", (void *)0x0, (void *)&lbl_803626C8, (void *)&lbl_803626D0, (void *)0x0, (void *)&lbl_803626D4, (void *)&lbl_803626D0, (void *)0x0, (void *)&lbl_803626DC, (void *)&lbl_803626D0, (void *)0x0, (void *)&lbl_803626E4, (void *)&lbl_803626D0, (void *)0x0, (void *)&lbl_803626EC, (void *)&lbl_803626D0, (void *)0x0, (void *)"ZEKEHURT", (void *)&lbl_803626D0, (void *)0x0, (void *)&lbl_803626F4, (void *)&lbl_803626D0, (void *)0x0, (void *)&lbl_803626FC, (void *)&lbl_803626D0, (void *)0x0, (void *)&lbl_80362704, (void *)&lbl_8036270C, (void *)0x0, (void *)&lbl_803625A0, (void *)&lbl_80362714, (void *)0x0, (void *)&lbl_803625B0, (void *)&lbl_8036271C, (void *)0x0, (void *)&lbl_80362724, (void *)&lbl_80362724, (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)&lbl_8036272C, (void *)&lbl_80362734, (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)&lbl_8036272C, (void *)"PlrShot4", (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)&lbl_8036273C, (void *)"PlrShot2", (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)&lbl_8036273C, (void *)"PlrShot5", (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)&lbl_80362744, (void *)&lbl_8036274C, (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)&lbl_80362744, (void *)"PlrShot3", (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)&lbl_80362744, (void *)"PlrShot6", (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)"LightTog", (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)&lbl_803626D0, (void *)0x40000000, (void *)0x0, (void *)0x0, (void *)&lbl_8036275C, (void *)0x40800000, (void *)0x0, (void *)0x0, (void *)&lbl_80362764, (void *)0x3F000000, (void *)0x0, (void *)0x0, (void *)&lbl_8036276C, (void *)0x40800000, (void *)0x0, (void *)0x0, (void *)"SPATKOVR", (void *)0x3C23D70A, (void *)0x0, (void *)0x0, (void *)&lbl_80362774, (void *)0x3E800000, (void *)0x0, (void *)0x0, (void *)"CFADEOVR", (void *)0x3FC00000, (void *)0x0, (void *)0x0, (void *)"INVISOVR", (void *)&lbl_8036277C, (void *)0x1, (void *)0x0, (void *)0x0, (void *)0x0, (void *)&lbl_80362784, (void *)0x1, (void *)0x0, (void *)0x0, (void *)0x0, (void *)&lbl_8036278C, (void *)0x1, (void *)0x0, (void *)0x0, (void *)0x0, (void *)&lbl_80362794, (void *)0x1, (void *)0x0, (void *)0x0, (void *)0x0, (void *)&lbl_8036279C, (void *)&lbl_80362590, (void *)&lbl_80362598, (void *)&lbl_803627A4, (void *)&lbl_80362578, (void *)&lbl_803625D8, (void *)&lbl_803626FC, (void *)&lbl_803627AC, (void *)&lbl_803625C0, (void *)&lbl_803625A0, (void *)&lbl_803625B0, (void *)&lbl_8036279C, (void *)&lbl_803627B4, (void *)"ANIMOVER", (void *)"ACTIVATE", (void *)&lbl_803627BC, (void *)&lbl_8036276C, (void *)"SPATKOVR", (void *)&lbl_803627C4, (void *)&lbl_803627CC, (void *)&lbl_803627D4, (void *)"STRT_COL", (void *)"STRT_COL", (void *)"STRT_COL", (void *)&lbl_803627DC, (void *)&lbl_803626FC, (void *)&lbl_80362774, (void *)"CFADEOVR", (void *)"INVISOVR", (void *)&lbl_80362764, (void *)"PLYRDEAD", (void *)"PLYRLIVE", (void *)&lbl_8036275C, (void *)&lbl_803627E4, (void *)&lbl_803627EC, (void *)"PATHOVER", (void *)&lbl_803627F4, (void *)&lbl_803627FC, (void *)&lbl_80362804, (void *)&lbl_8036280C, (void *)&lbl_80362814, (void *)&lbl_8036281C, (void *)&lbl_80362824, (void *)&lbl_8036282C, (void *)&lbl_80362834, (void *)&lbl_8036283C, (void *)"CHGPTH10", (void *)"CHGPTH11", (void *)"CHGPTH12", (void *)"CHGPTH13", (void *)"CHGPTH14", (void *)"CHGPTH15", (void *)"CHGPTH16", (void *)"CHGPTH17", (void *)"CHGPTH18", (void *)"CHGPTH19", (void *)"CHGPTH20", (void *)"CHGPTH21", (void *)"CHGPTH22", (void *)"CHGPTH23", (void *)"CHGPTH24", (void *)&lbl_80362844, (void *)"CHGANIMF", (void *)&lbl_8036284C, (void *)&lbl_80362854, (void *)"LIGHTOFF", (void *)&lbl_8036285C, (void *)&lbl_8036279C, (void *)0x0, (void *)0x1, (void *)&lbl_803627B4, (void *)0x1, (void *)0x1, (void *)"ANIMOVER", (void *)0x2, (void *)0x1, (void *)"ACTIVATE", (void *)0x3, (void *)0x1, (void *)&lbl_803627BC, (void *)0x4, (void *)0x1, (void *)&lbl_8036276C, (void *)0x5, (void *)0x1, (void *)"SPATKOVR", (void *)0x6, (void *)0x1, (void *)&lbl_803627C4, (void *)0x7, (void *)0x1, (void *)&lbl_803627CC, (void *)0x8, (void *)0x1, (void *)&lbl_803627D4, (void *)0x9, (void *)0x1, (void *)"STRT_COL", (void *)0xA, (void *)0x3, (void *)&lbl_803627DC, (void *)0xD, (void *)0x1, (void *)&lbl_803626FC, (void *)0xE, (void *)0x1, (void *)&lbl_80362774, (void *)0xF, (void *)0x1, (void *)"CFADEOVR", (void *)0x10, (void *)0x1, (void *)"INVISOVR", (void *)0x11, (void *)0x1, (void *)&lbl_80362764, (void *)0x12, (void *)0x1, (void *)"PLYRDEAD", (void *)0x13, (void *)0x1, (void *)"PLYRLIVE", (void *)0x14, (void *)0x1, (void *)&lbl_8036275C, (void *)0x15, (void *)0x1, (void *)&lbl_803627E4, (void *)0x16, (void *)0x1, (void *)&lbl_803627EC, (void *)0x17, (void *)0x1, (void *)"PATHOVER", (void *)0x18, (void *)0x1, (void *)&lbl_803627F4, (void *)0x19, (void *)0x1, (void *)&lbl_803627FC, (void *)0x1A, (void *)0x1, (void *)&lbl_80362804, (void *)0x1B, (void *)0x1, (void *)&lbl_8036280C, (void *)0x1C, (void *)0x1, (void *)&lbl_80362814, (void *)0x1D, (void *)0x1, (void *)&lbl_8036281C, (void *)0x1E, (void *)0x1, (void *)&lbl_80362824, (void *)0x1F, (void *)0x1, (void *)&lbl_8036282C, (void *)0x20, (void *)0x1, (void *)&lbl_80362834, (void *)0x21, (void *)0x1, (void *)&lbl_8036283C, (void *)0x22, (void *)0x1, (void *)"CHGPTH10", (void *)0x23, (void *)0x1, (void *)"CHGPTH11", (void *)0x24, (void *)0x1, (void *)"CHGPTH12", (void *)0x25, (void *)0x1, (void *)"CHGPTH13", (void *)0x26, (void *)0x1, (void *)"CHGPTH14", (void *)0x27, (void *)0x1, (void *)"CHGPTH15", (void *)0x28, (void *)0x1, (void *)"CHGPTH16", (void *)0x29, (void *)0x1, (void *)"CHGPTH17", (void *)0x2A, (void *)0x1, (void *)"CHGPTH18", (void *)0x2B, (void *)0x1, (void *)"CHGPTH19", (void *)0x2C, (void *)0x1, (void *)"CHGPTH20", (void *)0x2D, (void *)0x1, (void *)"CHGPTH21", (void *)0x2E, (void *)0x1, (void *)"CHGPTH22", (void *)0x2F, (void *)0x1, (void *)"CHGPTH23", (void *)0x30, (void *)0x1, (void *)"CHGPTH24", (void *)0x31, (void *)0x1, (void *)&lbl_80362844, (void *)0x32, (void *)0x1, (void *)"CHGANIMF", (void *)0x33, (void *)0x1, (void *)&lbl_8036284C, (void *)0x34, (void *)0x1, (void *)&lbl_80362854, (void *)0x35, (void *)0x1, (void *)"LIGHTOFF", (void *)0x36, (void *)0x1, (void *)&lbl_8036285C, (void *)0x37, (void *)0x1, (void *)0x0, (void *)0x1, (void *)0x2, (void *)0x3, (void *)0x4, (void *)0x5, (void *)0x6, (void *)0x7, (void *)0x8, (void *)0x9, (void *)0xA, (void *)0xB, (void *)0xC, (void *)0xD, (void *)0xE, (void *)0xF, (void *)0x10, (void *)0x11, (void *)0x12, (void *)0x13, (void *)0x14, (void *)0x15, (void *)0x16, (void *)0x17, (void *)0x18, (void *)0x19, (void *)0x1A, (void *)0x1B, (void *)0x1C, (void *)0x1D, (void *)0x1E, (void *)0x1F, (void *)0x20, (void *)0x21, (void *)0x22, (void *)0x23, (void *)0x24, (void *)0x25, (void *)0x26, (void *)0x27, (void *)0x28, (void *)0x29, (void *)0x2A, (void *)0x2B, (void *)0x2C, (void *)0x2D, (void *)0x2E, (void *)0x2F, (void *)0x30, (void *)0x31, (void *)0x32, (void *)0x33, (void *)0x34, (void *)0x35, (void *)0x36, (void *)0x37 };
+static s32 tA[56] = { 0, 11, 18, 27, 29, 31, 34, 37, 40, 42, 48, 54, 60, 66, 72, 78, 81, 84, 87, 88, 92, 97, 104, 108, 111, 118, 121, 124, 127, 130, 133, 136, 139, 142, 145, 148, 151, 154, 157, 160, 163, 166, 169, 172, 175, 178, 181, 184, 187, 190, 193, 196, 199, 200, 201, 203 };
+static s32 tB[205] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 3, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 10, 1, 10, 8, 1, 2, 8, 1, 2, 9, 1, 1, 10, 1, 1, 1, 3, 1, 2, 3, 1, 2, 1, 2, 2, 3, 1, 2, 1, 2, 2, 3, 1, 2, 1, 2, 2, 3, 1, 2, 1, 2, 2, 3, 1, 2, 1, 2, 2, 3, 6, 1, 4, 6, 1, 4, 3, 1, 7, 11, 6, 1, 1, 3, 4, 1, 1, 1, 4, 1, 1, 1, 3, 1, 1, 3, 1, 5, 1, 4, 3, 1, 7, 1, 2, 1, 2, 1, 1, 3, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 11, 11, 1, 10, 1, 10 };
+static s32 tC[205] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 11, 13, 11, 13, 11, 11, 14, 15, 11, 16, 11, 17, 18, 19, 20, 11, 20, 11, 11, 21, 11, 11, 22, 11, 11, 23, 11, 11, 24, 11, 16, 11, 16, 11, 16, 11, 25, 11, 25, 11, 25, 11, 26, 11, 26, 11, 26, 11, 26, 11, 26, 11, 26, 11, 27, 11, 28, 11, 28, 11, 29, 11, 29, 11, 29, 11, 30, 11, 11, 31, 11, 11, 32, 11, 33, 34, 11, 34, 35, 36, 37, 36, 11, 36, 11, 38, 39, 11, 40, 11, 16, 11, 41, 11, 41, 42, 11, 42, 11, 43, 11, 43, 11, 44, 43, 45, 11, 45, 46, 11, 46, 47, 11, 47, 48, 11, 48, 49, 11, 49, 50, 11, 50, 51, 11, 51, 52, 11, 52, 53, 11, 53, 54, 11, 54, 55, 11, 55, 56, 11, 56, 57, 11, 57, 58, 11, 58, 59, 11, 59, 60, 11, 60, 61, 11, 61, 62, 11, 62, 63, 11, 63, 64, 11, 64, 65, 11, 65, 66, 11, 66, 67, 11, 67, 68, 11, 68, 69, 11, 69, 70, 11, 70, 71, 11, 71, 72, 73, 74, 75, 76, 11 };
+void *lbl_802D4BA0[20] = { (void *)0x0, (void *)0x0, (void *)&fn_800AE770, (void *)&fn_80249AC4, (void *)&fn_800AE5F4, (void *)&fn_80242210, (void *)&fn_800AE408, (void *)&fn_8023D198, (void *)&fn_800AE87C, (void *)&fn_800AC4A0, (void *)&fn_80241D80, (void *)&fn_8003F140, (void *)&fn_8003F18C, (void *)&fn_800AE2B8, (void *)&fn_800AE100, (void *)&fn_802416D4, (void *)&fn_8003F1DC, (void *)&fn_80240054, (void *)&fn_800AE8E4, (void *)&fn_800AE1DC };
 void fn_800AC4A0(int p, int st) {
     s32 *q;
     s32 idx;
@@ -567,3 +728,324 @@ void fn_800AC4A0(int p, int st) {
 }
 
 } /* extern "C" */
+
+} /* namespace m800AC4A0 */
+
+namespace m800AE100 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+struct V800AE100 {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+    virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
+    virtual void m(char *);
+};
+#pragma opt_propagation off
+void fn_800AE100(V800AE100 *p) {
+    char *str = ((char *)"MStation");
+    p->m(str + 480);
+    p->m(str + 492);
+    p->m(lbl_803627BC);
+    p->m(lbl_8036285C);
+    p->m(str + 708);
+    p->m(lbl_8036284C);
+    p->m(lbl_80362854);
+}
+#pragma opt_propagation reset
+
+} /* extern "C" */
+
+} /* namespace m800AE100 */
+
+namespace m800AE1DC {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+struct V_800AE1DC {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+    virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8();
+    virtual void m(char *s);
+};
+#pragma opt_propagation off
+void fn_800AE1DC(V_800AE1DC *p) {
+    char *str = ((char *)"MStation");
+    p->m(str + 480);
+    p->m(str + 492);
+    p->m(lbl_803627BC);
+    p->m(lbl_8036285C);
+    p->m(str + 708);
+    p->m(lbl_8036284C);
+    p->m(lbl_80362854);
+}
+#pragma opt_propagation reset
+
+} /* extern "C" */
+
+} /* namespace m800AE1DC */
+
+namespace m800AE2B8 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern void *lbl_80359F2C;
+extern void *lbl_8035B79C;
+s32 fn_80248630(void *a, s32 b);
+void *fn_80242144(void *p, s32 a);
+void fn_80242BC0(void *a, char *b, s32 c, s32 d, s32 e, s32 f);
+void fn_8002C4DC(void *a);
+void fn_8024125C(void *p, s32 a);
+void fn_80240C2C(void *p, s32 a);
+void fn_8026820C(void *a, s32 b);
+void fn_802494A4(void *p, s32 a);
+void fn_8023FE08(void *p, f32 f);
+
+void fn_800AE2B8(u8 *p, f32 f) {
+    if (fn_80248630(M2C_FIELD(p, void **, 264), 0) == 0) M2C_FIELD(p, s32 *, 380) = 0;
+    if (M2C_FIELD(p, s32 *, 388) != 0) {
+        M2C_FIELD(p, s32 *, 388) = 0;
+        M2C_FIELD(M2C_FIELD(p, u8 **, 224), u32 *, 180) &= ~4;
+        fn_80242BC0(fn_80242144(p, 4), ((char *)"ACTIVATE"), 0, 0, 0, 0);
+        *M2C_FIELD(p, f32 **, 372) = M2C_FIELD(M2C_FIELD(p, u8 **, 224), f32 *, 424);
+        *M2C_FIELD(p, f32 **, 376) = M2C_FIELD(M2C_FIELD(p, u8 **, 224), f32 *, 428);
+        fn_8002C4DC(lbl_80359F2C);
+        if (M2C_FIELD(p, s32 *, 340) == 0) {
+            M2C_FIELD(p, s32 *, 340) = 1;
+            if (fn_80248630(M2C_FIELD(p, void **, 264), 0) == 0) {
+                fn_8024125C(p, 9);
+                M2C_FIELD(p, s32 *, 380) = 20;
+            } else if (M2C_FIELD(p, s32 *, 380) < 20) {
+                fn_80240C2C(p, 9);
+                M2C_FIELD(p, s32 *, 380) = 20;
+            }
+        }
+        fn_8026820C(lbl_8035B79C, 14);
+        fn_802494A4(p, 3);
+    }
+    fn_8023FE08(p, f);
+}
+
+} /* extern "C" */
+
+} /* namespace m800AE2B8 */
+
+namespace m800AE408 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_80362878;
+void fn_80241E0C(void *);
+
+void fn_800AE408(u8 *p) {
+    *(s32 *)(p + 280) = 0;
+    *(s32 *)(p + 284) = 0;
+    *(s32 *)(p + 288) = 0;
+    *(s32 *)(p + 292) = 0;
+    *(s32 *)(p + 296) = 0;
+    *(s32 *)(p + 300) = 0;
+    *(s32 *)(p + 304) = 0;
+    *(s32 *)(p + 308) = 0;
+    *(s32 *)(p + 312) = 0;
+    *(s32 *)(p + 316) = 0;
+    *(s32 *)(p + 320) = 0;
+    *(s32 *)(p + 324) = 0;
+    *(s32 *)(p + 328) = -1;
+    *(s32 *)(p + 332) = -1;
+    *(f32 *)(p + 336) = lbl_80362878;
+    *(s32 *)(p + 340) = 0;
+    *(s32 *)(p + 344) = 0;
+    *(s32 *)(p + 348) = 0;
+    *(s32 *)(p + 352) = 0;
+    *(s32 *)(p + 356) = 0;
+    *(s32 *)(p + 360) = 0;
+    *(s32 *)(p + 364) = 0;
+    *(s32 *)(p + 368) = 0;
+    *(s32 *)(p + 372) = 0;
+    *(s32 *)(p + 376) = 0;
+    *(s32 *)(p + 380) = 0;
+    *(s32 *)(p + 384) = 0;
+    *(s32 *)(p + 388) = 0;
+    *(s32 *)(p + 392) = 0;
+    *(s32 *)(p + 396) = 0;
+    fn_80241E0C(p);
+}
+
+} /* extern "C" */
+
+} /* namespace m800AE408 */
+
+namespace m800AE4AC {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+#pragma opt_propagation off
+extern u8 lbl_803594B8[8];
+extern f32 lbl_80362878;
+
+void fn_800AE4AC(void *arg0) {
+    u8 *base = (u8 *)m800AC4A0::lbl_802D3A50;
+    M2C_FIELD(arg0, s32 *, 0x54) = 0x38;
+    M2C_FIELD(arg0, s32 *, 0x2c) = 0x36;
+    M2C_FIELD(arg0, s32 *, 0x68) = 0xb;
+    M2C_FIELD(arg0, s32 *, 0x5c) = 7;
+    M2C_FIELD(arg0, s32 *, 0x80) = 3;
+    M2C_FIELD(arg0, s32 *, 0x7c) = 0x19;
+    M2C_FIELD(arg0, s32 *, 0x84) = 0x14;
+    M2C_FIELD(arg0, s32 *, 0x88) = 9;
+    M2C_FIELD(arg0, s32 *, 0x8c) = 1;
+    M2C_FIELD(arg0, s32 *, 0x94) = 4;
+    M2C_FIELD(arg0, void **, 0x58) = base + 1472;
+    M2C_FIELD(arg0, void **, 0x28) = base + 1696;
+    M2C_FIELD(arg0, void **, 0x30) = base + 2344;
+    M2C_FIELD(arg0, void **, 0x6c) = base + 1428;
+    M2C_FIELD(arg0, void **, 0x78) = base + 1236;
+    M2C_FIELD(arg0, void **, 0xc4) = base + 540;
+    M2C_FIELD(arg0, void **, 0xc8) = base + 552;
+    M2C_FIELD(arg0, void **, 0xcc) = base + 852;
+    M2C_FIELD(arg0, void **, 0xf4) = base + 1092;
+    M2C_FIELD(arg0, void **, 0xfc) = lbl_803594B8;
+    M2C_FIELD(arg0, void **, 0x10c) = base + 1348;
+    M2C_FIELD(arg0, s32 *, 0x118) = 0;
+    M2C_FIELD(arg0, s32 *, 0x11c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x120) = 0;
+    M2C_FIELD(arg0, s32 *, 0x124) = 0;
+    M2C_FIELD(arg0, s32 *, 0x128) = 0;
+    M2C_FIELD(arg0, s32 *, 0x12c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x130) = 0;
+    M2C_FIELD(arg0, s32 *, 0x134) = 0;
+    M2C_FIELD(arg0, s32 *, 0x138) = 0;
+    M2C_FIELD(arg0, s32 *, 0x13c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x140) = 0;
+    M2C_FIELD(arg0, s32 *, 0x144) = 0;
+    M2C_FIELD(arg0, s32 *, 0x148) = -1;
+    M2C_FIELD(arg0, s32 *, 0x14c) = -1;
+    M2C_FIELD(arg0, f32 *, 0x150) = lbl_80362878;
+    M2C_FIELD(arg0, s32 *, 0x154) = 0;
+    M2C_FIELD(arg0, s32 *, 0x158) = 0;
+    M2C_FIELD(arg0, s32 *, 0x15c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x160) = 0;
+    M2C_FIELD(arg0, s32 *, 0x164) = 0;
+    M2C_FIELD(arg0, s32 *, 0x168) = 0;
+    M2C_FIELD(arg0, s32 *, 0x16c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x170) = 0;
+    M2C_FIELD(arg0, s32 *, 0x174) = 0;
+    M2C_FIELD(arg0, s32 *, 0x178) = 0;
+    M2C_FIELD(arg0, s32 *, 0x17c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x180) = 0;
+    M2C_FIELD(arg0, s32 *, 0x184) = 0;
+    M2C_FIELD(arg0, s32 *, 0x188) = 0;
+    M2C_FIELD(arg0, s32 *, 0x18c) = 0;
+}
+#pragma opt_propagation reset
+
+} /* extern "C" */
+
+} /* namespace m800AE4AC */
+
+namespace m800AE5F4 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+/* QV=2.0p1 */
+#pragma opt_propagation off
+u32 fn_8023F52C(void *, char *, char *, char *, s32, s32);
+void fn_8023F214(void *);
+
+void fn_800AE5F4(u8 *p) {
+    char *s = ((char *)"MStation");
+    *(u32 *)(p + 0x11c) = fn_8023F52C(p, lbl_803626D0, lbl_803626D0, (char *)"AttackPattern", 1, 0);
+    *(u32 *)(p + 0x120) = fn_8023F52C(p, lbl_803626D0, lbl_803626D0, (char *)"SpawnGap", 1, 0);
+    *(u32 *)(p + 0x124) = fn_8023F52C(p, lbl_803626D0, lbl_803626D0, (char *)"SpawnDuration", 1, 0);
+    *(u32 *)(p + 0x128) = fn_8023F52C(p, lbl_803626D0, lbl_803626D0, (char *)"DamageThreshold", 1, 0);
+    *(u32 *)(p + 0x12c) = fn_8023F52C(p, lbl_803626D0, lbl_803626D0, (char *)"DeathEvent", 1, 0);
+    *(u32 *)(p + 0x130) = fn_8023F52C(p, lbl_803626D0, lbl_803626D0, (char *)"DeathEventDelay", 1, 0);
+    *(u32 *)(p + 0x134) = fn_8023F52C(p, lbl_803626D0, lbl_80362990, (char *)"SlowdownFactor", 1, 0);
+    *(u32 *)(p + 0x138) = fn_8023F52C(p, lbl_803626D0, lbl_80362990, (char *)"SlowdownTime", 1, 0);
+    *(u32 *)(p + 0x13c) = fn_8023F52C(p, lbl_803626D0, lbl_803626D0, (char *)"MinAppearDist", 1, 0);
+    *(u32 *)(p + 0x140) = fn_8023F52C(p, lbl_803626D0, lbl_803626D0, lbl_80362998, 1, 0);
+    fn_8023F214(p);
+}
+#pragma opt_propagation reset
+
+} /* extern "C" */
+
+} /* namespace m800AE5F4 */
+
+namespace m800AE770 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+void __dl__FPv(int);
+void __dt__9C8024262CFv(int, int);
+struct VCall_fn_800AE770_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(); };
+
+s32 * fn_800AE770(s32 *param_1, s16 param_2) {
+    if (param_1 != (s32 *)0x0) {
+        *param_1 = (s32)m800AC4A0::lbl_802D4BA0;
+        ((VCall_fn_800AE770_0 *)(param_1))->m();
+        __dt__9C8024262CFv((int)(param_1), (int)(0));
+        if (0 < param_2) {
+            __dl__FPv((int)(param_1));
+        }
+    }
+    return param_1;
+}
+}
+
+} /* namespace m800AE770 */
+
+
+#pragma optEH2 on
+
+extern "C" {
+
+extern void *lbl_8035B530;
+void fn_800604C4(s32, s32, s32, s32);
+void fn_800F7EC0(void *);
+void fn_800F7E98(void);
+void fn_800AE4AC(void *);
+
+} /* extern "C" */
+
+struct C8024262C {
+    C8024262C();
+    ~C8024262C();
+};
+
+struct C800AE7E4 : C8024262C {
+    u8 pad[0x190];
+    C800AE7E4() {
+        *(void **)this = (void *)m800AC4A0::lbl_802D4BA0;
+        fn_800AE4AC(this);
+    }
+};
+
+extern "C" void *fn_800AE7E4(void) {
+    C800AE7E4 *r;
+    if (lbl_8035B530 == NULL) {
+        fn_800604C4(-2, 0, 0, 0);
+    }
+    fn_800F7EC0(lbl_8035B530);
+    r = new C800AE7E4;
+    fn_800F7E98();
+    if (r == NULL) {
+        fn_800604C4(-4, 0, 0, 0);
+    }
+    return r;
+}
