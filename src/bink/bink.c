@@ -1775,6 +1775,7 @@ s32 fn_80278920(u8 *b) {
                     K8(j)->rd += space;
                     K8(j)->left -= space;
                     if (K8(j)->rd > K8(j)->end) K8(j)->rd -= K8(j)->size;
+                    space = 0; /* dead: keeps the inner-if join block so gcse PRE inserts the len reload there */
                 }
                 K8(j)->left += len;
                 space = K8(j)->end - K8(j)->wr;
