@@ -9498,6 +9498,7 @@ auto/text_800FF778.cpp:
 	extab       start:0x80009D98 end:0x80009DA0
 	extabindex  start:0x8001C334 end:0x8001C340
 	.text       start:0x800FF778 end:0x800FF854
+	.sdata2     start:0x80363798 end:0x803637A0
 
 auto/text_800FF854.cpp:
 	extab       start:0x80009DA0 end:0x80009DA8
@@ -17940,6 +17941,7 @@ auto/text_801796CC.cpp:
 	extab       start:0x8000E0FC end:0x8000E104
 	extabindex  start:0x80020888 end:0x80020894
 	.text       start:0x801796CC end:0x80179838
+	.sdata2     start:0x803647D8 end:0x803647E8
 
 auto/text_80179838.cpp:
 	extab       start:0x8000E104 end:0x8000E10C
