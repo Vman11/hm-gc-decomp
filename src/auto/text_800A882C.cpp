@@ -1,4 +1,5 @@
 #include "common.h"
+namespace m800A882C {
 
 extern "C" {
 __declspec(section ".sdata2") char lbl_80362030[8] = {0x50, 0x49, 0x43, 0x4B, 0x55, 0x50, 0x00, 0x00};
@@ -520,3 +521,158 @@ void fn_800A92A8(P *p) {
 } /* extern "C" */
 
 } /* namespace m800A92A8 */
+
+} /* namespace m800A882C */
+
+namespace m800A9558 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+extern u8 lbl_802D1ED4[];
+void __dl__FPv(int);
+void __dt__9C8023D65CFv(int, int);
+void __dt__9C8024262CFv(int, int);
+struct VCall_fn_800A9558_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(); };
+
+s32 * fn_800A9558(s32 *param_1, s16 param_2) {
+    if (param_1 != (s32 *)0x0) {
+        *param_1 = (s32)lbl_802D1ED4;
+        ((VCall_fn_800A9558_0 *)(param_1))->m();
+        __dt__9C8023D65CFv((int)(param_1 + 0x6d), (int)(0xffffffff));
+        __dt__9C8023D65CFv((int)(param_1 + 0x62), (int)(0xffffffff));
+        __dt__9C8024262CFv((int)(param_1), (int)(0));
+        if (0 < param_2) {
+            __dl__FPv((int)(param_1));
+        }
+    }
+    return param_1;
+}
+}
+
+} /* namespace m800A9558 */
+
+namespace m800A95E4 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern void *lbl_8035B530;
+extern u8 lbl_802D1ED4[];
+void fn_800604C4(s32, s32, s32, s32);
+void fn_800F7EC0(void *);
+void fn_800F7E98(void);
+void fn_8023C398(void *);
+void fn_800A91A0(void *);
+
+} /* extern "C" */
+
+} /* namespace m800A95E4 */
+struct C8024262C {
+    C8024262C();
+    ~C8024262C();
+};
+namespace m800A95E4 {
+
+// vtable pointer (stored at +0x0 before the members are constructed)
+struct V800A95E4 {
+    u8 *vt;
+    V800A95E4() { vt = lbl_802D1ED4; }
+};
+
+struct H8023C398 {
+    u8 b[0x10];
+    H8023C398() { fn_8023C398(this); }
+};
+
+} /* namespace m800A95E4 */
+struct C8023D65C {
+    u8 b[0x2C];
+    C8023D65C();
+    ~C8023D65C();
+};
+namespace m800A95E4 {
+
+struct C800A95E4 : C8024262C {
+    V800A95E4 v;
+    u8 pad4[0x164];
+    H8023C398 m168;
+    H8023C398 m178;
+    C8023D65C m188;
+    C8023D65C m1B4;
+    u8 pad1E0[0x1C];
+    C800A95E4() { fn_800A91A0(this); }
+};
+
+extern "C" void *fn_800A95E4(void) {
+    C800A95E4 *r;
+    if (lbl_8035B530 == 0) {
+        fn_800604C4(-2, 0, 0, 0);
+    }
+    fn_800F7EC0(lbl_8035B530);
+    r = new C800A95E4;
+    fn_800F7E98();
+    if (r == 0) {
+        fn_800604C4(-4, 0, 0, 0);
+    }
+    return r;
+}
+
+} /* namespace m800A95E4 */
+
+namespace m800A969C {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+s32 fn_802421C0(void *, s32);
+
+s32 fn_800A969C(void *p, s32 a) {
+    switch (a) {
+    case 3:
+        return fn_802421C0(p, 0);
+    }
+    return 1;
+}
+
+} /* extern "C" */
+
+} /* namespace m800A969C */
+
+namespace m800A96D4 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035A49C;
+extern volatile f32 lbl_8035A498;
+__declspec(section ".sdata2") f64 lbl_80362108 = 0.3490658402442932;
+double fn_800EFDA4(double);
+void *fn_8023DC5C(void *, void *, void *, void *, s32);
+void __register_global_object(void *, void *, void *);
+extern u8 lbl_80307204[];
+extern const char lbl_8029B100[12] = "Behavior";
+extern const char lbl_8029B10C[12] = "BSprtPck";
+void fn_800A95E4(void);
+void fn_800375E4(void);
+extern u8 lbl_803071F8[];
+
+void fn_800A96D4(void) {
+    lbl_8035A49C = lbl_803596E0[0];
+    lbl_8035A498 = fn_800EFDA4(*(volatile f64 *)&lbl_80362108);
+    __register_global_object(fn_8023DC5C(lbl_80307204, (void *)lbl_8029B100, (void *)lbl_8029B10C, (void *)fn_800A95E4, 508), (void *)fn_800375E4, lbl_803071F8);
+}
+
+__declspec(section ".ctors") static void (*const ctor_800A96D4)(void) = fn_800A96D4;
+
+} /* extern "C" */
+
+} /* namespace m800A96D4 */
