@@ -23,21 +23,11 @@ void fn_80284068(int a, int *p, int c, unsigned int d, int e, int f, int g) {
 void fn_802840C0(BitStream *bs, u8 *dst, u8 *a, u8 *b, s32 n) {
     s32 nb = n;
     s32 na = n;
-    u32 bit;
     u32 v;
 
-    while (nb != 0) {
-        if (bs->count != 0) {
-            v = bs->bits;
-            bs->count--;
-            bs->bits = v >> 1;
-        } else {
-            v = *bs->ptr;
-            bs->ptr++;
-            bs->count = 31;
-            bs->bits = v >> 1;
-        }
-        if (v & 1) {
+    do {
+        if (bs->count != 0 ? ({ u32 w = bs->bits; bs->count--; bs->bits = w >> 1; w & 1; })
+                           : (v = *bs->ptr, bs->ptr++, bs->count = 31, bs->bits = v >> 1, v & 1)) {
             *dst = *b;
             nb--;
             b++;
@@ -47,10 +37,7 @@ void fn_802840C0(BitStream *bs, u8 *dst, u8 *a, u8 *b, s32 n) {
             a++;
         }
         dst++;
-        if (na == 0) {
-            break;
-        }
-    }
+    } while (na != 0 && nb != 0);
 
     if (na != 0) {
         do {
