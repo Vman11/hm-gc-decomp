@@ -1,6 +1,44 @@
 /* RAD Bink: 0x8028B134-0x8028B6F4 */
 #include "bink_common.h"
 
+/* .rodata 0x802AB0C0-0x802AB240 */
+asm(
+    ".section .rodata\n"
+    ".balign 4\n"
+    ".globl lbl_802AB0C0\n"
+    "lbl_802AB0C0:\n"
+    ".long 0x00000000, 0x00000001, 0x00000003\n"
+    ".globl lbl_802AB0CC\n"
+    "lbl_802AB0CC:\n"
+    ".long 0x00000007\n"
+    ".globl lbl_802AB0D0\n"
+    "lbl_802AB0D0:\n"
+    ".long 0x0000000F, 0x0000001F, 0x0000003F, 0x0000007F\n"
+    ".long 0x000000FF, 0x000001FF, 0x000003FF, 0x000007FF\n"
+    ".long 0x00000FFF, 0x00001FFF, 0x00003FFF, 0x00007FFF\n"
+    ".long 0x0000FFFF, 0x0001FFFF, 0x0003FFFF, 0x0007FFFF\n"
+    ".long 0x000FFFFF, 0x001FFFFF, 0x003FFFFF, 0x007FFFFF\n"
+    ".long 0x00FFFFFF, 0x01FFFFFF, 0x03FFFFFF, 0x07FFFFFF\n"
+    ".long 0x0FFFFFFF, 0x1FFFFFFF, 0x3FFFFFFF, 0x7FFFFFFF\n"
+    ".long 0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000\n"
+    ".long 0x00000000, 0x00000000, 0x00000000, 0x00000000\n"
+    ".long 0x00000000, 0x00000000, 0x00000000, 0x00000000\n"
+    ".long 0x00000000, 0x00000000, 0x00000000, 0x00000000\n"
+    ".long 0x00010202, 0x03030303, 0x04040404, 0x04040404\n"
+    ".long 0x05050505, 0x05050505, 0x05050505, 0x05050505\n"
+    ".long 0x06060606, 0x06060606, 0x06060606, 0x06060606\n"
+    ".long 0x06060606, 0x06060606, 0x06060606, 0x06060606\n"
+    ".long 0x07070707, 0x07070707, 0x07070707, 0x07070707\n"
+    ".long 0x07070707, 0x07070707, 0x07070707, 0x07070707\n"
+    ".long 0x07070707, 0x07070707, 0x07070707, 0x07070707\n"
+    ".long 0x07070707, 0x07070707, 0x07070707, 0x07070707\n"
+    ".long 0x08000000, 0x00000000, 0x00000000, 0x00000000\n"
+    ".long 0x00000000, 0x00000000, 0x00000000, 0x00000000\n"
+    ".long 0x00000000, 0x00000000, 0x00000000, 0x00000000\n"
+    ".long 0x00000000, 0x00000000, 0x00000000, 0x00000000\n"
+    ".text\n"
+);
+
 void fn_8028B134(s32 count, u32 *dst, u32 *src, u32 *p3, u32 *p4) {
     s32 n = count >> 1;
     while (--n != -1) {
@@ -86,36 +124,35 @@ void fn_8028B480(s32 n, u32 *dst, u32 *src) {
     }
 }
 
-static inline u32 wR(BitBuf *bs, u32 n) {
-    u32 bits = bs->bits;
-    u32 v;
-    if (bits >= n) {
-        u32 buf = bs->buf;
-        bs->bits = bits - n;
-        v = buf & (0xFFFFFFFF >> (32 - n));
-        bs->buf = buf >> n;
-    } else {
-        u32 *p = bs->ptr;
-        u32 buf = bs->buf;
-        u32 w = *p;
-        bs->bits = bits - (n - 32);
-        bs->ptr = p + 1;
-        v = (buf | (w << bits)) & (0xFFFFFFFF >> (32 - n));
-        n -= bits;
-        bs->buf = w >> n;
-    }
-    return v;
+#define WR(bs, N, v) { \
+    u32 bits_ = (bs)->bits; \
+    if (bits_ >= (N)) { \
+        u32 buf_ = (bs)->buf; \
+        (bs)->buf = buf_ >> (N); \
+        (bs)->bits = bits_ - (N); \
+        v = buf_ & (0xFFFFFFFF >> (32 - (N))); \
+    } else { \
+        u32 *p_ = (bs)->ptr; \
+        u32 buf_ = (bs)->buf; \
+        u32 w_ = *p_; \
+        u32 t_ = (N) - 32; \
+        v = (buf_ | (w_ << bits_)) & (0xFFFFFFFF >> (32 - (N))); \
+        (bs)->buf = w_ >> ((N) - bits_); \
+        (bs)->bits = bits_ - t_; \
+        (bs)->ptr = p_ + 1; \
+    } \
 }
 
 static inline void wW(BitBuf *bs, u32 v, u32 n) {
     u32 bits = bs->bits;
     u32 buf;
+    u32 nb;
     v &= lbl_802AB0C0[n];
     buf = bs->buf | (v << bits);
-    bits += n;
+    nb = bits + n;
     bs->buf = buf;
-    bs->bits = bits;
-    if (bits > 31) {
+    bs->bits = nb;
+    if (nb > 31) {
         *bs->ptr = buf;
         bs->ptr++;
         bs->bits -= 32;
@@ -128,11 +165,14 @@ static inline void wW(BitBuf *bs, u32 v, u32 n) {
     }
 }
 void fn_8028B510(BitBuf *dst, BitBuf *src, u32 n) {
+    u32 v;
     for (; n > 7; n -= 8) {
-        wW(dst, wR(src, 8), 8);
+        WR(src, 8, v);
+        wW(dst, v, 8);
     }
     if (n == 0) {
         return;
     }
-    wW(dst, wR(src, n), n);
+    WR(src, n, v);
+    wW(dst, v, n);
 }

@@ -7466,7 +7466,7 @@ config.libs = [
             Object(NonMatching, "bink/binkdec.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(Matching, "bink/popmal.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(NonMatching, "bink/yuvblit2.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
-            Object(NonMatching, "bink/yuvconv.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
+            Object(Matching, "bink/yuvconv.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(Matching, "bink/fft.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(NonMatching, "bink/binkdct.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(NonMatching, "bink/binkidct.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
