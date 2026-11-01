@@ -7444,7 +7444,7 @@ config.libs = [
             Object(Matching, "bink/radmem.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(NonMatching, "bink/expand.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(Matching, "bink/yuvblit.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
-            Object(NonMatching, "bink/binkacd.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
+            Object(Matching, "bink/binkacd.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(Matching, "bink/radthread.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(NonMatching, "bink/binkdec.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),
             Object(Matching, "bink/popmal.c", mw_version="ProDG/3.5", extra_cflags=["-O2", "-G0", "-fno-common"]),

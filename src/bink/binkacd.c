@@ -23,8 +23,8 @@ void fn_80282C34(s16 *dst, f32 *src, f32 scale, s32 count) {
 }
 
 void fn_80282C94(s16 *dst, f32 *src, f32 scale, s32 count) {
-    s32 i = count - 1;
-    if (count != 0) do {
+    s32 i;
+    if ((i = count - 1) != -1) do {
         s32 n;
         s16 *out;
         s32 v;
@@ -43,50 +43,35 @@ void fn_80282C94(s16 *dst, f32 *src, f32 scale, s32 count) {
         } else v = 0x7FFF;
         *out = v;
         src++;
-        i--;
-    } while (i + 1 != 0);
+    } while (--i != -1);
 }
 
 extern u8 lbl_80301BA0[];
-#define GETBIT(bs) ((bs)->bits ? ({ u32 c_ = (bs)->buf; (bs)->bits--; (bs)->buf = c_ >> 1; c_ & 1; }) \
-    : ({ u32 *p_ = (bs)->ptr; u32 w_ = *p_; (bs)->bits = 31; (bs)->ptr = p_ + 1; (bs)->buf = w_ >> 1; w_ & 1; }))
 #define GETBITS(bs, n) ((bs)->bits >= n ? ({ u32 c_ = (bs)->buf; (bs)->bits -= n; (bs)->buf = c_ >> n; c_ & ((1 << n) - 1); }) \
     : ({ u32 *p_ = (bs)->ptr; u32 b_ = (bs)->bits; u32 c_ = (bs)->buf; u32 w_ = *p_; (bs)->bits = b_ + (32 - n); (bs)->ptr = p_ + 1; (bs)->buf = w_ >> (n - b_); w_ <<= b_; (c_ | w_) & ((1 << n) - 1); }))
-static inline u32 rdn(BitBuf *bs, u32 n, u32 m, u32 t_) {
-    u32 bits = bs->bits;
-    u32 v;
-    if (bits >= n) {
-        u32 buf = bs->buf;
-        bs->bits = bits - n;
-        v = buf & m;
-        bs->buf = buf >> n;
-    } else {
-        u32 *p = bs->ptr;
-        u32 buf = bs->buf;
-        u32 w = *p;
-        bs->bits = bits - t_;
-        bs->ptr = p + 1;
-        bs->buf = w >> (n - bits);
-        w <<= bits;
-        v = (buf | w) & m;
-    }
-    return v;
-}
+#define GBT(bs) ((bs)->bits ? ({ u32 c_ = (bs)->buf; (bs)->bits--; (bs)->buf = c_ >> 1; c_ & 1; }) \
+    : ({ u32 *p_ = (bs)->ptr; t = *p_; (bs)->bits = 31; (bs)->ptr = p_ + 1; (bs)->buf = t >> 1; t & 1; }))
+#define GBST(bs, n) ((t = (bs)->bits) >= n ? ({ u32 c_ = (bs)->buf; (bs)->bits = t - n; (bs)->buf = c_ >> n; c_ & ((1 << n) - 1); }) \
+    : ({ u32 *p_ = (bs)->ptr; u32 c_ = (bs)->buf; u32 w_ = *p_; (bs)->bits = t + (32 - n); (bs)->ptr = p_ + 1; (bs)->buf = w_ >> (n - t); w_ <<= t; (c_ | w_) & ((1 << n) - 1); }))
+#define GBT3(bs) ((bs)->bits ? ({ u32 c_ = (bs)->buf; (bs)->bits--; (bs)->buf = c_ >> 1; t = c_ & 1; t; }) \
+    : ({ u32 *p_ = (bs)->ptr; t = *p_; (bs)->bits = 31; (bs)->ptr = p_ + 1; (bs)->buf = t >> 1; t & 1; }))
 void fn_80282D40(f32 *coeffs, u32 n, BitBuf *bs, f32 *quant, u32 *bands) {
     f32 q = 0.0f;
     u32 k = 0;
     u32 i, j, width;
+    u32 t;
     f32 *dst;
     while (bands[k] * 2 < 2) { q = quant[k]; k++; }
     dst = coeffs + 2;
     for (i = 2; i < n; ) {
-        if (GETBIT(bs)) { j = GETBITS(bs, 4); j = i + lbl_80301BA0[j] * 8; }
+        if (GBT(bs)) { j = GBST(bs, 4); j = i + lbl_80301BA0[j] * 8; }
         else j = i + 8;
         if (j > n) j = n;
-        width = GETBITS(bs, 4);
+        width = GBST(bs, 4);
         if (width == 0) {
-            memset(dst, 0, (j - i) * 4);
-            dst += j - i;
+            t = j - i;
+            memset(dst, 0, t * 4);
+            dst += t;
             i = j;
             while (i > bands[k] * 2) { q = quant[k]; k++; }
         } else {
@@ -96,12 +81,29 @@ void fn_80282D40(f32 *coeffs, u32 n, BitBuf *bs, f32 *quant, u32 *bands) {
             do {
                 u32 c;
                 if (i == bands[k] * 2) { q = quant[k]; k++; }
-                c = rdn(bs, width, m, t_);
+                {
+                u32 bits = bs->bits;
+                if (bits >= width) {
+                    u32 buf = bs->buf;
+                    bs->bits = bits - width;
+                    c = buf & m;
+                    bs->buf = buf >> width;
+                } else {
+                    u32 *p = bs->ptr;
+                    u32 buf = bs->buf;
+                    u32 w = *p;
+                    bs->bits = bits - t_;
+                    bs->ptr = p + 1;
+                    bs->buf = w >> (width - bits);
+                    w <<= bits;
+                    c = (buf | w) & m;
+                }
+                }
                 if (c) {
-                    s32 s = -(s32)GETBIT(bs);
-                    *dst = (f32)(s32)((c ^ s) - s) * q;
-                } else *dst = 0.0f;
-                dst++;
+                    s32 s = -(s32)GBT3(bs);
+                    c = (c ^ s) - s;
+                    *dst++ = (f32)(s32)c * q;
+                } else *dst++ = 0.0f;
                 i++;
             } while (i < j);
             }
@@ -249,3 +251,89 @@ void fn_80283750(Fn80283750Struct *arg0, s16 **arg1, s32 *arg2, s32 arg3, s32 *a
         *arg4 = arg3 + ret;
     }
 }
+
+asm(".data\n.balign 8\n"
+    ".globl lbl_80301BA0\nlbl_80301BA0:\n"
+    ".long 0x2030405\n"
+    ".long 0x608090a\n"
+    ".long 0xb0c0d0e\n"
+    ".long 0xf102040\n"
+    ".globl lbl_80301BB0\nlbl_80301BB0:\n"
+    ".long 0x0\n"
+    ".long 0x64\n"
+    ".long 0xc8\n"
+    ".long 0x12c\n"
+    ".long 0x190\n"
+    ".long 0x1fe\n"
+    ".long 0x276\n"
+    ".long 0x302\n"
+    ".long 0x398\n"
+    ".long 0x438\n"
+    ".long 0x4f6\n"
+    ".long 0x5c8\n"
+    ".long 0x6b8\n"
+    ".long 0x7d0\n"
+    ".long 0x910\n"
+    ".long 0xa8c\n"
+    ".long 0xc4e\n"
+    ".long 0xe74\n"
+    ".long 0x1130\n"
+    ".long 0x14b4\n"
+    ".long 0x1900\n"
+    ".long 0x1e14\n"
+    ".long 0x251c\n"
+    ".long 0x2ee0\n"
+    ".long 0x3c8c\n"
+    ".long 0x0\n"
+    ".globl lbl_80301C18\nlbl_80301C18:\n"
+    ".long 0x3e800000\n"
+    ".long 0x0\n"
+    ".long 0x3e900000\n"
+    ".long 0x0\n"
+    ".long 0x3ea00000\n"
+    ".long 0x0\n"
+    ".long 0x3eb00000\n"
+    ".long 0x0\n"
+    ".long 0x3ec00000\n"
+    ".long 0x0\n"
+    ".long 0x3ed00000\n"
+    ".long 0x0\n"
+    ".long 0x3ee00000\n"
+    ".long 0x0\n"
+    ".long 0x3ef00000\n"
+    ".long 0x0\n"
+    ".long 0x3f000000\n"
+    ".long 0x0\n"
+    ".long 0x3f100000\n"
+    ".long 0x0\n"
+    ".long 0x3f200000\n"
+    ".long 0x0\n"
+    ".long 0x3f300000\n"
+    ".long 0x0\n"
+    ".long 0x3f400000\n"
+    ".long 0x0\n"
+    ".long 0x3f500000\n"
+    ".long 0x0\n"
+    ".long 0x3f600000\n"
+    ".long 0x0\n"
+    ".long 0x3f700000\n"
+    ".long 0x0\n"
+    ".long 0x3f800000\n"
+    ".long 0x0\n"
+    ".long 0x3f900000\n"
+    ".long 0x0\n"
+    ".long 0x3fa00000\n"
+    ".long 0x0\n"
+    ".long 0x3fb00000\n"
+    ".long 0x0\n"
+    ".long 0x3fc00000\n"
+    ".long 0x0\n"
+    ".long 0x3fd00000\n"
+    ".long 0x0\n"
+    ".long 0x3fe00000\n"
+    ".long 0x0\n"
+    ".long 0x3ff00000\n"
+    ".long 0x0\n"
+    ".long 0x0\n"
+    ".long 0x0\n"
+    ".section .rodata\n.space 0x20\n.text\n");
