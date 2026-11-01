@@ -497,3 +497,112 @@ void fn_8005BF98(P *p) {
 } /* extern "C" */
 
 } /* namespace m8005BF98 */
+
+namespace m8005C1B4 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+void __dl__FPv(int);
+void __dt__9C8024262CFv(int, int);
+struct VCall_fn_8005C1B4_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(); };
+
+s32 * fn_8005C1B4(s32 *param_1, s16 param_2) {
+    if (param_1 != (s32 *)0x0) {
+        *param_1 = (s32)::lbl_802BCB64;
+        ((VCall_fn_8005C1B4_0 *)(param_1))->m();
+        __dt__9C8024262CFv((int)(param_1), (int)(0));
+        if (0 < param_2) {
+            __dl__FPv((int)(param_1));
+        }
+    }
+    return param_1;
+}
+}
+
+} /* namespace m8005C1B4 */
+
+
+#pragma optEH2 on
+
+extern "C" {
+
+extern void *lbl_8035B530;
+void fn_800604C4(s32, s32, s32, s32);
+void fn_800F7EC0(void *);
+void fn_800F7E98(void);
+void fn_8005BE98(void *);
+
+} /* extern "C" */
+
+struct C8024262C {
+    C8024262C();
+    ~C8024262C();
+};
+
+struct C8005C228 : C8024262C {
+    u8 pad[0x170];
+    C8005C228() {
+        *(void **)this = (void *)::lbl_802BCB64;
+        fn_8005BE98(this);
+    }
+};
+
+extern "C" void *fn_8005C228(void) {
+    C8005C228 *r;
+    if (lbl_8035B530 == NULL) {
+        fn_800604C4(-2, 0, 0, 0);
+    }
+    fn_800F7EC0(lbl_8035B530);
+    r = new C8005C228;
+    fn_800F7E98();
+    if (r == NULL) {
+        fn_800604C4(-4, 0, 0, 0);
+    }
+    return r;
+}
+
+namespace m8005C2C0 {
+/* Functions from 0x8005C2C0 to 0x8005C2C8, found by decomp-toolkit. */
+
+extern "C" s32 fn_8005C2C0(void) {
+    return 1;
+}
+
+} /* namespace m8005C2C0 */
+
+namespace m8005C2C8 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035A194;
+extern volatile f32 lbl_8035A190;
+__declspec(section ".sdata2") f64 lbl_8035E428 = 0.3490658402442932;
+double fn_800EFDA4(double);
+void *fn_8023DC5C(void *, void *, void *, void *, s32);
+void __register_global_object(void *, void *, void *);
+extern u8 lbl_80302ADC[];
+extern const char lbl_802970F8[9] = "Behavior";
+__declspec(section ".sdata2") char lbl_8035E430[8] = "BPathBF";
+void fn_8005C228(void);
+void fn_800375E4(void);
+extern u8 lbl_80302AD0[];
+
+void fn_8005C2C8(void) {
+    lbl_8035A194 = lbl_803596E0[0];
+    lbl_8035A190 = fn_800EFDA4(*(volatile f64 *)&lbl_8035E428);
+    __register_global_object(fn_8023DC5C(lbl_80302ADC, (void *)lbl_802970F8, lbl_8035E430, (void *)fn_8005C228, 368), (void *)fn_800375E4, lbl_80302AD0);
+}
+
+__declspec(section ".ctors") static void (*const ctor_8005C2C8)(void) = fn_8005C2C8;
+
+} /* extern "C" */
+
+} /* namespace m8005C2C8 */
