@@ -6763,19 +6763,15 @@ auto/text_800A87B8.cpp:
 	.ctors      start:0x802940A8 end:0x802940AC
 
 auto/text_800A882C.cpp:
-	extab       start:0x8000908C end:0x800090BC
-	extabindex  start:0x8001B410 end:0x8001B458
-	.text       start:0x800A882C end:0x800A92A8
+	extab       start:0x8000908C end:0x800090C4
+	extabindex  start:0x8001B410 end:0x8001B464
+	.text       start:0x800A882C end:0x800A9558
+	.rodata     start:0x8029AFE8 end:0x8029B100
 	.data       start:0x802D1B48 end:0x802D1F48
-	.sdata2     start:0x803620A8 end:0x803620F8
+	.sdata2     start:0x80362030 end:0x80362108
 
 auto/jt_802D1F48.c:
 	.data       start:0x802D1F48 end:0x802D2270
-
-auto/text_800A92A8.cpp:
-	extab       start:0x800090BC end:0x800090C4
-	extabindex  start:0x8001B458 end:0x8001B464
-	.text       start:0x800A92A8 end:0x800A9558
 
 auto/text_800A9558.cpp:
 	extab       start:0x800090C4 end:0x800090CC
