@@ -1,12 +1,9 @@
 /* Functions from 0x801E9660 to 0x801E96A0, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801E9660(void *arg0) {
-    void *ptr48 = *(void **)((char *)arg0 + 0x48);
-    void *ptr;
-    if (ptr48 != 0) ptr = ptr48;
-    else ptr = *(void **)((char *)arg0 + 0x44);
-    if (ptr == 0) return;
-    ptr48 = ptr48 != 0 ? ptr48 : *(void **)((char *)arg0 + 0x44);
-    *(unsigned int *)ptr48 &= 0xFFFFFBFF;
+typedef struct { u8 pad[0x44]; u32 *a; u32 *b; } S801E9660;
+static inline u32 *get801E9660(S801E9660 *s) { return s->b ? s->b : s->a; }
+void fn_801E9660(S801E9660 *s) {
+    if (get801E9660(s) == 0) return;
+    *get801E9660(s) &= ~0x400;
 }

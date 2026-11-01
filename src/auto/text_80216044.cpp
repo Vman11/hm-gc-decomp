@@ -4,17 +4,17 @@
 
 extern "C" {
 
+extern "C" {
+
 void fn_80207BF4(int, int);
 
-void fn_80216044(s32 param_1, u32 param_2) {
-    s32 iVar2;
-    u32 uVar1;
 
-    iVar2 = 0;
-    for (uVar1 = 0; uVar1 < *(u32 *)(param_1 + 0x5c); uVar1 = uVar1 + 1) {
-        fn_80207BF4((int)(*(u32 *)(*(s32 *)(param_1 + 100) + iVar2)), (int)(param_2));
-        iVar2 = iVar2 + 4;
-    }
+typedef struct { u8 pad[0x5c]; u32 n; u8 pad60[4]; void **arr; } S80216044;
+void fn_80216044(S80216044 *p, int b) {
+    u32 i;
+    for (i = 0; i < p->n; i++) fn_80207BF4((int)p->arr[i], b);
 }
+
+} /* extern "C" */
 
 } /* extern "C" */
