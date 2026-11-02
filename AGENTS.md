@@ -318,3 +318,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDH (user-approved, collaborator units, 2026-11-02): matched fn_801B673C (wAA draft; the desel loops written as the same static inline as fn_801B4654 - shared u32 i, both loops for (i = 0; ...) - gives the target mr IV init) and fn_80189660 (wCH draft; both params __restrict lets the z loads hoist above the o->fc store).
 - wDH (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801B673C
 - wDH (user-approved, collaborator units, 2026-11-02): matched fn_801CB700 (wAA draft; the v52 notify loop moved into a static inline with its own Node *m, setState hand-inlined using a fn-level Node *q declared after n, f).
+- wDH (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801CB700
