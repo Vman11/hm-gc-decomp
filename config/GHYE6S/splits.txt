@@ -32817,14 +32817,10 @@ auto/text_8023E8EC.c:
 	.text       start:0x8023E8EC end:0x8023E96C
 
 auto/text_8023E96C.cpp:
-	extab       start:0x80015C6C end:0x80015C74
-	extabindex  start:0x80028B08 end:0x80028B14
-	.text       start:0x8023E96C end:0x8023EA4C
-
-auto/text_8023EA4C.cpp:
-	extab       start:0x80015C74 end:0x80015C7C
-	extabindex  start:0x80028B14 end:0x80028B20
-	.text       start:0x8023EA4C end:0x8023EC40
+	extab       start:0x80015C6C end:0x80015C7C
+	extabindex  start:0x80028B08 end:0x80028B20
+	.text       start:0x8023E96C end:0x8023EC40
+	.sdata2     start:0x80366118 end:0x80366128
 
 auto/text_8023EC40.c:
 	.text       start:0x8023EC40 end:0x8023EC58
