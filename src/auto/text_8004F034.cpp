@@ -1,6 +1,7 @@
+#include "common.h"
+namespace m8004F034 {
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-#include "common.h"
 
 extern "C" {
 
@@ -484,3 +485,329 @@ void fn_8004F034(int p, int st) {
 }
 
 } /* extern "C" */
+
+} /* namespace m8004F034 */
+
+namespace m8004FC50 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+extern char lbl_802962B0[];
+extern char lbl_802962BC[];
+extern char lbl_8035DA1C[0x8];
+extern char lbl_8035DA6C[0x6];
+extern char lbl_8035DA74[0x7];
+struct VCall_fn_8004FC50_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+struct VCall_fn_8004FC50_1 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+struct VCall_fn_8004FC50_2 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+struct VCall_fn_8004FC50_3 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+struct VCall_fn_8004FC50_4 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+
+void fn_8004FC50(s32 *param_1) {
+    ((VCall_fn_8004FC50_0 *)(param_1))->m((s32)(lbl_8035DA1C)); /* "LIGHTON" */
+    ((VCall_fn_8004FC50_1 *)(param_1))->m((s32)(lbl_802962B0)); /* "PLYRDEAD" */
+    ((VCall_fn_8004FC50_2 *)(param_1))->m((s32)(lbl_802962BC)); /* "PLYRLIVE" */
+    ((VCall_fn_8004FC50_3 *)(param_1))->m((s32)(lbl_8035DA6C)); /* "CINON" */
+    ((VCall_fn_8004FC50_4 *)(param_1))->m((s32)(lbl_8035DA74)); /* "CINOFF" */
+}
+}
+
+} /* namespace m8004FC50 */
+
+namespace m8004FCF4 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+extern char lbl_802962B0[];
+extern char lbl_802962BC[];
+extern char lbl_8035DA1C[0x8];
+extern char lbl_8035DA6C[0x6];
+extern char lbl_8035DA74[0x7];
+struct VCall_fn_8004FCF4_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+struct VCall_fn_8004FCF4_1 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+struct VCall_fn_8004FCF4_2 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+struct VCall_fn_8004FCF4_3 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+struct VCall_fn_8004FCF4_4 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+
+void fn_8004FCF4(s32 *param_1) {
+    ((VCall_fn_8004FCF4_0 *)(param_1))->m((s32)(lbl_8035DA1C)); /* "LIGHTON" */
+    ((VCall_fn_8004FCF4_1 *)(param_1))->m((s32)(lbl_802962B0)); /* "PLYRDEAD" */
+    ((VCall_fn_8004FCF4_2 *)(param_1))->m((s32)(lbl_802962BC)); /* "PLYRLIVE" */
+    ((VCall_fn_8004FCF4_3 *)(param_1))->m((s32)(lbl_8035DA6C)); /* "CINON" */
+    ((VCall_fn_8004FCF4_4 *)(param_1))->m((s32)(lbl_8035DA74)); /* "CINOFF" */
+}
+}
+
+} /* namespace m8004FCF4 */
+
+namespace m8004FD98 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_8035DAB0;
+void fn_80241E0C(void *);
+
+void fn_8004FD98(u8 *p) {
+    *(s32 *)(p + 280) = 0;
+    *(s32 *)(p + 296) = 0;
+    *(s32 *)(p + 300) = 0;
+    *(s32 *)(p + 304) = 0;
+    *(s32 *)(p + 308) = 0;
+    *(s32 *)(p + 312) = 0;
+    *(s32 *)(p + 316) = 0;
+    *(s32 *)(p + 320) = 0;
+    *(s32 *)(p + 324) = 0;
+    *(s32 *)(p + 328) = 0;
+    *(s32 *)(p + 332) = 0;
+    *(s32 *)(p + 336) = 0;
+    *(s32 *)(p + 340) = 0;
+    *(s32 *)(p + 344) = 0;
+    *(s32 *)(p + 348) = 0;
+    *(s32 *)(p + 352) = 0;
+    *(f32 *)(p + 356) = lbl_8035DAB0;
+    *(s32 *)(p + 360) = 0;
+    fn_80241E0C(p);
+}
+
+} /* extern "C" */
+
+} /* namespace m8004FD98 */
+
+namespace m8004FE08 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern u8 lbl_802B8B30[];
+extern f32 lbl_8035DAB0;
+
+#pragma opt_propagation off
+void fn_8004FE08(void *arg0) {
+    u8 *base = lbl_802B8B30;
+    M2C_FIELD(arg0, s32 *, 0x54) = 0x23;
+    M2C_FIELD(arg0, s32 *, 0x2c) = 0x20;
+    M2C_FIELD(arg0, s32 *, 0x68) = 0xc;
+    M2C_FIELD(arg0, s32 *, 0x5c) = 9;
+    M2C_FIELD(arg0, s32 *, 0x80) = 5;
+    M2C_FIELD(arg0, s32 *, 0x7c) = 9;
+    M2C_FIELD(arg0, s32 *, 0x84) = 5;
+    M2C_FIELD(arg0, s32 *, 0x88) = 10;
+    M2C_FIELD(arg0, s32 *, 0x8c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x94) = 2;
+    M2C_FIELD(arg0, void **, 0x58) = base + 1124;
+    M2C_FIELD(arg0, void **, 0x28) = base + 1264;
+    M2C_FIELD(arg0, void **, 0x30) = base + 1648;
+    M2C_FIELD(arg0, void **, 0x6c) = base + 1076;
+    M2C_FIELD(arg0, void **, 0x78) = base + 892;
+    M2C_FIELD(arg0, void **, 0xc4) = base + 540;
+    M2C_FIELD(arg0, void **, 0xc8) = base + 560;
+    M2C_FIELD(arg0, void **, 0xcc) = base + 668;
+    M2C_FIELD(arg0, void **, 0xf4) = base + 728;
+    M2C_FIELD(arg0, s32 *, 0xfc) = 0;
+    M2C_FIELD(arg0, void **, 0x10c) = base + 1036;
+    M2C_FIELD(arg0, s32 *, 0x118) = 0;
+    M2C_FIELD(arg0, s32 *, 0x128) = 0;
+    M2C_FIELD(arg0, s32 *, 0x12c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x130) = 0;
+    M2C_FIELD(arg0, s32 *, 0x134) = 0;
+    M2C_FIELD(arg0, s32 *, 0x138) = 0;
+    M2C_FIELD(arg0, s32 *, 0x13c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x140) = 0;
+    M2C_FIELD(arg0, s32 *, 0x144) = 0;
+    M2C_FIELD(arg0, s32 *, 0x148) = 0;
+    M2C_FIELD(arg0, s32 *, 0x14c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x150) = 0;
+    M2C_FIELD(arg0, s32 *, 0x154) = 0;
+    M2C_FIELD(arg0, s32 *, 0x158) = 0;
+    M2C_FIELD(arg0, s32 *, 0x15c) = 0;
+    M2C_FIELD(arg0, s32 *, 0x160) = 0;
+    M2C_FIELD(arg0, f32 *, 0x164) = lbl_8035DAB0;
+    M2C_FIELD(arg0, s32 *, 0x168) = 0;
+}
+#pragma opt_propagation reset
+
+} /* extern "C" */
+
+} /* namespace m8004FE08 */
+
+namespace m8004FF0C {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern char lbl_802961F0[];
+extern char lbl_8035D964[1];
+extern char lbl_8035DAF0[5];
+extern char lbl_8035DAF8[7];
+s32 fn_8023F52C(void *p, char *a, char *b, char *name, s32 x, s32 y);
+void fn_8023F214(void *p);
+
+#pragma opt_propagation off
+void fn_8004FF0C(u8 *p) {
+    char *base = lbl_802961F0;
+    *(s32 *)(p + 0x128) = fn_8023F52C(p, lbl_8035D964, lbl_8035D964, base + 252, 1, 0);
+    *(s32 *)(p + 0x12c) = fn_8023F52C(p, lbl_8035D964, lbl_8035D964, base + 264, 1, 0);
+    *(s32 *)(p + 0x130) = fn_8023F52C(p, lbl_8035D964, lbl_8035D964, base + 284, 1, 0);
+    *(s32 *)(p + 0x134) = fn_8023F52C(p, lbl_8035D964, lbl_8035D964, base + 296, 1, 0);
+    *(s32 *)(p + 0x138) = fn_8023F52C(p, lbl_8035D964, lbl_8035DAF0, base + 308, 1, 0);
+    *(s32 *)(p + 0x13c) = fn_8023F52C(p, lbl_8035D964, lbl_8035DAF0, base + 324, 1, 0);
+    *(s32 *)(p + 0x148) = fn_8023F52C(p, lbl_8035D964, lbl_8035D964, base + 340, 1, 0);
+    *(s32 *)(p + 0x14c) = fn_8023F52C(p, lbl_8035D964, lbl_8035D964, base + 352, 1, 0);
+    *(s32 *)(p + 0x150) = fn_8023F52C(p, lbl_8035D964, lbl_8035D964, lbl_8035DAF8, 0, 0);
+    fn_8023F214(p);
+}
+#pragma opt_propagation reset
+
+} /* extern "C" */
+
+} /* namespace m8004FF0C */
+
+namespace m80050068 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+extern u8 lbl_802B96A8[];
+void __dl__FPv(int);
+void __dt__9C8024262CFv(int, int);
+struct VCall_fn_80050068_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(); };
+
+s32 * fn_80050068(s32 *param_1, s16 param_2) {
+    if (param_1 != (s32 *)0x0) {
+        *param_1 = (s32)lbl_802B96A8;
+        ((VCall_fn_80050068_0 *)(param_1))->m();
+        __dt__9C8024262CFv((int)(param_1), (int)(0));
+        if (0 < param_2) {
+            __dl__FPv((int)(param_1));
+        }
+    }
+    return param_1;
+}
+}
+
+} /* namespace m80050068 */
+
+struct C8024262C {
+    C8024262C();
+    ~C8024262C();
+};
+namespace m800500DC {
+
+#pragma optEH2 on
+
+extern "C" {
+
+extern void *lbl_8035B530;
+extern u8 lbl_802B96A8[];
+void fn_800604C4(s32, s32, s32, s32);
+void fn_800F7EC0(void *);
+void fn_800F7E98(void);
+void fn_8004FE08(void *);
+
+} /* extern "C" */
+
+/* hoisted */
+
+struct C800500DC : C8024262C {
+    u8 pad[0x16C];
+    C800500DC() {
+        *(void **)this = lbl_802B96A8;
+        fn_8004FE08(this);
+    }
+};
+
+extern "C" void *fn_800500DC(void) {
+    C800500DC *r;
+    if (lbl_8035B530 == NULL) {
+        fn_800604C4(-2, 0, 0, 0);
+    }
+    fn_800F7EC0(lbl_8035B530);
+    r = new C800500DC;
+    fn_800F7E98();
+    if (r == NULL) {
+        fn_800604C4(-4, 0, 0, 0);
+    }
+    return r;
+}
+
+} /* namespace m800500DC */
+
+namespace m80050174 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+s32 fn_802421C0(void *, s32);
+
+s32 fn_80050174(void *p, s32 a) {
+    switch (a) {
+    case 4:
+        return fn_802421C0(p, 0);
+    case 5:
+        return fn_802421C0(p, 0);
+    case 6:
+        return fn_802421C0(p, 1);
+    case 7:
+        return fn_802421C0(p, 2);
+    case 8:
+        return fn_802421C0(p, 3);
+    }
+    return 1;
+}
+
+} /* extern "C" */
+
+} /* namespace m80050174 */
+
+namespace m800501FC {
+// dtk: data-align 4
+/* Functions from 0x800501FC to 0x80050288, found by decomp-toolkit. */
+
+extern "C" {
+
+extern "C" {
+
+}
+
+
+extern "C" int fn_800501FC(void *arg0, u32 arg1) {
+    void *p = *(void **)((u8 *)arg0 + 0x98);
+    if (p != NULL) {
+        return (*(int **)((u8 *)p + 0xC))[arg1];
+    }
+    switch (arg1) {
+    case 0: return 1;
+    case 1: return 1;
+    case 2: return 0;
+    case 3: return 0;
+    case 4: return 1;
+    case 5: return 0;
+    case 6: return 0;
+    case 7: return 1;
+    case 8: return 0;
+    default: return 1;
+    }
+}
+
+} /* extern "C" */
+
+} /* namespace m800501FC */
