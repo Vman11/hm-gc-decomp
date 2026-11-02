@@ -16627,7 +16627,7 @@ auto/text_8016C900.cpp:
 	extabindex  start:0x8002027C end:0x80020288
 	.text       start:0x8016C900 end:0x8016C968
 
-auto/text_8016C968.c:
+auto/text_8016C968.cpp:
 	extab       start:0x8000DA70 end:0x8000DA78
 	extabindex  start:0x80020288 end:0x80020294
 	.text       start:0x8016C968 end:0x8016C9E0
