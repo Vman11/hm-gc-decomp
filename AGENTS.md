@@ -326,3 +326,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDI (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801040E0
 - wDI (user-approved, collaborator units, 2026-11-02): matched fn_801F6EA0
 - wDI (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801F6EA0
+- wDM (user-approved, collaborator units, 2026-11-02): matched fn_80061358, fn_801DEE18, fn_80253B70 by adding __restrict to pointer params of saved near-miss drafts (wCJ/ae.c, wCH/m_801DEE18.cpp, wK/af_a.cpp; wDH restrict sweep).
