@@ -342,3 +342,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDK (user-approved, collaborator units, 2026-11-02): matched and linked as Matching: text_801D52A0 (node-pool alloc, written from asm)
 - wDO (user-approved, collaborator units, 2026-11-02): matched fn_80195D50, fn_801244A4 (.cpp, -use_lmw_stmw on).
 - wDL (user-approved, collaborator units, 2026-11-02): matched fn_80154D04 (inline T ctor on the A80155460/C80128EF4 chain from text_80155460, virtual calls through a PV view with vptr at 0x20) and fn_802542E8 (frame tick: fps counter statics written as volatile statics with manual volatile s8 guards - compiler guards reorder the float init store; inline copy of the text_80253F24 sound-play local object).
+- wDO (user-approved, collaborator units, 2026-11-02): linked as Matching: text_80195D50 text_801244A4
