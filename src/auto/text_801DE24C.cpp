@@ -38,6 +38,20 @@ static inline BOOL IsEmpty801DE24C(const char *s) {
     return s == 0 || s[0] == 0;
 }
 
+void __dt__9C801DE4E0Fv(void);
+void fn_801A517C(void);
+void fn_801A5180(void);
+void fn_801A5188(void);
+void fn_801A51B4(void);
+void fn_801DE118(void);
+void fn_801DE120(void);
+void fn_801DE17C(void);
+void fn_801DE1F0(void);
+void fn_801DE248(void);
+s32 fn_801DE24C(u8 *self, u8 *a, P801DE24C *parser, void *d);
+void fn_801DE3F4(void);
+void fn_801DE454(void);
+void *lbl_802ED368[15] = { 0, 0, (void *)__dt__9C801DE4E0Fv, (void *)fn_801DE3F4, (void *)fn_801DE24C, (void *)fn_801DE1F0, (void *)fn_801A5180, (void *)fn_801A517C, (void *)fn_801DE454, (void *)fn_801A51B4, (void *)fn_801A5188, (void *)fn_801DE118, (void *)fn_801DE17C, (void *)fn_801DE120, (void *)fn_801DE248 };
 s32 fn_801DE24C(u8 *self, u8 *a, P801DE24C *parser, void *d) {
     char name[8];
     char buf[16];

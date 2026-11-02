@@ -26,6 +26,12 @@ extern u32 lbl_80365438;
 extern s32 lbl_8035B0C0;
 
 
+struct V3 { s32 v[3]; };
+struct A0 { void *vt; A0() { vt = lbl_802E2558; } ~A0(); };
+struct C801EFA90 : A0 { C801EFA90(); s32 u4, u8_, uC; V3 u10; s32 u1C, u20, u24; };
+C801EFA90::C801EFA90() { vt = lbl_802EE7A8; uC = 0; u8_ = 0; u1C = 0; u10 = *(V3 *)&lbl_8029BF10; u20 = 0; u24 = 0; }
+
+
 void fn_801EFAE4(s32 arg0) {
     lbl_8035B0C0 = arg0;
 }
@@ -45,10 +51,5 @@ void fn_801EFB0C(void *arg0) {
         *(u32 *)((char *)temp_r4 + 0x24) |= lbl_80365438;
     }
 }
-
-struct V3 { s32 v[3]; };
-struct A0 { void *vt; A0() { vt = lbl_802E2558; } ~A0(); };
-struct C801EFA90 : A0 { C801EFA90(); s32 u4, u8_, uC; V3 u10; s32 u1C, u20, u24; };
-C801EFA90::C801EFA90() { vt = lbl_802EE7A8; uC = 0; u8_ = 0; u1C = 0; u10 = *(V3 *)&lbl_8029BF10; u20 = 0; u24 = 0; }
 
 } /* extern "C" */

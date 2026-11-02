@@ -22,7 +22,7 @@ struct PB_797C { u8 pad_[128];
 };
 struct N_797C { O_797C *obj; int f4; N_797C *next; };
 struct P_797C : PB_797C { u32 f132; N_797C *f136; u8 pad2[224 - 140]; PB_797C *f224; u8 pad3[324 - 228]; u32 f324; };
-void fn_801C2368(void *, PB_797C *, int);
+extern "C" void fn_801C2368(void *, PB_797C *, int);
 static inline int on_797C(P_797C *p, int a, f32 x, f32 y) {
     int r = 0;
     N_797C *n;

@@ -12,6 +12,11 @@ extern "C" {
 f32 fn_800FB2E0(R8012D280 *);
 void fn_80121CE8(void *, R8012D280 *);
 extern u32 lbl_80363E9C, lbl_80363EA0, lbl_80363EA4, lbl_80363EA8;
+void fn_8012D250(void);
+void fn_8012D360(void);
+void fn_8012D414(void);
+void fn_8012D4C8(void);
+void *lbl_802E45A0[13] = { 0, 0, 0, 0, 0, 0, 0, (void *)fn_8012D4C8, (void *)fn_8012D414, (void *)fn_8012D360, (void *)fn_8012D250, 0, 0 };
 void fn_8012D280(P8012D280 *p, void *x, R8012D280 *r, u32 k) {
     switch (k) {
     case 62: p->f28 = fn_800FB2E0(r); break;
