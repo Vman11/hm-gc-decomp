@@ -235,3 +235,5 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wCO (user-approved, collaborator units, 2026-11-01): matched __ct__9C80155460Fv __ct__9C80155E80Fv __ct__9C80129A9CFv fn_800391E4 (r0 copy-chain family: `mr r0,r30; mr r31,r0` this-copy = the inlined middle-base ctor of a class whose base has a declared dtor (EH DESTROYBASE); `mr r31,r0` after null check = CSE of a re-read field `if (g->o == 0) return; o = g->o;`)
 - wCO (user-approved, collaborator units, 2026-11-01): matched __ct__9C8020E5C0Fv (real vptr classes; renamed base dtor/vtable 80211728/802EFB94 to `C80211728` and lbl_802EFB38 to `__vt__9C8020E5C0`, updating text_80211728/text_8020E4FC)
 - wCO (user-approved, collaborator units, 2026-11-01): matched __ct__9C80064530Fv __ct__9C80064764Fv (member pointer kept in r30 = inlined member ctor whose base has a declared dtor; renamed dtor_801A3A0C -> `__dt__9C800645ECFv`, lbl_802F0058 -> `__vt__9C80064530`, updating text_80216D0C/text_801A3A0C)
+- wCO (user-approved, collaborator units, 2026-11-01): linked as Matching: text_80155460 text_80155E80 text_80129A9C text_8020E5C0 text_80064530 text_80064764
+
