@@ -304,3 +304,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDH (user-approved, collaborator units, 2026-11-02): matched fn_801E17AC (wCH draft; volatile read of a->f8 pins load order), fn_8022CC44 (wK draft; volatile read of o->m->f168 before the trs load), fn_801FAB7C (wN draft; the 4 post-parse loops moved into one static inline with its own single u32 counter -> li/mr IV init), fn_80191484 (wS draft; wCQ trick: get3() in an inline returning it + the o lookup as an inline returning o in cases 97/159).
 - wDH (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801E17AC text_8022CC44 text_801FAB7C
 - wDE (user-approved, collaborator units, 2026-11-02): matched fn_8010A244 (alloc pairs: new u16[n]/new char[n] after the heap lock so the size is computed late; per-branch tmp/buf declared at function scope for the 5th saved reg).
+- wDE (user-approved, collaborator units, 2026-11-02): linked as Matching: text_8010A244
