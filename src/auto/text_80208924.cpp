@@ -1,20 +1,9 @@
 /* Functions from 0x80208924 to 0x802089D4, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 #pragma scheduling off
-void __ct__9C80208924Fv(volatile u32 *arg0) {
-    extern u8 lbl_802EF934[];
-    extern u8 lbl_802EFC40[];
-    extern u8 lbl_802EF920[];
-    arg0[0] = (u32)lbl_802EF934;
-    arg0[0] = (u32)lbl_802EFC40;
-    arg0[0] = (u32)lbl_802EF920;
-    arg0[1] = 0;
-    arg0[2] = 0;
-    arg0[3] = 0;
-    arg0[4] = 0;
-    arg0[5] = 0;
-}
 #pragma scheduling reset
 u32 fn_80208964(u32 **arg0, u32 arg1, s32 arg2) {
     u8 var_r6;
@@ -33,3 +22,12 @@ u32 fn_80208964(u32 **arg0, u32 arg1, s32 arg2) {
     return 0;
 }
 
+extern u8 lbl_802EF934[]; // keep
+extern u8 lbl_802EFC40[]; // keep
+extern u8 lbl_802EF920[]; // keep
+struct B80208924_0 { void *vt; B80208924_0() { vt = lbl_802EF934; } ~B80208924_0(); };
+struct B80208924_1 : B80208924_0 { B80208924_1() { vt = lbl_802EFC40; } };
+struct C80208924 : B80208924_1 { s32 a, b, c, d, e; C80208924(); };
+C80208924::C80208924() { vt = lbl_802EF920; a = 0; b = 0; c = 0; d = 0; e = 0; }
+
+} /* extern "C" */
