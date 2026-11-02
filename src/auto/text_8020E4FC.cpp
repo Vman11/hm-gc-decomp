@@ -5,17 +5,17 @@
 extern "C" {
 
 struct S_8020E4FC { u8 pad[0x10]; virtual void p0(); virtual void m(); };
-extern u8 lbl_802EFB38[];
+extern u8 __vt__9C8020E5C0[];
 void fn_802148D4(void *);
 void fn_802114B4(void *);
 void fn_8020CE14(void *, s32);
 void __dt__9C80214C34Fv(void *, s32);
-void __dt__9C8020E5C0Fv(void *, s32);
+void __dt__9C80211728Fv(void *, s32);
 void __dl__FPv(void *);
 
 void *fn_8020E4FC(u8 *p, s16 f) {
     if (p != NULL) {
-        *(void **)(p + 0x6B8) = lbl_802EFB38;
+        *(void **)(p + 0x6B8) = __vt__9C8020E5C0;
         if (*(u32 *)(p + 0x6BC) != 0) {
             ((S_8020E4FC *)(p + 0x88C))->m();
             fn_802148D4(p + 0x6C0);
@@ -27,7 +27,7 @@ void *fn_8020E4FC(u8 *p, s16 f) {
         *(s32 *)(p + 0x888) = -1;
         fn_8020CE14(p + 0x88C, -1);
         __dt__9C80214C34Fv(p + 0x6C0, -1);
-        __dt__9C8020E5C0Fv(p, 0);
+        __dt__9C80211728Fv(p, 0);
         if (f > 0) {
             __dl__FPv(p);
         }
