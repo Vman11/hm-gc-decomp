@@ -310,3 +310,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDH (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801A0070 text_8017BCCC text_801B4DDC
 - wDF (user-approved, collaborator units, 2026-11-02): linked as Matching: text_80187774 text_8016FDE4 text_8014DEBC
 - wDH (user-approved, collaborator units, 2026-11-02): matched fn_801E3F70 / fn_801EB340 (wCI drafts) + fn_801E7008 / fn_801E7D14 (new): the `li r0,0` before the field load (load hoisted above the zero stores) = BOTH params `__restrict`, with the field read into a local before the stores.
+- wDH (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801E3F70 text_801EB340 text_801E7008 text_801E7D14
