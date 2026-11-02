@@ -254,3 +254,5 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wCQ (user-approved, collaborator units, 2026-11-01): linked as Matching: text_801B12FC
 
 - wCN (user-approved, collaborator units, 2026-11-01): linked as Matching: text_8004C20C text_80089CC0 text_8007ED4C text_80089FC4 text_8008A2B4 text_8008A5A4 (each unit's static .data table carved out of its jt_ unit into the unit as the global lbl_ name, table words refilled from main.dol where the source had a copy of another unit's table; -Cpp_exceptions on)
+- wCQ (user-approved, collaborator units, 2026-11-01): linked as Matching: text_801EF9A0
+
