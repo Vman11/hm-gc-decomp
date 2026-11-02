@@ -35406,7 +35406,7 @@ auto/text_80268004.cpp:
 	.text       start:0x80268004 end:0x80268504
 	.data       start:0x802F3260 end:0x802F3360
 
-auto/text_80268504.c:
+auto/text_80268504.cpp:
 	extab       start:0x80017620 end:0x80017628
 	extabindex  start:0x8002A284 end:0x8002A290
 	.text       start:0x80268504 end:0x80268A70
