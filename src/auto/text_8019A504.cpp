@@ -4,17 +4,16 @@
 
 extern "C" {
 
+extern "C" {
+
 void fn_8018846C(int, int, int);
 
-void fn_8019A504(s32 param_1, u32 param_2, u32 param_3) {
-    u32 uVar2;
-    u32 uVar1;
 
-    uVar2 = *(u32 *)(param_1 + 0x3c);
-    uVar1 = uVar2 + *(s32 *)(param_1 + 0x38) * 0x2c;
-    for (; uVar2 < uVar1; uVar2 = uVar2 + 0x2c) {
-        fn_8018846C((int)(uVar2), (int)(param_2), (int)(param_3));
-    }
-}
+struct E { u8 p[44]; };
+struct O { u8 p[0x38]; s32 n; E *e; };
+static inline void each(E *b, E *end, int x, int y) { for (; b < end; b++) fn_8018846C((int)b, x, y); }
+void fn_8019A504(O *o, int x, int y) { E *b; E *end; b = o->e; end = b + o->n; for (; b < end; b++) fn_8018846C((int)b, x, y); }
+
+} /* extern "C" */
 
 } /* extern "C" */

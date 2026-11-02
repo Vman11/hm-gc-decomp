@@ -1,6 +1,8 @@
 /* Functions from 0x801EFA90 to 0x801EFB30, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 typedef struct {
     s32 a, b, c;
 } Vec3i_801EFA90;
@@ -58,3 +60,9 @@ void fn_801EFB0C(void *arg0) {
     }
 }
 
+struct V3 { s32 v[3]; };
+struct A0 { void *vt; A0() { vt = lbl_802E2558; } ~A0(); };
+struct C801EFA90 : A0 { C801EFA90(); s32 u4, u8_, uC; V3 u10; s32 u1C, u20, u24; };
+C801EFA90::C801EFA90() { vt = lbl_802EE7A8; uC = 0; u8_ = 0; u1C = 0; u10 = *(V3 *)&lbl_8029BF10; u20 = 0; u24 = 0; }
+
+} /* extern "C" */
