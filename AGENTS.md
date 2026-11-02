@@ -305,3 +305,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDH (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801E17AC text_8022CC44 text_801FAB7C
 - wDE (user-approved, collaborator units, 2026-11-02): matched fn_8010A244 (alloc pairs: new u16[n]/new char[n] after the heap lock so the size is computed late; per-branch tmp/buf declared at function scope for the 5th saved reg).
 - wDE (user-approved, collaborator units, 2026-11-02): linked as Matching: text_8010A244
+- wDH (user-approved, collaborator units, 2026-11-02): matched fn_801A0070 (wCI draft; volatile reads of the constant and a[5] into locals declared w,k), fn_8017BCCC (wG draft; 0/1 identity init with both constants read once via volatile into f32 o, z and volatile stack stores), fn_801B4DDC (wI draft; volatile z=0 store + one volatile read of lbl_80364F40 for the v[] init).
