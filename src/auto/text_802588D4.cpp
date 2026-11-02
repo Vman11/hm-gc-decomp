@@ -27,7 +27,7 @@ extern f32 lbl_8036671C;
 void *fn_80267F2C(void *p);
 int rand(void);
 inline f32 rnd_802588D4() { s32 r = rand() % 20000u; return lbl_80366714 * (f32)r; }
-T802588D4 *fn_802588D4(T802588D4 *p) {
+T802588D4 *__ct__9C802588D4Fv(T802588D4 *p) {
     fn_80267F2C(p);
     p->vt = lbl_802F2600;
     p->f120 = 0;

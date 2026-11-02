@@ -3,53 +3,50 @@
 #include "common.h"
 
 extern "C" {
-
-extern char lbl_802D2720[];
+#pragma opt_propagation off
+extern void *lbl_8035B530;
+extern u8 lbl_802D2720[];
 extern char lbl_803594A8[4];
 extern char lbl_803594AC[4];
-extern void *lbl_8035B530;
-void fn_800604C4(s32 a, s32 b, s32 c, s32 d);
-void fn_800F7EC0(void *h);
+void fn_800604C4(int, int, int, int);
+void fn_800F7EC0(void *);
 void fn_800F7E98(void);
-void __ct__9C8024262CFv(void *p);
-void *__nw__FUl(u32 n);
-#pragma opt_propagation off
-void *fn_800AAF08(void) {
-    char *base = lbl_802D2720;
-    u8 *r;
+}
+struct C8024262C { u32 w[71]; C8024262C(); ~C8024262C(); };
+struct D800AAF08 : C8024262C {
+    D800AAF08(u8 *b) {
+        w[0] = (u32)(b + 0x2ec);
+        w[21] = 6;
+        w[11] = 6;
+        w[26] = 1;
+        w[23] = 1;
+        w[32] = 1;
+        w[31] = 0;
+        w[33] = 0;
+        w[34] = 0;
+        w[35] = 0;
+        w[37] = 0;
+        w[22] = (u32)(b + 0x22c);
+        w[10] = (u32)(b + 0x244);
+        w[12] = (u32)(b + 0x28c);
+        w[27] = (u32)lbl_803594AC;
+        w[30] = (u32)(b + 0x21c);
+        w[49] = (u32)lbl_803594A8;
+        w[50] = 0;
+        w[51] = 0;
+        w[61] = 0;
+        w[63] = 0;
+        w[67] = 0;
+        w[70] = 0;
+    }
+};
+extern "C" D800AAF08 *fn_800AAF08(void) {
+    u8 *b = lbl_802D2720;
+    D800AAF08 *r;
     if (lbl_8035B530 == 0) fn_800604C4(-2, 0, 0, 0);
     fn_800F7EC0(lbl_8035B530);
-    u8 *p = (u8 *)__nw__FUl(0x11c);
-    if (p != 0) {
-        __ct__9C8024262CFv(p);
-        *(void **)(p + 0x0) = base + 0x2ec;
-        *(s32 *)(p + 0x54) = 6;
-        *(s32 *)(p + 0x2c) = 6;
-        *(s32 *)(p + 0x68) = 1;
-        *(s32 *)(p + 0x5c) = 1;
-        *(s32 *)(p + 0x80) = 1;
-        *(s32 *)(p + 0x7c) = 0;
-        *(s32 *)(p + 0x84) = 0;
-        *(s32 *)(p + 0x88) = 0;
-        *(s32 *)(p + 0x8c) = 0;
-        *(s32 *)(p + 0x94) = 0;
-        *(void **)(p + 0x58) = base + 0x22c;
-        *(void **)(p + 0x28) = base + 0x244;
-        *(void **)(p + 0x30) = base + 0x28c;
-        *(void **)(p + 0x6c) = lbl_803594AC;
-        *(void **)(p + 0x78) = base + 0x21c;
-        *(void **)(p + 0xc4) = lbl_803594A8;
-        *(s32 *)(p + 0xc8) = 0;
-        *(s32 *)(p + 0xcc) = 0;
-        *(s32 *)(p + 0xf4) = 0;
-        *(s32 *)(p + 0xfc) = 0;
-        *(s32 *)(p + 0x10c) = 0;
-        *(s32 *)(p + 0x118) = 0;
-    }
-    r = p;
+    r = new D800AAF08(b);
     fn_800F7E98();
-    if (r == 0) fn_800604C4(-4, 0, 0, 0);
+    if (!r) fn_800604C4(-4, 0, 0, 0);
     return r;
 }
-
-} /* extern "C" */
