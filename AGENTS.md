@@ -297,3 +297,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDE (user-approved, collaborator units, 2026-11-02): linked as Matching: text_8024A3D0 text_80214590 text_80087BD0 text_80039330 text_8003A600 text_8003A118
 - wDE (user-approved, collaborator units, 2026-11-02): matched fn_80206164 (Dot() inline into named locals, natural x*x+y*y+z*z sums), fn_8007D9F8 (CB arg built by mk() inline + loop in a start-index inline fixes both arg-temp slots and IV regs), fn_80120D78 (bpp read before f56 store; palette loop in start-index inline).
 - wDE (user-approved, collaborator units, 2026-11-02): linked as Matching: text_80206164 text_8007D9F8 text_80120D78
+- wDE (user-approved, collaborator units, 2026-11-02): matched fn_8012E15C (palette blit loop: W()/H() rect inlines re-index t->f2c[i] per use, count read via inline cnt(), decl order it,buf,fl,i,n).
