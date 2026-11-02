@@ -3360,7 +3360,7 @@ auto/text_80072DB8.cpp:
 	extabindex  start:0x800199AC end:0x800199B8
 	.text       start:0x80072DB8 end:0x80072E18
 
-auto/text_80072E18.c:
+auto/text_80072E18.cpp:
 	extab       start:0x80007590 end:0x80007598
 	extabindex  start:0x800199B8 end:0x800199C4
 	.text       start:0x80072E18 end:0x800730F4
@@ -32013,7 +32013,7 @@ auto/text_80235820.cpp:
 	.text       start:0x80235820 end:0x80235858
 	.ctors      start:0x80294268 end:0x8029426C
 
-auto/text_80235858.c:
+auto/text_80235858.cpp:
 	extab       start:0x80015720 end:0x80015728
 	extabindex  start:0x80028580 end:0x8002858C
 	.text       start:0x80235858 end:0x80235ADC
