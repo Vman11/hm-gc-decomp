@@ -20921,7 +20921,7 @@ auto/text_801A7F08.cpp:
 	.text       start:0x801A7F08 end:0x801A7F70
 	.ctors      start:0x80294164 end:0x80294168
 
-auto/text_801A7F70.c:
+auto/text_801A7F70.cpp:
 	extab       start:0x80010180 end:0x80010188
 	extabindex  start:0x80022748 end:0x80022754
 	.text       start:0x801A7F70 end:0x801A8478
