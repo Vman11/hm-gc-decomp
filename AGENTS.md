@@ -224,3 +224,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wCK (user-approved, collaborator units, 2026-11-01): matched fn_80066050 fn_8013F0E8 fn_801DB01C fn_800AEC40 fn_800A99DC fn_8009F64C fn_800AAF08 fn_800AFA0C fn_800B2CD8 
 - wCK (user-approved, collaborator units, 2026-11-01): matched fn_801B8E6C fn_8002B14C fn_8002A860 fn_8026ABCC fn_8016C7BC fn_801966EC fn_80223934 fn_8023BD28 
 - wCL (user-approved, collaborator units, 2026-11-01): matched fn_801DFAC8 fn_801E9ABC fn_80248668 fn_800FD2A0 fn_8011CE44 fn_801A7BF8 fn_801BB984 fn_801A8478 fn_801A797C fn_801BC0CC 
+- wCL (user-approved, collaborator units, 2026-11-01): linked as Matching: text_801DFAC8 text_801E9ABC text_80248668 text_8011CE44 text_801A7BF8 text_801BB984 text_801A8478 text_801BC0CC
