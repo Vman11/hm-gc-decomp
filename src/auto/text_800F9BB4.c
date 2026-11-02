@@ -7,14 +7,5 @@ void fn_800F9BB4(s32 arg0) {
     lbl_8035AA00 = arg0;
 }
 
-void *fn_800F9BBC(void **arg0) {
-    void *temp = *arg0;
-    if (temp != NULL) {
-        while (*(void **)((char *)temp + 4) != NULL) {
-            temp = *(void **)((char *)temp + 4);
-        }
-        return temp;
-    }
-    return NULL;
-}
-
+typedef struct N { struct N *a; struct N *next; } N;
+N *fn_800F9BBC(N **arg0) { N *p = *arg0; if (p) { N *q; for (q = p; (p = q->next) != NULL; q = p) {} return q; } return NULL; }

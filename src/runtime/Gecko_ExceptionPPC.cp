@@ -871,7 +871,7 @@ static void ExPPC_ThrowHandler(ThrowContext* context){
 	}
 }
 
-extern void __unexpected(CatchInfo* catchinfo){
+extern "C" void __unexpected(CatchInfo* catchinfo){
 	ex_specification *unexp=(ex_specification *)catchinfo->stacktop;
 
 	#pragma exception_magic
