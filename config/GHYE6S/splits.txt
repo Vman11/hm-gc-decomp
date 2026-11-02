@@ -3189,7 +3189,7 @@ auto/text_80070324.cpp:
 	extabindex  start:0x80019844 end:0x80019850
 	.text       start:0x80070324 end:0x80070490
 
-auto/text_80070490.c:
+auto/text_80070490.cpp:
 	extab       start:0x8000747C end:0x80007484
 	extabindex  start:0x80019850 end:0x8001985C
 	.text       start:0x80070490 end:0x800706D8
@@ -5457,7 +5457,7 @@ auto/text_8009BAD0.c:
 	extabindex  start:0x8001AC60 end:0x8001AC6C
 	.text       start:0x8009BAD0 end:0x8009C018
 
-auto/text_8009C018.c:
+auto/text_8009C018.cpp:
 	extab       start:0x80008988 end:0x80008990
 	extabindex  start:0x8001AC6C end:0x8001AC78
 	.text       start:0x8009C018 end:0x8009C260
@@ -14078,7 +14078,7 @@ auto/text_8014B14C.cpp:
 	.data       start:0x802E6580 end:0x802E664C
 
 auto/jt_802E664C.c:
-	.data       start:0x802E664C end:0x802E69C8
+	.data       start:0x802E664C end:0x802E67E0
 
 auto/text_8014B660.cpp:
 	extab       start:0x8000C764 end:0x8000C76C
@@ -14604,10 +14604,14 @@ auto/text_80153F88.cpp:
 	extabindex  start:0x8001F2B0 end:0x8001F2BC
 	.text       start:0x80153F88 end:0x80153FC0
 
-auto/text_80153FC0.c:
+auto/text_80153FC0.cpp:
 	extab       start:0x8000CAD4 end:0x8000CADC
 	extabindex  start:0x8001F2BC end:0x8001F2C8
 	.text       start:0x80153FC0 end:0x801541F4
+	.data       start:0x802E67E0 end:0x802E683C
+
+auto/jt_802E683C.c:
+	.data       start:0x802E683C end:0x802E69C8
 
 auto/text_801541F4.cpp:
 	extab       start:0x8000CADC end:0x8000CAE4
@@ -17802,7 +17806,7 @@ auto/text_8017F990.cpp:
 	extabindex  start:0x80020D98 end:0x80020DA4
 	.text       start:0x8017F990 end:0x8017FD8C
 
-auto/text_8017FD8C.c:
+auto/text_8017FD8C.cpp:
 	extab       start:0x8000E594 end:0x8000E59C
 	extabindex  start:0x80020DA4 end:0x80020DB0
 	.text       start:0x8017FD8C end:0x8017FFAC
@@ -30818,7 +30822,7 @@ auto/text_80225000.cpp:
 	extabindex  start:0x80027C20 end:0x80027C2C
 	.text       start:0x80225000 end:0x80225038
 
-auto/text_80225038.c:
+auto/text_80225038.cpp:
 	extab       start:0x80014CFC end:0x80014D04
 	extabindex  start:0x80027C2C end:0x80027C38
 	.text       start:0x80225038 end:0x80225264
