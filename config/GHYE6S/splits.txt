@@ -27095,15 +27095,11 @@ auto/text_801FB850.cpp:
 auto/text_801FB984.cpp:
 	.text       start:0x801FB984 end:0x801FBA4C
 
-auto/text_801FBA4C.c:
-	extab       start:0x80012FF0 end:0x80012FF8
-	extabindex  start:0x80025B2C end:0x80025B38
-	.text       start:0x801FBA4C end:0x801FBB60
-
-auto/text_801FBB60.c:
-	extab       start:0x80012FF8 end:0x80013000
-	extabindex  start:0x80025B38 end:0x80025B44
-	.text       start:0x801FBB60 end:0x801FBC74
+auto/text_801FBA4C.cpp:
+	extab       start:0x80012FF0 end:0x80013000
+	extabindex  start:0x80025B2C end:0x80025B44
+	.text       start:0x801FBA4C end:0x801FBC74
+	.sdata2     start:0x803655A0 end:0x803655A8
 
 auto/text_801FBC74.c:
 	.text       start:0x801FBC74 end:0x801FBCC4
