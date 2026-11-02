@@ -794,7 +794,7 @@ config.libs = [
             Object(Matching, "auto/text_80061290.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_800612DC.c"),
             Object(Matching, "auto/text_800612F0.cpp", extra_cflags=["-Cpp_exceptions on"]),
-            Object(NonMatching, "auto/text_80061358.c"),
+            Object(NonMatching, "auto/text_80061358.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_800613CC.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80061458.c"),
             Object(Matching, "auto/text_80061484.cpp", extra_cflags=["-Cpp_exceptions on"]),
