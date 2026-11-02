@@ -21559,7 +21559,7 @@ auto/text_801B0EE0.c:
 	extabindex  start:0x80022B38 end:0x80022B44
 	.text       start:0x801B0EE0 end:0x801B12FC
 
-auto/text_801B12FC.c:
+auto/text_801B12FC.cpp:
 	extab       start:0x8001056C end:0x80010574
 	extabindex  start:0x80022B44 end:0x80022B50
 	.text       start:0x801B12FC end:0x801B1340
