@@ -24159,7 +24159,7 @@ auto/text_801DD63C.cpp:
 auto/text_801DD848.c:
 	.text       start:0x801DD848 end:0x801DD8B4
 
-auto/text_801DD8B4.c:
+auto/text_801DD8B4.cpp:
 	extab       start:0x80011680 end:0x80011688
 	extabindex  start:0x800241C4 end:0x800241D0
 	.text       start:0x801DD8B4 end:0x801DD938
