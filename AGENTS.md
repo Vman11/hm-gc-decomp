@@ -313,3 +313,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDH (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801E3F70 text_801EB340 text_801E7008 text_801E7D14
 - wDI (user-approved, collaborator units, 2026-11-02): matched fn_801044C4 fn_8009E85C fn_8015C998
 - wDF (user-approved, collaborator units, 2026-11-02): (extab_padding=[0xB1,0x02]) linked as Matching: text_800F8FF4
+- wDI (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801044C4 text_8009E85C text_8015C998
