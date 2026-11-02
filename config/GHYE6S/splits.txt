@@ -16888,10 +16888,11 @@ auto/text_80174828.cpp:
 	.text       start:0x80174828 end:0x801748B0
 	.ctors      start:0x80294120 end:0x80294124
 
-auto/text_801748B0.c:
+auto/text_801748B0.cpp:
 	extab       start:0x8000DF00 end:0x8000DF08
 	extabindex  start:0x800205E8 end:0x800205F4
 	.text       start:0x801748B0 end:0x80174CB8
+	.rodata     start:0x802A0F20 end:0x802A0FE8
 
 auto/text_80174CB8.cpp:
 	extab       start:0x8000DF08 end:0x8000DF10
@@ -23070,7 +23071,7 @@ auto/text_801C8BA4.cpp:
 	extabindex  start:0x800238B8 end:0x800238C4
 	.text       start:0x801C8BA4 end:0x801C8BD0
 
-auto/text_801C8BD0.c:
+auto/text_801C8BD0.cpp:
 	extab       start:0x80010F7C end:0x80010F84
 	extabindex  start:0x800238C4 end:0x800238D0
 	.text       start:0x801C8BD0 end:0x801C8FAC
