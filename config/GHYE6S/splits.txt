@@ -8151,7 +8151,7 @@ auto/text_800F5E44.c:
 	extabindex  start:0x8001BD04 end:0x8001BD10
 	.text       start:0x800F5E44 end:0x800F5EC0
 
-auto/text_800F5EC0.c:
+auto/text_800F5EC0.cpp:
 	extab       start:0x800098B4 end:0x800098BC
 	extabindex  start:0x8001BD10 end:0x8001BD1C
 	.text       start:0x800F5EC0 end:0x800F5F40
@@ -18945,7 +18945,7 @@ auto/text_8018EE6C.cpp:
 auto/text_8018EEF8.c:
 	.text       start:0x8018EEF8 end:0x8018EEFC
 
-auto/text_8018EEFC.c:
+auto/text_8018EEFC.cpp:
 	extab       start:0x8000EFBC end:0x8000EFC4
 	extabindex  start:0x800215D8 end:0x800215E4
 	.text       start:0x8018EEFC end:0x8018EF7C
@@ -23638,7 +23638,7 @@ auto/text_801D1FBC.c:
 	extabindex  start:0x80023D20 end:0x80023D2C
 	.text       start:0x801D1FBC end:0x801D2518
 
-auto/text_801D2518.c:
+auto/text_801D2518.cpp:
 	extab       start:0x80011338 end:0x80011340
 	extabindex  start:0x80023D2C end:0x80023D38
 	.text       start:0x801D2518 end:0x801D25A0
@@ -23824,7 +23824,7 @@ auto/text_801D6D7C.cpp:
 	extabindex  start:0x80023EB8 end:0x80023EC4
 	.text       start:0x801D6D7C end:0x801D6DD8
 
-auto/text_801D6DD8.c:
+auto/text_801D6DD8.cpp:
 	extab       start:0x80011480 end:0x80011488
 	extabindex  start:0x80023EC4 end:0x80023ED0
 	.text       start:0x801D6DD8 end:0x801D6E5C
@@ -26344,7 +26344,7 @@ auto/text_801EFBBC.cpp:
 	extabindex  start:0x800254CC end:0x800254D8
 	.text       start:0x801EFBBC end:0x801EFC78
 
-auto/text_801EFC78.c:
+auto/text_801EFC78.cpp:
 	extab       start:0x800128AC end:0x800128B4
 	extabindex  start:0x800254D8 end:0x800254E4
 	.text       start:0x801EFC78 end:0x801EFCFC
@@ -28770,7 +28770,7 @@ auto/text_8020B908.cpp:
 	extabindex  start:0x8002690C end:0x80026918
 	.text       start:0x8020B908 end:0x8020B960
 
-auto/text_8020B960.c:
+auto/text_8020B960.cpp:
 	extab       start:0x80013CC4 end:0x80013CCC
 	extabindex  start:0x80026918 end:0x80026924
 	.text       start:0x8020B960 end:0x8020B9E8
@@ -31637,7 +31637,7 @@ auto/text_8022CF14.c:
 auto/text_8022D694.c:
 	.text       start:0x8022D694 end:0x8022D6FC
 
-auto/text_8022D6FC.c:
+auto/text_8022D6FC.cpp:
 	extab       start:0x80015284 end:0x8001528C
 	extabindex  start:0x80028148 end:0x80028154
 	.text       start:0x8022D6FC end:0x8022D77C
@@ -35707,7 +35707,7 @@ auto/text_8026A50C.cpp:
 	.text       start:0x8026A50C end:0x8026A544
 	.ctors      start:0x80294398 end:0x8029439C
 
-auto/text_8026A544.c:
+auto/text_8026A544.cpp:
 	extab       start:0x800176C8 end:0x800176D0
 	extabindex  start:0x8002A338 end:0x8002A344
 	.text       start:0x8026A544 end:0x8026A5C8
