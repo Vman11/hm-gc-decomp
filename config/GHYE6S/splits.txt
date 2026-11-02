@@ -17061,7 +17061,7 @@ auto/text_80177C60.cpp:
 auto/text_80177CF8.cpp:
 	.text       start:0x80177CF8 end:0x80177D88
 
-auto/text_80177D88.c:
+auto/text_80177D88.cpp:
 	extab       start:0x8000DFF8 end:0x8000E000
 	extabindex  start:0x8002075C end:0x80020768
 	.text       start:0x80177D88 end:0x80177E20
