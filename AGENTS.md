@@ -314,3 +314,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDI (user-approved, collaborator units, 2026-11-02): matched fn_801044C4 fn_8009E85C fn_8015C998
 - wDF (user-approved, collaborator units, 2026-11-02): (extab_padding=[0xB1,0x02]) linked as Matching: text_800F8FF4
 - wDI (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801044C4 text_8009E85C text_8015C998
+- wDJ (user-approved, collaborator units, 2026-11-02): matched + linked fn_80232440 (wCZ draft, parked): volatile component stores to c2 + `extern S308 * volatile lbl_8035B308` keep the global load after the stores; t/e scaled in place as scalar locals (`tx *= sx`, `ex -= cx` ... `ex *= sc`).
