@@ -285,3 +285,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wCW (user-approved, collaborator units, 2026-11-01): linked as Matching: text_801A7F70
 - wDA (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801B3844
 - wDD (user-approved, collaborator units, 2026-11-02): matched fn_8019F244/fn_8019F9B8/fn_801A012C (wCL plane-split draft; fixed the lfs order + FP colouring with volatile reads of pa->x and n->d, then d1 = pb->x; d1 -= d; d0 = ax - d; decls ax, d1, d, d0).
+- wCZ (user-approved, collaborator units, 2026-11-02): linked as Matching: text_80268504
