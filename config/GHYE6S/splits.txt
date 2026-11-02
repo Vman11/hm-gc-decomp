@@ -13930,17 +13930,11 @@ auto/text_80148AE4.cpp:
 auto/text_80148B60.c:
 	.text       start:0x80148B60 end:0x80148B68
 
-auto/text_80148B68.c:
-	extab       start:0x8000C66C end:0x8000C674
-	extabindex  start:0x8001ED7C end:0x8001ED88
-	.text       start:0x80148B68 end:0x80148E6C
-	.data       start:0x802E64B8 end:0x802E64D4
-
-auto/text_80148E6C.cpp:
-	extab       start:0x8000C674 end:0x8000C67C
-	extabindex  start:0x8001ED88 end:0x8001ED94
-	.text       start:0x80148E6C end:0x80149168
-	.data       start:0x802E64D4 end:0x802E64F0
+auto/text_80148B68.cpp:
+	extab       start:0x8000C66C end:0x8000C67C
+	extabindex  start:0x8001ED7C end:0x8001ED94
+	.text       start:0x80148B68 end:0x80149168
+	.data       start:0x802E64B8 end:0x802E64F0
 
 auto/text_80149168.cpp:
 	extab       start:0x8000C67C end:0x8000C684

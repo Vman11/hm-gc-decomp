@@ -27,7 +27,7 @@ struct P {
     u8 z[4];
 };
 #define F(p,o,t) (*(t*)((u8*)(p)+(o)))
-extern char lbl_8029FF0C[], lbl_8029FF34[], lbl_8029FD18[];
+extern char lbl_8029FEF4[], lbl_8029FF0C[], lbl_8029FF34[], lbl_8029FD18[];
 extern void *lbl_8035ACA8;
 void fn_80060568(char *, int, int, int);
 void fn_800604C4(int, int, int, int);
@@ -35,9 +35,72 @@ void fn_800F7EC0(void *);
 void fn_800F7E98(void);
 void fn_801F13F0(u8 *, void *);
 void fn_801F20F0(u8 *, void *, u32, u8 *);
-void fn_80148B68(P *, u8);
 void *memset(void *, int, u32);
 void *memcpy(void *, const void *, u32);
+
+static inline u32 Paeth(u8 a, u8 b, u8 c) {
+    s32 pp = a + b - c;
+    s32 pa = pp > a ? pp - a : a - pp;
+    s32 pb = pp > b ? pp - b : b - pp;
+    s32 pc = pp > c ? pp - c : c - pp;
+    if (pa <= pb && pa <= pc) return a;
+    else if (pb <= pc) return b;
+    else return c;
+}
+void fn_80148B68(P *p, int ft) {
+    u32 o = (u8)(p->cur == 0);
+    u32 bpp = 0;
+    u32 i;
+    switch (p->ctype) {
+    case 0:
+    case 3:
+        bpp = 1;
+        break;
+    case 2:
+        bpp = (s32)(p->depth * 3) / 8;
+        break;
+    case 4:
+        bpp = (s32)(p->depth * 2) / 8;
+        break;
+    case 6:
+        bpp = (s32)(p->depth * 4) / 8;
+        break;
+    default:
+        fn_80060568(lbl_8029FD18, 0, 0, 0);
+    }
+    switch (ft) {
+    case 0:
+        break;
+    case 1:
+        for (i = bpp; i < p->rowbytes; i++)
+            p->rows[p->cur][i] += p->rows[p->cur][i - bpp];
+        break;
+    case 2:
+        for (i = 0; i < p->rowbytes; i++)
+            p->rows[p->cur][i] += p->rows[o][i];
+        break;
+    case 3:
+        for (i = 0; i < p->rowbytes; i++) {
+            u8 b = p->rows[o][i];
+            int a = i < bpp ? 0 : p->rows[p->cur][i - bpp];
+            p->rows[p->cur][i] = p->rows[p->cur][i] + (a + b) / 2;
+        }
+        break;
+    case 4:
+        for (i = 0; i < p->rowbytes; i++) {
+            u8 a, b, c;
+            b = p->rows[o][i];
+            if (i < bpp) { a = 0; c = 0; }
+            else { c = p->rows[o][i - bpp]; a = p->rows[p->cur][i - bpp]; }
+            u8 r = p->rows[p->cur][i];
+            u32 v = Paeth(a, b, c);
+            p->rows[p->cur][i] = v + r;
+        }
+        break;
+    default:
+        fn_80060568(lbl_8029FEF4, 0, 0, 0);
+    }
+}
 
 void fn_80148E6C(P *p) {
     u8 f;
