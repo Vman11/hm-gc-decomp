@@ -265,3 +265,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wCQ (user-approved, collaborator units, 2026-11-01): linked as Matching: text_801EF9A0
 
 - wCT (user-approved, collaborator units, 2026-11-01): merged into one TU each (unit .data started at 4 mod 8 right after the preceding unit's table, so they were one source file), linked as Matching: text_8004F034..text_800501FC (10 units), text_80083DAC..text_80084588 (8 units, GC/2.0p1), text_8008C3B8..text_8008CA0C (7 units).
+- wCT (user-approved, collaborator units, 2026-11-01): merged text_8009145C..text_800919A4 (8 units) into one TU with its full .data 802C9AA0-802CA04C (descriptor table lbl_802C9AA0 and vtable lbl_802C9F94 now defined in C from DOL words, pointers as relocations; lbl_802C9F94 force_active since only base+0x4F4 reaches it), linked as Matching.
