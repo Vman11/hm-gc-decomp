@@ -338,3 +338,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDL (user-approved, collaborator units, 2026-11-02): matched fn_8020C558 (async read twin of fn_8020C1FC: volatile flags, vptr at 0x10 in F, decl-order perm), fn_801B63C0 (mirror of matched fn_801B673C), fn_802466B4 (eval inline called for t and t-times[i], *pos = *def copies, volatile K0 read in the wrap loop).
 - wDL (user-approved, collaborator units, 2026-11-02): linked as Matching: text_8020C558 text_801B63C0 text_802466B4
 - wDK (user-approved, collaborator units, 2026-11-02): matched and linked as Matching: text_801B3EB0 (scroll-family idioms from text_801B58B4)
+- wDN (user-approved, collaborator units, 2026-11-02): matched fn_801748B0 (volatile recipe + owns .rodata 802A0F20-802A0FE8), fn_801C8BD0 (fresh block-scoped flag in last notify loop); linked as Matching: text_801748B0 text_801C8BD0
