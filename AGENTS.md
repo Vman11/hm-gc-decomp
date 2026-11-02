@@ -188,6 +188,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - main (user-approved, collaborator units, 2026-11-01): empty `void f(void) {}` stubs in 151 src/auto/*.c files (253 fns) rewritten as `int f(int a) { return a; }` per user rule; same code (bare blr), fresh link byte-identical, all still 100% in report.
 - main (user-approved, collaborator units, 2026-11-01): linked as Matching (all fns already 100%): text_80055EFC, text_80056590, text_8005748C.
 - wCS (user-approved, collaborator units, 2026-11-01): linked as Matching: text_80235858 text_80072E18
+- wCU (user-approved, collaborator units, 2026-11-01): merged `text_80222F8C` (new: matched `fn_80222F8C`), `text_80222FE8`, `text_8022340C`, `text_8022345C`, `text_802234B0`, `text_802237B8`, `text_802237E4`, `text_80223934`, `text_80223A50` into `text_80222ED0.cpp` (one TU, GC/2.0p1 + lmw; owns the int->float magic .sdata2 80365A88-80365A90 and .sbss 8035B2B0-8035B2C8 = `lbl_8035B2B0` + fn_80223A50's two guarded statics; other pool consts/strings stay extern), Matching.
 /home/mi/Decomp/hm-work/wCS
 - wCS (user-approved, collaborator units, 2026-11-01): extab_padding for text_8020EFE4 [B1 02 B1 02] and text_80247F54 [B0 02]; linked as Matching: text_8025180C text_80247F54 text_8020EFE4
 - wCS (user-approved, collaborator units, 2026-11-01): matched fn_8025180C (call results moved into a look() inline, wCQ trick), fn_80247F54 fn_8020EFE4 (`li i,0; mr off,i` IV init = indexed loop inside an inline taking the start index as a param, called with 0)
