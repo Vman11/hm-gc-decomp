@@ -320,3 +320,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDH (user-approved, collaborator units, 2026-11-02): matched fn_801CB700 (wAA draft; the v52 notify loop moved into a static inline with its own Node *m, setState hand-inlined using a fn-level Node *q declared after n, f).
 - wDH (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801CB700
 - wDH (user-approved, collaborator units, 2026-11-02): matched fn_8014C784 (wCI draft; plain field copies with both params __restrict give the hoisted byte loads) and re-did fn_80189660 as .cpp (its unit has extab, the .c match could not link).
+- wDK (user-approved, collaborator units, 2026-11-02): matched and linked as Matching: text_801DBACC text_801FC3F8 (wE drafts)
