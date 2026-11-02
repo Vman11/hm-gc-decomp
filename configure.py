@@ -6530,7 +6530,7 @@ config.libs = [
             Object(Matching, "auto/text_8022FC5C.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8022FD1C.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8022FD54.cpp", extra_cflags=["-Cpp_exceptions on"]),
-            Object(NonMatching, "auto/text_8022FCA0.c"),
+            Object(NonMatching, "auto/text_8022FCA0.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8022FDC8.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8022FE10.cpp", extra_cflags=["-Cpp_exceptions on"], mw_version="GC/2.0p1", extab_padding=[0xB0, 0x02]),
             Object(Matching, "auto/text_8022FF54.cpp", extra_cflags=["-Cpp_exceptions on"]),
