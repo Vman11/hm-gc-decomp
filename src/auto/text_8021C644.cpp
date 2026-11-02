@@ -4,19 +4,17 @@
 
 extern "C" {
 
+extern "C" {
+
 s32 fn_800FB33C(int);
 
-void fn_8021C644(s32 param_1, u32 param_2) {
-    u16 uVar1;
-    s32 iVar3;
-    u32 uVar2;
 
-    iVar3 = 0;
-    for (uVar2 = 0; uVar2 < *(u32 *)(param_1 + 0xc); uVar2 = uVar2 + 1) {
-        uVar1 = fn_800FB33C((int)(param_2));
-        *(u16 *)(*(s32 *)(param_1 + 0x14) + iVar3) = uVar1;
-        iVar3 = iVar3 + 2;
-    }
+struct P { u8 p[12]; u32 n; u32 p10; u16 *arr; };
+void fn_8021C644(P *p, int a) {
+    u32 i;
+    for (i = 0; i < p->n; i++) p->arr[i] = fn_800FB33C(a);
 }
+
+} /* extern "C" */
 
 } /* extern "C" */
