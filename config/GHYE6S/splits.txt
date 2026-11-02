@@ -29222,7 +29222,7 @@ auto/text_80210648.cpp:
 auto/text_80210828.c:
 	.text       start:0x80210828 end:0x80210830
 
-auto/text_80210830.c:
+auto/text_80210830.cpp:
 	extab       start:0x80014058 end:0x80014060
 	extabindex  start:0x80026CF0 end:0x80026CFC
 	.text       start:0x80210830 end:0x802108B4
