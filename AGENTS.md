@@ -280,3 +280,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wCW (user-approved, collaborator units, 2026-11-01): linked as Matching: text_801FCB64 text_801EA69C
 - wDB (user-approved, collaborator units, 2026-11-02): landed wCH matches fn_800F9BBC (text_800F9BB4), __dla__FPv (text_800F7EEC .c->.cpp; symbol __unexpected__FP9CatchInfo renamed __unexpected + extern "C" in Gecko_ExceptionPPC.cp since MWCC emits an unmangled ref for exception specs), fn_8024841C; all three linked as Matching.
 - wCW (user-approved, collaborator units, 2026-11-01): matched fn_801A7F70 (wD's c7f3 draft + wCL's bit-test inline 'int v = (f >> 1) & 1; return v;' used for both the '== 1' and '== 0' tests, the busy check returning s32 from a u8 local, and 'Ent7F *t = o->f1bc; if (t) x = t[idx].f0;').
+- wCW (user-approved, collaborator units, 2026-11-01): linked as Matching: text_801A7F70
