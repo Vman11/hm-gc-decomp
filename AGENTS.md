@@ -348,3 +348,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDL (user-approved, collaborator units, 2026-11-02): matched fn_80251C08 (desc struct stores volatile per a 64-mask search + extern volatile K, last loop via a member init() inline with its own counter).
 - wDL (user-approved, collaborator units, 2026-11-02): (extab_padding=[0xB0,0x02]) linked as Matching: text_80251C08
 - wDN (user-approved, collaborator units, 2026-11-02): matched fn_8023FA2C (Q *__restrict + SetP/SetR inlines), fn_8003D130 (Sc::cur() member inline; unlinkable, shared .rodata pool); linked as Matching: text_8023FA2C
+- wDO (user-approved, collaborator units, 2026-11-02): matched fn_80235FDC (.cpp, -use_lmw_stmw on; inlined copy of fn_80236628).

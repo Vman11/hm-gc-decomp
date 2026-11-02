@@ -31944,7 +31944,7 @@ auto/text_80235BBC.c:
 	extabindex  start:0x80028598 end:0x800285A4
 	.text       start:0x80235BBC end:0x80235FDC
 
-auto/text_80235FDC.c:
+auto/text_80235FDC.cpp:
 	extab       start:0x8001574C end:0x80015774
 	extabindex  start:0x800285A4 end:0x800285B0
 	.text       start:0x80235FDC end:0x80236628
