@@ -331,3 +331,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDM (user-approved, collaborator units, 2026-11-02): linked as Matching: text_801DEE18 text_80253B70
 - wDL (user-approved, collaborator units, 2026-11-02): linked as Matching: text_8024E7BC text_8020C1FC
 - wDK (user-approved, collaborator units, 2026-11-02): matched and linked as Matching: text_8008B3F8 (volatile vec-sub stores + volatile K read) text_801DB7A8 (inline flag test as '?1:0')
+- wDL (user-approved, collaborator units, 2026-11-02): (extab_padding=[0xB1,0x02,0xB1,0x02]: two new[] cleanup actions each need the pad) linked as Matching: text_8018019C
