@@ -5829,7 +5829,7 @@ config.libs = [
             Object(Matching, "auto/text_80208B64.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80208BB8.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80208BF0.cpp", extra_cflags=["-Cpp_exceptions on"]),
-            Object(NonMatching, "auto/text_80208C80.c"),
+            Object(NonMatching, "auto/text_80208C80.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80208CB0.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80208D08.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80208D64.c"),
