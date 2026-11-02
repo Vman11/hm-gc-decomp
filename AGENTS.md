@@ -245,3 +245,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wCQ (user-approved, collaborator units, 2026-11-01): linked as Matching: text_800645EC text_800646A8 text_802108B4 text_80136C30
 
 - wCN (user-approved, collaborator units, 2026-11-01): linked as Matching: text_801A797C (callee made extern "C"), text_8012D280 text_801B9028 text_801DE24C (8-aligned trailing vtable moved in from the jt_ unit, wG mvvt), text_8018F424 (extab_padding repeated per entry: [B1 02 B1 02]), text_8023D494 text_800F7138 text_801EFA90 (function definitions put back in address order)
+- wCP (user-approved, collaborator units, 2026-11-01): matched fn_8023EA4C (timer manager tick, GC/2.0p1 for the int->float lfd placement)
