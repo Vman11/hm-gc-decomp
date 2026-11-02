@@ -26384,7 +26384,7 @@ auto/text_801EFFE4.cpp:
 	extabindex  start:0x8002552C end:0x80025538
 	.text       start:0x801EFFE4 end:0x801F0050
 
-auto/text_801F0050.c:
+auto/text_801F0050.cpp:
 	extab       start:0x800128EC end:0x800128F4
 	extabindex  start:0x80025538 end:0x80025544
 	.text       start:0x801F0050 end:0x801F00CC
