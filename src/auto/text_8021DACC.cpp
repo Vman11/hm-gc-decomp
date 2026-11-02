@@ -4,19 +4,25 @@
 
 extern "C" {
 
+extern "C" {
+
 s32 fn_800FB33C(int);
 
-void fn_8021DACC(s32 param_1, u32 param_2) {
-    u16 uVar1;
-    s32 iVar3;
-    u32 uVar2;
 
-    iVar3 = 0;
-    for (uVar2 = 0; uVar2 < *(u32 *)(param_1 + 0xc); uVar2 = uVar2 + 1) {
-        uVar1 = fn_800FB33C((int)(param_2));
-        *(u16 *)(*(s32 *)(param_1 + 0x28) + iVar3) = uVar1;
-        iVar3 = iVar3 + 2;
+#include "common.h"
+struct P { u8 pad[0xc]; u32 fc; u8 q[0x28 - 0x10]; u16 *f28; };
+extern "C" {
+void fn_8021DACC(P *p, int a) {
+    s32 off;
+    u32 i;
+    off = 0;
+    for (i = 0; i < p->fc; i++) {
+        *(u16 *)((u8 *)p->f28 + off) = fn_800FB33C(a);
+        off += 2;
     }
 }
+}
+
+} /* extern "C" */
 
 } /* extern "C" */
