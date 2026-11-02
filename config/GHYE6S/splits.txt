@@ -30854,7 +30854,7 @@ auto/text_80222F8C.c:
 	extabindex  start:0x80027BA8 end:0x80027BB4
 	.text       start:0x80222F8C end:0x80222FE8
 
-auto/text_80222FE8.c:
+auto/text_80222FE8.cpp:
 	extab       start:0x80014CAC end:0x80014CB4
 	extabindex  start:0x80027BB4 end:0x80027BC0
 	.text       start:0x80222FE8 end:0x8022340C
@@ -30887,7 +30887,7 @@ auto/text_80223934.cpp:
 	extabindex  start:0x80027BF0 end:0x80027BFC
 	.text       start:0x80223934 end:0x80223A50
 
-auto/text_80223A50.c:
+auto/text_80223A50.cpp:
 	extab       start:0x80014CDC end:0x80014CE4
 	extabindex  start:0x80027BFC end:0x80027C08
 	.text       start:0x80223A50 end:0x802245C0
