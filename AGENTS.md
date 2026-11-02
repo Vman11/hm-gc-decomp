@@ -345,3 +345,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDO (user-approved, collaborator units, 2026-11-02): linked as Matching: text_80195D50 text_801244A4
 - wDL (user-approved, collaborator units, 2026-11-02): linked as Matching: text_80154D04
 - wDL (user-approved, collaborator units, 2026-11-02): linked as Matching: text_802542E8 (owns .sbss 0x8035B660-78 for its fps statics and .sdata2 0x803665C8-D0 for its int->float magic; local-object classes renamed to C800322B0/C80032274 so the weak inline dtors fold into the existing __dt__ symbols)
+- wDL (user-approved, collaborator units, 2026-11-02): matched fn_80251C08 (desc struct stores volatile per a 64-mask search + extern volatile K, last loop via a member init() inline with its own counter).
