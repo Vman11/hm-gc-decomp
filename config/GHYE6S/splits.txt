@@ -17027,7 +17027,7 @@ auto/text_801768A4.cpp:
 auto/text_80176908.c:
 	.text       start:0x80176908 end:0x80176910
 
-auto/text_80176910.c:
+auto/text_80176910.cpp:
 	extab       start:0x8000DFD8 end:0x8000DFE0
 	extabindex  start:0x8002072C end:0x80020738
 	.text       start:0x80176910 end:0x80177AEC
