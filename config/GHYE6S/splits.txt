@@ -32541,19 +32541,11 @@ auto/text_8023C128.cpp:
 	.text       start:0x8023C128 end:0x8023C1BC
 
 auto/text_8023C1BC.cpp:
-	extab       start:0x80015A90 end:0x80015AA0
-	extabindex  start:0x800288E0 end:0x800288F8
-	.text       start:0x8023C1BC end:0x8023C398
-	.sdata2     start:0x80366060 end:0x80366068
-
-auto/text_8023C398.c:
-	.text       start:0x8023C398 end:0x8023C3BC
-
-auto/text_8023C3BC.cpp:
-	extab       start:0x80015AA0 end:0x80015AA8
-	extabindex  start:0x800288F8 end:0x80028904
-	.text       start:0x8023C3BC end:0x8023C3F4
+	extab       start:0x80015A90 end:0x80015AA8
+	extabindex  start:0x800288E0 end:0x80028904
+	.text       start:0x8023C1BC end:0x8023C3F4
 	.ctors      start:0x80294288 end:0x8029428C
+	.sdata2     start:0x80366060 end:0x80366070
 
 auto/text_8023C3F4.cpp:
 	extab       start:0x80015AA8 end:0x80015AB0

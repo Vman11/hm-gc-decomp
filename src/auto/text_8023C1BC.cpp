@@ -1,6 +1,7 @@
+#include "common.h"
+namespace m8023C1BC {
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-#include "common.h"
 
 extern "C" {
 
@@ -54,3 +55,44 @@ void fn_8023C314(f32 *p, f32 a, f32 b, f32 c) {
 }
 
 } /* extern "C" */
+
+} /* namespace m8023C1BC */
+
+namespace m8023C398 {
+extern "C" {
+/* Functions from 0x8023C398 to 0x8023C3BC, found by decomp-toolkit. */
+extern f32 lbl_80366020;
+extern f32 lbl_8036602C;
+
+void fn_8023C398(f32 *arg0) {
+    arg0[0] = lbl_8036602C;
+    arg0[1] = lbl_80366020;
+    arg0[2] = lbl_80366020;
+    arg0[3] = lbl_8036602C;
+}
+
+} /* extern "C" */
+} /* namespace m8023C398 */
+
+namespace m8023C3BC {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+extern f32 lbl_803596E0[];
+extern volatile f32 lbl_8035B404;
+extern f32 lbl_8035B400;
+__declspec(section ".sdata2") f64 lbl_80366068 = 0.3490658402442932;
+double fn_800EFDA4(double);
+
+void fn_8023C3BC(void) {
+    lbl_8035B404 = lbl_803596E0[0];
+    lbl_8035B400 = fn_800EFDA4(*(volatile f64 *)&lbl_80366068);
+}
+
+__declspec(section ".ctors") static void (*const ctor_8023C3BC)(void) = fn_8023C3BC;
+
+} /* extern "C" */
+
+} /* namespace m8023C3BC */
