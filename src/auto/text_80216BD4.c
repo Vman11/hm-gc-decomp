@@ -7,19 +7,11 @@ void fn_80216BD4(s32 arg0) {
     lbl_8035B218 = arg0;
 }
 
-void fn_80216BDC(void) {
+int fn_80216BDC(int a) { return a; }
 
-}
+int fn_80216BE0(int a) { return a; }
 
-void fn_80216BE0(void) {
+int fn_80216BE4(int a) { return a; }
 
-}
-
-void fn_80216BE4(void) {
-
-}
-
-void fn_80216BE8(void) {
-
-}
+int fn_80216BE8(int a) { return a; }
 

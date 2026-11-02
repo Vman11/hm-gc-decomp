@@ -3,17 +3,14 @@
 
 extern u8 lbl_803657A8;
 
-void fn_80206A04(void) {
-}
+int fn_80206A04(int a) { return a; }
 
 void *fn_80206A08(void) {
     extern u8 lbl_803657A8;
     return &lbl_803657A8;
 }
 
-void fn_80206A10(void) {
-
-}
+int fn_80206A10(int a) { return a; }
 
 s32 fn_80206A14(void) {
     return 0;

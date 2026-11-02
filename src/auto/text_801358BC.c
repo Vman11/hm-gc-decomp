@@ -1,15 +1,9 @@
 /* Functions from 0x801358BC to 0x801358C8, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801358BC(void) {
+int fn_801358BC(int a) { return a; }
 
-}
+int fn_801358C0(int a) { return a; }
 
-void fn_801358C0(void) {
-
-}
-
-void fn_801358C4(void) {
-
-}
+int fn_801358C4(int a) { return a; }
 

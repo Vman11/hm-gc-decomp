@@ -1,8 +1,6 @@
 /* Functions from 0x801A4F54 to 0x801A4F5C, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801A4F54(void) {
-}
+int fn_801A4F54(int a) { return a; }
 
-void fn_801A4F58(void) {
-}
+int fn_801A4F58(int a) { return a; }

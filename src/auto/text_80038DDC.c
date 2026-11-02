@@ -1,13 +1,9 @@
 /* Functions from 0x80038DDC to 0x80039060, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80038DDC(void) {
+int fn_80038DDC(int a) { return a; }
 
-}
-
-void fn_80038DE0(void) {
-
-}
+int fn_80038DE0(int a) { return a; }
 
 void fn_80038DE4(void *arg0) {
     extern f32 lbl_8035C020;
@@ -28,9 +24,7 @@ void fn_80038DE4(void *arg0) {
     M2C_FIELD(arg0, s32 *, 4) = temp;
 }
 
-void fn_80038E40(void) {
-
-}
+int fn_80038E40(int a) { return a; }
 
 void fn_80038E44(void *arg0, void *arg1) {
     s32 temp_r0;

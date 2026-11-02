@@ -1,8 +1,6 @@
 /* Functions from 0x8021AA24 to 0x8021AA2C, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8021AA24(void) {
-}
+int fn_8021AA24(int a) { return a; }
 
-void fn_8021AA28(void) {
-}
+int fn_8021AA28(int a) { return a; }

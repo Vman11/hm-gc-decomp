@@ -15,15 +15,9 @@ void fn_801191A0(s32 arg0) {
     lbl_8035AB28 = arg0;
 }
 
-void fn_801191A8(void) {
+int fn_801191A8(int a) { return a; }
 
-}
+int fn_801191AC(int a) { return a; }
 
-void fn_801191AC(void) {
-
-}
-
-void fn_801191B0(void) {
-
-}
+int fn_801191B0(int a) { return a; }
 

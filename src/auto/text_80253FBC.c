@@ -1,5 +1,4 @@
 /* Functions from 0x80253FBC to 0x80253FC0, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80253FBC(void) {
-}
+int fn_80253FBC(int a) { return a; }

@@ -1,15 +1,9 @@
 /* Functions from 0x80103304 to 0x80103310, found by decomp-toolkit. */
 #include "common.h"
 
-void __ct__9C80103304Fv(void) {
+int __ct__9C80103304Fv(int a) { return a; }
 
-}
+int __ct__9C80103308Fv(int a) { return a; }
 
-void __ct__9C80103308Fv(void) {
-
-}
-
-void __ct__9C8010330CFv(void) {
-
-}
+int __ct__9C8010330CFv(int a) { return a; }
 

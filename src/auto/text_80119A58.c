@@ -10,15 +10,9 @@ void fn_80119A58(s32* arg0) {
     arg0[6] = 0;
 }
 
-void fn_80119A78(void) {
+int fn_80119A78(int a) { return a; }
 
-}
+int fn_80119A7C(int a) { return a; }
 
-void fn_80119A7C(void) {
-
-}
-
-void fn_80119A80(void) {
-
-}
+int fn_80119A80(int a) { return a; }
 

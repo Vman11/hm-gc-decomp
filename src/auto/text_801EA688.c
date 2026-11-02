@@ -6,5 +6,4 @@ void fn_801EA688(s32* arg0) {
     arg0[16] = 0;
 }
 
-void fn_801EA698(void) {
-}
+int fn_801EA698(int a) { return a; }

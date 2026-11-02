@@ -1,9 +1,7 @@
 /* Functions from 0x8023B320 to 0x8023B35C, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8023B320(void) {
-
-}
+int fn_8023B320(int a) { return a; }
 
 void fn_8023B324(void* arg0) {
     *(s32*)((char*)arg0 + 0x1C) = 0;

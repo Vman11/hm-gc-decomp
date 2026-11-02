@@ -1,11 +1,7 @@
 /* Functions from 0x80136038 to 0x80136040, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80136038(void) {
+int fn_80136038(int a) { return a; }
 
-}
-
-void fn_8013603C(void) {
-
-}
+int fn_8013603C(int a) { return a; }
 

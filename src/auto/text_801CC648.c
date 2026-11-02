@@ -1,5 +1,4 @@
 /* Functions from 0x801CC648 to 0x801CC64C, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801CC648(void) {
-}
+int fn_801CC648(int a) { return a; }

@@ -14,6 +14,4 @@ u8 fn_8020DDCC(void *arg0) {
     return 0;
 }
 
-void fn_8020DE14(void) {
-
-}
+int fn_8020DE14(int a) { return a; }

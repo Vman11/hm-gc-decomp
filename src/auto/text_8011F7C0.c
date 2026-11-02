@@ -7,31 +7,17 @@ void fn_8011F7C0(s32 arg0) {
     lbl_8035AB58 = arg0;
 }
 
-void fn_8011F7C8(void) {
+int fn_8011F7C8(int a) { return a; }
 
-}
+int fn_8011F7CC(int a) { return a; }
 
-void fn_8011F7CC(void) {
+int fn_8011F7D0(int a) { return a; }
 
-}
+int fn_8011F7D4(int a) { return a; }
 
-void fn_8011F7D0(void) {
+int fn_8011F7D8(int a) { return a; }
 
-}
+int fn_8011F7DC(int a) { return a; }
 
-void fn_8011F7D4(void) {
-
-}
-
-void fn_8011F7D8(void) {
-
-}
-
-void fn_8011F7DC(void) {
-
-}
-
-void fn_8011F7E0(void) {
-
-}
+int fn_8011F7E0(int a) { return a; }
 

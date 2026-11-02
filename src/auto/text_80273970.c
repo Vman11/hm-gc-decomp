@@ -1,9 +1,7 @@
 /* Functions from 0x80273970 to 0x802739A0, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80273970(void) {
-
-}
+int fn_80273970(int a) { return a; }
 
 void fn_80273974(void* arg0) { ((s32*)arg0)[1] = 0; }
 

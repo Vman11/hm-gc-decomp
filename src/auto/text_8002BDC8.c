@@ -5,6 +5,4 @@ s32 fn_8002BDC8(void) {
     return 0;
 }
 
-void fn_8002BDD0(void) {
-
-}
+int fn_8002BDD0(int a) { return a; }

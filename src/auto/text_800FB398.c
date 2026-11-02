@@ -3,9 +3,7 @@
 
 extern f32 lbl_803636F4;
 
-void fn_800FB398(void) {
-
-}
+int fn_800FB398(int a) { return a; }
 
 void fn_800FB39C(void* arg0) {
     *(s32*)((u8*)arg0 + 0x0) = 0;

@@ -1,15 +1,9 @@
 /* Functions from 0x8011B418 to 0x8011B424, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8011B418(void) {
+int fn_8011B418(int a) { return a; }
 
-}
+int fn_8011B41C(int a) { return a; }
 
-void fn_8011B41C(void) {
-
-}
-
-void fn_8011B420(void) {
-
-}
+int fn_8011B420(int a) { return a; }
 

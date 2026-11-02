@@ -13,6 +13,4 @@ int fn_801FE888(void) {
 return 1;
 }
 
-void fn_801FE890(void) {
-
-}
+int fn_801FE890(int a) { return a; }

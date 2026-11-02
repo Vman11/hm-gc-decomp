@@ -682,9 +682,7 @@ u32 fn_80274D04(u32 arg0) {
 extern void fn_80274DE0(void);
 extern u32 lbl_8035B878, lbl_8035B88C, lbl_8035B890;
 
-void fn_80274E0C(void) {
-
-}
+int fn_80274E0C(int a) { return a; }
 
 void fn_80274F8C(void);
 void fn_80275134(void);

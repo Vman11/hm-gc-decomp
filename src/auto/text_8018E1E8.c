@@ -1,17 +1,11 @@
 /* Functions from 0x8018E1E8 to 0x8018E20C, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8018E1E8(void) {
+int fn_8018E1E8(int a) { return a; }
 
-}
+int fn_8018E1EC(int a) { return a; }
 
-void fn_8018E1EC(void) {
-
-}
-
-void fn_8018E1F0(void) {
-
-}
+int fn_8018E1F0(int a) { return a; }
 
 void fn_8018E1F4(s32 *arg0) {
     arg0[1] = -1;

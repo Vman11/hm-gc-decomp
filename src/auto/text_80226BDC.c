@@ -3,8 +3,7 @@
 
 extern s32 lbl_8035B2D0;
 
-void fn_80226BDC(void) {
-}
+int fn_80226BDC(int a) { return a; }
 
 void fn_80226BE0(s32 arg0) {
     lbl_8035B2D0 = arg0;

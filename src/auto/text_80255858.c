@@ -13,10 +13,6 @@ s32 fn_80255868(void) {
     return 0;
 }
 
-void fn_80255870(void) {
+int fn_80255870(int a) { return a; }
 
-}
-
-void fn_80255874(void) {
-
-}
+int fn_80255874(int a) { return a; }

@@ -15,27 +15,17 @@ void fn_801033E0(s32 arg0) {
     lbl_8035AA30 = arg0;
 }
 
-void fn_801033E8(void) {
-
-}
+int fn_801033E8(int a) { return a; }
 
 s32 fn_801033EC(void) {
     return 0;
 }
 
-void fn_801033F4(void) {
+int fn_801033F4(int a) { return a; }
 
-}
+int fn_801033F8(int a) { return a; }
 
-void fn_801033F8(void) {
+int fn_801033FC(int a) { return a; }
 
-}
-
-void fn_801033FC(void) {
-
-}
-
-void fn_80103400(void) {
-
-}
+int fn_80103400(int a) { return a; }
 

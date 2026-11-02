@@ -1,9 +1,6 @@
 /* Functions from 0x801650F0 to 0x801650F8, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801650F0(void)
-{
-}
+int fn_801650F0(int a) { return a; }
 
-void fn_801650F4(void) {
-}
+int fn_801650F4(int a) { return a; }

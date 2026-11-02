@@ -36,9 +36,7 @@ void fn_80137A5C(GXColor *arg0, GXColor *arg1) {
     *(u16 *)((u8 *)arg0 + 0xC) |= lbl_80364188;
 }
 
-void fn_80137A90(void) {
-
-}
+int fn_80137A90(int a) { return a; }
 
 s32 fn_80137A94(void) {
     return 0;

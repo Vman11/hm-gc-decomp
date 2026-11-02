@@ -13,15 +13,9 @@ void __ct__9C801A33CCFv(void *arg0) {
     *(s32 *)((char *)arg0 + 0x18) = 0;
 }
 
-void fn_801A33FC(void) {
+int fn_801A33FC(int a) { return a; }
 
-}
+int fn_801A3400(int a) { return a; }
 
-void fn_801A3400(void) {
-
-}
-
-void fn_801A3404(void) {
-
-}
+int fn_801A3404(int a) { return a; }
 

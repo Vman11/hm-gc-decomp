@@ -5,5 +5,4 @@ s32 fn_801F37A4(void) {
     return 0;
 }
 
-void fn_801F37AC(void) {
-}
+int fn_801F37AC(int a) { return a; }

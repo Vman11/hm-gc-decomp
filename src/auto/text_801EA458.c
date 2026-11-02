@@ -1,9 +1,7 @@
 /* Functions from 0x801EA458 to 0x801EA460, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801EA458(void) {
-}
+int fn_801EA458(int a) { return a; }
 
-void fn_801EA45C(void) {
-}
+int fn_801EA45C(int a) { return a; }
 

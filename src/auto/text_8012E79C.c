@@ -1,5 +1,4 @@
 /* Functions from 0x8012E79C to 0x8012E7A0, found by decomp-toolkit. */
 #include "common.h"
 
-void __ct__9C8012E79CFv(void) {
-}
+int __ct__9C8012E79CFv(int a) { return a; }

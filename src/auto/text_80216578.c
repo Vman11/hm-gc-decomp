@@ -7,13 +7,9 @@ void fn_80216578(s32 arg0) {
     lbl_8035B208 = arg0;
 }
 
-void fn_80216580(void) {
-
-}
+int fn_80216580(int a) { return a; }
 
 void fn_80216584(void *arg0, s32 arg1) { *(s32 *)((char *)arg0 + 0x18) = arg1; }
 
-void fn_8021658C(void) {
-
-}
+int fn_8021658C(int a) { return a; }
 

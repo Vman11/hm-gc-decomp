@@ -1,11 +1,7 @@
 /* Functions from 0x8014EAB4 to 0x8014EABC, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_8014EAB4(void) {
+int fn_8014EAB4(int a) { return a; }
 
-}
-
-void fn_8014EAB8(void) {
-
-}
+int fn_8014EAB8(int a) { return a; }
 

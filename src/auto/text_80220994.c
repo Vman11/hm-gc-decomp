@@ -1,13 +1,9 @@
 /* Functions from 0x80220994 to 0x802209B8, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80220994(void) {
+int fn_80220994(int a) { return a; }
 
-}
-
-void fn_80220998(void) {
-
-}
+int fn_80220998(int a) { return a; }
 
 void fn_8022099C(s32 *arg0) {
     arg0[0] = 0;

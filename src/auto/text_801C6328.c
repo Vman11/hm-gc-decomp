@@ -1,8 +1,6 @@
 /* Functions from 0x801C6328 to 0x801C6330, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801C6328(void) {
-}
+int fn_801C6328(int a) { return a; }
 
-void fn_801C632C(void) {
-}
+int fn_801C632C(int a) { return a; }

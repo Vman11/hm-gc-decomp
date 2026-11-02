@@ -7,11 +7,7 @@ void fn_801EF630(s32 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     arg0[0x0C / 4] = arg3;
 }
 
-void fn_801EF640(void) {
+int fn_801EF640(int a) { return a; }
 
-}
-
-void fn_801EF644(void) {
-
-}
+int fn_801EF644(int a) { return a; }
 

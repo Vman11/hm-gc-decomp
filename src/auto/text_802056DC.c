@@ -10,9 +10,7 @@ void fn_802056DC(void *arg0, void *arg1) {
     }
 }
 
-void fn_802056F8(void) {
-
-}
+int fn_802056F8(int a) { return a; }
 
 void fn_802056FC(s32 arg0) {
     lbl_8035B190 = arg0;

@@ -1,9 +1,7 @@
 /* Functions from 0x802223B8 to 0x802223C0, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_802223B8(void) {
-}
+int fn_802223B8(int a) { return a; }
 
-void fn_802223BC(void) {
-}
+int fn_802223BC(int a) { return a; }
 

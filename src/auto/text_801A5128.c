@@ -8,15 +8,9 @@ void fn_801A5128(unsigned char * volatile *arg0, float *arg1) {
     arg1[0] *= *(float *)((*arg0) + 0x110);
 }
 
-void fn_801A517C(void) {
+int fn_801A517C(int a) { return a; }
 
-}
+int fn_801A5180(int a) { return a; }
 
-void fn_801A5180(void) {
-
-}
-
-void fn_801A5184(void) {
-
-}
+int fn_801A5184(int a) { return a; }
 

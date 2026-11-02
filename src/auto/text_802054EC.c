@@ -1,8 +1,7 @@
 /* Functions from 0x802054EC to 0x80205504, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_802054EC(void) {
-}
+int fn_802054EC(int a) { return a; }
 
 void fn_802054F0(void* arg0) {
     char* p = *(char**)((char*)arg0 + 4);

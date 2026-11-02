@@ -39,9 +39,7 @@ u32 fn_80118F3C(u32 *param_1, u32 param_2) {
     return 1;
 }
 
-void fn_80118FC0(void) {
-
-}
+int fn_80118FC0(int a) { return a; }
 
 BOOL fn_80118FC4(UnkList_80118F3C* list, u32 item) {
     if (list->count == (u32)list->unk4) {

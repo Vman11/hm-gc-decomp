@@ -1,13 +1,9 @@
 /* Functions from 0x80037FF4 to 0x80038058, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80037FF4(void) {
+int fn_80037FF4(int a) { return a; }
 
-}
-
-void fn_80037FF8(void) {
-
-}
+int fn_80037FF8(int a) { return a; }
 
 void fn_80037FFC(void *arg0) {
     extern f32 lbl_8035BFD8;

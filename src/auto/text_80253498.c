@@ -1,8 +1,6 @@
 /* Functions from 0x80253498 to 0x802534A0, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80253498(void) {
-}
+int fn_80253498(int a) { return a; }
 
-void fn_8025349C(void) {
-}
+int fn_8025349C(int a) { return a; }

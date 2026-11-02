@@ -15,9 +15,7 @@ s32 fn_801348FC(void) {
     return 0;
 }
 
-void fn_80134904(void) {
-
-}
+int fn_80134904(int a) { return a; }
 
 extern u16 lbl_803640E0;
 void fn_80134908(void* arg0) {

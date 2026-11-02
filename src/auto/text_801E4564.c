@@ -1,10 +1,7 @@
 /* Functions from 0x801E4564 to 0x801E456C, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_801E4564(void) {
-}
+int fn_801E4564(int a) { return a; }
 
-void fn_801E4568(void)
-{
-}
+int fn_801E4568(int a) { return a; }
 

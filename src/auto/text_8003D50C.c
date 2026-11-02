@@ -5,6 +5,4 @@ s32 fn_8003D50C(void) {
     return 0;
 }
 
-void fn_8003D514(void) {
-
-}
+int fn_8003D514(int a) { return a; }

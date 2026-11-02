@@ -8,6 +8,4 @@ void *fn_80131EB4(u8 *arg0) {
     return NULL;
 }
 
-void fn_80131ED0(void) {
-
-}
+int fn_80131ED0(int a) { return a; }
