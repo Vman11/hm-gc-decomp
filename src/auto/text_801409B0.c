@@ -470,13 +470,10 @@ void fn_8014188C(ImgDec *p) {
 
 void fn_8014193C(ImgDec *p) {
     u8 *d = p->buf;
-    u8 *e = (u8 *)p + p->count;
-    e += sizeof(p->padB8) + 0xB8;
+    u8 *e = d + p->count;
     do {
-        u8 v = *p->src++;
-        *d = v;
-        ++d;
-    } while (e > d);
+        *d++ = *p->src++;
+    } while (d < e);
 }
 
 void fn_80141970(ImgDec *p) {
