@@ -2,9 +2,12 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
+extern "C" {
+
 typedef struct { f32 x0, x1, y0, y1, z0, z1; s32 f18; s32 f1c; } B;
 typedef struct { u8 p[0xc]; s32 fc; s32 axis; } O;
 void fn_8019A3A4(O *, B *);
+
 void fn_80189660(O *__restrict o, B *__restrict b) {
     f32 dx, dy, dz;
     fn_8019A3A4(o, b);
@@ -20,3 +23,5 @@ void fn_80189660(O *__restrict o, B *__restrict b) {
         else o->axis = 2;
     }
 }
+
+} /* extern "C" */
