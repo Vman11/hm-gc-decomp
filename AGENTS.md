@@ -340,3 +340,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDK (user-approved, collaborator units, 2026-11-02): matched and linked as Matching: text_801B3EB0 (scroll-family idioms from text_801B58B4)
 - wDN (user-approved, collaborator units, 2026-11-02): matched fn_801748B0 (volatile recipe + owns .rodata 802A0F20-802A0FE8), fn_801C8BD0 (fresh block-scoped flag in last notify loop); linked as Matching: text_801748B0 text_801C8BD0
 - wDK (user-approved, collaborator units, 2026-11-02): matched and linked as Matching: text_801D52A0 (node-pool alloc, written from asm)
+- wDO (user-approved, collaborator units, 2026-11-02): matched fn_80195D50, fn_801244A4 (.cpp, -use_lmw_stmw on).
