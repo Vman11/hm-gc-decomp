@@ -15902,7 +15902,7 @@ auto/text_8015F600.c:
 	extabindex  start:0x8001FC7C end:0x8001FC88
 	.text       start:0x8015F600 end:0x8015F658
 
-auto/text_8015F658.c:
+auto/text_8015F658.cpp:
 	extab       start:0x8000D54C end:0x8000D554
 	extabindex  start:0x8001FC88 end:0x8001FC94
 	.text       start:0x8015F658 end:0x8015F6B0
