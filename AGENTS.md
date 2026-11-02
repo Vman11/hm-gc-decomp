@@ -238,3 +238,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wCO (user-approved, collaborator units, 2026-11-01): linked as Matching: text_80155460 text_80155E80 text_80129A9C text_8020E5C0 text_80064530 text_80064764
 
 - wCN (user-approved, collaborator units, 2026-11-01): linked as Matching (all fns already 100%): text_80083120 text_8009565C text_80210830 text_8021DACC text_8023CA84 text_800A0EE4 text_800A1860 text_801A3260 text_801DD8B4 text_801FE894 text_80234028 
+- wCP (user-approved, collaborator units, 2026-11-01): matched fn_80207A54 (path normalizer, indexed loop) fn_801A9540 (vcall checks; bit test via int local, bool type inline)
