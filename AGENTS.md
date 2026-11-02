@@ -334,3 +334,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDL (user-approved, collaborator units, 2026-11-02): (extab_padding=[0xB1,0x02,0xB1,0x02]: two new[] cleanup actions each need the pad) linked as Matching: text_8018019C
 - wDM (user-approved, collaborator units, 2026-11-02): fn_80061358 re-done as .cpp (unit has extab; the .c match could not link).
 - wDM (user-approved, collaborator units, 2026-11-02): linked as Matching: text_80061358
+- wDK (user-approved, collaborator units, 2026-11-02): matched and linked as Matching: text_801B7FF4 (shared loop counter, volatile idx/K, volatile box.x0 re-read) text_80031D80 (recursive walker; getters return u32)
