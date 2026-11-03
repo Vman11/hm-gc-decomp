@@ -3,10 +3,6 @@
 
 extern "C" {
 
-s32 fn_80116B58(u8* arg0, s32 arg1) {
-    *(s32*)(arg0 + 0x5C) = arg1;
-    return 0;
-}
 
 /* QV=2.0p1 */
 struct H80116B10 { u8 pad[16]; s32 f16; };
@@ -15,6 +11,10 @@ s32 fn_80116B10(S80116B10 *p, s32 i, u8 **out) {
     H80116B10 *h = p->f0;
     if ((i >= p->f20 && i < p->f24) || i >= p->f28) return 5;
     *out = (u8 *)(h->f16 + i + (s32)h);
+    return 0;
+}
+s32 fn_80116B58(u8* arg0, s32 arg1) {
+    *(s32*)(arg0 + 0x5C) = arg1;
     return 0;
 }
 
