@@ -33193,10 +33193,11 @@ auto/text_802455E0.c:
 auto/text_80245D9C.cpp:
 	.text       start:0x80245D9C end:0x80245F9C
 
-auto/text_80245F9C.c:
+auto/text_80245F9C.cpp:
 	extab       start:0x80016084 end:0x8001608C
 	extabindex  start:0x80028FF4 end:0x80029000
 	.text       start:0x80245F9C end:0x802466B4
+	.sdata2     start:0x80366268 end:0x80366278
 
 auto/text_802466B4.cpp:
 	extab       start:0x8001608C end:0x80016094
