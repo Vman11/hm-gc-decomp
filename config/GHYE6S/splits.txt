@@ -7809,9 +7809,6 @@ sdk/SISamplingRate.c:
 	.data       start:0x802E0DC0 end:0x802E0E58
 	.sbss       start:0x8035A9E0 end:0x8035A9E8
 
-auto/jt_802E0E58.c:
-	.data       start:0x802E0E58 end:0x802E0F0C
-
 auto/text_800F5578.cpp:
 	extab       start:0x80009794 end:0x8000979C
 	extabindex  start:0x8001BB60 end:0x8001BB6C
@@ -8005,11 +8002,12 @@ auto/text_800F5F40.c:
 	extabindex  start:0x8001BD1C end:0x8001BD28
 	.text       start:0x800F5F40 end:0x800F61A0
 
-auto/text_800F61A0.c:
+auto/text_800F61A0.cpp:
 	extab       start:0x800098C4 end:0x800098CC
 	extabindex  start:0x8001BD28 end:0x8001BD34
 	.text       start:0x800F61A0 end:0x800F6BDC
-	.data       start:0x802E0F0C end:0x802E0F5C
+	.data       start:0x802E0E58 end:0x802E0F5C
+	.sdata2     start:0x803636D0 end:0x803636D8
 
 auto/jt_802E0F5C.c:
 	.data       start:0x802E0F5C end:0x802E20AC
