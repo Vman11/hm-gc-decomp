@@ -26347,17 +26347,12 @@ auto/text_801F13F0.cpp:
 	extabindex  start:0x8002567C end:0x80025688
 	.text       start:0x801F13F0 end:0x801F1544
 
-auto/text_801F1544.c:
-	extab       start:0x800129CC end:0x800129E4
-	extabindex  start:0x80025688 end:0x80025694
-	.text       start:0x801F1544 end:0x801F20A8
+auto/text_801F1544.cpp:
+	extab       start:0x800129CC end:0x800129EC
+	extabindex  start:0x80025688 end:0x800256A0
+	.text       start:0x801F1544 end:0x801F20F0
 
-auto/text_801F20A8.cpp:
-	extab       start:0x800129E4 end:0x800129EC
-	extabindex  start:0x80025694 end:0x800256A0
-	.text       start:0x801F20A8 end:0x801F20F0
-
-auto/text_801F20F0.c:
+auto/text_801F20F0.cpp:
 	extab       start:0x800129EC end:0x800129F4
 	extabindex  start:0x800256A0 end:0x800256AC
 	.text       start:0x801F20F0 end:0x801F28C8
