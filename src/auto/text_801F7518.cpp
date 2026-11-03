@@ -9,6 +9,18 @@ f32 fn_800FB2E0(void *);
 void fn_801EF720(void *, void *, s32);
 void fn_80121CE8(void *);
 
+void fn_801F77F8(void);
+void fn_801F7518(u8 *p, void *q, s32 c);
+void fn_801EF9A0(void);
+void fn_801F7634(void);
+void fn_801F7750(void);
+void fn_801F7430(void);
+void fn_801EF6AC(void);
+void fn_801EF648(void);
+void fn_801EF644(void);
+void fn_801F7694(void);
+void *__vt__9C801F786C[13] = { 0, 0, (void *)fn_801F77F8, (void *)fn_801F7518, (void *)fn_801EF9A0, (void *)fn_801F7634, (void *)fn_801F7750, (void *)fn_801F7430, (void *)fn_801EF6AC, (void *)fn_801EF648, (void *)fn_801EF644, 0, (void *)fn_801F7694 };
+
 void fn_801F7518(u8 *p, void *q, s32 c) {
     switch (c) {
     case 151:
