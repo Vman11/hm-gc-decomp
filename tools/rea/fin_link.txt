@@ -1,10 +1,8 @@
+auto/text_800302CC
 auto/text_800391E4
 auto/text_80052028
-auto/text_800712B0
 auto/text_80090C68
 auto/text_800F7F58
-auto/text_801090D4
-auto/text_80164518
 auto/text_80191484
-auto/text_801B1340
 auto/text_801ED66C
+auto/text_801FE454

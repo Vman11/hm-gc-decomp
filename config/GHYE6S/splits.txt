@@ -214,7 +214,7 @@ auto/text_80030270.cpp:
 	extabindex  start:0x80017D44 end:0x80017D50
 	.text       start:0x80030270 end:0x800302CC
 
-auto/text_800302CC.c:
+auto/text_800302CC.cpp:
 	extab       start:0x800058A4 end:0x800058AC
 	extabindex  start:0x80017D50 end:0x80017D5C
 	.text       start:0x800302CC end:0x80030318

@@ -1,6 +1,1 @@
-auto/text_800391E4
-auto/text_80090844
-auto/text_800E24F0
-auto/text_801409B0
-auto/text_80163364
-auto/text_8019688C
+auto/text_800FEEA0
