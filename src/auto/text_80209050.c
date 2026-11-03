@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
+#pragma readonly_strings on
 
 /* The three literals are the pooled .rodata block lbl_802A68C0 (0x802A68C0..0x802A6938, 0x78 bytes, not in any split):
    the original addresses it as base + 0/40/84 (addi r3,r5,0), which only a compiler-pooled literal reproduces. */
