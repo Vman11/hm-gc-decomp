@@ -351,3 +351,4 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wDO (user-approved, collaborator units, 2026-11-02): matched fn_80235FDC (.cpp, -use_lmw_stmw on; inlined copy of fn_80236628).
 - wDO (user-approved, collaborator units, 2026-11-02): linked as Matching: text_80235FDC
 - wDP (user-approved, collaborator units, 2026-11-02): matched fn_80245F9C (track sample, .cpp + -use_lmw_stmw on; 2.0f/3.0f/eps written as literals so the unit owns .sdata2 0x80366268-0x80366278, extern 0/1/0.5 stay shared) and linked text_80245F9C as Matching (was unlisted).
+- wDO (user-approved, collaborator units, 2026-11-02): matched fn_80120718 (.cpp, -use_lmw_stmw on; string literals + pool-order pad, shares its .rodata pool with text_80120D78 so not linkable alone).
