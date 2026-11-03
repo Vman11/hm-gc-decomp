@@ -11690,10 +11690,11 @@ auto/text_8011DC84.cpp:
 auto/text_8011DD04.c:
 	.text       start:0x8011DD04 end:0x8011DFE8
 
-auto/text_8011DFE8.c:
+auto/text_8011DFE8.cpp:
 	extab       start:0x8000B488 end:0x8000B490
 	extabindex  start:0x8001DB88 end:0x8001DB94
 	.text       start:0x8011DFE8 end:0x8011E5B0
+	.sdata2     start:0x80363DB8 end:0x80363DC8
 
 auto/text_8011E5B0.c:
 	extab       start:0x8000B490 end:0x8000B498
