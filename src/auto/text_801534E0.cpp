@@ -84,21 +84,18 @@ void fn_8015373C(f32* m, f32 x) {
     m[15] = lbl_80364560;
 }
 
-void fn_801537BC(f32* m, f32* v) {
-    f32 a = v[0];
-    f32 b = v[1];
-    f32 c = v[2];
-    m[0] = a;
+void fn_801537BC(f32* m, const f32* v) {
+    m[0] = v[0];
     m[1] = lbl_80364564;
     m[2] = lbl_80364564;
     m[3] = lbl_80364564;
     m[4] = lbl_80364564;
-    m[5] = b;
+    m[5] = v[1];
     m[6] = lbl_80364564;
     m[7] = lbl_80364564;
     m[8] = lbl_80364564;
     m[9] = lbl_80364564;
-    m[10] = c;
+    m[10] = v[2];
     m[11] = lbl_80364564;
     m[12] = lbl_80364564;
     m[13] = lbl_80364564;
@@ -125,23 +122,20 @@ void fn_80153840(f32* m, f32 x) {
     m[15] = lbl_80364560;
 }
 
-#pragma scheduling off
-void fn_801538B8(void *arg0, void *arg1) {
-    f32 a = M2C_FIELD(arg1, f32 *, 0);
-    f32 b = M2C_FIELD(arg1, f32 *, 4);
-    f32 c;
-    M2C_FIELD(arg0, f32 *, 0) = a;
-    c = M2C_FIELD(arg1, f32 *, 8);
-    M2C_FIELD(arg0, f32 *, 0x14) = b;
-    M2C_FIELD(arg0, f32 *, 0x28) = c;
-    M2C_FIELD(arg0, f32 *, 4) = lbl_80364564;
-    M2C_FIELD(arg0, f32 *, 8) = lbl_80364564;
-    M2C_FIELD(arg0, f32 *, 0x10) = lbl_80364564;
-    M2C_FIELD(arg0, f32 *, 0x18) = lbl_80364564;
-    M2C_FIELD(arg0, f32 *, 0x20) = lbl_80364564;
-    M2C_FIELD(arg0, f32 *, 0x24) = lbl_80364564;
+void fn_801538B8(f32 *m, const f32 *v) {
+    f32 a = v[0];
+    f32 b = v[1];
+    m[0] = a;
+    f32 c = v[2];
+    m[5] = b;
+    m[10] = c;
+    m[1] = lbl_80364564;
+    m[2] = lbl_80364564;
+    m[4] = lbl_80364564;
+    m[6] = lbl_80364564;
+    m[8] = lbl_80364564;
+    m[9] = lbl_80364564;
 }
-#pragma scheduling reset
 void fn_80153904(f32* m) {
     m[0] = lbl_80364564;
     m[1] = lbl_80364564;

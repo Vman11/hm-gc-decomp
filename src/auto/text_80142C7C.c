@@ -26,44 +26,56 @@ typedef struct Img {
     u8 *px;
 } Img;
 
-void fn_80142C7C(Img *p) {
+typedef struct Img_80142C7C {
+    u8 pad0[0x9c];
+    s32 n;
+    u8 padA0[4];
+    s32 m;
+    u8 padA8[0x158 - 0xa8];
+    u8 buf2[0x28];
+    u8 *d180;
+} Img_80142C7C;
+void fn_80142C7C(Img_80142C7C *p) {
     s32 m = p->m;
-    u8 *s = p->buf + 0x20;
     s32 n = p->n;
-    s32 n2 = m * 2;
-    u8 *d = *(u8 **)((u8 *)p + 0x180);
-    u8 *send = s + n;
-    s32 e = n2 - n;
+    s32 m2 = m * 2;
+    s32 e = m2 - n;
+    s32 k = (m - n) * 2;
+    u8 *d;
+    u8 *s;
+    u8 *send;
+    s = p->buf2;
+    d = p->d180;
+    send = s + n;
     do {
         if (e <= 0) {
-            e += n2;
+            e += m2;
         } else {
-            e += (m - n) * 2;
+            e += k;
             *d = *s;
             d++;
         }
         s++;
     } while (s < send);
 }
-
-void fn_80142CD0(Img *p) {
+void fn_80142CD0(Img_80142C7C *p) {
     s32 n = p->n;
-    u8 *s = p->buf + 0x20;
     s32 m = p->m;
-    u8 *d = *(u8 **)((u8 *)p + 0x180);
+    s32 e;
     s32 n2 = n * 2;
-    s32 e = n2 - m;
-    u8 *dend = d + m;
+    s32 k;
+    u8 *s;
+    u8 *d;
+    u8 *dend;
+    e = n2 - m;
+    k = (n - m) * 2;
+    s = p->buf2;
+    d = p->d180;
+    dend = d + m;
     do {
         *d = *s;
-        if (e <= 0) {
-            e += n2;
-            d++;
-        } else {
-            e += (n - m) * 2;
-            s++;
-            d++;
-        }
+        if (e <= 0) { e += n2; d++; }
+        else { e += k; s++; d++; }
     } while (d < dend);
 }
 

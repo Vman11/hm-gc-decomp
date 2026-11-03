@@ -26,12 +26,15 @@ static inline void MtxMultVec4(f32 (*__restrict m)[4], f32 *__restrict v, f32 *_
     out[2] = out[2] + m[2][3];
     out[3] = out[3] + m[3][3];
 }
+#pragma push
+#pragma optimization_level 1
 void fn_8014EB30(void **arg0) {
     extern u8 lbl_802E3F78[];
     extern u8 lbl_802E67C0[];
     arg0[0] = lbl_802E3F78;
     arg0[0] = lbl_802E67C0;
 }
+#pragma pop
 
 void fn_8014EB4C(s32 arg0) {
     lbl_8035ACB8 = arg0;
