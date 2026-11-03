@@ -13,36 +13,7 @@ static inline f32 fabsf(f32 x) {
 
 
 /* QV=1.3.2 */
-s32 fn_800FEFC8(f32 *box, f32 *sphere) {
-    f32 dx, dy, dz;
-    f32 z = sphere[2];
 
-    dx = (f32)__fabs(sphere[0]) - box[3];
-    dy = (f32)__fabs(sphere[1]) - box[4];
-    dz = (f32)__fabs(z) - box[5];
-    if (dx <= 0.0f) {
-        if (dy <= 0.0f) {
-            if (dz <= 0.0f) {
-                return 1;
-            }
-            return dz <= sphere[3];
-        }
-        if (dz <= 0.0f) {
-            return dy <= sphere[3];
-        }
-        return dy * dy + dz * dz <= sphere[3] * sphere[3];
-    }
-    if (dy <= 0.0f) {
-        if (dz <= 0.0f) {
-            return dx <= sphere[3];
-        }
-        return dx * dx + dz * dz <= sphere[3] * sphere[3];
-    }
-    if (dz <= 0.0f) {
-        return dx * dx + dy * dy <= sphere[3] * sphere[3];
-    }
-    return dx * dx + dy * dy + dz * dz <= sphere[3] * sphere[3];
-}
 
 /* QV=2.0p1 */
 static inline f64 fabs_FEEA0(f64 x) { return __fabs(x); }
@@ -81,6 +52,36 @@ s32 fn_800FEEA0(f32 *box, f32 *dir, f32 *pos, f32 t) {
         return 0;
     }
     return 1;
+}
+s32 fn_800FEFC8(f32 *box, f32 *sphere) {
+    f32 dx, dy, dz;
+    f32 z = sphere[2];
+
+    dx = (f32)__fabs(sphere[0]) - box[3];
+    dy = (f32)__fabs(sphere[1]) - box[4];
+    dz = (f32)__fabs(z) - box[5];
+    if (dx <= 0.0f) {
+        if (dy <= 0.0f) {
+            if (dz <= 0.0f) {
+                return 1;
+            }
+            return dz <= sphere[3];
+        }
+        if (dz <= 0.0f) {
+            return dy <= sphere[3];
+        }
+        return dy * dy + dz * dz <= sphere[3] * sphere[3];
+    }
+    if (dy <= 0.0f) {
+        if (dz <= 0.0f) {
+            return dx <= sphere[3];
+        }
+        return dx * dx + dz * dz <= sphere[3] * sphere[3];
+    }
+    if (dz <= 0.0f) {
+        return dx * dx + dy * dy <= sphere[3] * sphere[3];
+    }
+    return dx * dx + dy * dy + dz * dz <= sphere[3] * sphere[3];
 }
 
 } /* extern "C" */
