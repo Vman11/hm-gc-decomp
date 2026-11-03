@@ -5443,11 +5443,12 @@ auto/text_8009A8BC.c:
 	extabindex  start:0x8001AC48 end:0x8001AC54
 	.text       start:0x8009A8BC end:0x8009B30C
 
-auto/text_8009B30C.c:
+auto/text_8009B30C.cpp:
 	extab       start:0x80008940 end:0x80008970
 	extabindex  start:0x8001AC54 end:0x8001AC60
 	.text       start:0x8009B30C end:0x8009BAD0
 	.data       start:0x802CDE18 end:0x802CDE64
+	.sbss       start:0x8035A400 end:0x8035A408
 
 auto/jt_802CDE64.c:
 	.data       start:0x802CDE64 end:0x802CDE68
