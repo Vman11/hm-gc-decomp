@@ -1283,6 +1283,7 @@ config.libs = [
             Object(Matching, "auto/text_80099D18.cpp", extra_cflags=["-Cpp_exceptions on"], mw_version="GC/2.0p1"),
             Object(Matching, "auto/text_80099EEC.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8009A3D8.cpp", extra_cflags=["-Cpp_exceptions on"]),
+            Object(Matching, "auto/text_8009A8BC.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"]),
             Object(Matching, "auto/text_8009B30C.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"]),
             Object(Matching, "auto/text_8009C018.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8009C260.cpp", extra_cflags=["-Cpp_exceptions on"]),
