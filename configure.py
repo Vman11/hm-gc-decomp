@@ -4919,6 +4919,7 @@ config.libs = [
                         Object(Matching, "auto/text_801CECFC.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"], mw_version="GC/2.0p1"),
             Object(Matching, "auto/text_801D1DE0.c"),
             Object(Matching, "auto/text_801D1DE8.cpp", extra_cflags=["-Cpp_exceptions on"], mw_version="GC/2.0p1"),
+            Object(NonMatching, "auto/text_801D1FBC.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801D2518.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801D25A0.cpp", extra_cflags=["-Cpp_exceptions on"], mw_version="GC/2.0p1"),
             Object(Matching, "auto/text_801D2780.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"]),

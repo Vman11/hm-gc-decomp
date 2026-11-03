@@ -23449,7 +23449,7 @@ auto/text_801D1DE8.cpp:
 	extabindex  start:0x80023D14 end:0x80023D20
 	.text       start:0x801D1DE8 end:0x801D1FBC
 
-auto/text_801D1FBC.c:
+auto/text_801D1FBC.cpp:
 	extab       start:0x80011330 end:0x80011338
 	extabindex  start:0x80023D20 end:0x80023D2C
 	.text       start:0x801D1FBC end:0x801D2518
