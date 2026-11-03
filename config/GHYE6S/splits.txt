@@ -3171,7 +3171,7 @@ auto/text_800711D0.cpp:
 	extabindex  start:0x800198BC end:0x800198C8
 	.text       start:0x800711D0 end:0x800712B0
 
-auto/text_800712B0.c:
+auto/text_800712B0.cpp:
 	extab       start:0x800074F0 end:0x800074F8
 	extabindex  start:0x800198C8 end:0x800198D4
 	.text       start:0x800712B0 end:0x800713AC
@@ -8475,7 +8475,7 @@ auto/text_800FE938.c:
 	extabindex  start:0x8001C310 end:0x8001C31C
 	.text       start:0x800FE938 end:0x800FEEA0
 
-auto/text_800FEEA0.c:
+auto/text_800FEEA0.cpp:
 	.text       start:0x800FEEA0 end:0x800FF140
 
 auto/text_800FF140.cpp:
@@ -9345,7 +9345,7 @@ auto/text_8010904C.cpp:
 	extabindex  start:0x8001CA54 end:0x8001CA60
 	.text       start:0x8010904C end:0x801090D4
 
-auto/text_801090D4.c:
+auto/text_801090D4.cpp:
 	extab       start:0x8000A374 end:0x8000A37C
 	extabindex  start:0x8001CA60 end:0x8001CA6C
 	.text       start:0x801090D4 end:0x8010915C
@@ -15856,7 +15856,7 @@ auto/text_801644BC.cpp:
 	extabindex  start:0x8001FFD0 end:0x8001FFDC
 	.text       start:0x801644BC end:0x80164518
 
-auto/text_80164518.c:
+auto/text_80164518.cpp:
 	extab       start:0x8000D880 end:0x8000D888
 	extabindex  start:0x8001FFDC end:0x8001FFE8
 	.text       start:0x80164518 end:0x80164574
@@ -20741,7 +20741,7 @@ auto/text_801B12FC.cpp:
 	extabindex  start:0x80022B44 end:0x80022B50
 	.text       start:0x801B12FC end:0x801B1340
 
-auto/text_801B1340.c:
+auto/text_801B1340.cpp:
 	extab       start:0x80010574 end:0x8001057C
 	extabindex  start:0x80022B50 end:0x80022B5C
 	.text       start:0x801B1340 end:0x801B1384
@@ -34355,12 +34355,12 @@ auto/text_802625FC.c:
 	extabindex  start:0x80029FF0 end:0x80029FFC
 	.text       start:0x802625FC end:0x80262D38
 
-auto/text_80262D38.c:
+auto/text_80262D38.cpp:
 	extab       start:0x800173E0 end:0x800173E8
 	extabindex  start:0x80029FFC end:0x8002A008
 	.text       start:0x80262D38 end:0x80262E58
 
-auto/text_80262E58.c:
+auto/text_80262E58.cpp:
 	extab       start:0x800173E8 end:0x800173F0
 	extabindex  start:0x8002A008 end:0x8002A014
 	.text       start:0x80262E58 end:0x80262FA0
