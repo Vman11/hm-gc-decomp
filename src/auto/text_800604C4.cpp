@@ -1,6 +1,7 @@
+#include "common.h"
+namespace m800604C4 {
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-#include "common.h"
 
 extern "C" {
 
@@ -27,3 +28,23 @@ void fn_800604C4(s32 code, char *file, s32 line) {
 #pragma readonly_strings reset
 
 } /* extern "C" */
+
+} /* namespace m800604C4 */
+
+namespace m80060568 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+void fn_800E91D0(const char *, ...);
+void exit(s32);
+
+void fn_80060568(void *a, void *b, void *c) {
+    fn_800E91D0("%s, file \"%s\" line %d\n", a, b, c);
+    exit(1);
+}
+
+} /* extern "C" */
+
+} /* namespace m80060568 */

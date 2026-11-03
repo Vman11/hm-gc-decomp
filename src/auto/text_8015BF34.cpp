@@ -9,14 +9,14 @@ void *__ct__9C8015D9A4Fv(void *p);
 void *__dt__9C8015D9A4Fv(void *p, s16 f);
 void *__register_global_object(void *obj, void *dtor, void *chain);
 
-static u8 chain1[12];
-static C8015D9A4 obj1;
-static u8 chain2[12];
-static C8015D9A4 obj2;
+u8 lbl_8032E510[12];
+C8015D9A4 lbl_8032E51C;
+u8 lbl_8032E648[12];
+C8015D9A4 lbl_8032E654;
 
 void fn_8015BF34(void) {
-    __register_global_object(__ct__9C8015D9A4Fv(&obj1), (void *)__dt__9C8015D9A4Fv, chain1);
-    __register_global_object(__ct__9C8015D9A4Fv(&obj2), (void *)__dt__9C8015D9A4Fv, chain2);
+    __register_global_object(__ct__9C8015D9A4Fv(&lbl_8032E51C), (void *)__dt__9C8015D9A4Fv, lbl_8032E510);
+    __register_global_object(__ct__9C8015D9A4Fv(&lbl_8032E654), (void *)__dt__9C8015D9A4Fv, lbl_8032E648);
 }
 
 __declspec(section ".ctors") static void (*const ctor_8015BF34)(void) = fn_8015BF34;

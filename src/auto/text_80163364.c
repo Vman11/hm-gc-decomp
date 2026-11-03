@@ -4,3 +4,4 @@
 
 typedef struct C4 { u8 r, g, b, a; } C4; extern C4 lbl_8035AD18; extern C4 lbl_8035AD1C;
 void fn_80163364(void) { lbl_8035AD18.r = 0; lbl_8035AD18.g = 0; lbl_8035AD18.b = 0; lbl_8035AD18.a = 0; lbl_8035AD1C.r = 255; lbl_8035AD1C.g = 255; lbl_8035AD1C.b = 255; lbl_8035AD1C.a = 255; }
+__declspec(section ".ctors") static void (*const ctor_80163364)(void) = fn_80163364;

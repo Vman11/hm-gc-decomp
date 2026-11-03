@@ -5,6 +5,7 @@
 extern "C" {
 
 /* QV=2.0p1 */
+#pragma readonly_strings on
 /* the four literals below are the TU string pool lbl_80298020 (.rodata 0x80298020-0x80298060) */
 extern char lbl_8035F3A8[5];
 extern char lbl_8035F3B0[5];
