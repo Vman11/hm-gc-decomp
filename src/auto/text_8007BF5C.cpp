@@ -1,9 +1,4 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
-
-extern "C" {
-
 struct VO {
     virtual void v0();
     virtual void v1();
@@ -46,6 +41,13 @@ struct VO {
     virtual void v38();
     virtual void s39(u32, int, char *, char *, f32);
 };
+namespace m8007BF5C {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+/* hoisted */
 extern u8 *lbl_8035B308;
 extern u32 lbl_8035B374;
 extern char lbl_8035F8E8[4];
@@ -93,22 +95,60 @@ extern char lbl_8035F8C8[];
 extern char lbl_8035F8D0[];
 extern char lbl_8035F8D8[];
 extern char lbl_8035F8E0[];
-void *lbl_802C3040[174] = { (void *)0x0, (void *)0xFA, (void *)0x1F4, (void *)0x2EE, (void *)0x55495C4D, (void *)0x454D4341, (void *)0x52445C00, (void *)0x41545449, (void *)0x43000000, (void *)0x42414C4C, (void *)0x524F4F4D, (void *)0x4348494C, (void *)0x4452454E, (void *)0x434F4E53, (void *)0x45525600, (void *)0x44494E52, (void *)0x4F4F4D00, (void *)0x464F5945, (void *)0x52000000, (void *)0x47414C4C, (void *)0x45525900, (void *)0x47524156, (void *)0x45594400, (void *)0x47524F4F, (void *)0x4D000000, (void *)0x47525448, (void *)0x414C4C00, (void *)0x47554553, (void *)0x54000000, (void *)0x48414C4C, (void *)0x41420000, (void *)0x48414C4C, (void *)0x43440000, (void *)0x4B495443, (void *)0x48454E00, (void *)0x4C414200, (void *)0x0, (void *)0x4D555345, (void *)0x554D0000, (void *)0x4D414944, (void *)0x0, (void *)0x4D415354, (void *)0x52424544, (void *)0x4D415553, (void *)0x4F4C4D00, (void *)0x4D454153, (void *)0x55524500, (void *)0x544F5952, (void *)0x4F4F4D00, (void *)0x4F425345, (void *)0x52560000, (void *)0x50414E54, (void *)0x52590000, (void *)0x5041524C, (void *)0x4F520000, (void *)0x53495454, (void *)0x494E4700, (void *)0x53545245, (void *)0x54434800, (void *)0x53554E52, (void *)0x4F4F4D00, (void *)0x57494E54, (void *)0x45520000, (void *)0x5449544C, (void *)0x45000000, (void *)0x53504952, (void *)0x49540000, (void *)0x474C4F42, (void *)0x414C0000, (void *)0x0, (void *)0x28, (void *)0x0, (void *)0x0, (void *)0x28, (void *)0x0, (void *)0x0, (void *)0x28, (void *)0x0, (void *)0x0, (void *)0x3F800000, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x40000000, (void *)0x0, (void *)0x3F800000, (void *)0x3F800000, (void *)0x0, (void *)0xBF800000, (void *)0x3F800000, (void *)0x0, (void *)0x0, (void *)0x3F800000, (void *)0x3F800000, (void *)0x0, (void *)0x3F800000, (void *)0xBF800000, (void *)0x0, (void *)0x6, (void *)0x9, (void *)0xC, (void *)0xF, (void *)0x12, (void *)0x15, (void *)0x18, (void *)0x1B, (void *)0x0, (void *)0x6, (void *)0x9, (void *)0xC, (void *)0xF, (void *)0x12, (void *)0x15, (void *)0x18, (void *)0x1B, (void *)0x0, (void *)0x6, (void *)0x40, (void *)0x43, (void *)0x46, (void *)0x49, (void *)0x4C, (void *)0x4F, (void *)0x52, (void *)0x55, (void *)0x1E, (void *)0x21, (void *)0x24, (void *)0x27, (void *)0x2A, (void *)0x2D, (void *)0x30, (void *)0x33, (void *)0x0, (void *)0x0, (void *)0x0, (void *)&lbl_802986EC, (void *)&lbl_8035F8C8, (void *)&lbl_8035F8D0, (void *)&lbl_8035F8D8, (void *)&lbl_802986F8, (void *)&lbl_80298704, (void *)&lbl_802986EC, (void *)&lbl_8035F8E0, (void *)&lbl_8035F8C8, (void *)0x0, (void *)0x1, (void *)&lbl_8035F8D0, (void *)0x1, (void *)0x1, (void *)&lbl_8035F8D8, (void *)0x2, (void *)0x1, (void *)&lbl_802986F8, (void *)0x3, (void *)0x1, (void *)&lbl_80298704, (void *)0x4, (void *)0x1, (void *)&lbl_802986EC, (void *)0x5, (void *)0x1, (void *)&lbl_8035F8E0, (void *)0x6, (void *)0x1, (void *)0x0, (void *)0x1, (void *)0x2, (void *)0x3, (void *)0x4, (void *)0x5, (void *)0x6 };
-static s32 tA[7] = { 0, 2, 4, 6, 8, 10, 12 };
-static s32 tB[14] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-static s32 tC[14] = { 0, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7 };
+extern "C" {
+extern char lbl_803592D0[4];
+extern char lbl_803592D4[4];
+
+extern char lbl_802986EC[];
+extern char lbl_802986F8[];
+extern char lbl_80298704[];
+extern char lbl_8035F8C8[];
+extern char lbl_8035F8D0[];
+extern char lbl_8035F8D8[];
+extern char lbl_8035F8E0[];
+
+}
+/* This unit's .data (lbl_802C3040, 0x344 bytes): the function addresses the tables below through one section base. */
+static s32 data_000[4] = { 0, 0xFA, 0x1F4, 0x2EE };
+static char data_010[12] = "UI\\MEMCARD\\";
+static char data_01C[31][8] = {
+    "ATTIC", {'B', 'A', 'L', 'L', 'R', 'O', 'O', 'M'}, {'C', 'H', 'I', 'L', 'D', 'R', 'E', 'N'}, "CONSERV", "DINROOM", "FOYER", "GALLERY", "GRAVEYD",
+    "GROOM", "GRTHALL", "GUEST", "HALLAB", "HALLCD", "KITCHEN", "LAB", "MUSEUM",
+    "MAID", {'M', 'A', 'S', 'T', 'R', 'B', 'E', 'D'}, "MAUSOLM", "MEASURE", "TOYROOM", "OBSERV", "PANTRY", "PARLOR",
+    "SITTING", "STRETCH", "SUNROOM", "WINTER", "TITLE", "SPIRIT", "GLOBAL"
+};
+static s32 data_114[3][3] = { { 0, 0x28, 0 }, { 0, 0x28, 0 }, { 0, 0x28, 0 } };
+static f32 data_138[22] = { 0, 1, 0, 0, 0, 0, 0, 2, 0, 1, 1, 0, -1, 1, 0, 0, 1, 1, 0, 1, -1, 0 };
+static s32 data_190[35] = {
+    6, 9, 0xC, 0xF, 0x12, 0x15, 0x18, 0x1B, 0,
+    6, 9, 0xC, 0xF, 0x12, 0x15, 0x18, 0x1B, 0,
+    6, 0x40, 0x43, 0x46, 0x49, 0x4C, 0x4F, 0x52, 0x55,
+    0x1E, 0x21, 0x24, 0x27, 0x2A, 0x2D, 0x30, 0x33
+};
+static struct { s32 a, b, c; char *s; } data_21C = { 0, 0, 0, lbl_802986EC };
+static char *data_22C[7] = { lbl_8035F8C8, lbl_8035F8D0, lbl_8035F8D8, lbl_802986F8, lbl_80298704, lbl_802986EC, lbl_8035F8E0 };
+static struct { char *s; s32 a, b; } data_248[7] = {
+    { lbl_8035F8C8, 0, 1 }, { lbl_8035F8D0, 1, 1 }, { lbl_8035F8D8, 2, 1 }, { lbl_802986F8, 3, 1 },
+    { lbl_80298704, 4, 1 }, { lbl_802986EC, 5, 1 }, { lbl_8035F8E0, 6, 1 }
+};
+static s32 data_29C[7] = { 0, 1, 2, 3, 4, 5, 6 };
+static s32 data_2B8[7] = { 0, 2, 4, 6, 8, 10, 12 };
+static s32 data_2D4[14] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+static s32 data_30C[14] = { 0, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7 };
+
+
 void *lbl_802C3384[20] = { (void *)0x0, (void *)0x0, (void *)&fn_8007C724, (void *)&fn_80249AC4, (void *)&fn_8007C668, (void *)&fn_80242210, (void *)&fn_8007C550, (void *)&fn_8023D198, (void *)&fn_8007C830, (void *)&fn_8007BF5C, (void *)&fn_80241D80, (void *)&fn_8003F140, (void *)&fn_8003F18C, (void *)&fn_8007C3BC, (void *)&fn_8007C304, (void *)&fn_802416D4, (void *)&fn_8003F1DC, (void *)&fn_80240054, (void *)&fn_8023F5F4, (void *)&fn_8007C360 };
 void fn_8007BF5C(u8 *p, s32 n) {
     s32 *q;
     s32 i;
     s32 t;
     t = S32(96);
-    i = tA[n];
-    for (q = tB + i; t > 0; q++) {
+    i = data_2B8[n];
+    for (q = data_2D4 + i; t > 0; q++) {
         if (*q > t) break;
-        t -= tB[i++];
+        t -= data_2D4[i++];
     }
-    switch (tC[i]) {
+    switch (data_30C[i]) {
     case 0:
         fn_80241628(p, 0, 0);
         U32(296) = fn_8023F4A0(p, lbl_8035F8E8, lbl_8035F8E8, lbl_80298710, 1);
@@ -166,3 +206,249 @@ void fn_8007BF5C(u8 *p, s32 n) {
 }
 
 } /* extern "C" */
+
+} /* namespace m8007BF5C */
+
+namespace m8007C304 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+extern char lbl_802986F8[];
+extern char lbl_80298704[];
+struct VCall_fn_8007C304_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+struct VCall_fn_8007C304_1 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9(); virtual void m(int); };
+
+void fn_8007C304(s32 *param_1) {
+    ((VCall_fn_8007C304_0 *)(param_1))->m((s32)(lbl_802986F8)); /* "PLYRDEAD" */
+    ((VCall_fn_8007C304_1 *)(param_1))->m((s32)(lbl_80298704)); /* "PLYRLIVE" */
+}
+}
+
+} /* namespace m8007C304 */
+
+namespace m8007C360 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+} /* extern "C" */
+
+extern "C" {
+extern char lbl_802986F8[];
+extern char lbl_80298704[];
+struct VCall_fn_8007C360_0 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+struct VCall_fn_8007C360_1 { virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void m(int); };
+
+void fn_8007C360(s32 *param_1) {
+    ((VCall_fn_8007C360_0 *)(param_1))->m((s32)(lbl_802986F8)); /* "PLYRDEAD" */
+    ((VCall_fn_8007C360_1 *)(param_1))->m((s32)(lbl_80298704)); /* "PLYRLIVE" */
+}
+}
+
+} /* namespace m8007C360 */
+
+struct O7C3BC {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
+    virtual void v20();
+    virtual void v21();
+    virtual void v22();
+    virtual void v23();
+    virtual void v24();
+    virtual void v25();
+    virtual void v26();
+    virtual void v27();
+    virtual void v28();
+    virtual void v29();
+    virtual void v30();
+    virtual void v31();
+    virtual void v32();
+    virtual void v33();
+    virtual void v34();
+    virtual void v35();
+    virtual void v36();
+    virtual void v37();
+    virtual void v38();
+    virtual void m39(void *a, s32 b, char *c, char *d, f32 e);
+};
+namespace m8007C3BC {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+/* QV=2.0p1 */
+} /* extern "C" */
+/* hoisted */
+extern "C" {
+typedef struct { char d[8]; } Key7C3BC;
+typedef struct { u8 pad[12]; Key7C3BC *f12; } KA7C3BC;
+typedef struct { u8 pad[12]; f32 *f12; } FA7C3BC;
+typedef struct { s32 f0; } S7C3BC;
+typedef struct {
+    u8 pad0[224];
+    void *f224;
+    u8 pad228[60];
+    S7C3BC *f288;
+    void *f292;
+    KA7C3BC *f296;
+    FA7C3BC *f300;
+    s32 f304;
+    s32 f308;
+    s32 f312;
+    s32 f316;
+    u32 f320;
+    u32 f324;
+    s32 f328;
+} P7C3BC;
+extern void *lbl_8035B374;
+extern char lbl_8035F8E8[4];
+extern f32 lbl_8035F8EC;
+void fn_800F6E88(void *, void *);
+O7C3BC *fn_80233550(void *, Key7C3BC *);
+void fn_8023F5E8(P7C3BC *, s32);
+void fn_8024118C(P7C3BC *, void *, s32);
+void fn_802490E0(P7C3BC *, s32, f32);
+void fn_8023FE08(P7C3BC *, f32);
+inline BOOL chk7C3BC(P7C3BC *p) {
+    return p->f304 != 0 && (p->f312 != 0 || p->f288->f0 != 0);
+}
+void fn_8007C3BC(P7C3BC *p, f32 dt) {
+    if (p->f316 != 0) {
+        if (p->f308 != 0 && p->f320 != 0) {
+            Key7C3BC k;
+            O7C3BC *o;
+            fn_800F6E88(&k, &p->f296->f12[p->f324]);
+            o = fn_80233550(lbl_8035B374, &k);
+            if (o) {
+                if (p->f304 == 0 || (p->f304 != 0 && (p->f312 != 0 || p->f288->f0 != 0))) {
+                    fn_8023F5E8(p, p->f328);
+                } else {
+                    fn_8023F5E8(p, 0);
+                }
+                if (p->f292 != 0) fn_8024118C(p, p->f292, 0);
+                o->m39(p->f224, 0, lbl_8035F8E8, lbl_8035F8E8, lbl_8035F8EC);
+            }
+            p->f324 = (p->f324 + 1) % p->f320;
+            if (p->f308 != 0 && p->f320 != 0) {
+                fn_802490E0(p, 0, p->f300->f12[p->f324]);
+            }
+            p->f316 = 0;
+        } else {
+            p->f316 = 1;
+        }
+    }
+    fn_8023FE08(p, dt);
+}
+
+} /* extern "C" */
+
+} /* namespace m8007C3BC */
+
+namespace m8007C550 {
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" {
+
+void fn_80241E0C(void);
+
+void fn_8007C550(s32 param_1) {
+    *(u32 *)(param_1 + 0x118) = 0;
+    *(u32 *)(param_1 + 0x11c) = 0;
+    *(u32 *)(param_1 + 0x120) = 0;
+    *(u32 *)(param_1 + 0x124) = 0;
+    *(u32 *)(param_1 + 0x128) = 0;
+    *(u32 *)(param_1 + 300) = 0;
+    *(u32 *)(param_1 + 0x130) = 0;
+    *(u32 *)(param_1 + 0x134) = 0;
+    *(u32 *)(param_1 + 0x138) = 1;
+    *(u32 *)(param_1 + 0x13c) = 0;
+    *(u32 *)(param_1 + 0x140) = 0;
+    *(u32 *)(param_1 + 0x144) = 0;
+    *(u32 *)(param_1 + 0x148) = 0;
+    fn_80241E0C();
+}
+
+} /* extern "C" */
+
+} /* namespace m8007C550 */
+
+namespace m8007C5AC {
+extern "C" {
+/* Functions from 0x8007C5AC to 0x8007C668, found by decomp-toolkit. */
+
+extern s32 lbl_802C3040[];
+extern char lbl_803592D0[4];
+extern char lbl_803592D4[4];
+
+extern char lbl_802986EC[];
+extern char lbl_802986F8[];
+extern char lbl_80298704[];
+extern char lbl_8035F8C8[];
+extern char lbl_8035F8D0[];
+extern char lbl_8035F8D8[];
+extern char lbl_8035F8E0[];
+
+void fn_8007C5AC(void *arg0) {
+    M2C_FIELD(arg0, s32 *, 0x2C) = M2C_FIELD(arg0, s32 *, 0x54) = 7;
+    M2C_FIELD(arg0, s32 *, 0x68) = 2;
+    M2C_FIELD(arg0, s32 *, 0x5C) = 1;
+    M2C_FIELD(arg0, s32 *, 0x80) = 1;
+    M2C_FIELD(arg0, s32 *, 0x7C) = 0;
+    M2C_FIELD(arg0, s32 *, 0x84) = 0;
+    M2C_FIELD(arg0, s32 *, 0x88) = 0;
+    M2C_FIELD(arg0, s32 *, 0x8C) = 0;
+    M2C_FIELD(arg0, s32 *, 0x94) = 0;
+    M2C_FIELD(arg0, void **, 0x58) = m8007BF5C::data_22C;
+    M2C_FIELD(arg0, void **, 0x28) = m8007BF5C::data_248;
+    M2C_FIELD(arg0, void **, 0x30) = m8007BF5C::data_29C;
+    M2C_FIELD(arg0, void **, 0x6C) = lbl_803592D4;
+    M2C_FIELD(arg0, void **, 0x78) = &m8007BF5C::data_21C;
+    M2C_FIELD(arg0, void **, 0xC4) = lbl_803592D0;
+    M2C_FIELD(arg0, s32 *, 0xC8) = 0;
+    M2C_FIELD(arg0, s32 *, 0xCC) = 0;
+    M2C_FIELD(arg0, s32 *, 0xF4) = 0;
+    M2C_FIELD(arg0, s32 *, 0xFC) = 0;
+    M2C_FIELD(arg0, s32 *, 0x10C) = 0;
+    M2C_FIELD(arg0, s32 *, 0x118) = 0;
+    M2C_FIELD(arg0, s32 *, 0x11C) = 0;
+    M2C_FIELD(arg0, s32 *, 0x120) = 0;
+    M2C_FIELD(arg0, s32 *, 0x124) = 0;
+    M2C_FIELD(arg0, s32 *, 0x128) = 0;
+    M2C_FIELD(arg0, s32 *, 0x12C) = 0;
+    M2C_FIELD(arg0, s32 *, 0x130) = 0;
+    M2C_FIELD(arg0, s32 *, 0x134) = 0;
+    M2C_FIELD(arg0, s32 *, 0x138) = 1;
+    M2C_FIELD(arg0, s32 *, 0x13C) = 0;
+    M2C_FIELD(arg0, s32 *, 0x140) = 0;
+    M2C_FIELD(arg0, s32 *, 0x144) = 0;
+    M2C_FIELD(arg0, s32 *, 0x148) = 0;
+}
+
+} /* extern "C" (c unit) */
+} /* namespace m8007C5AC */
