@@ -272,6 +272,257 @@ static inline void bW(BitBuf *bs, u32 v, u32 n) {
         }
     }
 }
+#define BWM(V, N) { \
+    u32 n_ = (N); \
+    u32 v_; \
+    u32 bits_ = bs->bits; \
+    u32 buf_; \
+    u32 nb_; \
+    v_ = (V) & lbl_802AB0C0[n_]; \
+    nb_ = bits_ + n_; \
+    buf_ = bs->buf | (v_ << bits_); \
+    bs->buf = buf_; \
+    bs->bits = nb_; \
+    if (nb_ > 31) { \
+        *bs->ptr = buf_; \
+        bs->ptr++; \
+        bs->bits -= 32; \
+        if (bs->bits != 0) { \
+            bs->buf = v_ >> (n_ - bs->bits); \
+        } else { \
+            bs->buf = 0; \
+        } \
+    } }
+#define MXE(q, e) { u8 x_ = (e); if (q < x_) q = x_; }
+#define PUT1(c) \
+    { \
+        if (c) bs->buf |= 1 << bs->bits; \
+        if (++bs->bits == 32) { \
+            *bs->ptr = bs->buf; \
+            bs->bits = 0; \
+            bs->buf = 0; \
+            bs->ptr++; \
+        } \
+    }
+#define ONE(K) \
+    PUT1(((K) ? *++bp : *bp) != lvl); \
+    { \
+    u8 t_ = *bp; \
+    if (t_ != lvl) { \
+        *--head = *bp | ((pos << 10) + 0x300) | (t_ & 0x100); \
+    } else { \
+        BWM(av[pos], lvl - 1) \
+        PUT1(sv[pos] < 0); \
+    } \
+    } \
+    pos++;
+void fn_802910C0(BitBuf *bs, s16 *in) {
+    u16 list[132];
+    u8 bits[64];
+    u8 g[16];
+    u16 av[64];
+    s16 sv[64];
+    u8 h[4];
+    u16 *head, *end, *p;
+    u8 *bp;
+    u8 mx, lvl, q;
+    u16 v, k;
+#define pos v
+    s32 i;
+    for (i = 0; i < 64; i++) sv[i] = in[lbl_802AF340[i]];
+    for (i = 0; i < 64; i++) av[i] = abs(sv[i]);
+    mx = 0;
+    for (i = 1; i < 64; i++) {
+        u8 t = 32 - cntlzw_inline(av[i]);
+        if (t > mx) mx = t;
+        bits[i] = t;
+    }
+    for (i = 4; i < 64; i += 4) {
+        q = bits[i];
+        MXE(q, bits[i + 1]);
+        MXE(q, bits[i + 2]);
+        MXE(q, bits[i + 3]);
+        g[i / 4 - 1] = q;
+    }
+    q = g[1]; MXE(q, g[2]); MXE(q, g[3]); MXE(q, g[4]); h[0] = q;
+    q = g[6]; MXE(q, g[7]); MXE(q, g[8]); MXE(q, g[9]); h[1] = q;
+    q = g[11]; MXE(q, g[12]); MXE(q, g[13]); MXE(q, g[14]); h[2] = q;
+    bW(bs, mx, 4);
+    head = &list[68];
+    head[0] = (h[0] > g[0] ? h[0] : g[0]) | (4 << 10);
+    head[1] = (h[1] > g[5] ? h[1] : g[5]) | (24 << 10);
+    head[2] = (h[2] > g[10] ? h[2] : g[10]) | (44 << 10);
+    head[3] = bits[1] + 0x700;
+    head[4] = bits[2] + 0xB00;
+    head[5] = bits[3] + 0xF00;
+    end = head + 6;
+    for (lvl = mx; lvl != 0; lvl--) {
+        for (p = head; p < end;) {
+            v = *p;
+            if (v == 0) { p++; continue; }
+            PUT1((u8)v == lvl);
+            if ((u8)v != lvl) { p++; continue; }
+            switch (v & 0x300) {
+            case 0x000:
+                pos = v >> 10;
+                *p = h[pos >> 4] + (((pos + 4) << 10) + 0x100);
+                goto C;
+            case 0x100:
+                pos = v >> 10;
+                k = pos >> 2;
+                *p = g[k - 1] + ((pos << 10) + 0x200);
+                *end++ = g[k] + (((pos + 4) << 10) + 0x200);
+                *end++ = g[k + 1] + (((pos + 8) << 10) + 0x200);
+                *end++ = g[k + 2] + (((pos + 12) << 10) + 0x200);
+                break;
+            case 0x200:
+                *p = 0;
+                pos = v >> 10;
+                p++;
+            C:
+                bp = bits + pos;
+                ONE(0) ONE(1) ONE(2) ONE(3)
+                break;
+            case 0x300:
+                pos = v >> 10;
+                BWM(av[pos], lvl - 1)
+                PUT1(sv[pos] < 0);
+                *p = 0;
+                p++;
+                break;
+            default:
+                p++;
+            }
+        }
+    }
+}
+#undef MXE
+#undef PUT1
+#undef ONE
+#undef BWM
+#undef pos
+
+#define GB1(q) (bb.bits != 0 ? ({ u32 w_ = bb.buf; bb.bits--; bb.buf = w_ >> 1; w_ & 1; }) \
+                             : ({ u32 w_ = *bb.ptr; bb.ptr++; bb.bits = 31; bb.buf = w_ >> 1; w_ & 1; }))
+#define GBN(n, r_) { u32 b_ = bb.bits; \
+    if (b_ >= (n)) { \
+        r_ = bb.buf & (0xFFFFFFFF >> (32 - (n))); \
+        bb.bits = b_ - (n); \
+        bb.buf >>= (n); \
+    } else { \
+        u32 *pp_ = bb.ptr; \
+        u32 w_ = *pp_; \
+        r_ = (bb.buf | (w_ << b_)) & (0xFFFFFFFF >> (32 - (n))); \
+        bb.bits = b_ + 32 - (n); \
+        bb.ptr = pp_ + 1; \
+        bb.buf = w_ >> ((n) - b_); \
+    } }
+#define RQV(V) \
+    if (GB1(q)) { \
+        *--head = (c << 2) + 3; \
+    } else { \
+        V; \
+    }
+#define VAL { GBN(lvl, v) v |= mask; ((s16 *)list)[c + 68] = GB1(q) ? -v : v; }
+#define VAL1 { ((s16 *)list)[c + 68] = GB1(q) ? -1 : 1; }
+#define PASS(V) \
+        p = head; \
+        while (p < end) { \
+            c = *p; \
+            if (c != 0 && GB1(q)) { \
+                switch (c & 3) { \
+                case 0: \
+                    c >>= 2; \
+                    *p = ((c + 4) << 2) + 1; \
+                    goto four##V; \
+                case 1: \
+                    c >>= 2; \
+                    *p = (c << 2) + 2; \
+                    *end++ = ((c + 4) << 2) + 2; \
+                    *end++ = ((c + 8) << 2) + 2; \
+                    *end++ = ((c + 12) << 2) + 2; \
+                    continue; \
+                case 2: \
+                    *p = 0; \
+                    c >>= 2; \
+                    p++; \
+                four##V: \
+                    RQV(V) c++; \
+                    RQV(V) c++; \
+                    RQV(V) c++; \
+                    RQV(V) \
+                    continue; \
+                case 3: \
+                    c >>= 2; \
+                    V; \
+                    *p = 0; \
+                    break; \
+                } \
+            } \
+            p++; \
+        }
+void fn_80291B30(s16 *out, BitBuf *bs) {
+    u8 list[136];
+    s16 tmp[64];
+    BitBuf bb;
+    u8 *head, *end, *p;
+    u32 q;
+    u8 nb, c, lvl;
+    s16 mask;
+    s16 v;
+    bb = *bs;
+    tmp[1] = 0;
+    memset(&tmp[2], 0, 124);
+    {
+        u32 bits = bb.bits;
+        if (bits > 3) {
+            nb = bb.buf & 15;
+            bb.bits = bits - 4;
+            bb.buf >>= 4;
+        } else {
+            u32 *pp = bb.ptr;
+            u32 w = *pp;
+            nb = (bb.buf | (w << bits)) & 15;
+            bb.bits = bits + 32 - 4;
+            bb.ptr = pp + 1;
+            bb.buf = w >> (4 - bits);
+        }
+    }
+    head = list + 68;
+    head[0] = 0x10;
+    head[1] = 0x60;
+    head[2] = 0xB0;
+    head[3] = 7;
+    head[4] = 0xB;
+    head[5] = 0xF;
+    mask = (s16)(1 << (nb - 1));
+    end = head + 6;
+    for (lvl = nb; lvl > 1; mask >>= 1) {
+        lvl--;
+        PASS(VAL)
+    }
+    if (nb != 0) {
+        u8 e;
+#define c e
+        PASS(VAL1)
+#undef c
+    }
+    *bs = bb;
+    out[1] = tmp[1];
+#define CP(i, j) ((u32 *)out)[i] = ((u32 *)tmp)[j];
+    CP(1, 2) CP(2, 4) CP(3, 6) CP(4, 1) CP(5, 3) CP(6, 5) CP(7, 7) CP(8, 12)
+    CP(9, 22) CP(10, 8) CP(11, 10) CP(12, 13) CP(13, 23) CP(14, 9) CP(15, 11) CP(16, 14)
+    CP(17, 16) CP(18, 24) CP(19, 26) CP(20, 15) CP(21, 17) CP(22, 25) CP(23, 27) CP(24, 18)
+    CP(25, 20) CP(26, 28) CP(27, 30) CP(28, 19) CP(29, 21) CP(30, 29) CP(31, 31)
+#undef CP
+}
+#undef GB1
+#undef GBN
+#undef RQV
+#undef VAL
+#undef VAL1
+#undef PASS
+
 #define MXE(q, e) { u8 x_ = (e); if (q < x_) q = x_; }
 #define PUT1(c) \
     { \
