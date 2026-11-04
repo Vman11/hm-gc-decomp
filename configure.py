@@ -1624,7 +1624,7 @@ config.libs = [
             Object(NonMatching, "auto/jt_802E00D4.c"),
             Object(Matching, "trk/mainloop.c", extra_cflags=["-inline noauto"]),
             Object(Matching, "trk/nubevent.c", extra_cflags=["-inline noauto"]),
-            Object(NonMatching, "trk/nubinit.c", extra_cflags=["-inline noauto"]),
+            Object(Matching, "trk/nubinit.c", extra_cflags=["-inline noauto"]),
             Object(NonMatching, "trk/msg.c", extra_cflags=["-inline noauto"]),
             Object(Matching, "trk/msgbuf.c", extra_cflags=["-inline noauto"]),
             Object(NonMatching, "trk/serpoll.c", extra_cflags=["-inline noauto"]),

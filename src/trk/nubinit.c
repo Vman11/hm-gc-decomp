@@ -456,10 +456,13 @@ void OSDumpContext(void* context);
 extern s32 __OSArenaHi_8035A578;
 
 
+#pragma push
+#pragma readonly_strings on
 void TRKNubWelcome(void) {
     void TRK_board_display(char *);
     TRK_board_display("MetroTRK for GAMECUBE v2.0");
 }
+#pragma pop
 
 
 s32 TRKTerminateNub(void) {
@@ -470,8 +473,27 @@ s32 TRKTerminateNub(void) {
 s32 TRKInitializeEventQueue(void);
 
 
+extern int gTRKBigEndian[];
+static inline int TRK_InitializeEndian(void) {
+    u8 bendian[4];
+    int result = 0;
+    gTRKBigEndian[0] = 1;
+
+    bendian[0] = 0x12;
+    bendian[1] = 0x34;
+    bendian[2] = 0x56;
+    bendian[3] = 0x78;
+
+    if (*(u32 *)bendian == 0x12345678) {
+        gTRKBigEndian[0] = 1;
+    } else if (*(u32 *)bendian == 0x78563412) {
+        gTRKBigEndian[0] = 0;
+    } else {
+        result = 1;
+    }
+    return result;
+}
 s32 TRKInitializeNub(void) {
-    extern s32 gTRKBigEndian[];
     extern u8 *gTRKInputPendingPtr[];
     extern void usr_put_initialize(void);
     extern s32 TRKInitializeMessageBuffers(void);
@@ -481,23 +503,10 @@ s32 TRKInitializeNub(void) {
     extern void TRKTargetSetInputPendingPtr(s32 arg0);
     extern s32 TRKInitializeSerialHandler(void);
     extern s32 TRKInitializeTarget(void);
-    s32 result;
+    int result;
     s32 resultTemp;
-    u8 bendian[4];
 
-    result = 0;
-    gTRKBigEndian[0] = 1;
-    bendian[0] = 0x12;
-    bendian[1] = 0x34;
-    bendian[2] = 0x56;
-    bendian[3] = 0x78;
-    if (*(u32*)bendian == 0x12345678) {
-        gTRKBigEndian[0] = 1;
-    } else if (*(u32*)bendian == 0x78563412) {
-        gTRKBigEndian[0] = 0;
-    } else {
-        result = 1;
-    }
+    result = TRK_InitializeEndian();
 
     if (result == 0) usr_put_initialize();
     if (result == 0) result = TRKInitializeEventQueue();

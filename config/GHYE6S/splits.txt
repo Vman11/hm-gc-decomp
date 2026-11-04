@@ -7231,6 +7231,7 @@ trk/nubevent.c:
 
 trk/nubinit.c:
 	.text       start:0x800DADA0 end:0x800DAF24
+	.rodata     start:0x8029BDD8 end:0x8029BDF8
 
 trk/msg.c:
 	.text       start:0x800DAF24 end:0x800DB100
