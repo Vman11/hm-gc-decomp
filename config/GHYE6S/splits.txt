@@ -7293,6 +7293,8 @@ trk/main_TRK.c:
 
 trk/dolphin_trk_glue.c:
 	.text       start:0x800E1584 end:0x800E1A94
+	.rodata     start:0x8029BEA0 end:0x8029BEF0
+	.bss        start:0x80325D68 end:0x80327F90
 
 trk/targcont.c:
 	.text       start:0x800E1A94 end:0x800E1AC8

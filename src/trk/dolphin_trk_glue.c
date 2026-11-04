@@ -1,6 +1,7 @@
 /* Functions from 0x800B2E70 to 0x800E1DA8, found by decomp-toolkit. */
 #include "common.h"
 #include "trk_priv.h"
+#pragma readonly_strings on
 #define TRK_PPC_INLINE_H
 
 long fn_800DF4D0();
@@ -595,9 +596,9 @@ void TRKUARTInterruptHandler(void) {
 void InitializeProgramEndTrap(void) {
     extern void *fn_80003488(void *, const void *, u32);
     extern void DCFlushRange(void *, u32);
-    extern u8 lbl_8029BEA0[];
+    static const u8 EndofProgramInstruction[4] = {0x00, 'E', 'N', 'D'};
     u8 *ppcHalt = (u8 *)PPCHalt;
-    fn_80003488(ppcHalt + 4, lbl_8029BEA0, 4);
+    fn_80003488(ppcHalt + 4, EndofProgramInstruction, 4);
     ICInvalidateRange(ppcHalt + 4, 4);
     DCFlushRange(ppcHalt + 4, 4);
 }
@@ -611,8 +612,7 @@ void InitializeProgramEndTrap(void) {
 #pragma auto_inline off
 
 void TRK_board_display(char *str) {
-    extern char lbl_8029BEA4[];
-    OSReport(lbl_8029BEA4, str);
+    OSReport("%s\n", str);
 }
 #pragma pop
 
@@ -640,6 +640,13 @@ void ReserveEXI2Port(void) {
 }
 #pragma pop
 
+static s32 gWritePos = 0;
+static s32 gReadPos = 0;
+static s32 gReadCount = 0;
+static s32 gUnk = 0;
+static u8 gReadBuf[0x110A];
+u8 gWriteBuf[0x110A];
+
 #pragma push
 #pragma use_lmw_stmw on
 #pragma peephole on
@@ -648,33 +655,24 @@ void ReserveEXI2Port(void) {
 #pragma auto_inline off
 
 s32 fn_800E16F8(u8 *c) {
-    typedef struct {
-        s32 writePos;
-        s32 readPos;
-        s32 readCount;
-        s32 pad;
-        u8 buf[0x110A];
-    } TRKUARTBuf;
-    extern s32 lbl_80325D68[];
     s32 readErr = 4;
-    TRKUARTBuf *b = (TRKUARTBuf *)lbl_80325D68;
 
-    if (b->readPos >= b->readCount) {
-        b->readPos = 0;
-        b->readCount = gDBCommTable.peek();
-        if (b->readCount > 0) {
-            if (b->readCount > 0x110A) {
-                b->readCount = 0x110A;
+    if (gReadPos >= gReadCount) {
+        gReadPos = 0;
+        gReadCount = gDBCommTable.peek();
+        if (gReadCount > 0) {
+            if (gReadCount > 0x110A) {
+                gReadCount = 0x110A;
             }
-            readErr = gDBCommTable.read(b->buf, b->readCount) != 0 ? -1 : 0;
+            readErr = gDBCommTable.read(gReadBuf, gReadCount) != 0 ? -1 : 0;
             if (readErr != 0) {
-                b->readCount = 0;
+                gReadCount = 0;
             }
         }
     }
-    if (b->readPos < b->readCount) {
+    if (gReadPos < gReadCount) {
+        *c = gReadBuf[gReadPos++];
         readErr = 0;
-        *c = b->buf[b->readPos++];
     }
     return readErr;
 }
@@ -688,9 +686,7 @@ s32 fn_800E16F8(u8 *c) {
 #pragma auto_inline off
 
 s32 fn_800E17E8(s8 arg0) {
-    extern s32 lbl_80325D68[];
-    extern u8 lbl_80326E84[];
-    lbl_80326E84[lbl_80325D68[0]++] = arg0;
+    gWriteBuf[gWritePos++] = arg0;
     return 0;
 }
 #pragma pop
@@ -703,19 +699,17 @@ s32 fn_800E17E8(s8 arg0) {
 #pragma auto_inline off
 
 s32 fn_800E1810(void) {
-    extern s32 lbl_80325D68[];
-    extern u8 lbl_80326E84[];
     s32 retval = 0;
     s32 result;
 
-    while (lbl_80325D68[0] < 0x800) {
-        lbl_80326E84[lbl_80325D68[0]] = 0;
-        lbl_80325D68[0]++;
+    while (gWritePos < 0x800) {
+        gWriteBuf[gWritePos] = 0;
+        gWritePos++;
     }
-    if (lbl_80325D68[0] != 0) {
-        result = gDBCommTable.write(lbl_80326E84, lbl_80325D68[0]);
+    if (gWritePos != 0) {
+        result = gDBCommTable.write(gWriteBuf, gWritePos);
         retval = result != 0 ? -1 : 0;
-        lbl_80325D68[0] = 0;
+        gWritePos = 0;
     }
     return retval;
 }
