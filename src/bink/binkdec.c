@@ -436,6 +436,29 @@ void fn_80285068(BBundle *t, BitBuf *bs) {
         t->cur = t->data + 4;
     }
 }
+#define HUFF3(S) \
+    c = bs->bits; \
+    if (c >= hbits) { \
+        e = tab[bs->buf & (~0u >> (32 - hbits))]; \
+        S = map[e & 15]; \
+        e >>= 4; \
+        bs->buf >>= e; \
+        bs->bits = c - e; \
+    } else { \
+        u32 w = *bs->ptr; \
+        u32 b0 = bs->buf; \
+        e = tab[(b0 | (w << c)) & (~0u >> (32 - hbits))]; \
+        S = map[e & 15]; \
+        e >>= 4; \
+        if (c >= e) { \
+            bs->buf = b0 >> e; \
+            bs->bits = c - e; \
+        } else { \
+            bs->buf = w >> (e - c); \
+            bs->bits = c + 32 - e; \
+            bs->ptr++; \
+        } \
+    }
 void fn_802852FC(BBundle *t, BitBuf *bs) {
     unsigned int v;
     if (t->cur != t->end) return;
@@ -460,9 +483,9 @@ void fn_802852FC(BBundle *t, BitBuf *bs) {
             u8 *map = t->map;
             unsigned int hbits = t->hbits;
             while (v--) {
-                u32 lo, hi;
-                HUFF(lo)
-                HUFF(hi)
+                u32 lo, hi, c, e;
+                HUFF3(lo)
+                HUFF3(hi)
                 *out++ = lo | (hi << 4);
             }
         }
@@ -472,6 +495,7 @@ void fn_802852FC(BBundle *t, BitBuf *bs) {
     }
 }
 #undef HUFF
+#undef HUFF3
 
 u32 fn_80285CE0(u32 arg0, u32 arg1, u32 arg2, u32 arg3) {
     if (arg2 <= 8) {
