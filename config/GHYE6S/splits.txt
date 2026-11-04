@@ -479,7 +479,7 @@ auto/text_80035318.cpp:
 	extabindex  start:0x80017F6C end:0x80017F78
 	.text       start:0x80035318 end:0x80035398
 
-auto/text_80035398.c:
+auto/text_80035398.cpp:
 	extab       start:0x80005B74 end:0x80005B7C
 	extabindex  start:0x80017F78 end:0x80017F84
 	.text       start:0x80035398 end:0x80036E0C
