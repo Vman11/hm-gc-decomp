@@ -317,8 +317,8 @@ int EXI2_ReadN(void *bytes, u32 length) {
         for (j = 0; j < nb; j++) {
             ((u8 *)bytes)[j + off] = data >> ((3 - j) * 8);
         }
-        off = (i + 1) * 4;
         i++;
+        off = off + sizeof(data);
     }
     EXI2Deselect();
     SessionOpen = 0;

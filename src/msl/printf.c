@@ -754,6 +754,8 @@ char *double2hex(char *buff, print_format format, double x) {
     int i;
     char digit;
     unsigned char c;
+    int e;
+
     bits = x;
     if (format.precision > 509) return 0;
     df.style = 0;
@@ -789,9 +791,10 @@ char *double2hex(char *buff, print_format format, double x) {
     exp_format.alternate_form = 0;
     exp_format.argument_options = 0;
     exp_format.conversion_char = 'd';
+    e = (short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023;
     exp_format.field_width = 0;
     exp_format.precision = 1;
-    p = long2str((short)(((*(short *)&bits) >> 4) & 0x7ff) - 1023, buff, exp_format);
+    p = long2str(e, buff, exp_format);
     if (format.conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
     for (i = format.precision; i >= 1; --i) {
