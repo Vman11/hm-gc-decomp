@@ -464,6 +464,7 @@ s32 fn_800DAF24(TrkBuf *msg) {
     int i;
     int j;
     u8 c;
+    u8 d;
     u32 acc = 0;
 
     for (j = 0; j < msg->count; j++) {
@@ -490,14 +491,14 @@ s32 fn_800DAF24(TrkBuf *msg) {
     }
 
     if (err == 0) {
-        c = checksum;
+        d = checksum;
         for (i = 0; i < 1; i++) {
-            if (c == 0x7E || c == 0x7D) {
+            if (d == 0x7E || d == 0x7D) {
                 err = fn_800E17E8(0x7D);
-                c ^= 0x20;
+                d ^= 0x20;
                 if (err != 0) break;
             }
-            err = fn_800E17E8(c);
+            err = fn_800E17E8(d);
             if (err != 0) break;
         }
     }

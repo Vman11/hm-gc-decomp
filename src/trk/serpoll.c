@@ -622,8 +622,8 @@ s32 fn_800DBDF0(void) {
                 if (ok) {
                     id = lbl_803257B4.msgBufID;
                     lbl_803257B4.msgBufID = -1;
-                    lbl_803257B4.receiveState = 0;
                     lbl_803257B4.buffer = NULL;
+                    lbl_803257B4.receiveState = 0;
                     return id;
                 }
                 lbl_803257B4.receiveState = 0;
