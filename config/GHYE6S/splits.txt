@@ -8010,7 +8010,7 @@ auto/text_800F9280.cpp:
 auto/text_800F92E8.cpp:
 	.text       start:0x800F92E8 end:0x800F9324
 
-auto/text_800F9324.c:
+auto/text_800F9324.cpp:
 	extab       start:0x80009A30 end:0x80009A38
 	extabindex  start:0x8001BE90 end:0x8001BE9C
 	.text       start:0x800F9324 end:0x800F9398
