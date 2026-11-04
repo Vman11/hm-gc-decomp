@@ -71,7 +71,7 @@ char *longlong2str(long long num, char *buff, print_format format);
 char *long2str(long num, char *buff, print_format format);
 char *float2str(double num, char *buff, print_format format);
 char *double2hex(char *buff, print_format format, double x);
-char *parse_format(char *format, va_list args, print_format *out);
+const char *parse_format(const char *format, va_list args, print_format *out);
 static char *long2str(long, char *, print_format);
 typedef unsigned int size_t;
 extern void SetExiInterruptMask(s32 chan, EXIControl *exi);
@@ -967,11 +967,11 @@ static char *long2str(long num, char *buff, print_format format) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-char *parse_format(char *format, va_list args, print_format *out) {
+const char *parse_format(const char *format, va_list args, print_format *out) {
 print_format f;
-int c = *(format + 1);
+int c;
 int flag;
-char *p = format + 1;
+const char *p = format;
 f.sign_options = 0;
 f.justification_options = 1;
 f.precision_specified = 0;
@@ -979,7 +979,7 @@ f.alternate_form = 0;
 f.argument_options = 0;
 f.field_width = 0;
 f.precision = 0;
-if (c == '%') { f.conversion_char = c; *out = f; return p + 1; }
+if ((c = *++p) == '%') { f.conversion_char = c; *out = f; return p + 1; }
 for (;;) {
 flag = 1;
 switch (c) {
