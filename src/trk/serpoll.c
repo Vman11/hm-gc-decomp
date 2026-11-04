@@ -561,18 +561,34 @@ s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg);
 #pragma dont_inline off
 #pragma auto_inline off
 
+void fn_800DE95C(TrkBuf* buf, u8 a, u8 b);
+static inline int TRKCheckFrame(void) {
+    TrkBuf *buf = lbl_803257B4.buffer;
+    if (buf->count < 2) {
+        fn_800DE95C(buf, 0xFF, 2);
+        if (lbl_803257B4.msgBufID != -1) {
+            fn_800DBB10(lbl_803257B4.msgBufID);
+            lbl_803257B4.msgBufID = -1;
+        }
+        lbl_803257B4.buffer = NULL;
+        lbl_803257B4.receiveState = 0;
+        return 0;
+    }
+    buf->pos = 0;
+    buf->count--;
+    return 1;
+}
 s32 fn_800DBDF0(void) {
     s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg);
     s32 fn_800E16F8(u8 *c);
-    void fn_800DE95C(TrkBuf* buf, u8 a, u8 b);
     s32 err;
     s32 readErr;
     s32 ok;
     s32 id;
-    u8 c;
+    char c;
 
     err = 0;
-    readErr = fn_800E16F8(&c);
+    readErr = fn_800E16F8((u8 *)&c);
     while (readErr == 0 && err == 0) {
         if (lbl_803257B4.receiveState != 2) {
             lbl_803257B4.isEscape = 0;
@@ -591,7 +607,7 @@ s32 fn_800DBDF0(void) {
             }
             lbl_803257B4.receiveState = 2;
         case 2:
-            if ((s8)c == 0x7E) {
+            if (c == 0x7E) {
                 if (lbl_803257B4.isEscape) {
                     fn_800DE95C(lbl_803257B4.buffer, 0xFF, 4);
                     if (lbl_803257B4.msgBufID != -1) {
@@ -602,28 +618,12 @@ s32 fn_800DBDF0(void) {
                     lbl_803257B4.receiveState = 0;
                     break;
                 }
-                {
-                    TrkBuf *buf = lbl_803257B4.buffer;
-                    if (buf->count < 2) {
-                        fn_800DE95C(buf, 0xFF, 2);
-                        if (lbl_803257B4.msgBufID != -1) {
-                            fn_800DBB10(lbl_803257B4.msgBufID);
-                            lbl_803257B4.msgBufID = -1;
-                        }
-                        lbl_803257B4.buffer = NULL;
-                        lbl_803257B4.receiveState = 0;
-                        ok = 0;
-                    } else {
-                        buf->pos = 0;
-                        buf->count--;
-                        ok = 1;
-                    }
-                }
+                ok = TRKCheckFrame();
                 if (ok) {
                     id = lbl_803257B4.msgBufID;
-                    lbl_803257B4.buffer = NULL;
                     lbl_803257B4.msgBufID = -1;
                     lbl_803257B4.receiveState = 0;
+                    lbl_803257B4.buffer = NULL;
                     return id;
                 }
                 lbl_803257B4.receiveState = 0;
@@ -632,20 +632,11 @@ s32 fn_800DBDF0(void) {
             if (lbl_803257B4.isEscape) {
                 c ^= 0x20;
                 lbl_803257B4.isEscape = 0;
-            } else if ((s8)c == 0x7D) {
+            } else if (c == 0x7D) {
                 lbl_803257B4.isEscape = 1;
                 break;
             }
-            {
-                TrkBuf *buf = lbl_803257B4.buffer;
-                if (buf->pos >= 0x880) {
-                    err = 0x301;
-                } else {
-                    buf->data[buf->pos++] = c;
-                    buf->count++;
-                    err = 0;
-                }
-            }
+            err = TRKAppendBuffer1_ui8(lbl_803257B4.buffer, c);
             lbl_803257B4.fcs += c;
             break;
         case 3:
@@ -659,7 +650,7 @@ s32 fn_800DBDF0(void) {
             }
             break;
         }
-        readErr = fn_800E16F8(&c);
+        readErr = fn_800E16F8((u8 *)&c);
     }
     return -1;
 }

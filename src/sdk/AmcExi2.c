@@ -1,4 +1,5 @@
 #include "common.h"
+#pragma dont_inline on
 typedef struct OSContext OSContext;
 typedef void (*EXICallback)(s32, OSContext *);
 typedef struct EXI2Control {
@@ -75,31 +76,40 @@ int EXI2Imm(void *buf, s32 len, u32 type, EXICallback callback) {
     return 1;
 }
 
-void EXI2Sync(void) {
+#pragma push
+#pragma dont_inline off
+static inline int EXI2CompleteTransfer(void) {
     u8 *buf;
     u32 data;
     int i;
     int len;
+
+    if (Exi->state & 3) {
+        if ((Exi->state & 2) && (len = Exi->immLen)) {
+            buf = Exi->immBuf;
+            data = REG(4);
+            for (i = 0; i < len; i++) {
+                *buf++ = data >> ((3 - i) * 8);
+            }
+        }
+        Exi->state &= ~3;
+        return 1;
+    }
+    return 0;
+}
+void EXI2Sync(void) {
     int enabled;
 
     while (Exi->state & 4) {
         if (!(REG(3) & 1)) {
             enabled = OSDisableInterrupts();
-            if (Exi->state & 3) {
-                if ((Exi->state & 2) && (len = Exi->immLen)) {
-                    buf = Exi->immBuf;
-                    data = REG(4);
-                    for (i = 0; i < len; i++) {
-                        *buf++ = data >> ((3 - i) * 8);
-                    }
-                }
-                Exi->state &= ~3;
-            }
+            EXI2CompleteTransfer();
             OSRestoreInterrupts(enabled);
             break;
         }
     }
 }
+#pragma pop
 
 void EXI2ClearInterrupts(int exi, int tc) {
     if (exi) {
@@ -189,9 +199,9 @@ void EXI2Callback(s32 chan, OSContext *context) {
 
 void EXI2_Init(u8 **inputFlag, EXICallback callback) {
     int enabled;
-    u32 cmd;
-    u32 a;
     u32 b;
+    u32 a;
+    u32 cmd[3];
     int ok;
 
     *inputFlag = pExiInputFlag;
@@ -199,12 +209,13 @@ void EXI2_Init(u8 **inputFlag, EXICallback callback) {
     ExiCallback = callback;
     OSRestoreInterrupts(enabled);
     EXI2InitRegs();
-    b = 0;
+    b = ok = 0;
     a = 0x01000003;
-    while (!EXI2Select(5)) {
+    while (!ok) {
+        ok = EXI2Select(5);
     }
-    cmd = 0x80000000;
-    EXI2Imm(&cmd, 2, 1, 0);
+    cmd[0] = 0x80000000;
+    EXI2Imm(cmd, 2, 1, 0);
     EXI2Sync();
     EXI2Imm(&a, 4, 1, 0);
     EXI2Sync();
@@ -219,9 +230,9 @@ void EXI2_EnableInterrupts(void) {
 }
 
 int EXI2_Poll(void) {
-    u32 cmd;
-    u32 dummy;
     u32 ret;
+    u32 dummy;
+    u32 cmd[3];
 
     if (!(__PIRegs[0] & 0x1000) && *pExiInputFlag == 0) {
         ret = 0;
@@ -236,18 +247,18 @@ int EXI2_Poll(void) {
                 fn_800E91D0(lbl_802E0B78);
             } else {
                 SessionOpen = 1;
-                cmd = 0;
-                EXI2Imm(&cmd, 2, 1, 0);
+                cmd[0] = 0;
+                EXI2Imm(cmd, 2, 1, 0);
                 EXI2Sync();
                 EXI2Imm(&dummy, 2, 0, 0);
                 EXI2Sync();
-                EXI2Imm(&ret, 4, 0, 0);
-                EXI2Sync();
             }
         }
+        EXI2Imm(&ret, 4, 0, 0);
+        EXI2Sync();
         if (*pExiInputFlag == 0) {
-            *pExiInputFlag = 1;
             __PIRegs[0] = __PIRegs[0] & 0x1000;
+            *pExiInputFlag = 1;
         }
     }
     return ret;

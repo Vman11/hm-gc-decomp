@@ -1726,7 +1726,7 @@ config.libs = [
             Object(Matching, "msl/extras.c", mw_version="GC/2.0"),
             Object(Matching, "sdk/odenotstub.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/DebuggerDriver.c", mw_version="GC/1.2.5n", extra_cflags=["-inline deferred"]),
-            Object(NonMatching, "sdk/AmcExi2.c", mw_version="GC/1.2.5", extra_cflags=["-inline off"]),
+            Object(NonMatching, "sdk/AmcExi2.c", mw_version="GC/1.2.5", extra_cflags=["-inline on"]),
             Object(Matching, "sdk/EXIBios.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/OSUartExi.c", mw_version="GC/1.2.5n"),
             Object(Matching, "sdk/SIBios.c", mw_version="GC/1.2.5n"),

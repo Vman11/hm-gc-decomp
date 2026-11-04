@@ -461,12 +461,13 @@ extern s32 __OSArenaHi_8035A578;
 s32 fn_800DAF24(TrkBuf *msg) {
     s32 err;
     u8 checksum;
-    u32 i;
+    int i;
+    int j;
     u8 c;
     u32 acc = 0;
 
-    for (i = 0; i < msg->count; i++) {
-        acc = (acc + msg->data[i]) & 0xFF;
+    for (j = 0; j < msg->count; j++) {
+        acc = (acc + msg->data[j]) & 0xFF;
     }
     checksum = acc ^ 0xFF;
 
@@ -490,16 +491,16 @@ s32 fn_800DAF24(TrkBuf *msg) {
 
     if (err == 0) {
         c = checksum;
-        if (c == 0x7E || c == 0x7D) {
-            err = fn_800E17E8(0x7D);
-            c ^= 0x20;
-            if (err != 0) {
-                goto end;
+        for (i = 0; i < 1; i++) {
+            if (c == 0x7E || c == 0x7D) {
+                err = fn_800E17E8(0x7D);
+                c ^= 0x20;
+                if (err != 0) break;
             }
+            err = fn_800E17E8(c);
+            if (err != 0) break;
         }
-        err = fn_800E17E8(c);
     }
-end:
     if (err == 0) {
         err = fn_800E17E8(0x7E);
     }
