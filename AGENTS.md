@@ -401,6 +401,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wFK (user-approved, collaborator units, 2026-11-04): matched fn_80139604 on GC/2.5 (1.3.2/2.0p1 never hoist loads above stores in the unrolled copy loop; 2.5 honours `B *__restrict src` + `f32 *__restrict out` local); float copies = C++ V2/V3/V4 `operator=` inlines (struct assign), Matching.
 - wFM (user-approved, collaborator units, 2026-11-04): matched fn_800F9324 on GC/2.5 with `__restrict` on the pointer params (compiler-version sweep), Matching.
 - wFM (user-approved, collaborator units, 2026-11-04): matched fn_801A6860 on GC/2.5 with `__restrict` on the pointer params (compiler-version sweep), Matching.
+wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_8003714C on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
