@@ -753,6 +753,7 @@ char *double2hex(char *buff, print_format format, double x) {
     char *p;
     int i;
     char digit;
+    unsigned char c;
     bits = x;
     if (format.precision > 509) return 0;
     df.style = 0;
@@ -794,9 +795,9 @@ char *double2hex(char *buff, print_format format, double x) {
     if (format.conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
     for (i = format.precision; i >= 1; --i) {
-        unsigned char c = ((unsigned char *)&x)[i / 2 + 1];
-        digit = (c >> 4) & 15;
+        c = ((unsigned char *)&x)[i / 2 + 1];
         if (i % 2) digit = c & 15;
+        else digit = (c >> 4) & 15;
         if (digit < 10) digit += '0';
         else if (format.conversion_char == 'a') digit += 'a' - 10;
         else digit += 'A' - 10;
