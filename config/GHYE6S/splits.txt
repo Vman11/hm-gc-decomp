@@ -34356,17 +34356,10 @@ auto/text_802625FC.c:
 	.text       start:0x802625FC end:0x80262D38
 
 auto/text_80262D38.cpp:
-	extab       start:0x800173E0 end:0x800173E8
-	extabindex  start:0x80029FFC end:0x8002A008
-	.text       start:0x80262D38 end:0x80262E58
-
-auto/text_80262E58.cpp:
-	extab       start:0x800173E8 end:0x800173F0
-	extabindex  start:0x8002A008 end:0x8002A014
-	.text       start:0x80262E58 end:0x80262FA0
-
-auto/text_80262FA0.cpp:
-	.text       start:0x80262FA0 end:0x8026300C
+	extab       start:0x800173E0 end:0x800173F0
+	extabindex  start:0x80029FFC end:0x8002A014
+	.text       start:0x80262D38 end:0x8026300C
+	.bss        start:0x80357E78 end:0x80357EA0
 
 auto/text_8026300C.cpp:
 	extab       start:0x800173F0 end:0x800173F8
