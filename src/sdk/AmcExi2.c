@@ -318,14 +318,15 @@ int EXI2_ReadN(void *bytes, u32 length) {
 }
 
 int EXI2_WriteN(void *bytes, u32 length) {
-    u32 cmd2;
-    u32 cmd;
+    u32 len;
     u32 status;
+    u32 cmd[3];
+    u32 cmd2[2];
     u32 n;
     u32 last;
     u32 i;
     int ok;
-
+    len = length;
     ok = 0;
     while (ok == 0) {
         ok = EXI2Select(5);
@@ -333,15 +334,15 @@ int EXI2_WriteN(void *bytes, u32 length) {
     if (!ok) {
         return 1;
     }
-    cmd = 0x80000000;
-    EXI2Imm(&cmd, 2, 1, 0);
+    cmd[0] = 0x80000000;
+    EXI2Imm(cmd, 2, 1, 0);
     EXI2Sync();
-    EXI2Imm(&length, 4, 1, 0);
+    EXI2Imm(&len, 4, 1, 0);
     EXI2Sync();
-    n = (length >> 2) + ((length & 3) ? 1 : 0);
+    n = (len >> 2) + ((len & 3) ? 1 : 0);
     last = n - 1;
     for (i = 0; i < n; i++) {
-        EXI2Imm(bytes, (i < last) ? 4 : ((((length & 3) + (length & 1)) == 2) ? 2 : 4), 1, 0);
+        EXI2Imm(bytes, (i < last) ? 4 : ((((len & 3) + (len & 1)) == 2) ? 2 : 4), 1, 0);
         bytes = (u8 *)bytes + 4;
         EXI2Sync();
     }
@@ -353,8 +354,8 @@ int EXI2_WriteN(void *bytes, u32 length) {
     if (!ok) {
         return 1;
     }
-    cmd2 = 0x10000;
-    EXI2Imm(&cmd2, 2, 1, 0);
+    cmd2[0] = 0x10000;
+    EXI2Imm(cmd2, 2, 1, 0);
     EXI2Sync();
     EXI2Imm(&status, 2, 0, 0);
     EXI2Sync();
