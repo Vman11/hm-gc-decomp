@@ -417,17 +417,17 @@ void fn_80285068(BBundle *t, BitBuf *bs) {
                 }
             }
         } else {
-            if (c = bs->bits, c > 3) {
+            if (bs->bits > 3) {
                 unsigned int w = bs->buf;
-                bs->bits = c - 4;
+                bs->bits -= 4;
                 bs->buf = w >> 4;
                 hbits = w & 15;
             } else {
-                unsigned int *p = bs->ptr, b0 = bs->buf, w = *p;
+                unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p;
                 bs->bits = c + 28;
-                bs->buf = w >> (4 - c);
                 bs->ptr = ++p;
                 hbits = (b0 | (w << c)) & 15;
+                bs->buf = w >> (4 - c);
             }
             memset(t->data, hbits, v);
         }
