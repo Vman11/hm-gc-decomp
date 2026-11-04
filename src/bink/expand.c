@@ -213,7 +213,7 @@ void wEM_BFB8(u32 x, u32 y, s32 a2, s32 pitch, u8 *a4, u32 a5, u32 a6, u32 w, u3
 void wEM_BFB8(u32 x, u32 y, s32 a2, s32 pitch, u8 *a4, u32 a5, u32 a6, u32 w, u32 h, u32 a9, u32 a10, u32 flags, u8 *a12, ExpFmt *fmt) {
     s32 p;
     s32 adv;
-    u32 half, n, cnt, q, rem, src;
+    u32 n, cnt, q, rem, src;
     s32 row, end, d, dh;
     p = pitch;
     if ((flags & 0x70000000) == 0x60000000) {
@@ -246,38 +246,29 @@ void wEM_BFB8(u32 x, u32 y, s32 a2, s32 pitch, u8 *a4, u32 a5, u32 a6, u32 w, u3
         p += p;
     }
     fn_8027BA1C(flags, &p, w, h, fmt, &adv);
-    lbl_80300860[6] = a12 + a5 + a6 * a9;
     lbl_80300860[2] = a4 + a5 + a6 * a9;
     lbl_80300860[1] = lbl_80300860[0] + p;
-    half = a9 >> 1;
+    lbl_80300860[6] = a12 + a5 + a6 * a9;
     lbl_80300860[3] = lbl_80300860[2] + a9;
     lbl_80300860[7] = lbl_80300860[6] + a9;
-    dh = half - (w >> 1);
+    dh = (a9 >> 1) - (w >> 1);
     d = a9 - w;
-    if ((w & 1) && (a5 & 1)) {
-        dh--;
-    }
-    if (flags & 0x10000) {
-        lbl_80300860[4] = a4 + a9 * a10;
-        lbl_80300860[5] = lbl_80300860[4] + half * (a10 >> 1);
-    } else {
-        lbl_80300860[5] = a4 + a9 * a10;
-        lbl_80300860[4] = lbl_80300860[5] + half * (a10 >> 1);
-    }
-    lbl_80300860[4] += (a5 >> 1) + (a6 >> 1) * half;
-    lbl_80300860[5] += (a5 >> 1) + (a6 >> 1) * half;
+    if ((w & 1) && (a5 & 1)) { dh--; }
+    if (flags & 0x10000) { lbl_80300860[4] = a4 + a9 * a10; lbl_80300860[5] = lbl_80300860[4] + (a9 >> 1) * (a10 >> 1); } else { lbl_80300860[5] = a4 + a9 * a10; lbl_80300860[4] = lbl_80300860[5] + (a9 >> 1) * (a10 >> 1); }
+    lbl_80300860[4] = lbl_80300860[4] + (a5 >> 1) + (a6 >> 1) * (a9 >> 1);
+    lbl_80300860[5] = lbl_80300860[5] + (a5 >> 1) + (a6 >> 1) * (a9 >> 1);
     row = a6;
     end = row + h - 1;
     if ((row & 1) && row <= end) {
         row++;
         lbl_803590D4(a5, w);
-        lbl_80300860[0] += adv;
         lbl_80300860[2] += d;
         lbl_80300860[6] += d;
         lbl_80300860[3] = lbl_80300860[2] + a9;
         lbl_80300860[7] = lbl_80300860[6] + a9;
         lbl_80300860[4] += dh;
         lbl_80300860[5] += dh;
+        lbl_80300860[0] += adv;
         lbl_80300860[1] = lbl_80300860[0] + p;
     }
     n = (4 - (y & 3)) & 3;
