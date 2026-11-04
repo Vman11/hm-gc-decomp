@@ -860,10 +860,10 @@ void fn_802899EC(s32 count) {
     u32 stride;
     u32 *d0;
     u32 *d1;
-    u32 *src1;
-    u16 *pv;
     u16 *pu;
     u32 *src0;
+    u32 *src1;
+    u16 *pv;
     u32 *m0;
     u32 *m1;
     u32 *ct, *t1, *t2, *t3;
@@ -877,11 +877,11 @@ void fn_802899EC(s32 count) {
     lbl_80300860[0] = p0 + count * 8;
     lbl_80300860[1] = p1 + count * 8;
     stride = (w * 4 + 31) & ~31;
-    src1 = (u32 *)lbl_80300860[3];
     src0 = (u32 *)lbl_80300860[2];
-    pu = (u16 *)lbl_80300860[5];
-    m0 = (u32 *)lbl_80300860[6];
+    src1 = (u32 *)lbl_80300860[3];
     pv = (u16 *)lbl_80300860[4];
+    m0 = (u32 *)lbl_80300860[6];
+    pu = (u16 *)lbl_80300860[5];
     m1 = (u32 *)lbl_80300860[7];
     ct = lbl_803008C0;
     t3 = ct + 768;
@@ -920,8 +920,8 @@ void fn_802899EC(s32 count) {
         d1[0] = (PXA(CT(yt, h >> 6), k >> 6) << 16) | PXA(CT(yt, h << 2), k << 2); }
         { 
         u32 *R = (u32 *)((CT(ct, u << 2)) * 4 + (u32)Rt);
-        u32 *G = (u32 *)(((CT(t2, u << 2) + CT(t1, v << 2))) * 4 + (u32)Gt);
         u32 *B = (u32 *)((CT(t3, v << 2)) * 4 + (u32)Bt);
+        u32 *G = (u32 *)(((CT(t2, u << 2) + CT(t1, v << 2))) * 4 + (u32)Gt);
         h = a & 0xFFFF;
         k = ma & 0xFFFF;
         d0[1] = (PXA(CT(yt, h >> 6), k >> 6) << 16) | PXA(CT(yt, h << 2), k << 2);
