@@ -507,7 +507,7 @@ auto/text_80037060.cpp:
 auto/text_80037118.c:
 	.text       start:0x80037118 end:0x8003714C
 
-auto/text_8003714C.c:
+auto/text_8003714C.cpp:
 	extab       start:0x80005B8C end:0x80005B94
 	extabindex  start:0x80017F9C end:0x80017FA8
 	.text       start:0x8003714C end:0x800371D0
