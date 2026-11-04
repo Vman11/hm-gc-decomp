@@ -772,7 +772,7 @@ char *double2hex(char *buff, print_format format, double x) {
         return buff;
     }
     if (d.sig.text[0] == 'N') {
-        if (((unsigned char *)&x)[0] & 0x80) {
+        if (((const unsigned char *)&x)[0] & 0x80) {
             buff -= 5;
             if (format.conversion_char == 'A') strcpy(buff, lbl_8029C148 + 19);
             else strcpy(buff, lbl_8029C148 + 24);
@@ -795,7 +795,7 @@ char *double2hex(char *buff, print_format format, double x) {
     if (format.conversion_char == 'a') *--p = 'p';
     else *--p = 'P';
     for (i = format.precision; i >= 1; --i) {
-        c = ((unsigned char *)&x)[i / 2 + 1];
+        c = ((const unsigned char *)&x)[i / 2 + 1];
         if (i % 2) digit = c & 15;
         else digit = (c >> 4) & 15;
         if (digit < 10) digit += '0';
