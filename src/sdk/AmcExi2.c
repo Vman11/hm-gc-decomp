@@ -265,30 +265,31 @@ int EXI2_Poll(void) {
 }
 
 int EXI2_ReadN(void *bytes, u32 length) {
-    int ok;
-    u32 cmd;
-    u32 dummy;
-    u32 data;
-    u32 off;
     u32 i;
-    u32 last;
     u32 tail;
     s32 rem;
+    int off;
+    int ok;
+    u32 data;
+    u32 dummy;
+    u32 cmd[2];
+    u32 n;
 
     if (SessionOpen) {
         ok = 1;
     } else {
-        ok = 0;
-        while (ok == 0) {
-            ok = EXI2Select(5);
+        int r = 0;
+        while (r == 0) {
+            r = EXI2Select(5);
         }
+        ok = r;
         if (!ok) {
             fn_800E91D0(lbl_802E0B78);
             ok = 0;
         } else {
             SessionOpen = 1;
-            cmd = 0;
-            EXI2Imm(&cmd, 2, 1, 0);
+            cmd[0] = 0;
+            EXI2Imm(cmd, 2, 1, 0);
             EXI2Sync();
             EXI2Imm(&dummy, 2, 0, 0);
             EXI2Sync();
@@ -297,19 +298,27 @@ int EXI2_ReadN(void *bytes, u32 length) {
     if (!ok) {
         return 1;
     }
-    rem = (s32)length % 4;
+    n = (length >> 2) + ((length & 3) ? 1 : 0);
     tail = (length & 3) + (length & 1);
-    last = (length >> 2) + ((length & 3) ? 1 : 0) - 1;
-    for (off = 0, i = 0; off < length; i++, off += 4) {
-        int n;
+    rem = (s32)length % 4;
+    off = 0;
+    i = 0;
+    while (off < length) {
         int j;
+        int nb;
 
-        EXI2Imm(&data, (i < last) ? 4 : ((tail == 2) ? 2 : 4), 0, 0);
+        EXI2Imm(&data, (i < n - 1) ? 4 : ((tail == 2) ? 2 : 4), 0, 0);
         EXI2Sync();
-        n = (length - off >= 4) ? 4 : rem;
-        for (j = 0; j < n; j++) {
-            ((u8 *)bytes)[off + j] = data >> ((3 - j) * 8);
+        if (length - off >= 4) {
+            nb = 4;
+        } else {
+            nb = rem;
         }
+        for (j = 0; j < nb; j++) {
+            ((u8 *)bytes)[j + off] = data >> ((3 - j) * 8);
+        }
+        off = (i + 1) * 4;
+        i++;
     }
     EXI2Deselect();
     SessionOpen = 0;
@@ -318,14 +327,15 @@ int EXI2_ReadN(void *bytes, u32 length) {
 }
 
 int EXI2_WriteN(void *bytes, u32 length) {
+    u32 i;
     u32 len;
+    u32 *p;
     u32 status;
     u32 cmd[3];
     u32 cmd2[2];
     u32 n;
-    u32 last;
-    u32 i;
     int ok;
+    p = bytes;
     len = length;
     ok = 0;
     while (ok == 0) {
@@ -340,10 +350,8 @@ int EXI2_WriteN(void *bytes, u32 length) {
     EXI2Imm(&len, 4, 1, 0);
     EXI2Sync();
     n = (len >> 2) + ((len & 3) ? 1 : 0);
-    last = n - 1;
     for (i = 0; i < n; i++) {
-        EXI2Imm(bytes, (i < last) ? 4 : ((((len & 3) + (len & 1)) == 2) ? 2 : 4), 1, 0);
-        bytes = (u8 *)bytes + 4;
+        EXI2Imm(p++, (i < n - 1) ? 4 : ((((len & 3) + (len & 1)) == 2) ? 2 : 4), 1, 0);
         EXI2Sync();
     }
     EXI2Deselect();
