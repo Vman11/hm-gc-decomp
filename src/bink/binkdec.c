@@ -73,7 +73,7 @@ void fn_80284194(BitBuf *bs, u32 *tabp, u32 *bitsp, u8 *map) {
         return;
     }
     if (!(bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
-                      : ({ unsigned int w = *bs->ptr++; bs->bits = 31; bs->buf = w >> 1; w & 1; }))) {
+                      : (q = *bs->ptr, bs->ptr++, bs->bits = 31, bs->buf = q >> 1, q & 1))) {
         unsigned int depth;
         if (bs->bits > 1) {
             unsigned int w = bs->buf;
@@ -90,7 +90,7 @@ void fn_80284194(BitBuf *bs, u32 *tabp, u32 *bitsp, u8 *map) {
         if (depth == 0) {
             u8 *o = map;
             for (i = 0; i < 16; i += 2) {
-                if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; }) : ({ unsigned int w = *bs->ptr++; bs->bits = 31; bs->buf = w >> 1; w & 1; })) {
+                if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; }) : (q = *bs->ptr, bs->ptr++, bs->bits = 31, bs->buf = q >> 1, q & 1)) {
                     o[1] = i;
                     o[0] = i + 1;
                 } else {
@@ -103,7 +103,7 @@ void fn_80284194(BitBuf *bs, u32 *tabp, u32 *bitsp, u8 *map) {
             u8 tmp2[16];
             u8 tmp[16];
             for (i = 0; i < 16; i += 2) {
-                if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; }) : (n = *bs->ptr, bs->ptr++, bs->bits = 31, bs->buf = n >> 1, n & 1)) {
+                if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; }) : (q = *bs->ptr, bs->ptr++, bs->bits = 31, bs->buf = q >> 1, q & 1)) {
                     tmp[i] = i + 1;
                     tmp[i + 1] = i;
                 } else {
