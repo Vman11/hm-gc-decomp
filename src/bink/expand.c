@@ -501,7 +501,7 @@ void wEQ_C408(u32 x, u32 y, u32 a2, u32 pitch, u8 *mk, u32 a5, u8 *a6, s32 a7, u
     if (h & 15) {
         n = h0 - 1;
         r = fn_802752DC(h & ~15, h0, h);
-        wEM_BFB8(x, y, a2 + fn_802752DC(r, p * st0, pt * st), pt, a6, a7, r, w, n - r + 1, st0, a120, flags, a14, fmt);
+        wEM_BFB8(x, y, fn_802752DC(r, p * st0, pt * st) + a2, pt, a6, a7, r, w, n - r + 1, st0, a120, flags, a14, fmt);
     }
 }
 
