@@ -244,7 +244,7 @@ void fn_80288294(s32 count) {
     u16 *pu;
     u32 *src0;
     u32 *ct, *t1, *t2, *t3;
-    s32 *yt;
+    s32 *yt; u32 *Rt, *Gt, *Bt;
     p0 = lbl_80300860[0];
     base = lbl_80300860[18];
     p1 = lbl_80300860[1];
@@ -262,7 +262,10 @@ void fn_80288294(s32 count) {
     t3 = ct + 768;
     t2 = ct + 512;
     t1 = ct + 256;
+    Rt = lbl_802F9340;
+    Bt = lbl_802FAB80;
     yt = lbl_802F72A0;
+    Gt = lbl_802F9F60;
     d0 = (u32 *)(base + stride * (y0 >> 2) + (y0 & 3) * 8 + (p0 - (base + y0 * w)) * 4);
     d1 = (u32 *)(base + stride * (y1 >> 2) + (y1 & 3) * 8 + (p1 - (base + y1 * w)) * 4);
     do {
@@ -276,22 +279,22 @@ void fn_80288294(s32 count) {
         a = *src0++;
         b = *src1++;
         { 
-        u32 *G = lbl_802F9F60 + (CT(t2, u >> 6) + CT(t1, v >> 6));
-        u32 *B = lbl_802FAB80 + CT(t3, v >> 6);
-        u32 *R = lbl_802F9340 + CT(ct, u >> 6);
+        u32 *G = (u32 *)(((CT(t2, u >> 6) + CT(t1, v >> 6))) * 4 + (u32)Gt);
+        u32 *B = (u32 *)((CT(t3, v >> 6)) * 4 + (u32)Bt);
+        u32 *R = (u32 *)((CT(ct, u >> 6)) * 4 + (u32)Rt);
         h = a >> 16;
-        d0[0] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2));
+        d0[0] = (((u16)R[CT(yt, h >> 6)] | (u16)G[CT(yt, h >> 6)] | (u16)B[CT(yt, h >> 6)]) << 16) | ((u16)R[CT(yt, h << 2)] | (u16)G[CT(yt, h << 2)] | (u16)B[CT(yt, h << 2)]);
         h = b >> 16;
-        d1[0] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2)); }
+        d1[0] = (((u16)R[CT(yt, h >> 6)] | (u16)G[CT(yt, h >> 6)] | (u16)B[CT(yt, h >> 6)]) << 16) | ((u16)R[CT(yt, h << 2)] | (u16)G[CT(yt, h << 2)] | (u16)B[CT(yt, h << 2)]); }
         { 
-        u32 *R = lbl_802F9340 + CT(ct, u << 2);
-        u32 *G = lbl_802F9F60 + (CT(t2, u << 2) + CT(t1, v << 2));
-        u32 *B = lbl_802FAB80 + CT(t3, v << 2);
+        u32 *R = (u32 *)((CT(ct, u << 2)) * 4 + (u32)Rt);
+        u32 *G = (u32 *)(((CT(t2, u << 2) + CT(t1, v << 2))) * 4 + (u32)Gt);
+        u32 *B = (u32 *)((CT(t3, v << 2)) * 4 + (u32)Bt);
         h = a & 0xFFFF;
-        d0[1] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2));
+        d0[1] = (((u16)R[CT(yt, h >> 6)] | (u16)G[CT(yt, h >> 6)] | (u16)B[CT(yt, h >> 6)]) << 16) | ((u16)R[CT(yt, h << 2)] | (u16)G[CT(yt, h << 2)] | (u16)B[CT(yt, h << 2)]);
         d0 += 8;
         h = b & 0xFFFF;
-        d1[1] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2)); }
+        d1[1] = (((u16)R[CT(yt, h >> 6)] | (u16)G[CT(yt, h >> 6)] | (u16)B[CT(yt, h >> 6)]) << 16) | ({ u32 _l = CT(yt, h << 2) * 4; *(u16 *)((u8 *)R + _l + 2) | *(u16 *)((u8 *)G + _l + 2) | *(u16 *)((u8 *)B + _l + 2); }); }
         d1 += 8;
     } while (--count);
     lbl_80300860[2] = (u8 *)src0;
@@ -314,7 +317,7 @@ void fn_802885F4(s32 count) {
     u16 *pu;
     u32 *src0;
     u32 *ct, *t1, *t2, *t3;
-    s32 *yt;
+    s32 *yt; u32 *Rt, *Gt, *Bt;
     p0 = lbl_80300860[0];
     base = lbl_80300860[18];
     p1 = lbl_80300860[1];
@@ -332,7 +335,10 @@ void fn_802885F4(s32 count) {
     t3 = ct + 768;
     t2 = ct + 512;
     t1 = ct + 256;
+    Rt = lbl_802F9340;
+    Bt = lbl_802FAB80;
     yt = lbl_802F72A0;
+    Gt = lbl_802F9F60;
     d0 = (u32 *)(base + stride * (y0 >> 2) + (y0 & 3) * 8 + (p0 - (base + y0 * w)) * 4);
     d1 = (u32 *)(base + stride * (y1 >> 2) + (y1 & 3) * 8 + (p1 - (base + y1 * w)) * 4);
     do {
@@ -346,9 +352,9 @@ void fn_802885F4(s32 count) {
         a = *src0++;
         b = *src1++;
         {
-        u32 *G = lbl_802F9F60 + (CT(t2, u >> 6) + CT(t1, v >> 6));
-        u32 *B = lbl_802FAB80 + CT(t3, v >> 6);
-        u32 *R = lbl_802F9340 + CT(ct, u >> 6);
+        u32 *R = (u32 *)((CT(ct, u >> 6)) * 4 + (u32)Rt);
+        u32 *G = (u32 *)(((CT(t2, u >> 6) + CT(t1, v >> 6))) * 4 + (u32)Gt);
+        u32 *B = (u32 *)((CT(t3, v >> 6)) * 4 + (u32)Bt);
         h = a >> 16;
         { u32 v0 = PX(CT(yt, h >> 6)), v1 = PX(CT(yt, h << 2));
         d0[0] = dup(v0); d0[1] = dup(v1); }
@@ -356,9 +362,9 @@ void fn_802885F4(s32 count) {
         { u32 v0 = PX(CT(yt, h >> 6)), v1 = PX(CT(yt, h << 2));
         d1[0] = dup(v0); d1[1] = dup(v1); } }
         {
-        u32 *R = lbl_802F9340 + CT(ct, u << 2);
-        u32 *G = lbl_802F9F60 + (CT(t2, u << 2) + CT(t1, v << 2));
-        u32 *B = lbl_802FAB80 + CT(t3, v << 2);
+        u32 *R = (u32 *)((CT(ct, u << 2)) * 4 + (u32)Rt);
+        u32 *G = (u32 *)(((CT(t2, u << 2) + CT(t1, v << 2))) * 4 + (u32)Gt);
+        u32 *B = (u32 *)((CT(t3, v << 2)) * 4 + (u32)Bt);
         h = a & 0xFFFF;
         { u32 v0 = PX(CT(yt, h >> 6)), v1 = PX(CT(yt, h << 2));
         d0[8] = dup(v0); d0[9] = dup(v1); }
