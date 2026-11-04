@@ -161,10 +161,9 @@ extern u8 lbl_802AF340[];
 #define MX(a, b) ((a) < (b) ? (b) : (a))
 #define MXE(q, e) { u8 x_ = (e); if (q < x_) q = x_; }
 #define ONE(L, K) \
-    b = (K) ? *++bp : *bp; \
-    e = b | ((pos << 10) + 0x300); \
-    if ((e & 0xFF) != (L)) *--head = e; \
-    else cnt += (L); \
+    { u8 t_ = (K) ? *++bp : *bp; \
+    if (t_ != (L)) *--head = t_ | ((pos << 10) + 0x300); \
+    else cnt += (L); } \
     pos++;
 #define PASS(L) \
     for (p = head; p < end;) { \
@@ -175,16 +174,15 @@ extern u8 lbl_802AF340[];
         switch (v & 0x300) { \
         case 0x000: \
             pos = v >> 10; \
-            k = pos >> 4; \
-            *p = h[k] + ((pos + 4) << 10) + 0x100; \
+            *p = h[pos >> 4] + (((pos + 4) << 10) + 0x100); \
             goto C##L; \
         case 0x100: \
             pos = v >> 10; \
             k = pos >> 2; \
-            *p = g[k - 1] + (pos << 10) + 0x200; \
-            *end++ = g[k] + ((pos + 4) << 10) + 0x200; \
-            *end++ = g[k + 1] + ((pos + 8) << 10) + 0x200; \
-            *end++ = g[k + 2] + ((pos + 12) << 10) + 0x200; \
+            *p = g[k - 1] + ((pos << 10) + 0x200); \
+            *end++ = g[k] + (((pos + 4) << 10) + 0x200); \
+            *end++ = g[k + 1] + (((pos + 8) << 10) + 0x200); \
+            *end++ = g[k + 2] + (((pos + 12) << 10) + 0x200); \
             break; \
         case 0x200: \
             *p = 0; \
@@ -203,7 +201,6 @@ extern u8 lbl_802AF340[];
             p++; \
         } \
     }
-
 u32 fn_80290AAC(s16 *in) {
     u16 list[132];
     u8 bits[64];
@@ -212,8 +209,9 @@ u32 fn_80290AAC(s16 *in) {
     u16 *head, *end, *p;
     u8 *bp;
     u32 cnt;
-    u8 mx, lvl; u32 b, m;
-    u16 v, pos, k; u32 e;
+    u8 mx, lvl, q;
+    u16 v, k;
+#define pos v
     s32 i;
     mx = 0;
     for (i = 1; i < 64; i++) {
@@ -222,15 +220,15 @@ u32 fn_80290AAC(s16 *in) {
         bits[i] = t;
     }
     for (i = 4; i < 64; i += 4) {
-        u8 q = bits[i];
-        q = MX(q, bits[i + 1]);
-        q = MX(q, bits[i + 2]);
-        q = MX(q, bits[i + 3]);
+        q = bits[i];
+        MXE(q, bits[i + 1]);
+        MXE(q, bits[i + 2]);
+        MXE(q, bits[i + 3]);
         g[i / 4 - 1] = q;
     }
-    m = MX(g[1], g[2]); m = MX(m, g[3]); h[0] = MX(m, g[4]);
-    m = MX(g[6], g[7]); m = MX(m, g[8]); h[1] = MX(m, g[9]);
-    m = MX(g[11], g[12]); m = MX(m, g[13]); h[2] = MX(m, g[14]);
+    q = g[1]; MXE(q, g[2]); MXE(q, g[3]); MXE(q, g[4]); h[0] = q;
+    q = g[6]; MXE(q, g[7]); MXE(q, g[8]); MXE(q, g[9]); h[1] = q;
+    q = g[11]; MXE(q, g[12]); MXE(q, g[13]); MXE(q, g[14]); h[2] = q;
     cnt = 4;
     head = &list[68];
     head[0] = (h[0] > g[0] ? h[0] : g[0]) | (4 << 10);
@@ -252,6 +250,7 @@ u32 fn_80290AAC(s16 *in) {
 #undef MXE
 #undef ONE
 #undef PASS
+#undef pos
 
 static inline void bW(BitBuf *bs, u32 v, u32 n) {
     u32 bits = bs->bits;
