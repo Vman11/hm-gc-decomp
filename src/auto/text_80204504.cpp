@@ -36,7 +36,7 @@ static inline void Issue(S *s, void *buf, u32 len, u32 off, void *cb) {
 
 void fn_80204504(S *s) {
     u32 half;
-    u32 len, pos, a, b, n;
+    u32 len, pos, a, n;
     half = s->x14 >> 1;
     s->x2c += s->x3c;
     if ((s->x128 & 0x100) && s->x2c == half) {
@@ -73,23 +73,23 @@ void fn_80204504(S *s) {
     }
     s->x44 = s->x40 - pos;
     a = (s->x44 + 0x1f) & ~0x1f;
-    b = (s->x44 + 0x1f) & ~0x1f;
+    pos = a;
     if (s->x124 != 0) {
         s->x48 = s->x38 - s->x44;
         n = s->x38;
         a = s->x48 & ~0x1f;
         if (a < n) {
             if (s->x34 == 0) {
-                Issue(s, s->xc, b, s->x30, fn_80205504);
+                Issue(s, s->xc, pos, s->x30, fn_80205504);
                 s->x4c = s->xc;
             } else {
-                Issue(s, s->x10, b, s->x30, fn_80205504);
+                Issue(s, s->x10, pos, s->x30, fn_80205504);
                 s->x4c = s->x10;
             }
             s->x30 = a;
         } else {
             if (s->x34 == 0) {
-                Issue(s, s->xc, b, s->x30, fn_802056DC);
+                Issue(s, s->xc, pos, s->x30, fn_802056DC);
             } else {
                 Issue(s, s->x10, n, s->x30, fn_802056DC);
             }
