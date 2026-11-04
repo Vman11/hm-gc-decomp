@@ -27350,7 +27350,7 @@ auto/text_8020445C.cpp:
 auto/text_802044E0.cpp:
 	.text       start:0x802044E0 end:0x80204504
 
-auto/text_80204504.c:
+auto/text_80204504.cpp:
 	extab       start:0x800137BC end:0x800137C4
 	extabindex  start:0x8002630C end:0x80026318
 	.text       start:0x80204504 end:0x80204C1C
