@@ -6,15 +6,8 @@ extern "C" {
 
 struct P { u8 pad[1396]; s32 a1396; s32 a1400; s32 a1404; s32 a1408; s32 a1412; s32 a1416; s32 a1420; };
 struct EV { u8 pad[12]; char name[20]; char *arg; };
-static const char sPad[176] = {1};
-static const char s176[] = "M_STOPSC";
-static const char s188[] = "M_STOPSR";
-static const char s200[] = "M_STOPS1";
-static const char s212[] = "M_STOPS2";
-static const char s224[] = "M_STOPS3";
-static const char s236[] = "M_STOPS4";
-static const char s248[] = "M_STOPS5";
-static const char s260[] = "M_AMBSND";
+extern char lbl_802AA3F0[];
+#pragma opt_propagation off
 extern char lbl_80366D54[8], lbl_80366D5C[8], lbl_80366D64[8], lbl_80366D6C[8], lbl_80366D74[8], lbl_80366D7C[8], lbl_80366D84[8], lbl_80366D8C[8], lbl_80366D94[8];
 extern void *lbl_8035B7BC;
 void fn_800F6E88(char *, char *);
@@ -22,6 +15,7 @@ int fn_800F6CD0(char *, const char *);
 void fn_8026B7CC(void *, char *);
 
 void fn_80268B08(P *p, EV *e) {
+    char *str = lbl_802AA3F0;
     char buf[8];
     fn_800F6E88(buf, e->name);
     if (fn_800F6CD0(buf, lbl_80366D54)) {
@@ -41,21 +35,21 @@ void fn_80268B08(P *p, EV *e) {
         p->a1396 = 10;
     } else if (fn_800F6CD0(buf, lbl_80366D8C)) {
         p->a1396 = 11;
-    } else if (fn_800F6CD0(buf, s176)) {
+    } else if (fn_800F6CD0(buf, (str + 176))) {
         if (p->a1400 == 1) p->a1400 = 15;
-    } else if (fn_800F6CD0(buf, s188)) {
+    } else if (fn_800F6CD0(buf, (str + 188))) {
         if (p->a1408 == 4) p->a1408 = 15;
-    } else if (fn_800F6CD0(buf, s200)) {
+    } else if (fn_800F6CD0(buf, (str + 200))) {
         if (p->a1420 == 7) p->a1420 = 15;
-    } else if (fn_800F6CD0(buf, s212)) {
+    } else if (fn_800F6CD0(buf, (str + 212))) {
         if (p->a1416 == 8) p->a1416 = 15;
-    } else if (fn_800F6CD0(buf, s224)) {
+    } else if (fn_800F6CD0(buf, (str + 224))) {
         if (p->a1412 == 9) p->a1412 = 15;
-    } else if (fn_800F6CD0(buf, s236)) {
+    } else if (fn_800F6CD0(buf, (str + 236))) {
         if (p->a1396 == 10) p->a1396 = 15;
-    } else if (fn_800F6CD0(buf, s248)) {
+    } else if (fn_800F6CD0(buf, (str + 248))) {
         if (p->a1396 == 11) p->a1396 = 15;
-    } else if (fn_800F6CD0(buf, s260)) {
+    } else if (fn_800F6CD0(buf, (str + 260))) {
         if (e->arg) fn_8026B7CC(lbl_8035B7BC, e->arg);
         else fn_8026B7CC(lbl_8035B7BC, lbl_80366D94);
     }

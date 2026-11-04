@@ -2873,59 +2873,11 @@ auto/text_80065740.cpp:
 	.text       start:0x80065740 end:0x80065B48
 
 auto/text_80065B48.cpp:
-	extab       start:0x8000726C end:0x80007274
-	extabindex  start:0x800195BC end:0x800195C8
-	.text       start:0x80065B48 end:0x80066050
-	.bss        start:0x803064F8 end:0x80306630
-
-auto/text_80066050.cpp:
-	extab       start:0x80007274 end:0x8000727C
-	extabindex  start:0x800195C8 end:0x800195D4
-	.text       start:0x80066050 end:0x80066148
-
-auto/text_80066148.cpp:
-	extab       start:0x8000727C end:0x80007284
-	extabindex  start:0x800195D4 end:0x800195E0
-	.text       start:0x80066148 end:0x80066168
-
-auto/text_80066168.cpp:
-	extab       start:0x80007284 end:0x8000728C
-	extabindex  start:0x800195E0 end:0x800195EC
-	.text       start:0x80066168 end:0x80066188
-
-auto/text_80066188.cpp:
-	.text       start:0x80066188 end:0x800662A4
-
-auto/text_800662A4.cpp:
-	extab       start:0x8000728C end:0x80007294
-	extabindex  start:0x800195EC end:0x800195F8
-	.text       start:0x800662A4 end:0x800662C4
-
-auto/text_800662C4.cpp:
-	extab       start:0x80007294 end:0x8000729C
-	extabindex  start:0x800195F8 end:0x80019604
-	.text       start:0x800662C4 end:0x800664A4
-
-auto/text_800664A4.cpp:
-	extab       start:0x8000729C end:0x800072A4
-	extabindex  start:0x80019604 end:0x80019610
-	.text       start:0x800664A4 end:0x8006656C
-
-auto/text_8006656C.cpp:
-	extab       start:0x800072A4 end:0x800072AC
-	extabindex  start:0x80019610 end:0x8001961C
-	.text       start:0x8006656C end:0x800665E0
-
-auto/text_800665E0.cpp:
-	extab       start:0x800072AC end:0x800072C8
-	extabindex  start:0x8001961C end:0x80019628
-	.text       start:0x800665E0 end:0x80066624
-
-auto/text_80066624.cpp:
-	extab       start:0x800072C8 end:0x800072D0
-	extabindex  start:0x80019628 end:0x80019634
-	.text       start:0x80066624 end:0x80066714
+	extab       start:0x8000726C end:0x800072D0
+	extabindex  start:0x800195BC end:0x80019634
+	.text       start:0x80065B48 end:0x80066714
 	.ctors      start:0x80293FC0 end:0x80293FC4
+	.bss        start:0x803064F8 end:0x80306768
 
 auto/text_80066714.c:
 	extab       start:0x800072D0 end:0x800072D8
