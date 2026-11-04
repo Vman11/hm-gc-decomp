@@ -311,6 +311,216 @@ void wEM_BFB8(u32 x, u32 y, s32 a2, s32 pitch, u8 *a4, u32 a5, u32 a6, u32 w, u3
     if (row <= end) lbl_803590D4(a5, w);
 }
 
+typedef struct { u32 d[19]; } ExpSave;
+void wEQ_C408(u32 x, u32 y, u32 a2, u32 pitch, u8 *mk, u32 a5, u8 *a6, s32 a7, u32 a8, u32 w, u32 h, u32 st, u32 a12, u32 flags, u8 *a14, ExpFmt *fmt) asm("fn_8027C408");
+void wEQ_C408(u32 x, u32 y, u32 a2, u32 pitch, u8 *mk, u32 a5, u8 *a6, s32 a7, u32 a8, u32 w, u32 h, u32 st, u32 a12, u32 flags, u8 *a14, ExpFmt *fmt) {
+    s32 p16, adv16, p, adv32;
+    u32 madv;
+    s32 dh16, yadv, uvadv, dadv;
+    u32 pt, st0, h0, a120, bpp;
+    s32 lastrow, lastcol, row;
+    u32 off, bpb, half, n, r, t;
+    s32 k;
+    s32 d16, d32, dh8, col, ncol, step;
+    u8 *m, *nm;
+    ExpSave save;
+    pt = pitch;
+    p = pt;
+    st0 = st;
+    h0 = h;
+    a120 = a12;
+    if ((flags & 0x70000000) == 0x60000000) {
+        p = pt + pt;
+        a8 >>= 1;
+        h >>= 1;
+        a12 >>= 1;
+        st += st;
+        off = a5;
+        a5 += a5;
+    } else {
+        off = 0;
+    }
+    lbl_803008A8 = x;
+    lbl_80300860[0] = (u8 *)(x + (a2 * pt + y * fmt->f0));
+    if ((flags & 0x70000000) == 0x20000000 || (flags & 0x70000000) == 0x50000000) {
+        p += p;
+    }
+    madv = a5 - (w >> 4);
+    p16 = p;
+    fn_8027BA1C(flags, &p16, 16, h, fmt, &adv16);
+    fn_8027BA1C(flags, &p, 32, h, fmt, &adv32);
+    if ((flags & 0x70000000) == 0x30000000 || (flags & 0x70000000) == 0x50000000 ||
+        (flags & 0x70000000) == 0x30000000 || (flags & 0x70000000) == 0x40000000) {
+        bpp = 2;
+    } else {
+        bpp = 1;
+    }
+    half = st >> 1;
+    bpb = (fmt->f0 * bpp) << 4;
+    d16 = st - 16;
+    dh8 = half - 8;
+    dh16 = half - 16;
+    d32 = st - 32;
+    lbl_80300860[2] = a6 + a7 + a8 * st;
+    lbl_80300860[6] = a14 + a7 + a8 * st;
+    lbl_80300860[1] = lbl_80300860[0] + p;
+    lbl_80300860[3] = lbl_80300860[2] + st;
+    lbl_80300860[7] = lbl_80300860[6] + st;
+    p16 = st - w;
+    yadv = p16 + (w & 15) + st * 14;
+    uvadv = half - (w >> 1) + ((w & 15) >> 1) + half * 7;
+    dadv = p - w * (bpb >> 4) + (w & 15) * (bpb >> 4) + p * 14;
+    if (flags & 0x10000) {
+        lbl_80300860[4] = a6 + st * a12;
+        lbl_80300860[5] = lbl_80300860[4] + half * (a12 >> 1);
+    } else {
+        lbl_80300860[5] = a6 + st * a12;
+        lbl_80300860[4] = lbl_80300860[5] + half * (a12 >> 1);
+    }
+    lbl_80300860[4] += (a7 >> 1) + (a8 >> 1) * half;
+    lbl_80300860[5] += (a7 >> 1) + (a8 >> 1) * half;
+    lastrow = h + a8 - 1;
+    lastcol = w + a7 - 1;
+    m = mk + a5 * (a8 >> 4) + a7 / 16;
+    row = a8;
+    while (row + 15 <= lastrow) {
+        row += 16;
+        col = a7;
+        while (col + 31 <= lastcol) {
+            k = (m[1] ? 2 : 0) + (m[0] != 0);
+            if (off != 0) {
+                s32 k2 = k | (m[off + 1] ? 2 : 0) + (m[off] != 0);
+                k = k2;
+            }
+            switch (k) {
+            default:
+                nm = m + 2;
+                ncol = col + 32;
+                step = bpb + bpb;
+                break;
+            case 1:
+                nm = m + 2;
+                ncol = col + 32;
+                step = bpb + bpb;
+                save = *(ExpSave *)lbl_80300860;
+                for (n = 8; n != 0; n--) {
+                    lbl_803590C4(4);
+                    lbl_80300860[2] = lbl_80300860[3] + d16;
+                    lbl_80300860[6] = lbl_80300860[7] + d16;
+                    lbl_80300860[0] = lbl_80300860[1] + adv16;
+                    lbl_80300860[3] = lbl_80300860[2] + st;
+                    lbl_80300860[7] = lbl_80300860[6] + st;
+                    lbl_80300860[4] += dh8;
+                    lbl_80300860[5] += dh8;
+                    lbl_80300860[1] = lbl_80300860[0] + p;
+                }
+                *(ExpSave *)lbl_80300860 = save;
+                break;
+            case 2:
+                nm = m + 2;
+                ncol = col + 32;
+                step = bpb + bpb;
+                save = *(ExpSave *)lbl_80300860;
+                lbl_80300860[2] += 16;
+                lbl_80300860[3] += 16;
+                lbl_80300860[6] += 16;
+                lbl_80300860[7] += 16;
+                lbl_80300860[4] += 8;
+                lbl_80300860[5] += 8;
+                lbl_80300860[0] += bpb;
+                lbl_80300860[1] += bpb;
+                for (n = 8; n != 0; n--) {
+                    lbl_803590C4(4);
+                    lbl_80300860[2] = lbl_80300860[3] + d16;
+                    lbl_80300860[6] = lbl_80300860[7] + d16;
+                    lbl_80300860[0] = lbl_80300860[1] + adv16;
+                    lbl_80300860[3] = lbl_80300860[2] + st;
+                    lbl_80300860[7] = lbl_80300860[6] + st;
+                    lbl_80300860[4] += dh8;
+                    lbl_80300860[5] += dh8;
+                    lbl_80300860[1] = lbl_80300860[0] + p;
+                }
+                *(ExpSave *)lbl_80300860 = save;
+                break;
+            case 3:
+                nm = m + 2;
+                ncol = col + 32;
+                step = bpb + bpb;
+                save = *(ExpSave *)lbl_80300860;
+                for (n = 8; n != 0; n--) {
+                    lbl_803590C4(8);
+                    lbl_80300860[2] = lbl_80300860[3] + d32;
+                    lbl_80300860[6] = lbl_80300860[7] + d32;
+                    lbl_80300860[0] = lbl_80300860[1] + adv32;
+                    lbl_80300860[3] = lbl_80300860[2] + st;
+                    lbl_80300860[7] = lbl_80300860[6] + st;
+                    lbl_80300860[4] += dh16;
+                    lbl_80300860[5] += dh16;
+                    lbl_80300860[1] = lbl_80300860[0] + p;
+                }
+                *(ExpSave *)lbl_80300860 = save;
+                break;
+            }
+            lbl_80300860[2] += 32;
+            lbl_80300860[3] += 32;
+            lbl_80300860[6] += 32;
+            lbl_80300860[7] += 32;
+            lbl_80300860[4] += 16;
+            lbl_80300860[5] += 16;
+            lbl_80300860[0] += step;
+            lbl_80300860[1] += step;
+            col = ncol;
+            m = nm;
+        }
+        if (col + 15 <= lastcol) {
+            k = m[0];
+            if (off != 0) k |= m[off];
+            m++;
+            if (k != 0) {
+                save = *(ExpSave *)lbl_80300860;
+                for (n = 8; n != 0; n--) {
+                    lbl_803590C4(4);
+                    lbl_80300860[2] = lbl_80300860[3] + d16;
+                    lbl_80300860[6] = lbl_80300860[7] + d16;
+                    lbl_80300860[0] = lbl_80300860[1] + adv16;
+                    lbl_80300860[3] = lbl_80300860[2] + st;
+                    lbl_80300860[7] = lbl_80300860[6] + st;
+                    lbl_80300860[4] += dh8;
+                    lbl_80300860[5] += dh8;
+                    lbl_80300860[1] = lbl_80300860[0] + p;
+                }
+                *(ExpSave *)lbl_80300860 = save;
+            }
+            lbl_80300860[2] += 16;
+            lbl_80300860[3] += 16;
+            lbl_80300860[6] += 16;
+            lbl_80300860[7] += 16;
+            lbl_80300860[4] += 8;
+            lbl_80300860[5] += 8;
+            lbl_80300860[0] += bpb;
+            lbl_80300860[1] += bpb;
+        }
+        lbl_80300860[2] = lbl_80300860[3] + yadv;
+        lbl_80300860[6] = lbl_80300860[7] + yadv;
+        lbl_80300860[0] = lbl_80300860[1] + dadv;
+        lbl_80300860[3] = lbl_80300860[2] + st;
+        lbl_80300860[7] = lbl_80300860[6] + st;
+        lbl_80300860[4] += uvadv;
+        lbl_80300860[5] += uvadv;
+        lbl_80300860[1] = lbl_80300860[0] + p;
+        m += madv;
+    }
+    if (w & 15) {
+        t = w & ~15;
+        wEM_BFB8(x, y + t * bpp, a2, pt, a6, t, a8, w - t, h0, st0, a120, flags, a14, fmt);
+    }
+    if (h & 15) {
+        n = h0 - 1;
+        r = fn_802752DC(h & ~15, h0, h);
+        wEM_BFB8(x, y, a2 + fn_802752DC(r, p * st0, pt * st), pt, a6, a7, r, w, n - r + 1, st0, a120, flags, a14, fmt);
+    }
+}
+
 extern s32 eT72A0[] asm("lbl_802F72A0");
 extern s32 eT76C0[] asm("lbl_802F76C0");
 extern u32 *eAE0[] asm("lbl_802F7AE0");
