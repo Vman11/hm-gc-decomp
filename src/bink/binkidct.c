@@ -272,6 +272,28 @@ static inline void bW(BitBuf *bs, u32 v, u32 n) {
         }
     }
 }
+extern u32 lbl_802AB0CC[];
+extern u32 lbl_802AB0D0[];
+static inline void bWT(BitBuf *bs, u32 v, u32 n, u32 *tab) {
+    u32 bits = bs->bits;
+    u32 buf;
+    u32 nb;
+    v &= *tab;
+    nb = bits + n;
+    buf = bs->buf | (v << bits);
+    bs->bits = nb;
+    bs->buf = buf;
+    if (nb > 31) {
+        *bs->ptr = buf;
+        bs->ptr++;
+        bs->bits -= 32;
+        if (bs->bits != 0) {
+            bs->buf = v >> (n - bs->bits);
+        } else {
+            bs->buf = 0;
+        }
+    }
+}
 #define BWM(V, N) { \
     u32 n_ = (N); \
     u32 v_; \
@@ -347,7 +369,7 @@ void fn_802910C0(BitBuf *bs, s16 *in) {
     q = g[1]; MXE(q, g[2]); MXE(q, g[3]); MXE(q, g[4]); h[0] = q;
     q = g[6]; MXE(q, g[7]); MXE(q, g[8]); MXE(q, g[9]); h[1] = q;
     q = g[11]; MXE(q, g[12]); MXE(q, g[13]); MXE(q, g[14]); h[2] = q;
-    bW(bs, mx, 4);
+    bWT(bs, mx, 4, lbl_802AB0D0);
     head = &list[68];
     head[0] = (h[0] > g[0] ? h[0] : g[0]) | (4 << 10);
     head[1] = (h[1] > g[5] ? h[1] : g[5]) | (24 << 10);
@@ -359,9 +381,9 @@ void fn_802910C0(BitBuf *bs, s16 *in) {
     for (lvl = mx; lvl != 0; lvl--) {
         for (p = head; p < end;) {
             v = *p;
-            if (v == 0) { p++; continue; }
+            if (v == 0) goto next;
             PUT1((u8)v == lvl);
-            if ((u8)v != lvl) { p++; continue; }
+            if ((u8)v != lvl) goto next;
             switch (v & 0x300) {
             case 0x000:
                 pos = v >> 10;
@@ -374,7 +396,7 @@ void fn_802910C0(BitBuf *bs, s16 *in) {
                 *end++ = g[k] + (((pos + 4) << 10) + 0x200);
                 *end++ = g[k + 1] + (((pos + 8) << 10) + 0x200);
                 *end++ = g[k + 2] + (((pos + 12) << 10) + 0x200);
-                break;
+                continue;
             case 0x200:
                 *p = 0;
                 pos = v >> 10;
@@ -382,17 +404,16 @@ void fn_802910C0(BitBuf *bs, s16 *in) {
             C:
                 bp = bits + pos;
                 ONE(0) ONE(1) ONE(2) ONE(3)
-                break;
+                continue;
             case 0x300:
                 pos = v >> 10;
                 BWM(av[pos], lvl - 1)
                 PUT1(sv[pos] < 0);
                 *p = 0;
-                p++;
                 break;
-            default:
-                p++;
             }
+        next:
+            p++;
         }
     }
 }
@@ -580,7 +601,7 @@ s32 fn_80292974(BitBuf *bs, u8 *in) {
     q = g[2]; MXE(q, g[3]); MXE(q, g[4]); MXE(q, g[5]); h[0] = q;
     q = g[7]; MXE(q, g[8]); MXE(q, g[9]); MXE(q, g[10]); h[1] = q;
     q = g[12]; MXE(q, g[13]); MXE(q, g[14]); MXE(q, g[15]); h[2] = q;
-    bW(bs, mx - 1, 3);
+    bWT(bs, mx - 1, 3, lbl_802AB0CC);
     head = &list[68];
     head[0] = (h[0] > g[1] ? h[0] : g[1]) | (4 << 10);
     head[1] = (h[1] > g[6] ? h[1] : g[6]) | (24 << 10);
@@ -595,9 +616,9 @@ s32 fn_80292974(BitBuf *bs, u8 *in) {
         }
         for (p = head; p < end;) {
             v = *p;
-            if (v == 0) { p++; continue; }
+            if (v == 0) goto next;
             PUT1((u8)v == lvl);
-            if ((u8)v != lvl) { p++; continue; }
+            if ((u8)v != lvl) goto next;
             switch (v & 0x300) {
             case 0x000:
                 pos = v >> 10;
@@ -610,7 +631,7 @@ s32 fn_80292974(BitBuf *bs, u8 *in) {
                 *end++ = g[k + 1] + (((pos + 4) << 10) + 0x200);
                 *end++ = g[k + 2] + (((pos + 8) << 10) + 0x200);
                 *end++ = g[k + 3] + (((pos + 12) << 10) + 0x200);
-                break;
+                continue;
             case 0x200:
                 *p = 0;
                 pos = v >> 10;
@@ -618,17 +639,16 @@ s32 fn_80292974(BitBuf *bs, u8 *in) {
             C:
                 bp = bits + pos;
                 ONE(0) ONE(1) ONE(2) ONE(3)
-                break;
+                continue;
             case 0x300:
                 pos = v >> 10;
                 nzl[nz++] = av[pos];
                 PUT1(sv[pos] & 0x80);
                 *p = 0;
-                p++;
                 break;
-            default:
-                p++;
             }
+        next:
+            p++;
         }
     }
     return 1;
