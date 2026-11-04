@@ -536,8 +536,8 @@ s32 fn_800DBBA0(s32 *msgID, TrkBuf **outMsg);
 #pragma dont_inline off
 
 s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
-    s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
-    s32 replyBufferId;
+    s32 fn_800DEE88(TrkBuf *, int *, s32, s32, s32);
+    int replyBufferId;
     s32 bufferId;
     TrkBuf *buffer;
     s32 error;
@@ -590,9 +590,9 @@ s32 fn_800DEA30(u32 handle, u32 *position, u8 mode, u8 *ioResult) {
 #pragma dont_inline off
 
 s32 fn_800DEBC0(u32 replyError, u8 *ioResult) {
-    s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
+    s32 fn_800DEE88(TrkBuf *, int *, s32, s32, s32);
     s32 err;
-    s32 replyBufferId;
+    int replyBufferId;
     s32 bufferId;
     TrkBuf *buffer;
     s32 error;
@@ -632,8 +632,8 @@ s32 fn_800DB8A8(TrkBuf *buf, u16 data);
 #pragma dont_inline off
 
 s32 fn_800DECE0(char *path, u8 mode, u32 *handle, u8 *ioResult) {
-    s32 fn_800DEE88(TrkBuf *, s32 *, s32, s32, s32);
-    s32 replyBufferId;
+    s32 fn_800DEE88(TrkBuf *, int *, s32, s32, s32);
+    int replyBufferId;
     s32 bufferId;
     TrkBuf *buffer;
     s32 error;
@@ -688,7 +688,7 @@ s32 fn_800DBDF0(void);
 #pragma inline_depth(4)
 #pragma dont_inline off
 
-s32 fn_800DEE88(TrkBuf *msgBuf, s32 *bufferId, u32 p1, u32 p2, s32 p3) {
+s32 fn_800DEE88(TrkBuf *msgBuf, int *bufferId, u32 p1, u32 p2, s32 p3) {
     s32 error = 0;
     TrkBuf *buffer;
     u32 timer;
@@ -767,9 +767,10 @@ s32 fn_800DB438(TrkBuf *buf, u16 *data);
 #pragma inline_depth(4)
 #pragma dont_inline off
 
-s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s32 read) {
+static inline u8 cmdfor(s32 read) { u8 c = 0xD0; if (read) c = 0xD1; return c; }
+s32 fn_800DF02C(unsigned int handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s32 read) {
     s32 error;
-    s32 replyBufferId;
+    int replyBufferId;
     TrkBuf *replyBuffer;
     s32 bufferId;
     TrkBuf *buffer;
@@ -778,17 +779,13 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
     u8 replyIOResult;
     u16 replyLength;
     s32 exit;
-    s32 err;
 
     if (data == 0 || *count == 0) {
         return 2;
     }
 
-    exit = 0;
-    *ioResult = 0;
-    done = 0;
-    error = 0;
-    while (!exit && done < *count && error == 0 && *ioResult == 0) {
+    for (exit = 0, *ioResult = 0, done = 0, error = 0;
+         !exit && done < *count && error == 0 && *ioResult == 0;) {
         if (*count - done > 0x800) {
             length = 0x800;
         } else {
@@ -797,17 +794,8 @@ s32 fn_800DF02C(u32 handle, u32 data, u32 *count, u8 *ioResult, s32 needReply, s
 
         error = fn_800DBBA0(&bufferId, &buffer);
 
-        if (error == 0) {
-            u8 cmd;
-            TrkBuf *b;
-            cmd = 0xD0;
-            if (read) {
-                cmd = 0xD1;
-            }
-            b = buffer;
-            err = TRKAppendBuffer1_ui8(b, cmd);
-            error = err;
-        }
+        if (error == 0)
+            error = TRKAppendBuffer1_ui8(buffer, cmdfor(read));
 
         if (error == 0)
             error = fn_800DB7D0(buffer, handle);
