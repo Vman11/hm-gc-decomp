@@ -286,13 +286,14 @@ static inline void bW(BitBuf *bs, u32 v, u32 n) {
     }
 #define ONE(K) \
     PUT1(((K) ? *++bp : *bp) != lvl); \
-    e = *bp; \
-    e |= (pos << 10) + 0x300; \
-    if ((e & 0xFF) != lvl) { \
-        *--head = e; \
+    { \
+    u8 t_ = *bp; \
+    if (t_ != lvl) { \
+        *--head = t_ | ((pos << 10) + 0x300); \
     } else { \
         nzl[nz++] = av[pos]; \
         PUT1(sv[pos] & 0x80); \
+    } \
     } \
     pos++;
 s32 fn_80292974(BitBuf *bs, u8 *in) {
@@ -308,7 +309,6 @@ s32 fn_80292974(BitBuf *bs, u8 *in) {
     u8 mx, lvl, q;
     u16 v, k;
 #define pos v
-    u32 e;
     s16 mask;
     s32 i, nz;
     for (i = 0; i < 64; i++) sv[i] = in[lbl_802AF340[i]];
