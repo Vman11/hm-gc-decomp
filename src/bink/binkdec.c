@@ -83,7 +83,7 @@ typedef struct BBundle {
 #define HUFF(S) \
     if (bs->bits >= hbits) { \
         u32 e = tab[bs->buf & (~0u >> (32 - hbits))]; \
-        S = t->map[e & 15]; \
+        S = map[e & 15]; \
         e >>= 4; \
         bs->buf >>= e; \
         bs->bits -= e; \
@@ -91,43 +91,114 @@ typedef struct BBundle {
         u32 w = *bs->ptr, c = bs->bits; \
         u32 b0 = bs->buf; \
         u32 e = tab[(b0 | (w << c)) & (~0u >> (32 - hbits))]; \
-        S = t->map[e & 15]; \
+        S = map[e & 15]; \
         e >>= 4; \
         if (c >= e) { \
             bs->buf = b0 >> e; \
             bs->bits = c - e; \
         } else { \
             bs->buf = w >> (e - c); \
-            bs->bits = c - (e - 32); \
+            bs->bits = c + 32 - e; \
             bs->ptr++; \
         } \
     }
-void fn_802852FC(BBundle *t, BitBuf *bs) {
-    u32 v;
+void fn_80285068(BBundle *t, BitBuf *bs) {
+    unsigned int v;
     if (t->cur != t->end) return;
     if (bs->bits >= t->nbits) {
-        u32 b0 = bs->buf, m = ~0u >> (32 - t->nbits);
+        unsigned int b0 = bs->buf, m = ~0u >> (32 - t->nbits);
         bs->buf = b0 >> t->nbits;
-        v = b0 & m;
         bs->bits -= t->nbits;
+        v = b0 & m;
     } else {
-        u32 *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p, m = ~0u >> (32 - t->nbits);
+        unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p, m = ~0u >> (32 - t->nbits);
         bs->buf = w >> (t->nbits - c);
-        v = (b0 | (w << c)) & m;
+        bs->bits = c + 32 - t->nbits;
         bs->ptr = ++p;
-        bs->bits = c - (t->nbits - 32);
+        v = (b0 | (w << c)) & m;
     }
     if (v != 0) {
-        u8 *out = t->data;
-        u32 hbits = t->hbits;
-        u8 *tab = t->tab;
-        t->cur = out;
-        t->end = out + v;
-        while (v--) {
-            u32 lo, hi;
-            HUFF(lo)
-            HUFF(hi)
-            *out++ = lo | (hi << 4);
+        t->cur = t->data;
+        t->end = t->data + v;
+        if (!(bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                           : ({ unsigned int w = *bs->ptr++; bs->bits = 31; bs->buf = w >> 1; w & 1; }))) {
+            u8 *out = t->data;
+            u8 *tab = t->tab;
+            unsigned int hbits = t->hbits;
+            u8 *map = t->map;
+            while (v--) {
+                if (bs->bits >= hbits) {
+                    unsigned int e = tab[bs->buf & (~0u >> (32 - hbits))];
+                    *out++ = map[e & 15];
+                    e >>= 4;
+                    bs->buf >>= e;
+                    bs->bits -= e;
+                } else {
+                    unsigned int w = *bs->ptr, c = bs->bits;
+                    unsigned int e = tab[(bs->buf | (w << c)) & (~0u >> (32 - hbits))];
+                    *out++ = map[e & 15];
+                    e >>= 4;
+                    c = bs->bits;
+                    if (c >= e) {
+                        bs->bits = c - e;
+                        bs->buf >>= e;
+                    } else {
+                        bs->buf = w >> (e - c);
+                        bs->bits = c + 32 - e;
+                        bs->ptr++;
+                    }
+                }
+            }
+        } else {
+            unsigned int x;
+            if (bs->bits > 3) {
+                unsigned int w = bs->buf;
+                bs->bits -= 4;
+                bs->buf = w >> 4;
+                x = w & 15;
+            } else {
+                unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p;
+                bs->bits = c + 28;
+                bs->ptr = ++p;
+                bs->buf = w >> (4 - c);
+                x = (b0 | (w << c)) & 15;
+            }
+            memset(t->data, x, v);
+        }
+    } else {
+        t->end = t->data;
+        t->cur = t->data + 4;
+    }
+}
+void fn_802852FC(BBundle *t, BitBuf *bs) {
+    unsigned int v;
+    if (t->cur != t->end) return;
+    if (bs->bits >= t->nbits) {
+        unsigned int b0 = bs->buf, m = ~0u >> (32 - t->nbits);
+        bs->buf = b0 >> t->nbits;
+        bs->bits -= t->nbits;
+        v = b0 & m;
+    } else {
+        unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p, m = ~0u >> (32 - t->nbits);
+        bs->buf = w >> (t->nbits - c);
+        bs->bits = c + 32 - t->nbits;
+        bs->ptr = ++p;
+        v = (b0 | (w << c)) & m;
+    }
+    if (v != 0) {
+        t->cur = t->data;
+        t->end = t->data + v;
+        {
+            u8 *out = t->data;
+            u8 *tab = t->tab;
+            u8 *map = t->map;
+            unsigned int hbits = t->hbits;
+            while (v--) {
+                u32 lo, hi;
+                HUFF(lo)
+                HUFF(hi)
+                *out++ = lo | (hi << 4);
+            }
         }
     } else {
         t->end = t->data;
