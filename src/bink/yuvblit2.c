@@ -867,7 +867,7 @@ void fn_802899EC(s32 count) {
     u32 *m0;
     u32 *m1;
     u32 *ct, *t1, *t2, *t3;
-    s32 *yt;
+    s32 *yt; u32 *Rt, *Gt, *Bt;
     p0 = lbl_80300860[0];
     base = lbl_80300860[18];
     p1 = lbl_80300860[1];
@@ -887,6 +887,9 @@ void fn_802899EC(s32 count) {
     t3 = ct + 768;
     t2 = ct + 512;
     t1 = ct + 256;
+    Rt = lbl_802F9340;
+    Bt = lbl_802FAB80;
+    Gt = lbl_802F9F60;
     yt = lbl_802F72A0;
     d0 = (u32 *)(base + stride * (y0 >> 2) + (y0 & 3) * 8 + (p0 - (base + y0 * w)) * 4);
     d1 = (u32 *)(base + stride * (y1 >> 2) + (y1 & 3) * 8 + (p1 - (base + y1 * w)) * 4);
@@ -906,9 +909,9 @@ void fn_802899EC(s32 count) {
         ma = *m0++;
         mb = *m1++;
         { 
-        u32 *G = lbl_802F9F60 + (CT(t2, u >> 6) + CT(t1, v >> 6));
-        u32 *B = lbl_802FAB80 + CT(t3, v >> 6);
-        u32 *R = lbl_802F9340 + CT(ct, u >> 6);
+        u32 *G = (u32 *)(((CT(t2, u >> 6) + CT(t1, v >> 6))) * 4 + (u32)Gt);
+        u32 *B = (u32 *)((CT(t3, v >> 6)) * 4 + (u32)Bt);
+        u32 *R = (u32 *)((CT(ct, u >> 6)) * 4 + (u32)Rt);
         h = a >> 16;
         k = ma >> 16;
         d0[0] = (PXA(CT(yt, h >> 6), k >> 6) << 16) | PXA(CT(yt, h << 2), k << 2);
@@ -916,9 +919,9 @@ void fn_802899EC(s32 count) {
         k = mb >> 16;
         d1[0] = (PXA(CT(yt, h >> 6), k >> 6) << 16) | PXA(CT(yt, h << 2), k << 2); }
         { 
-        u32 *R = lbl_802F9340 + CT(ct, u << 2);
-        u32 *G = lbl_802F9F60 + (CT(t2, u << 2) + CT(t1, v << 2));
-        u32 *B = lbl_802FAB80 + CT(t3, v << 2);
+        u32 *R = (u32 *)((CT(ct, u << 2)) * 4 + (u32)Rt);
+        u32 *G = (u32 *)(((CT(t2, u << 2) + CT(t1, v << 2))) * 4 + (u32)Gt);
+        u32 *B = (u32 *)((CT(t3, v << 2)) * 4 + (u32)Bt);
         h = a & 0xFFFF;
         k = ma & 0xFFFF;
         d0[1] = (PXA(CT(yt, h >> 6), k >> 6) << 16) | PXA(CT(yt, h << 2), k << 2);
