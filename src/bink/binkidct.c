@@ -155,7 +155,7 @@ void fn_8029086C(s32 *data, s8 *in) {
     }
 }
 
-void fn_80293258(u16 *);
+void fn_80293258(s8 *out, BitBuf *bs, s32 limit);
 int abs(int);
 extern u8 lbl_802AF340[];
 #define MX(a, b) ((a) < (b) ? (b) : (a))
@@ -253,12 +253,107 @@ u32 fn_80290AAC(s16 *in) {
 #undef ONE
 #undef PASS
 
+#define GB1(q) (bb.bits != 0 ? ({ u32 w_ = bb.buf; bb.bits--; bb.buf = w_ >> 1; w_ & 1; }) \
+                             : ({ u32 w_ = *bb.ptr; bb.ptr++; bb.bits = 31; bb.buf = w_ >> 1; w_ & 1; }))
+#define RQ(K) \
+    if (GB1(q)) { \
+        *--head = (c << 2) + 3; \
+    } else { \
+        nzl[nz++] = c; \
+        out[c] = GB1(q) ? -mask : mask; \
+        if (n++ == limit) goto done; \
+    }
+void fn_80293258(s8 *out, BitBuf *bs, s32 limit) {
+    u8 list[136];
+    u8 nzl[64];
+    BitBuf bb;
+    u8 *head, *end, *p;
+    u32 q;
+    u8 nb, c, lvl;
+    s32 mask;
+    s32 nz, i, n;
+    bb = *bs;
+    n = 0;
+    memset(out, 0, 64);
+    {
+        u32 bits = bb.bits;
+        if (bits > 2) {
+            c = bb.buf & 7;
+            bb.bits = bits - 3;
+            bb.buf >>= 3;
+        } else {
+            u32 *pp = bb.ptr;
+            u32 w = *pp;
+            c = (bb.buf | (w << bits)) & 7;
+            bb.bits = bits + 32 - 3;
+            bb.ptr = pp + 1;
+            bb.buf = w >> (3 - bits);
+        }
+    }
+    c = c + 1;
+    head = list + 68;
+    head[0] = 0x10;
+    head[1] = 0x60;
+    head[2] = 0xB0;
+    head[3] = 2;
+    mask = (s8)(1 << (c - 1));
+    end = head + 4;
+    nz = 0;
+    for (lvl = c; lvl != 0; lvl--, mask >>= 1) {
+        for (i = 0; i < nz; i++) {
+            if (GB1(q)) {
+                out[nzl[i]] += out[nzl[i]] < 0 ? -mask : mask;
+                if (n++ == limit) goto done;
+            }
+        }
+        p = head;
+        while (p < end) {
+            c = *p;
+            if (c != 0 && GB1(q)) {
+                switch (c & 3) {
+                case 0:
+                    c >>= 2;
+                    *p = ((c + 4) << 2) + 1;
+                    goto four;
+                case 1:
+                    c >>= 2;
+                    *p = (c << 2) + 2;
+                    *end++ = ((c + 4) << 2) + 2;
+                    *end++ = ((c + 8) << 2) + 2;
+                    *end++ = ((c + 12) << 2) + 2;
+                    continue;
+                case 2:
+                    *p = 0;
+                    c >>= 2;
+                    p++;
+                four:
+                    RQ(0) c++;
+                    RQ(1) c++;
+                    RQ(2) c++;
+                    RQ(3)
+                    continue;
+                case 3:
+                    c >>= 2;
+                    nzl[nz++] = c;
+                    out[c] = GB1(q) ? -mask : mask;
+                    if (n++ == limit) goto done;
+                    *p = 0;
+                    break;
+                }
+            }
+            p++;
+        }
+    }
+done:
+    *bs = bb;
+}
+
 void fn_80293964(u16 *dst) {
     u16 t[32];
     u16 *d;
     u16 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16;
     d = dst;
-    fn_80293258(t);
+    ((void (*)(u16 *))fn_80293258)(t);
     a0 = t[0]; a1 = t[2]; a2 = t[4]; a3 = t[6];
     a4 = t[1]; a5 = t[3]; a6 = t[5]; a7 = t[7];
     a8 = t[12]; a9 = t[22]; a10 = t[8]; a11 = t[10];
