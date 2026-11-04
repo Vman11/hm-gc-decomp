@@ -685,16 +685,16 @@ void fn_80289048(s32 count) {
         ma = *m0;
         m0++;
         m1++;
-        r = CT(t3, u >> 6);
         bl = CT(ct, v >> 6);
         g = CT(t2, v >> 6) + CT(t1, u >> 6);
-        g = CT(t2, v << 2) + CT(t1, u << 2);
+        r = CT(t3, u >> 6);
         q0 = YT(a >> 22); q1 = YT(a >> 14);
         d0[0] = DA(q0, ma >> 24); d0[1] = DA(q1, (ma >> 16) & 0xFF); d0[8] = GB(q0); d0[9] = GB(q1);
         q0 = YT(b >> 22); q1 = YT(b >> 14);
         d1[0] = DA(q0, mb >> 24); d1[1] = DA(q1, (mb >> 16) & 0xFF); d1[8] = GB(q0); d1[9] = GB(q1);
         r = CT(t3, u << 2);
         bl = CT(ct, v << 2);
+        g = CT(t2, v << 2) + CT(t1, u << 2);
         q0 = YT(a >> 6); q1 = YT(a << 2);
         d0[16] = DA(q0, (ma >> 8) & 0xFF); d0[17] = DA(q1, ma & 0xFF); d0[24] = GB(q0); d0[25] = GB(q1);
         d0 += 32;
