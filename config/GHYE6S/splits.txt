@@ -1142,7 +1142,7 @@ auto/text_8003F108.cpp:
 	.text       start:0x8003F108 end:0x8003F140
 	.ctors      start:0x80293F38 end:0x80293F3C
 
-auto/text_8003F140.c:
+auto/text_8003F140.cpp:
 	extab       start:0x80005F54 end:0x80005F5C
 	extabindex  start:0x80018458 end:0x80018464
 	.text       start:0x8003F140 end:0x8003F18C
