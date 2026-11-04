@@ -331,7 +331,7 @@ void wEQ_C408(u32 x, u32 y, u32 a2, u32 pitch, u8 *mk, u32 a5, u8 *a6, s32 a7, u
     } else {
         off = 0;
     }
-    lbl_803008A8 = x;
+    lbl_80300860[18] = (u8 *)x;
     lbl_80300860[0] = (u8 *)(x + (a2 * pt + y * fmt->f0));
     if ((flags & 0x70000000) == 0x20000000 || (flags & 0x70000000) == 0x50000000) {
         p += p;
