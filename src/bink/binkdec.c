@@ -519,6 +519,116 @@ void fn_80285558(BBundle *t, BitBuf *bs) {
         t->cur = t->data + 4;
     }
 }
+#define NB(t) (*(u32 *)&(t)->pad8[0])
+#define FL(t) (*(u32 *)&(t)->pad8[4])
+void fn_802858A4(BBundle *t, BitBuf *bs) {
+    unsigned int v;
+    unsigned int q;
+    if (t->cur != t->end) return;
+    if (bs->bits >= t->nbits) {
+        unsigned int b0 = bs->buf, m = ~0u >> (32 - t->nbits);
+        bs->buf = b0 >> t->nbits;
+        bs->bits -= t->nbits;
+        v = b0 & m;
+    } else {
+        unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p, m = ~0u >> (32 - t->nbits);
+        bs->buf = w >> (t->nbits - c);
+        bs->bits = c + 32 - t->nbits;
+        bs->ptr = ++p;
+        v = (b0 | (w << c)) & m;
+    }
+    if (v != 0) {
+        u16 *out = (u16 *)t->data;
+        u16 x;
+        if (FL(t)) {
+            unsigned int c = bs->bits;
+            if (c >= NB(t) - 1) {
+                x = bs->buf & (~0u >> (33 - NB(t)));
+                bs->buf >>= NB(t) - 1;
+                bs->bits = c - (NB(t) - 1);
+            } else {
+                unsigned int *p = bs->ptr, w = *p;
+                x = (bs->buf | (w << c)) & (~0u >> (33 - NB(t)));
+                bs->buf = w >> (NB(t) - 1 - c);
+                bs->bits = c + 33 - NB(t);
+                bs->ptr = ++p;
+            }
+            if (x != 0) {
+                if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                                  : (q = *bs->ptr, bs->ptr++, bs->bits = 31, bs->buf = q >> 1, q & 1))
+                    x = -x;
+            }
+        } else {
+            unsigned int c = bs->bits;
+            if (c >= NB(t)) {
+                x = bs->buf & (~0u >> (32 - NB(t)));
+                bs->buf >>= NB(t);
+                bs->bits = c - NB(t);
+            } else {
+                unsigned int *p = bs->ptr, w = *p;
+                x = (bs->buf | (w << c)) & (~0u >> (32 - NB(t)));
+                bs->buf = w >> (NB(t) - c);
+                bs->bits = c + 32 - NB(t);
+                bs->ptr = ++p;
+            }
+        }
+        *out++ = x;
+        t->cur = t->data;
+        t->end = t->data + v * 2;
+        v--;
+        while (v != 0) {
+            unsigned int chunk = v > 8 ? 8 : v;
+            unsigned int nb;
+            {
+                unsigned int c = bs->bits;
+                if (c > 3) {
+                    unsigned int w = bs->buf;
+                    bs->bits = c - 4;
+                    bs->buf = w >> 4;
+                    nb = w & 15;
+                } else {
+                    unsigned int *p = bs->ptr, b0 = bs->buf, w = *p;
+                    bs->bits = c + 28;
+                    nb = (b0 | (w << c)) & 15;
+                    bs->buf = w >> (4 - c);
+                    bs->ptr = ++p;
+                }
+            }
+            if (nb != 0) {
+                unsigned int n = chunk;
+                while (n--) {
+                    s16 d;
+                    unsigned int c = bs->bits;
+                    if (c >= nb) {
+                        d = bs->buf & (~0u >> (32 - nb));
+                        bs->bits = c - nb;
+                        bs->buf >>= nb;
+                    } else {
+                        unsigned int *p = bs->ptr, w = *p;
+                        d = (bs->buf | (w << c)) & (~0u >> (32 - nb));
+                        bs->bits = c + 32 - nb;
+                        bs->buf = w >> (nb - c);
+                        bs->ptr = ++p;
+                    }
+                    if (d != 0) {
+                        if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                                          : ({ unsigned int w = *bs->ptr++; bs->bits = 31; bs->buf = w >> 1; w & 1; }))
+                            d = -d;
+                    }
+                    x += d;
+                    *out++ = x;
+                }
+            } else {
+                fn_802753B4((u32 *)out, x, chunk * 2);
+                out += chunk;
+            }
+            v -= chunk;
+        }
+    } else {
+        t->end = t->data;
+        t->cur = t->data + 4;
+    }
+}
 #define HUFF3(S) \
     c = bs->bits; \
     if (c >= hbits) { \
