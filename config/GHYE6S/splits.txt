@@ -1055,6 +1055,7 @@ auto/text_8003D130.cpp:
 	extab       start:0x80005EE4 end:0x80005EEC
 	extabindex  start:0x800183B0 end:0x800183BC
 	.text       start:0x8003D130 end:0x8003D50C
+	.rodata     start:0x80294E10 end:0x80294E98
 
 auto/text_8003D50C.c:
 	.text       start:0x8003D50C end:0x8003D518

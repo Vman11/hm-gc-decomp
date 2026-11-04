@@ -3,6 +3,13 @@
 #include "common.h"
 
 extern "C" {
+extern const char lbl_802947C8[];
+const char lbl_802947C8[] = "MAINMENU";
+extern const char lbl_802947D4[];
+const char lbl_802947D4[] = "MainMenu";
+static const char s24[] = "HMDem130";
+static const char s36[] = "HMDem230";
+static const char s48[] = "HM_Intro";
 
 /* QV=2.0p1 */
 #pragma readonly_strings on
@@ -40,7 +47,7 @@ void fn_800316C8(S_800316C8 *self, f32 dt) {
         lbl_80359FB4 = 1;
     }
     x = self->f120->f4;
-    r = fn_801AA960(self->f36->f13232, "MAINMENU", "MainMenu");
+    r = fn_801AA960(self->f36->f13232, (char *)lbl_802947C8, (char *)lbl_802947D4);
     y = self->f120->f12;
     if (x != self->f3112) {
         if (x != r) {
@@ -64,11 +71,11 @@ void fn_800316C8(S_800316C8 *self, f32 dt) {
         {
             u32 idx = lbl_80359FB0;
             if (idx == 0) {
-                fn_8003AD38(lbl_8035A1DC + 13616, "HMDem130", 1, 0, 1);
+                fn_8003AD38(lbl_8035A1DC + 13616, (char *)s24, 1, 0, 1);
             } else if (idx == 1) {
-                fn_8003AD38(lbl_8035A1DC + 13616, "HMDem230", 1, 0, 1);
+                fn_8003AD38(lbl_8035A1DC + 13616, (char *)s36, 1, 0, 1);
             } else {
-                fn_8003AD38(lbl_8035A1DC + 13616, "HM_Intro", 1, 0, 1);
+                fn_8003AD38(lbl_8035A1DC + 13616, (char *)s48, 1, 0, 1);
             }
         }
         lbl_80359FB0++;

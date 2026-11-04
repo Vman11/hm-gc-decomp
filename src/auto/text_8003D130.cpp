@@ -21,7 +21,6 @@ extern u8 *lbl_8035A1DC;
 extern void *lbl_8035B594;
 extern Sc *lbl_8035B5E4;
 struct Str { char s0[36]; char s36[12]; char s48[12]; char s60[12]; char s72[12]; char s84[12]; char s96[12]; char s108[12]; };
-extern Str lbl_80294E10;
 extern char lbl_8035C1D8[8];
 extern char lbl_8035C1E4[8];
 extern char lbl_8035C1EC[8];
@@ -43,13 +42,27 @@ inline void SetF(char *n, f32 v) { *(f32 *)fn_80207198(lbl_8035A1DC + 992, n, 0)
 inline E52 *Cur() { return &lbl_8035B5E4->f112[lbl_8035B5E4->f104]; }
 inline void SetCam(u32 v) { lbl_8035B5E4->f24->get(0)[2] = v; }
 inline void SetCur(u32 v) { Cur()->f48 = v; }
-const char *wG_strpool_8003D130[] = { "DIFFCLTY", "LvSprFnd", "LvSprTtl" };
+extern const char lbl_80294E10[];
+const char lbl_80294E10[] = "DIFFCLTY";
+extern const char lbl_80294E1C[];
+const char lbl_80294E1C[] = "LvSprFnd";
+extern const char lbl_80294E28[];
+const char lbl_80294E28[] = "LvSprTtl";
+static const char sE34[] = "DETHCERT";
+static const char sE40[] = "SOUNDVOL";
+static const char sE4C[] = "MUSICVOL";
+static const char sE58[] = "mGemFlag";
+static const char sE64[] = "NUMCARDS";
+static const char sE70[] = "ZEKERSHP";
+static const char sE7C[] = "ZEKELIVE";
+extern const char lbl_80294E88[];
+const char lbl_80294E88[] = "MansionX";
+extern const char lbl_80294E94[];
+const char lbl_80294E94[] = "";
 extern "C" void fn_8003D130(u8 *o, int a) {
-    Str *s;
     u8 *p = o;
     u8 *q = o;
     u32 i;
-    s = &lbl_80294E10;
     for (i = 0; i < 31; i++) {
         memset(*(void **)(p + 1360), 0, 200);
         memset(((En *)q)->f740, 0, ((En *)q)->f744 * 12);
@@ -58,26 +71,26 @@ extern "C" void fn_8003D130(u8 *o, int a) {
         q += 20;
     }
     fn_8024D7E4(lbl_8035B594);
-    SetI((char *)"DETHCERT", 0);
+    SetI((char *)sE34, 0);
     if (a) {
         SetI(lbl_8035C1D8, 2);
         { u32 *pp = lbl_8035B5E4->f24->get(0); pp[2] = 1; }
         lbl_8035B5E4->cur()->f48 = 0;
-        SetF((char *)"SOUNDVOL", lbl_8035C1E0);
-        SetF((char *)"MUSICVOL", lbl_8035C1E0);
+        SetF((char *)sE40, lbl_8035C1E0);
+        SetF((char *)sE4C, lbl_8035C1E0);
         SetI(lbl_8035C1E4, 1);
         SetI(lbl_8035C1EC, 1);
         SetF(lbl_8035C1F4, lbl_8035C1FC);
         SetF(lbl_8035C200, lbl_8035C208);
         SetI(lbl_8035C20C, 2);
         SetI(lbl_8035C214, 2);
-        SetI((char *)"DIFFCLTY", 1);
+        SetI((char *)lbl_80294E10, 1);
     }
-    SetI((char *)"mGemFlag", 1);
-    SetI((char *)"NUMCARDS", 0);
+    SetI((char *)sE58, 1);
+    SetI((char *)sE64, 0);
     SetI(lbl_8035C21C, 0);
-    SetI((char *)"ZEKERSHP", 0);
-    SetI((char *)"ZEKELIVE", 0);
+    SetI((char *)sE70, 0);
+    SetI((char *)sE7C, 0);
 }
 
 } /* extern "C" */
