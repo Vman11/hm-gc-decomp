@@ -51,9 +51,130 @@ void fn_802840C0(BitStream *bs, u8 *dst, u8 *a, u8 *b, s32 n) {
     }
 }
 
+void fn_80284194(BitBuf *bs, u32 *tabp, u32 *bitsp, u8 *map) {
+    extern u32 lbl_80301CE0[];
+    extern u8 lbl_802AAFB8[];
+    unsigned int n, q, i;
+    if (bs->bits > 3) {
+        unsigned int w = bs->buf;
+        bs->bits -= 4;
+        bs->buf = w >> 4;
+        n = w & 15;
+    } else {
+        unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p;
+        bs->bits = c + 28;
+        bs->ptr = ++p;
+        n = (b0 | (w << c)) & 15;
+        bs->buf = w >> (4 - c);
+    }
+    { u32 a = lbl_80301CE0[n]; u32 b = lbl_802AAFB8[n]; *tabp = a; *bitsp = b; }
+    if (n == 0) {
+        for (i = 0; i < 16; i++) map[i] = i;
+        return;
+    }
+    if (!(bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                      : ({ unsigned int w = *bs->ptr++; bs->bits = 31; bs->buf = w >> 1; w & 1; }))) {
+        unsigned int depth;
+        if (bs->bits > 1) {
+            unsigned int w = bs->buf;
+            bs->bits -= 2;
+            bs->buf = w >> 2;
+            depth = w & 3;
+        } else {
+            unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p;
+            bs->bits = c + 30;
+            bs->ptr = ++p;
+            depth = (b0 | (w << c)) & 3;
+            bs->buf = w >> (2 - c);
+        }
+        if (depth == 0) {
+            u8 *o = map;
+            for (i = 0; i < 16; i += 2) {
+                if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                                  : ({ unsigned int w = *bs->ptr++; bs->bits = 31; bs->buf = w >> 1; w & 1; })) {
+                    o[1] = i;
+                    o[0] = i + 1;
+                } else {
+                    o[0] = i;
+                    o[1] = i + 1;
+                }
+                o += 2;
+            }
+        } else {
+            u8 tmp2[16];
+            u8 tmp[16];
+            for (i = 0; i < 16; i += 2) {
+                if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                                  : (q = *bs->ptr, bs->ptr++, bs->bits = 31, bs->buf = q >> 1, q & 1)) {
+                    tmp[i] = i + 1;
+                    tmp[i + 1] = i;
+                } else {
+                    tmp[i] = i;
+                    tmp[i + 1] = i + 1;
+                }
+            }
+            if (depth == 1) {
+                fn_802840C0((BitStream *)bs, map, tmp, tmp + 2, 2);
+                fn_802840C0((BitStream *)bs, map + 4, tmp + 4, tmp + 6, 2);
+                fn_802840C0((BitStream *)bs, map + 8, tmp + 8, tmp + 10, 2);
+                fn_802840C0((BitStream *)bs, map + 12, tmp + 12, tmp + 14, 2);
+            } else {
+                fn_802840C0((BitStream *)bs, tmp2, tmp, tmp + 2, 2);
+                fn_802840C0((BitStream *)bs, tmp2 + 4, tmp + 4, tmp + 6, 2);
+                fn_802840C0((BitStream *)bs, tmp2 + 8, tmp + 8, tmp + 10, 2);
+                fn_802840C0((BitStream *)bs, tmp2 + 12, tmp + 12, tmp + 14, 2);
+                if (depth == 2) {
+                    fn_802840C0((BitStream *)bs, map, tmp2, tmp2 + 4, 4);
+                    fn_802840C0((BitStream *)bs, map + 8, tmp2 + 8, tmp2 + 12, 4);
+                } else {
+                    fn_802840C0((BitStream *)bs, tmp, tmp2, tmp2 + 4, 4);
+                    fn_802840C0((BitStream *)bs, tmp + 8, tmp2 + 8, tmp2 + 12, 4);
+                    fn_802840C0((BitStream *)bs, map, tmp, tmp + 8, 8);
+                }
+            }
+        }
+    } else {
+        unsigned int len, mask;
+        if (bs->bits > 2) {
+            unsigned int w = bs->buf;
+            bs->bits -= 3;
+            bs->buf = w >> 3;
+            len = w & 7;
+        } else {
+            unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p;
+            bs->bits = c + 29;
+            bs->ptr = ++p;
+            len = (b0 | (w << c)) & 7;
+            bs->buf = w >> (3 - c);
+        }
+        mask = 0xFFFF;
+        for (i = 0; i <= len; i++) {
+            unsigned int s;
+            if (bs->bits > 3) {
+                unsigned int w = bs->buf;
+                bs->bits -= 4;
+                bs->buf = w >> 4;
+                s = w & 15;
+            } else {
+                unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p;
+                bs->bits = c + 28;
+                s = (b0 | (w << c)) & 15;
+                bs->buf = w >> (4 - c);
+                bs->ptr = ++p;
+            }
+            map[i] = s;
+            mask &= ~(1 << s);
+        }
+        i = 0;
+        do {
+            if (mask & 1) map[++len] = i;
+            i++;
+        } while (mask >>= 1);
+    }
+}
+
 void fn_802846B0(s32 arg0, s32 arg1) {
-    extern void fn_80284194(s32, s32, s32, s32);
-    fn_80284194(arg1, arg0 + 0x24, arg0 + 0x20, arg0 + 0x10);
+    fn_80284194((BitBuf *)arg1, (u32 *)(arg0 + 0x24), (u32 *)(arg0 + 0x20), (u8 *)(arg0 + 0x10));
 }
 
 void fn_802846E4(u8 *a, void *b, u8 *c) {
