@@ -436,6 +436,89 @@ void fn_80285068(BBundle *t, BitBuf *bs) {
         t->cur = t->data + 4;
     }
 }
+void fn_80285558(BBundle *t, BitBuf *bs) {
+    unsigned int v;
+    unsigned int q;
+    if (t->cur != t->end) return;
+    if (bs->bits >= t->nbits) {
+        unsigned int b0 = bs->buf, m = ~0u >> (32 - t->nbits);
+        bs->buf = b0 >> t->nbits;
+        bs->bits -= t->nbits;
+        v = b0 & m;
+    } else {
+        unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p, m = ~0u >> (32 - t->nbits);
+        bs->buf = w >> (t->nbits - c);
+        bs->bits = c + 32 - t->nbits;
+        bs->ptr = ++p;
+        v = (b0 | (w << c)) & m;
+    }
+    if (v != 0) {
+        unsigned int hbits, e, c;
+        s8 x;
+        t->cur = t->data;
+        t->end = t->data + v;
+        if (!(bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                           : (q = *bs->ptr, bs->ptr++, bs->bits = 31, bs->buf = q >> 1, q & 1))) {
+            u8 *map, *out, *tab;
+            hbits = t->hbits;
+            out = t->data;
+            tab = t->tab;
+            map = t->map;
+            while (v--) {
+                c = bs->bits;
+                if (c >= hbits) {
+                    unsigned int b0 = bs->buf;
+                    e = tab[b0 & (~0u >> (32 - hbits))];
+                    x = map[e & 15];
+                    e >>= 4;
+                    bs->buf = b0 >> e;
+                    bs->bits = c - e;
+                } else {
+                    unsigned int w = *bs->ptr, b0 = bs->buf;
+                    e = tab[(b0 | (w << c)) & (~0u >> (32 - hbits))];
+                    x = map[e & 15];
+                    e >>= 4;
+                    if (c >= e) {
+                        bs->buf = b0 >> e;
+                        bs->bits = c - e;
+                    } else {
+                        bs->buf = w >> (e - c);
+                        bs->bits = c + 32 - e;
+                        bs->ptr++;
+                    }
+                }
+                if (x) {
+                    if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                                      : ({ unsigned int w = *bs->ptr++; bs->bits = 31; bs->buf = w >> 1; w & 1; }))
+                        x = -x;
+                }
+                *out++ = x;
+            }
+        } else {
+            if (bs->bits > 3) {
+                unsigned int w = bs->buf;
+                bs->bits -= 4;
+                x = bs->buf & 15;
+                bs->buf = w >> 4;
+            } else {
+                unsigned int *p = bs->ptr, c = bs->bits, w = *p;
+                bs->bits = c + 28;
+                bs->ptr = ++p;
+                x = (bs->buf | (w << c)) & 15;
+                bs->buf = w >> (4 - c);
+            }
+            if (x) {
+                if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                                  : (q = *bs->ptr, bs->ptr++, bs->bits = 31, bs->buf = q >> 1, q & 1))
+                    x = -x;
+            }
+            memset(t->data, x, v);
+        }
+    } else {
+        t->end = t->data;
+        t->cur = t->data + 4;
+    }
+}
 #define HUFF3(S) \
     c = bs->bits; \
     if (c >= hbits) { \
