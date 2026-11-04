@@ -17714,11 +17714,12 @@ auto/text_80182ED8.cpp:
 	extabindex  start:0x80020E94 end:0x80020EA0
 	.text       start:0x80182ED8 end:0x80183168
 
-auto/text_80183168.c:
+auto/text_80183168.cpp:
 	extab       start:0x8000E8E8 end:0x8000E8F0
 	extabindex  start:0x80020EA0 end:0x80020EAC
 	.text       start:0x80183168 end:0x8018467C
 	.data       start:0x802E8878 end:0x802E8928
+	.sdata2     start:0x803648F0 end:0x803648F8
 
 auto/jt_802E8928.c:
 	.data       start:0x802E8928 end:0x802E8B68
