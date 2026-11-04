@@ -12,7 +12,7 @@ extern volatile f64 lbl_80366A98;
 double fn_800EFDA4(double);
 void __ct__9C8002FAE0Fv(void);
 void __construct_array(void *, void *, void *, u32, u32);
-static u8 s0[96];
+u8 lbl_80357B68[96];
 static u8 s1[96];
 static u8 s2[96];
 static u8 s3[96];
@@ -23,7 +23,7 @@ static u8 s6[64];
 void fn_80261D18(void) {
     lbl_8035B734 = lbl_803596E0[0];
     lbl_8035B730 = fn_800EFDA4(lbl_80366A98);
-    __construct_array(s0, (void *)__ct__9C8002FAE0Fv, 0, 12, 8);
+    __construct_array(lbl_80357B68, (void *)__ct__9C8002FAE0Fv, 0, 12, 8);
     __construct_array(s1, (void *)__ct__9C8002FAE0Fv, 0, 12, 8);
     __construct_array(s2, (void *)__ct__9C8002FAE0Fv, 0, 12, 8);
     __construct_array(s3, (void *)__ct__9C8002FAE0Fv, 0, 12, 8);

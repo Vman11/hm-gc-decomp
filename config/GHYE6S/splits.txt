@@ -12592,6 +12592,7 @@ auto/text_80134A64.cpp:
 	extabindex  start:0x8001E50C end:0x8001E518
 	.text       start:0x80134A64 end:0x80134B10
 	.ctors      start:0x80294100 end:0x80294104
+	.bss        start:0x8032C2D0 end:0x8032E4A8
 
 auto/text_80134B10.cpp:
 	extab       start:0x8000BDD0 end:0x8000BDD8
@@ -34571,6 +34572,7 @@ auto/text_80261D18.cpp:
 	extabindex  start:0x80029F84 end:0x80029F90
 	.text       start:0x80261D18 end:0x80261DEC
 	.ctors      start:0x80294370 end:0x80294374
+	.bss        start:0x80357B68 end:0x80357E48
 
 auto/text_80261DEC.cpp:
 	extab       start:0x80017344 end:0x80017370
