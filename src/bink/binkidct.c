@@ -288,7 +288,7 @@ static inline void bW(BitBuf *bs, u32 v, u32 n) {
     { \
     u8 t_ = *bp; \
     if (t_ != lvl) { \
-        *--head = t_ | ((pos << 10) + 0x300); \
+        *--head = *bp | ((pos << 10) + 0x300) | (t_ & 0x100); \
     } else { \
         nzl[nz++] = av[pos]; \
         PUT1(sv[pos] & 0x80); \
