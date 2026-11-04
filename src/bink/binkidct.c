@@ -253,6 +253,140 @@ u32 fn_80290AAC(s16 *in) {
 #undef ONE
 #undef PASS
 
+static inline void bW(BitBuf *bs, u32 v, u32 n) {
+    u32 bits = bs->bits;
+    u32 buf;
+    u32 nb;
+    v &= lbl_802AB0C0[n];
+    nb = bits + n;
+    buf = bs->buf | (v << bits);
+    bs->bits = nb;
+    bs->buf = buf;
+    if (nb > 31) {
+        *bs->ptr = buf;
+        bs->ptr++;
+        bs->bits -= 32;
+        if (bs->bits != 0) {
+            bs->buf = v >> (n - bs->bits);
+        } else {
+            bs->buf = 0;
+        }
+    }
+}
+#define MXE(q, e) { u8 x_ = (e); if (q < x_) q = x_; }
+#define PUT1(c) \
+    { \
+        if (c) bs->buf |= 1 << bs->bits; \
+        if (++bs->bits == 32) { \
+            *bs->ptr = bs->buf; \
+            bs->bits = 0; \
+            bs->buf = 0; \
+            bs->ptr++; \
+        } \
+    }
+#define ONE(K) \
+    PUT1(((K) ? *++bp : *bp) != lvl); \
+    e = *bp; \
+    e |= (pos << 10) + 0x300; \
+    if ((e & 0xFF) != lvl) { \
+        *--head = e; \
+    } else { \
+        nzl[nz++] = av[pos]; \
+        PUT1(sv[pos] & 0x80); \
+    } \
+    pos++;
+s32 fn_80292974(BitBuf *bs, u8 *in) {
+    u16 list[132];
+    u8 bits[64];
+    u8 g[16];
+    u8 sv[64];
+    u8 av[64];
+    u8 nzl[64];
+    u8 h[4];
+    u16 *head, *end, *p;
+    u8 *bp;
+    u8 mx, lvl, q;
+    u16 v, k;
+#define pos v
+    u32 e;
+    s16 mask;
+    s32 i, nz;
+    for (i = 0; i < 64; i++) sv[i] = in[lbl_802AF340[i]];
+    for (i = 0; i < 64; i++) av[i] = abs((s8)sv[i]);
+    mx = 0;
+    for (i = 0; i < 64; i++) {
+        u8 t = 32 - cntlzw_inline(av[i]);
+        if (t > mx) mx = t;
+        bits[i] = t;
+    }
+    if (mx == 0) return 0;
+    for (i = 0; i < 64; i += 4) {
+        q = bits[i];
+        MXE(q, bits[i + 1]);
+        MXE(q, bits[i + 2]);
+        MXE(q, bits[i + 3]);
+        g[i / 4] = q;
+    }
+    q = g[2]; MXE(q, g[3]); MXE(q, g[4]); MXE(q, g[5]); h[0] = q;
+    q = g[7]; MXE(q, g[8]); MXE(q, g[9]); MXE(q, g[10]); h[1] = q;
+    q = g[12]; MXE(q, g[13]); MXE(q, g[14]); MXE(q, g[15]); h[2] = q;
+    bW(bs, mx - 1, 3);
+    head = &list[68];
+    head[0] = (h[0] > g[1] ? h[0] : g[1]) | (4 << 10);
+    head[1] = (h[1] > g[6] ? h[1] : g[6]) | (24 << 10);
+    head[2] = (h[2] > g[11] ? h[2] : g[11]) | (44 << 10);
+    head[3] = g[0] + 0x200;
+    end = head + 4;
+    nz = 0;
+    mask = 1 << (mx - 1);
+    for (lvl = mx; lvl != 0; mask >>= 1, lvl--) {
+        for (i = 0; i < nz;) {
+            PUT1(nzl[i++] & mask);
+        }
+        for (p = head; p < end;) {
+            v = *p;
+            if (v == 0) { p++; continue; }
+            PUT1((u8)v == lvl);
+            if ((u8)v != lvl) { p++; continue; }
+            switch (v & 0x300) {
+            case 0x000:
+                pos = v >> 10;
+                *p = h[pos >> 4] + (((pos + 4) << 10) + 0x100);
+                goto C;
+            case 0x100:
+                pos = v >> 10;
+                k = pos >> 2;
+                *p = g[k] + ((pos << 10) + 0x200);
+                *end++ = g[k + 1] + (((pos + 4) << 10) + 0x200);
+                *end++ = g[k + 2] + (((pos + 8) << 10) + 0x200);
+                *end++ = g[k + 3] + (((pos + 12) << 10) + 0x200);
+                break;
+            case 0x200:
+                *p = 0;
+                pos = v >> 10;
+                p++;
+            C:
+                bp = bits + pos;
+                ONE(0) ONE(1) ONE(2) ONE(3)
+                break;
+            case 0x300:
+                pos = v >> 10;
+                nzl[nz++] = av[pos];
+                PUT1(sv[pos] & 0x80);
+                *p = 0;
+                p++;
+                break;
+            default:
+                p++;
+            }
+        }
+    }
+    return 1;
+}
+#undef MXE
+#undef PUT1
+#undef ONE
+
 #define GB1(q) (bb.bits != 0 ? ({ u32 w_ = bb.buf; bb.bits--; bb.buf = w_ >> 1; w_ & 1; }) \
                              : ({ u32 w_ = *bb.ptr; bb.ptr++; bb.bits = 31; bb.buf = w_ >> 1; w_ & 1; }))
 #define RQ(K) \
