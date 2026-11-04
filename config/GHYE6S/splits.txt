@@ -18837,7 +18837,7 @@ auto/text_801998D4.cpp:
 	.text       start:0x801998D4 end:0x80199910
 	.ctors      start:0x80294130 end:0x80294134
 
-auto/text_80199910.c:
+auto/text_80199910.cpp:
 	.text       start:0x80199910 end:0x80199A98
 
 auto/text_80199A98.cpp:

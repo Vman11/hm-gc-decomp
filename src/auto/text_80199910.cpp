@@ -1,21 +1,20 @@
 /* Functions from 0x80199910 to 0x80199A98, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 
 typedef struct {
     f32 x, y, z, w;
 } Plane;
 
-s32 fn_80199910(void *arg0, f32 *arg1) {
-    f32 *p = *(f32 **)((u8 *)arg0 + 0);
-    f32 *end = p + *(s32 *)((u8 *)arg0 + 4) * 4;
-    f32 x = arg1[0];
-    f32 y = arg1[1];
-    f32 z = arg1[2];
-    f32 r = -arg1[3];
-    for (; p < end; p += 4) {
-        f32 d = x * p[0] + y * p[1] + z * p[2] + p[3];
-        if (d < r) {
+typedef struct Pl80199910 { f32 x, y, z, w; } Pl80199910;
+typedef struct Fr80199910 { Pl80199910 *p; s32 n; } Fr80199910;
+s32 fn_80199910(const Fr80199910 *f, const Pl80199910 *s) {
+    Pl80199910 *p = f->p;
+    Pl80199910 *end = p + f->n;
+    for (; p < end; p++) {
+        if (p->w + (s->x * p->x + s->y * p->y + s->z * p->z) < -s->w) {
             return 0;
         }
     }
@@ -79,3 +78,5 @@ void __ct__9C80199A84Fv(void *arg0) {
     *(u32 *)((u8 *)arg0 + 8) = 0;
 }
 
+
+} /* extern "C" */
