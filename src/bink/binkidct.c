@@ -414,8 +414,8 @@ void fn_802910C0(BitBuf *bs, s16 *in) {
         u32 w_ = *pp_; \
         r_ = (bb.buf | (w_ << b_)) & (0xFFFFFFFF >> (32 - (n))); \
         bb.bits = b_ + 32 - (n); \
-        bb.ptr = pp_ + 1; \
         bb.buf = w_ >> ((n) - b_); \
+        bb.ptr = pp_ + 1; \
     } }
 #define RQV(V) \
     if (GB1(q)) { \
