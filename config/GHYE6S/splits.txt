@@ -10021,7 +10021,7 @@ auto/text_80112190.cpp:
 auto/text_801122C0.c:
 	.text       start:0x801122C0 end:0x801122C8
 
-auto/text_801122C8.c:
+auto/text_801122C8.cpp:
 	extab       start:0x8000AAFC end:0x8000AB04
 	extabindex  start:0x8001CF88 end:0x8001CF94
 	.text       start:0x801122C8 end:0x80112340
