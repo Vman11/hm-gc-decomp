@@ -45,19 +45,22 @@ static inline void chk(u8 *p) {
     void *e = *(void **)(p + 284);
     if (e != 0 && fn_800F6CD0(e, lbl_8035C2F8) == 0) fn_8024118C(p, e, 0);
 }
+extern u32 lbl_8035A0C8;
+extern s8 lbl_8035A0CC;
+extern f32 lbl_8035C2FC;
 #define F(T, o) (*(T *)(p + (o)))
 void fn_80040274(u8 *p) {
     u32 i;
     if (*(s32 *)(*(u8 **)(lbl_8035B308 + 76) + 676) == 0) {
         chk(p);
     }
-    static Ctr s;
-    s.n = (s.n + 1) % 3;
+    if (!lbl_8035A0CC) { lbl_8035A0C8 = 0; lbl_8035A0CC = 1; }
+    lbl_8035A0C8 = (lbl_8035A0C8 + 1) % 3;
     for (i = 0; i < *(u32 *)((u8 *)(*F(S14C *, 332)).f0 + 16); i++) {
         u8 buf[8];
         fn_800F6E88(buf, &F(S14C *, 332)->arr[i]);
         if (fn_800F6CD0(buf, lbl_8035C2F8) == 0) {
-            u32 idx = i + s.n * 2;
+            u32 idx = i + lbl_8035A0C8 * 2;
             T20 t = lbl_80294F4C;
             u8 *q;
             t.p = buf;
@@ -76,7 +79,7 @@ void fn_80040274(u8 *p) {
                 if (*(void **)(q + 48) != 0) {
                     lbl_803286D0.f304(*(void **)(*(u8 **)(q + 48) + 16), &v);
                 } else {
-                    v.x = 0.0f; v.y = 0.0f; v.z = 0.0f;
+                    v.x = lbl_8035C2FC; v.y = lbl_8035C2FC; v.z = lbl_8035C2FC;
                 }
                 F(VO *, 224)->get(0, &w, 0, 0, 0);
                 o = *(VB **)((u8 *)F(VO *, 224) + 156);
