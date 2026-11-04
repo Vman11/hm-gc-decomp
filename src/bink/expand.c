@@ -210,12 +210,12 @@ void fn_8027BA1C(u32 flags, s32 *pitch, u32 w, u32 h, ExpFmt *fmt, s32 *adv) {
 }
 
 void wEM_BFB8(u32 x, u32 y, s32 a2, s32 pitch, u8 *a4, u32 a5, u32 a6, u32 w, u32 h, u32 a9, u32 a10, u32 flags, u8 *a12, ExpFmt *fmt) asm("fn_8027BFB8");
-void wEM_BFB8(u32 x, u32 y, s32 a2, s32 pitch, u8 *a4, u32 a5, u32 a6, u32 w, u32 h, u32 a9, u32 a10, u32 flags, u8 *a12, ExpFmt *fmt) {
-    s32 p;
+void wEM_BFB8(u32 x, u32 y, s32 a2, s32 p, u8 *a4, u32 a5, u32 a6, u32 w, u32 h, u32 a9, u32 a10, u32 flags, u8 *a12, ExpFmt *fmt) {
+    s32 pitch;
     s32 adv;
     u32 n, cnt, q, rem, src;
     s32 row, end, d, dh;
-    p = pitch;
+    pitch = p;
     if ((flags & 0x70000000) == 0x60000000) {
         p = pitch + pitch;
         a6 >>= 1;
@@ -223,7 +223,7 @@ void wEM_BFB8(u32 x, u32 y, s32 a2, s32 pitch, u8 *a4, u32 a5, u32 a6, u32 w, u3
         a10 >>= 1;
         a9 += a9;
     }
-    lbl_803008A8 = x;
+    lbl_80300860[18] = (u8 *)x;
     if (fmt->f0 == 2) {
         if ((x & 3) == 2) {
             y++;
