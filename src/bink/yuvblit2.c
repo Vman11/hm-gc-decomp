@@ -223,12 +223,151 @@ void fn_80287EC0(s32 count) {
 #undef TB
 
 extern u32 lbl_80300460[];
+static inline u32 dup(u32 v) { return (v << 16) | v; }
 extern u32 lbl_802F9340[], lbl_802F9F60[], lbl_802FAB80[];
 extern s32 lbl_802F72A0[];
 #define CT(t, x) (*(u32 *)((u8 *)(t) + ((x) & 0x3FC)))
 #define YT(x) (*(s32 *)((u8 *)lbl_802F72A0 + ((x) << 2)))
 #define PX(l) ((u16)R[l] | (u16)G[l] | (u16)B[l])
 void fn_80288294(s32 count) {
+    u8 *p0;
+    u8 *base;
+    u8 *p1;
+    s32 w;
+    u32 y0;
+    u32 y1;
+    u32 stride;
+    u32 *d0;
+    u32 *d1;
+    u32 *src1;
+    u16 *pv;
+    u16 *pu;
+    u32 *src0;
+    u32 *ct, *t1, *t2, *t3;
+    s32 *yt;
+    p0 = lbl_80300860[0];
+    base = lbl_80300860[18];
+    p1 = lbl_80300860[1];
+    w = (s32)lbl_80300860[17];
+    y0 = (s32)(p0 - base) / w;
+    y1 = (s32)(p1 - base) / w;
+    lbl_80300860[0] = p0 + count * 8;
+    lbl_80300860[1] = p1 + count * 8;
+    stride = (w * 4 + 31) & ~31;
+    pv = (u16 *)lbl_80300860[4];
+    pu = (u16 *)lbl_80300860[5];
+    src0 = (u32 *)lbl_80300860[2];
+    src1 = (u32 *)lbl_80300860[3];
+    ct = lbl_803008C0;
+    t3 = ct + 768;
+    t2 = ct + 512;
+    t1 = ct + 256;
+    yt = lbl_802F72A0;
+    d0 = (u32 *)(base + stride * (y0 >> 2) + (y0 & 3) * 8 + (p0 - (base + y0 * w)) * 4);
+    d1 = (u32 *)(base + stride * (y1 >> 2) + (y1 & 3) * 8 + (p1 - (base + y1 * w)) * 4);
+    do {
+        u32 u;
+        u32 v;
+        u32 a;
+        u32 b;
+        u16 h;
+        u = *pv++;
+        v = *pu++;
+        a = *src0++;
+        b = *src1++;
+        { u32 *R = lbl_802F9340 + CT(ct, u >> 6);
+        u32 *G = lbl_802F9F60 + (CT(t2, u >> 6) + CT(t1, v >> 6));
+        u32 *B = lbl_802FAB80 + CT(t3, v >> 6);
+        h = a >> 16;
+        d0[0] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2));
+        h = b >> 16;
+        d1[0] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2)); }
+        { u32 *R = lbl_802F9340 + CT(ct, u << 2);
+        u32 *G = lbl_802F9F60 + (CT(t2, u << 2) + CT(t1, v << 2));
+        u32 *B = lbl_802FAB80 + CT(t3, v << 2);
+        h = a & 0xFFFF;
+        d0[1] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2));
+        d0 += 8;
+        h = b & 0xFFFF;
+        d1[1] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2)); }
+        d1 += 8;
+    } while (--count);
+    lbl_80300860[2] = (u8 *)src0;
+    lbl_80300860[3] = (u8 *)src1;
+    lbl_80300860[4] = (u8 *)pv;
+    lbl_80300860[5] = (u8 *)pu;
+}
+void fn_802885F4(s32 count) {
+    u8 *p0;
+    u8 *base;
+    u8 *p1;
+    s32 w;
+    u32 y0;
+    u32 y1;
+    u32 stride;
+    u32 *d0;
+    u32 *d1;
+    u32 *src1;
+    u16 *pv;
+    u16 *pu;
+    u32 *src0;
+    u32 *ct, *t1, *t2, *t3;
+    s32 *yt;
+    p0 = lbl_80300860[0];
+    base = lbl_80300860[18];
+    p1 = lbl_80300860[1];
+    w = (s32)lbl_80300860[17];
+    y0 = (s32)(p0 - base) / w;
+    y1 = (s32)(p1 - base) / w;
+    lbl_80300860[0] = p0 + count * 16;
+    lbl_80300860[1] = p1 + count * 16;
+    stride = (w * 4 + 31) & ~31;
+    pv = (u16 *)lbl_80300860[4];
+    pu = (u16 *)lbl_80300860[5];
+    src0 = (u32 *)lbl_80300860[2];
+    src1 = (u32 *)lbl_80300860[3];
+    ct = lbl_803008C0;
+    t3 = ct + 768;
+    t2 = ct + 512;
+    t1 = ct + 256;
+    yt = lbl_802F72A0;
+    d0 = (u32 *)(base + stride * (y0 >> 2) + (y0 & 3) * 8 + (p0 - (base + y0 * w)) * 4);
+    d1 = (u32 *)(base + stride * (y1 >> 2) + (y1 & 3) * 8 + (p1 - (base + y1 * w)) * 4);
+    do {
+        u32 u;
+        u32 v;
+        u32 a;
+        u32 b;
+        u16 h;
+        u = *pv++;
+        v = *pu++;
+        a = *src0++;
+        b = *src1++;
+        { u32 *R = lbl_802F9340 + CT(ct, u >> 6);
+        u32 *G = lbl_802F9F60 + (CT(t2, u >> 6) + CT(t1, v >> 6));
+        u32 *B = lbl_802FAB80 + CT(t3, v >> 6);
+        h = a >> 16;
+        { u32 v0 = PX(CT(yt, h >> 6)), v1 = PX(CT(yt, h << 2));
+        d0[0] = dup(v0); d0[1] = dup(v1); }
+        h = b >> 16;
+        { u32 v0 = PX(CT(yt, h >> 6)), v1 = PX(CT(yt, h << 2));
+        d1[0] = dup(v0); d1[1] = dup(v1); } }
+        { u32 *R = lbl_802F9340 + CT(ct, u << 2);
+        u32 *G = lbl_802F9F60 + (CT(t2, u << 2) + CT(t1, v << 2));
+        u32 *B = lbl_802FAB80 + CT(t3, v << 2);
+        h = a & 0xFFFF;
+        { u32 v0 = PX(CT(yt, h >> 6)), v1 = PX(CT(yt, h << 2));
+        d0[8] = dup(v0); d0[9] = dup(v1); }
+        d0 += 16;
+        h = b & 0xFFFF;
+        { u32 v0 = PX(CT(yt, h >> 6)), v1 = PX(CT(yt, h << 2));
+        d1[8] = dup(v0); d1[9] = dup(v1); } }
+        d1 += 16;
+    } while (--count);
+    lbl_80300860[2] = (u8 *)src0;
+    lbl_80300860[3] = (u8 *)src1;
+    lbl_80300860[4] = (u8 *)pv;
+    lbl_80300860[5] = (u8 *)pu;
 }
 #undef CT
 #undef YT
@@ -335,7 +474,6 @@ void fn_80288990(s32 count) {
 #undef T16
 
 #define T16(i) ((u16)((u32 *)lbl_802FFC60)[i])
-static inline u32 dup(u32 v) { return (v << 16) | v; }
 void fn_80288B1C(s32 count) {
     u8 *p0;
     u8 *base;
