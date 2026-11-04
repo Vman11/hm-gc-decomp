@@ -371,6 +371,7 @@ void fn_80284A30(BBundle *t, BitBuf *bs, BCtx *ctx) {
                         bs->ptr++;
                     }
                 }
+                prev = hi;
                 if (bs->bits >= hbits) {
                     f = tab[bs->buf & (~0u >> (32 - hbits))];
                     lo = map[f & 15];
@@ -391,9 +392,8 @@ void fn_80284A30(BBundle *t, BitBuf *bs, BCtx *ctx) {
                         bs->ptr++;
                     }
                 }
-                lo |= (hi << 4) & 0xF0;
-                prev = hi;
-                *out++ = (lo & 0x80) ? -128 - (s32)(lo & 0x7F) : (lo | 0x80);
+                hi = ((hi << 4) & 0xF0) | lo;
+                *out++ = (hi & 0x80) ? -128 - (s32)(hi & 0x7F) : (hi | 0x80);
             } while ((s32)--v > 0);
             if ((s32)v < -22) memset(t->data, t->data[0], -((s32)v + 21));
         }
