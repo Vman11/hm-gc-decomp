@@ -830,6 +830,401 @@ void fn_80285D24(u32 *arg0, u32 arg1) {
     arg0[8] = fn_80285CE0(0x200, arg1, 4, 0x30);
 }
 
+extern u8 lbl_802AAFCC[];
+extern u8 lbl_802AB00C[];
+extern u8 lbl_802AB04C[];
+extern u8 lbl_802AB05C[];
+extern u8 lbl_802AF3A0[];
+void fn_80291B30(s16 *coef, BitBuf *bs);
+void fn_80290220(u8 *out, s32 pitch, s16 *in, s32 idx, u8 *pred);
+void fn_80293A94(u8 *dst, s32 pitch, BitBuf *bs, s32 b, u8 *add);
+#define BIT1(bs) ((bs).bits != 0 ? ({ u32 _b = (bs).buf; (bs).bits--; (bs).buf = _b >> 1; _b & 1; }) \
+    : ({ u32 _w = *(bs).ptr; (bs).ptr++; (bs).bits = 31; (bs).buf = _w >> 1; _w & 1; }))
+#define READN(bs, n, v) \
+    if ((bs).bits >= n) { \
+        u32 _b = (bs).buf; \
+        (bs).bits -= n; \
+        (bs).buf = _b >> n; \
+        v = _b & ((1 << n) - 1); \
+    } else { \
+        u32 _c = (bs).bits; \
+        u32 _b = (bs).buf; \
+        u32 _w = *(bs).ptr; \
+        (bs).ptr++; \
+        (bs).bits = _c + 32 - n; \
+        (bs).buf = _w >> (n - _c); \
+        v = (_b | (_w << _c)) & ((1 << n) - 1); \
+    }
+#define DUP2(s) (((u32)(s) << 8) | ((s) & 0xFF) | (((s) & 0xFF00) << 16))
+#define F8(d, s) (*(f64 *)(d) = *(f64 *)(s))
+#define RW2(OP) _d1 = _d0 + dp; _s1 = _s0 + sp; OP(_d0, _s0); OP(_d1, _s1); _d0 = _d1 + dp; _s0 = _s1 + sp;
+#define COPY8(C, d, s, dp, sp) { u8 *_d0 = (u8 *)(d), *_s0 = (u8 *)(s); u8 *_d1 = _d0 + dp, *_s1 = _s0 + sp; \
+    if (C) { OP8(F8, dp, sp) } else { OP8(U8C, dp, sp) } }
+#define OP8(OP, dp, sp) OP(_d0, _s0); OP(_d1, _s1); _d0 = _d1 + dp; _s0 = _s1 + sp; \
+    _d1 = _d0 + dp; _s1 = _s0 + sp; OP(_d0, _s0); OP(_d1, _s1); _d0 = _d1 + dp; _s0 = _s1 + sp; \
+    _d1 = _d0 + dp; _s1 = _s0 + sp; OP(_d0, _s0); OP(_d1, _s1); _d0 = _d1 + dp; _s0 = _s1 + sp; \
+    _d1 = _d0 + dp; _s1 = _s0 + sp; OP(_d0, _s0); OP(_d1, _s1);
+#define CH8(D, OPK) { u8 *_d0 = (u8 *)(D), *_d1 = _d0 + pitch; \
+    OPK(_d0, 0); OPK(_d1, 1); _d0 = _d1 + pitch; _d1 = _d0 + pitch; \
+    OPK(_d0, 2); OPK(_d1, 3); _d0 = _d1 + pitch; _d1 = _d0 + pitch; \
+    OPK(_d0, 4); OPK(_d1, 5); _d0 = _d1 + pitch; _d1 = _d0 + pitch; \
+    OPK(_d0, 6); OPK(_d1, 7); }
+#define CH8C(C, D, OPA, OPB) { u8 *_d0 = (u8 *)(D), *_d1 = _d0 + pitch; \
+    if (C) { \
+    OPA(_d0, 0); OPA(_d1, 1); _d0 = _d1 + pitch; _d1 = _d0 + pitch; \
+    OPA(_d0, 2); OPA(_d1, 3); _d0 = _d1 + pitch; _d1 = _d0 + pitch; \
+    OPA(_d0, 4); OPA(_d1, 5); _d0 = _d1 + pitch; _d1 = _d0 + pitch; \
+    OPA(_d0, 6); OPA(_d1, 7); \
+    } else { \
+    OPB(_d0, 0); OPB(_d1, 1); _d0 = _d1 + pitch; _d1 = _d0 + pitch; \
+    OPB(_d0, 2); OPB(_d1, 3); _d0 = _d1 + pitch; _d1 = _d0 + pitch; \
+    OPB(_d0, 4); OPB(_d1, 5); _d0 = _d1 + pitch; _d1 = _d0 + pitch; \
+    OPB(_d0, 6); OPB(_d1, 7); } }
+#define CS8C(C, S) { u8 *_s0 = (u8 *)(S), *_s1 = _s0 + pitch; \
+    if (C) { \
+    PS_F(_s0, 0); PS_F(_s1, 1); _s0 = _s1 + pitch; _s1 = _s0 + pitch; \
+    PS_F(_s0, 2); PS_F(_s1, 3); _s0 = _s1 + pitch; _s1 = _s0 + pitch; \
+    PS_F(_s0, 4); PS_F(_s1, 5); _s0 = _s1 + pitch; _s1 = _s0 + pitch; \
+    PS_F(_s0, 6); PS_F(_s1, 7); \
+    } else { \
+    PS_U(_s0, 0); PS_U(_s1, 1); _s0 = _s1 + pitch; _s1 = _s0 + pitch; \
+    PS_U(_s0, 2); PS_U(_s1, 3); _s0 = _s1 + pitch; _s1 = _s0 + pitch; \
+    PS_U(_s0, 4); PS_U(_s1, 5); _s0 = _s1 + pitch; _s1 = _s0 + pitch; \
+    PS_U(_s0, 6); PS_U(_s1, 7); } }
+#define PD_F(d, k) F8(d, &pred[k])
+#define PD_U(d, k) U8C(d, &pred[k])
+#define PS_F(d, k) F8(&pred[k], d)
+#define PS_U(d, k) U8C(&pred[k], d)
+#define RW_F(d, k) F8(d, b[2].cur + (k) * 8)
+#define RW_U(d, k) U8C(d, b[2].cur + (k) * 8)
+#define FL(d, k) (((u32 *)(d))[0] = v, ((u32 *)(d))[1] = v)
+#define PT(d, k) { u8 p = *b[3].cur++; u32 _x, _y; \
+    _x = (c0 & ((u32 *)lbl_802AB00C)[p & 15]) | (c1 & ((u32 *)lbl_802AAFCC)[p & 15]); \
+    _y = (c0 & ((u32 *)lbl_802AB00C)[p >> 4]) | (c1 & ((u32 *)lbl_802AAFCC)[p >> 4]); \
+    ((u32 *)(d))[0] = _x; ((u32 *)(d))[1] = _y; }
+#define ROWS8(OP, d, s, dp, sp) { u8 *_d0 = (u8 *)(d), *_s0 = (u8 *)(s); u8 *_d1, *_s1; \
+    _d1 = _d0 + dp; _s1 = _s0 + sp; OP(_d0, _s0); OP(_d1, _s1); _d0 = _d1 + dp; _s0 = _s1 + sp; \
+    _d1 = _d0 + dp; _s1 = _s0 + sp; OP(_d0, _s0); OP(_d1, _s1); _d0 = _d1 + dp; _s0 = _s1 + sp; \
+    _d1 = _d0 + dp; _s1 = _s0 + sp; OP(_d0, _s0); OP(_d1, _s1); _d0 = _d1 + dp; _s0 = _s1 + sp; \
+    _d1 = _d0 + dp; _s1 = _s0 + sp; OP(_d0, _s0); OP(_d1, _s1); }
+#define U8C(d, s) (((u32 *)(d))[0] = ((u32 *)(s))[0], ((u32 *)(d))[1] = ((u32 *)(s))[1])
+u32 *fn_80285E24(u8 *dst, u8 *prev, u32 w, u32 h, u32 pitch, u32 *data, u32 unused, u8 *map, u32 step, u32 *bdata, u32 flags) {
+    BBundle b[9];
+    BCtx ctx;
+    s16 coef[64];
+    f64 pred[8];
+    BitBuf bs;
+    void (*colors)(BBundle *, BitBuf *, BCtx *);
+    s32 rowskip;
+    u32 mapstep;
+    u32 y;
+    u32 x;
+    u32 xi;
+    u32 v;
+
+    rowskip = pitch * 8 - w;
+    xi = 0;
+    bs.bits = 0;
+    bs.buf = 0;
+    mapstep = pitch / (16 / step);
+    if (flags & 0x8000) {
+        colors = fn_80284A30;
+    } else {
+        colors = fn_80284D5C;
+    }
+    bs.ptr = data;
+    bs.unk4 = (u32)data;
+    fn_80284068(bdata[0], (int *)&b[0], 0x200, w, 4, 1, 0);
+    fn_80284068(bdata[1], (int *)&b[1], 0x200, w >> 1, 4, 1, 0);
+    fn_80284068(bdata[2], (int *)&b[2], 0x200, w, 8, 0x40, 0);
+    fn_80284068(bdata[3], (int *)&b[3], 0x200, w, 8, 8, 0);
+    fn_80284068(bdata[4], (int *)&b[4], 0x200, w, 5, 1, 1);
+    fn_80284068(bdata[5], (int *)&b[5], 0x200, w, 5, 1, 1);
+    fn_80284068(bdata[6], (int *)&b[6], 0x200, w, 11, 1, 0);
+    fn_80284068(bdata[7], (int *)&b[7], 0x200, w, 11, 1, 1);
+    fn_80284068(bdata[8], (int *)&b[8], 0x200, w, 4, 0x30, 0);
+    fn_802846B0((s32)&b[0], (s32)&bs);
+    fn_802846B0((s32)&b[1], (s32)&bs);
+    fn_802846E4((u8 *)&b[2], &bs, (u8 *)&ctx);
+    fn_802846B0((s32)&b[3], (s32)&bs);
+    fn_802846B0((s32)&b[4], (s32)&bs);
+    fn_802846B0((s32)&b[5], (s32)&bs);
+    fn_802846B0((s32)&b[8], (s32)&bs);
+    for (y = 0; y < h; y += 8) {
+        fn_80284768(&b[0], &bs);
+        fn_80284768(&b[1], &bs);
+        colors(&b[2], &bs, &ctx);
+        fn_802852FC(&b[3], &bs);
+        fn_80285558(&b[4], &bs);
+        fn_80285558(&b[5], &bs);
+        fn_802858A4(&b[6], &bs);
+        fn_802858A4(&b[7], &bs);
+        fn_80285068(&b[8], &bs);
+        for (x = w; x != 0; x -= 8) {
+            switch (*b[0].cur++) {
+            case 0:
+                COPY8(((((u32)dst | (u32)prev) & 7) == 0), dst, prev, pitch, pitch);
+                break;
+            case 3: {
+                u8 *scan;
+                s32 i;
+                s32 n;
+                READN(bs, 4, v)
+                scan = lbl_802AF3A0 + v * 64;
+                map[xi >> 1] = 1;
+                i = 0;
+                do {
+                                        if (BIT1(bs)) {
+                        u8 c = *b[2].cur++;
+                        for (n = *b[8].cur++; n != -1; n--) {
+                            ((u8 *)pred)[scan[i++]] = c;
+                        }
+                    } else {
+                        for (n = *b[8].cur++; n != -1; n--) {
+                            ((u8 *)pred)[scan[i++]] = *b[2].cur++;
+                        }
+                    }
+                } while (i < 63);
+                if (i == 63) {
+                    ((u8 *)pred)[scan[63]] = *b[2].cur++;
+                }
+                CH8C((((u32)dst & 7) == 0), dst, PD_F, PD_U);
+                break;
+            }
+            case 5:
+                map[xi >> 1] = 1;
+                coef[0] = *(s16 *)b[6].cur;
+                b[6].cur += 2;
+                fn_80291B30(coef, &bs);
+                READN(bs, 4, v)
+                fn_802901C0(dst, (void *)pitch, coef, v);
+                break;
+            case 4: {
+                u8 *src;
+                map[xi >> 1] = 1;
+                {
+                    s32 my = pitch * *(s8 *)b[5].cur++;
+                    s32 mx = *(s8 *)b[4].cur++;
+                    src = prev + my + mx;
+                }
+                CS8C((((u32)src & 7) == 0), src);
+                READN(bs, 7, v)
+                fn_80293A94(dst, pitch, &bs, v, (u8 *)pred);
+                break;
+            }
+            case 7: {
+                u8 *src;
+                map[xi >> 1] = 1;
+                {
+                    s32 my = pitch * *(s8 *)b[5].cur++;
+                    s32 mx = *(s8 *)b[4].cur++;
+                    src = prev + my + mx;
+                }
+                CS8C((((u32)src & 7) == 0), src);
+                coef[0] = *(s16 *)b[7].cur;
+                b[7].cur += 2;
+                fn_80291B30(coef, &bs);
+                READN(bs, 4, v)
+                fn_80290220(dst, pitch, coef, v, (u8 *)pred);
+                break;
+            }
+            case 6: {
+                u8 c = *b[2].cur++;
+                map[xi >> 1] = 1;
+                v = c | (c << 8);
+                v |= v << 16;
+                CH8(dst, FL);
+                break;
+            }
+            case 8: {
+                u32 c0, c1;
+                u8 c;
+                map[xi >> 1] = 1;
+                c = *b[2].cur++;
+                c0 = c | (c << 8);
+                c0 |= c0 << 16;
+                c = *b[2].cur++;
+                c1 = c | (c << 8);
+                c1 |= c1 << 16;
+                CH8(dst, PT);
+                break;
+            }
+            case 2: {
+                u8 *src;
+                map[xi >> 1] = 1;
+                {
+                    s32 my = pitch * *(s8 *)b[5].cur++;
+                    s32 mx = *(s8 *)b[4].cur++;
+                    src = prev + my + mx;
+                }
+                COPY8(((((u32)dst | (u32)src) & 7) == 0), dst, src, pitch, pitch);
+                break;
+            }
+            case 9:
+                map[xi >> 1] = 1;
+                CH8C(((((u32)dst | (u32)b[2].cur) & 7) == 0), dst, RW_F, RW_U);
+                b[2].cur += 64;
+                break;
+            case 1:
+                if ((y & 8) == 0) {
+                    switch (*b[1].cur++) {
+                    case 6: {
+                        u32 *o;
+                        s32 n;
+                        u8 c = *b[2].cur++;
+                        v = c | (c << 8);
+                        v |= v << 16;
+                        o = (u32 *)dst;
+                        o[0] = v; o[1] = v; o[2] = v; o[3] = v;
+                        o = (u32 *)((u8 *)o + pitch);
+                        for (n = 7; n != 0; n--) {
+                            u32 *o2;
+                            o[0] = v; o[1] = v; o[2] = v; o[3] = v;
+                            o2 = (u32 *)((u8 *)o + pitch);
+                            o2[0] = v; o2[1] = v; o2[2] = v; o2[3] = v;
+                            o = (u32 *)((u8 *)o2 + pitch);
+                        }
+                        o[0] = v; o[1] = v; o[2] = v; o[3] = v;
+                        break;
+                    }
+                    case 8: {
+                        u32 *o, *o2;
+                        s32 n;
+                        u32 c0, c1;
+                        u8 c;
+                        c = *b[2].cur++;
+                        c0 = c | (c << 8);
+                c0 |= c0 << 16;
+                        c = *b[2].cur++;
+                        c1 = c | (c << 8);
+                c1 |= c1 << 16;
+                        o = (u32 *)dst;
+                        o2 = (u32 *)(dst + pitch);
+                        for (n = 8; n != 0; n--) {
+                            u8 p = *b[3].cur++;
+                            v = (c0 & *(u32 *)(lbl_802AB05C + (p & 3) * 4)) | (c1 & *(u32 *)(lbl_802AB04C + (p & 3) * 4));
+                            o[0] = v; o2[0] = v;
+                            v = (c0 & *(u32 *)(lbl_802AB05C + (p & 0xC))) | (c1 & *(u32 *)(lbl_802AB04C + (p & 0xC)));
+                            o[1] = v; o2[1] = v;
+                            v = (c0 & *(u32 *)(lbl_802AB05C + ((p >> 2) & 0xC))) | (c1 & *(u32 *)(lbl_802AB04C + ((p >> 2) & 0xC)));
+                            o[2] = v; o2[2] = v;
+                            v = (c0 & *(u32 *)(lbl_802AB05C + ((p >> 4) & 0xC))) | (c1 & *(u32 *)(lbl_802AB04C + ((p >> 4) & 0xC)));
+                            o[3] = v; o2[3] = v;
+                            o = (u32 *)((u8 *)o2 + pitch);
+                            o2 = (u32 *)((u8 *)o + pitch);
+                        }
+                        break;
+                    }
+                    case 3: {
+                        u8 *scan;
+                        s32 i;
+                        u16 *s;
+                        u32 *o, *o2;
+                        s32 n;
+                        READN(bs, 4, v)
+                        scan = lbl_802AF3A0 + v * 64;
+                        i = 0;
+                        do {
+                                                        if (BIT1(bs)) {
+                                u8 c = *b[2].cur++;
+                                for (n = *b[8].cur++; n != -1; n--) {
+                                    ((u8 *)pred)[scan[i++]] = c;
+                                }
+                            } else {
+                                for (n = *b[8].cur++; n != -1; n--) {
+                                    ((u8 *)pred)[scan[i++]] = *b[2].cur++;
+                                }
+                            }
+                        } while (i < 63);
+                        if (i == 63) {
+                            ((u8 *)pred)[scan[63]] = *b[2].cur++;
+                        }
+                        s = (u16 *)pred;
+                        o = (u32 *)dst;
+                        for (n = 8; n != 0; n--) {
+                            o2 = (u32 *)((u8 *)o + pitch);
+                            v = DUP2(s[0]); o[0] = v; o2[0] = v;
+                            v = DUP2(s[1]); o[1] = v; o2[1] = v;
+                            v = DUP2(s[2]); o[2] = v; o2[2] = v;
+                            v = DUP2(s[3]); o[3] = v; o2[3] = v;
+                            s += 4;
+                            o = (u32 *)((u8 *)o2 + pitch);
+                        }
+                        break;
+                    }
+                    case 5:
+                        coef[0] = *(s16 *)b[6].cur;
+                        b[6].cur += 2;
+                        fn_80291B30(coef, &bs);
+                        READN(bs, 4, v)
+                        fn_802901F0(dst, (void *)pitch, coef, v);
+                        break;
+                    case 9: {
+                        u32 *o, *o2;
+                        s32 n;
+                        o = (u32 *)dst;
+                        o2 = (u32 *)(dst + pitch);
+                        for (n = 8; n != 0; n--) {
+                            u16 *s = (u16 *)b[2].cur;
+                            v = DUP2(s[0]); o[0] = v; o2[0] = v;
+                            v = DUP2(s[1]); o[1] = v; o2[1] = v;
+                            v = DUP2(s[2]); o[2] = v; o2[2] = v;
+                            v = DUP2(s[3]); o[3] = v; o2[3] = v;
+                            o = (u32 *)((u8 *)o + pitch * 2);
+                            o2 = (u32 *)((u8 *)o2 + pitch * 2);
+                            b[2].cur += 8;
+                        }
+                        break;
+                    }
+                    }
+                }
+                map[xi >> 1] = 1;
+                xi += step;
+                map[xi >> 1] = 1;
+                dst += 8;
+                prev += 8;
+                x -= 8;
+                break;
+            }
+            xi += step;
+            dst += 8;
+            prev += 8;
+        }
+        if (step == 1) {
+            if (y & 8) {
+                map += mapstep;
+            }
+        } else {
+            map += mapstep;
+        }
+        dst += rowskip;
+        prev += rowskip;
+        xi = 0;
+    }
+    bs.bits = 0;
+    return bs.ptr;
+}
+#undef BIT1
+#undef READN
+#undef DUP2
+#undef F8
+#undef RW2
+#undef COPY8
+#undef OP8
+#undef CH8
+#undef CH8C
+#undef CS8C
+#undef PD_F
+#undef PD_U
+#undef PS_F
+#undef PS_U
+#undef RW_F
+#undef RW_U
+#undef FL
+#undef PT
+#undef ROWS8
+#undef U8C
+
 void fn_80287540(u8 *y0, u8 *y1, u8 *a0, u8 *a1, u32 p7, u32 w, u32 h, u32 pitch, u32 ph, u8 *data, u32 a11, u32 a12, u32 flags, u32 flags0) {
     u8 *r;
     u32 skip;
