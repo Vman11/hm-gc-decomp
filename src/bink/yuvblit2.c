@@ -254,10 +254,10 @@ void fn_80288294(s32 count) {
     lbl_80300860[0] = p0 + count * 8;
     lbl_80300860[1] = p1 + count * 8;
     stride = (w * 4 + 31) & ~31;
-    pv = (u16 *)lbl_80300860[4];
+    src1 = (u32 *)lbl_80300860[3];
     pu = (u16 *)lbl_80300860[5];
     src0 = (u32 *)lbl_80300860[2];
-    src1 = (u32 *)lbl_80300860[3];
+    pv = (u16 *)lbl_80300860[4];
     ct = lbl_803008C0;
     t3 = ct + 768;
     t2 = ct + 512;
@@ -275,14 +275,16 @@ void fn_80288294(s32 count) {
         v = *pu++;
         a = *src0++;
         b = *src1++;
-        { u32 *R = lbl_802F9340 + CT(ct, u >> 6);
+        { 
         u32 *G = lbl_802F9F60 + (CT(t2, u >> 6) + CT(t1, v >> 6));
         u32 *B = lbl_802FAB80 + CT(t3, v >> 6);
+        u32 *R = lbl_802F9340 + CT(ct, u >> 6);
         h = a >> 16;
         d0[0] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2));
         h = b >> 16;
         d1[0] = (PX(CT(yt, h >> 6)) << 16) | PX(CT(yt, h << 2)); }
-        { u32 *R = lbl_802F9340 + CT(ct, u << 2);
+        { 
+        u32 *R = lbl_802F9340 + CT(ct, u << 2);
         u32 *G = lbl_802F9F60 + (CT(t2, u << 2) + CT(t1, v << 2));
         u32 *B = lbl_802FAB80 + CT(t3, v << 2);
         h = a & 0xFFFF;
@@ -322,10 +324,10 @@ void fn_802885F4(s32 count) {
     lbl_80300860[0] = p0 + count * 16;
     lbl_80300860[1] = p1 + count * 16;
     stride = (w * 4 + 31) & ~31;
-    pv = (u16 *)lbl_80300860[4];
+    src1 = (u32 *)lbl_80300860[3];
     pu = (u16 *)lbl_80300860[5];
     src0 = (u32 *)lbl_80300860[2];
-    src1 = (u32 *)lbl_80300860[3];
+    pv = (u16 *)lbl_80300860[4];
     ct = lbl_803008C0;
     t3 = ct + 768;
     t2 = ct + 512;
@@ -343,16 +345,18 @@ void fn_802885F4(s32 count) {
         v = *pu++;
         a = *src0++;
         b = *src1++;
-        { u32 *R = lbl_802F9340 + CT(ct, u >> 6);
+        {
         u32 *G = lbl_802F9F60 + (CT(t2, u >> 6) + CT(t1, v >> 6));
         u32 *B = lbl_802FAB80 + CT(t3, v >> 6);
+        u32 *R = lbl_802F9340 + CT(ct, u >> 6);
         h = a >> 16;
         { u32 v0 = PX(CT(yt, h >> 6)), v1 = PX(CT(yt, h << 2));
         d0[0] = dup(v0); d0[1] = dup(v1); }
         h = b >> 16;
         { u32 v0 = PX(CT(yt, h >> 6)), v1 = PX(CT(yt, h << 2));
         d1[0] = dup(v0); d1[1] = dup(v1); } }
-        { u32 *R = lbl_802F9340 + CT(ct, u << 2);
+        {
+        u32 *R = lbl_802F9340 + CT(ct, u << 2);
         u32 *G = lbl_802F9F60 + (CT(t2, u << 2) + CT(t1, v << 2));
         u32 *B = lbl_802FAB80 + CT(t3, v << 2);
         h = a & 0xFFFF;
