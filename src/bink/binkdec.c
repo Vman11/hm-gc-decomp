@@ -102,6 +102,181 @@ typedef struct BBundle {
             bs->ptr++; \
         } \
     }
+extern u8 lbl_802AAFC8[];
+void fn_80284768(BBundle *t, BitBuf *bs) {
+    unsigned int v;
+    if (t->cur != t->end) return;
+    if (bs->bits >= t->nbits) {
+        unsigned int b0 = bs->buf, m = ~0u >> (32 - t->nbits);
+        bs->buf = b0 >> t->nbits;
+        bs->bits -= t->nbits;
+        v = b0 & m;
+    } else {
+        unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p, m = ~0u >> (32 - t->nbits);
+        bs->buf = w >> (t->nbits - c);
+        bs->bits = c + 32 - t->nbits;
+        bs->ptr = ++p;
+        v = (b0 | (w << c)) & m;
+    }
+    if (v != 0) {
+        t->cur = t->data;
+        t->end = t->data + v;
+        if (!(bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                           : ({ unsigned int w = *bs->ptr++; bs->bits = 31; bs->buf = w >> 1; w & 1; }))) {
+            u8 *map = t->map;
+            unsigned int prev = 0;
+            u8 *out = t->data;
+            u8 hbits = t->hbits;
+            u8 *tab = t->tab;
+            while (v != 0) {
+                unsigned int e, sym;
+                if (bs->bits >= hbits) {
+                    e = tab[bs->buf & (~0u >> (32 - hbits))];
+                    sym = map[e & 15];
+                    e >>= 4;
+                    bs->buf >>= e;
+                    bs->bits -= e;
+                } else {
+                    unsigned int w = *bs->ptr, c = bs->bits, b0 = bs->buf;
+                    e = tab[(b0 | (w << c)) & (~0u >> (32 - hbits))];
+                    sym = map[e & 15];
+                    e >>= 4;
+                    if (c >= e) {
+                        bs->buf = b0 >> e;
+                        bs->bits = c - e;
+                    } else {
+                        bs->buf = w >> (e - c);
+                        bs->bits = c + 32 - e;
+                        bs->ptr++;
+                    }
+                }
+                if (sym > 11) {
+                    u8 n = lbl_802AAFC8[sym - 12];
+                    unsigned int wd = prev | (prev << 8);
+                    wd |= wd << 16;
+                    v -= n;
+                    do {
+                        *(u32 *)out = wd;
+                        out += 4;
+                        n -= 4;
+                    } while (n);
+                } else {
+                    *out++ = sym;
+                    prev = sym;
+                    v--;
+                }
+            }
+        } else {
+            u8 x;
+            if (bs->bits > 3) {
+                unsigned int w = bs->buf;
+                bs->bits -= 4;
+                x = bs->buf & 15;
+                bs->buf = w >> 4;
+            } else {
+                unsigned int *p = bs->ptr, c = bs->bits, w = *p;
+                bs->bits = c + 28;
+                bs->ptr = ++p;
+                x = (bs->buf | (w << c)) & 15;
+                bs->buf = w >> (4 - c);
+            }
+            memset(t->data, x, v);
+        }
+    } else {
+        t->end = t->data;
+        t->cur = t->data + 4;
+    }
+}
+typedef struct BCtx {
+    u8 map[256];
+    u32 hbits[16];
+    u8 *tab[16];
+    u32 prev;
+} BCtx;
+void fn_80284A30(BBundle *t, BitBuf *bs, BCtx *ctx) {
+    unsigned int v;
+    if (t->cur != t->end) return;
+    if (bs->bits >= t->nbits) {
+        unsigned int b0 = bs->buf, m = ~0u >> (32 - t->nbits);
+        bs->buf = b0 >> t->nbits;
+        bs->bits -= t->nbits;
+        v = b0 & m;
+    } else {
+        unsigned int *p = bs->ptr, c = bs->bits, b0 = bs->buf, w = *p, m = ~0u >> (32 - t->nbits);
+        bs->buf = w >> (t->nbits - c);
+        bs->bits = c + 32 - t->nbits;
+        bs->ptr = ++p;
+        v = (b0 | (w << c)) & m;
+    }
+    if (v != 0) {
+        u8 *out;
+        unsigned int prev;
+        u8 *map = t->map;
+        unsigned int hbits = t->hbits;
+        u8 *tab;
+        t->cur = t->data;
+        t->end = t->data + v;
+        out = t->data;
+        tab = t->tab;
+        prev = ctx->prev;
+        if (bs->bits != 0 ? ({ unsigned int w = bs->buf; bs->bits--; bs->buf = w >> 1; w & 1; })
+                            : ({ unsigned int w = *bs->ptr++; bs->bits = 31; bs->buf = w >> 1; w & 1; }))
+            v = -20 - v;
+        {
+            do {
+                unsigned int e, hi, lo, hb = ctx->hbits[prev];
+                if (bs->bits >= hb) {
+                    e = ctx->tab[prev][bs->buf & (~0u >> (32 - hb))];
+                    hi = ctx->map[(e & 15) + prev * 16];
+                    e >>= 4;
+                    bs->bits -= e;
+                    bs->buf >>= e;
+                } else {
+                    unsigned int w = *bs->ptr, c = bs->bits, b0 = bs->buf;
+                    e = ctx->tab[prev][(b0 | (w << c)) & (~0u >> (32 - hb))];
+                    hi = ctx->map[(e & 15) + prev * 16];
+                    e >>= 4;
+                    if (c >= e) {
+                        bs->buf = b0 >> e;
+                        bs->bits = c - e;
+                    } else {
+                        bs->buf = w >> (e - c);
+                        bs->bits = c + 32 - e;
+                        bs->ptr++;
+                    }
+                }
+                if (bs->bits >= hbits) {
+                    e = tab[bs->buf & (~0u >> (32 - hbits))];
+                    lo = map[e & 15];
+                    e >>= 4;
+                    bs->buf >>= e;
+                    bs->bits -= e;
+                } else {
+                    unsigned int w = *bs->ptr, c = bs->bits, b0 = bs->buf;
+                    e = tab[(b0 | (w << c)) & (~0u >> (32 - hbits))];
+                    lo = map[e & 15];
+                    e >>= 4;
+                    if (c >= e) {
+                        bs->buf = b0 >> e;
+                        bs->bits = c - e;
+                    } else {
+                        bs->buf = w >> (e - c);
+                        bs->bits = c + 32 - e;
+                        bs->ptr++;
+                    }
+                }
+                lo |= (hi << 4) & 0xF0;
+                prev = hi;
+                *out++ = (lo & 0x80) ? -128 - (s32)(lo & 0x7F) : (lo | 0x80);
+            } while ((s32)--v > 0);
+            if ((s32)v < -22) memset(t->data, t->data[0], -((s32)v + 21));
+        }
+        ctx->prev = prev;
+    } else {
+        t->end = t->data;
+        t->cur = t->data + 4;
+    }
+}
 void fn_80285068(BBundle *t, BitBuf *bs) {
     unsigned int v;
     if (t->cur != t->end) return;
