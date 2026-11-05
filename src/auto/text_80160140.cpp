@@ -28,16 +28,17 @@ static inline void Pri(Heap *h) {
     if (h->x24 >= 5) h->x28 = h->x24;
     else h->x28 = 5;
 }
-void fn_80160140(O *o, void *ctx, char *name) {
+void fn_80160140(O * o_in, void *ctx, char *name) {
+    O * o = o_in;
     Er *er;
     u8 *p32, *p28, *p24, *p20, *p16;
     C80215414 f;
     u8 l40[8];
-    u8 h56[16];
-    Hdr hdr;
     u8 *buf;
-    int e;
+    Hdr hdr;
+    u8 h56[16];
     u32 sz;
+    int e;
     u32 i;
     if ((e = fn_80215284(&f, name, lbl_803645F0, 2)) != 0) fn_80060E30(e, lbl_803645F4, name, lbl_803645F0);
     if ((e = fn_80215154(&f, h56, 16, 0)) != 0) fn_80060E30(e, lbl_803645F4, name, lbl_803645F0);
@@ -65,9 +66,10 @@ void fn_80160140(O *o, void *ctx, char *name) {
     fn_800F7E98();
     if (!o->x60) fn_800604C4(-4, 0, 0, 0);
     lbl_8035AC18->x28 = lbl_8035AC18->x24;
-    e = fn_802151F4(&f, o->x60, o->x64, 0, &er);
+    int pm361 = fn_802151F4(&f, o->x60, o->x64, 0, &er);
+    e = (s32)pm361;
     if (e == 7) {
-        e = er->get();
+        e = (er->get());
         fn_80215110(&f, er);
     }
     if (e) fn_80060E30(e, lbl_803645F4, name, lbl_803645F0);
@@ -81,7 +83,7 @@ void fn_80160140(O *o, void *ctx, char *name) {
     if (!o->x44) fn_800604C4(-4, 0, 0, 0);
     p20 = buf + hdr.x28;
     p16 = o->x60 + hdr.x52;
-    for (i = 0; i < o->x28; i++) fn_80175FA0(&o->x44[i], &p20, &p16);
+    for (i = 0; i < o->x28; ++i) fn_80175FA0(&o->x44[i], &p20, &p16);
     if (!lbl_8035AC18) fn_800604C4(-2, 0, 0, 0);
     fn_800F7EC0(lbl_8035AC18);
     o->x52 = new C80170688[o->x56];
@@ -89,8 +91,8 @@ void fn_80160140(O *o, void *ctx, char *name) {
     if (!o->x52) fn_800604C4(-4, 0, 0, 0);
     p20 = buf + hdr.x36;
     p16 = o->x60 + hdr.x56;
-    for (i = 0; i < o->x56; i++) fn_80170354(&o->x52[i], ctx, &p20, &p16);
-    p32 = o->x60 + hdr.x44;
+    for (i = 0; i < o->x56; ++i) fn_80170354(&o->x52[i], ctx, &p20, &p16);
+    p32 = hdr.x44 + o->x60;
     p28 = o->x60 + hdr.x48;
     p24 = buf + hdr.x12;
     p20 = buf + hdr.x20;
