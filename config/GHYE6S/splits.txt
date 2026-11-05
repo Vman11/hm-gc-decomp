@@ -24250,10 +24250,11 @@ auto/text_801E6678.cpp:
 auto/text_801E66F4.cpp:
 	.text       start:0x801E66F4 end:0x801E66FC
 
-auto/text_801E66FC.c:
+auto/text_801E66FC.cpp:
 	extab       start:0x80011F20 end:0x80011F28
 	extabindex  start:0x80024A94 end:0x80024AA0
 	.text       start:0x801E66FC end:0x801E6820
+	.sdata2     start:0x80365310 end:0x80365318
 
 auto/text_801E6820.cpp:
 	extab       start:0x80011F28 end:0x80011F30
