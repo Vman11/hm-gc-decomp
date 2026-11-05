@@ -62,12 +62,14 @@ struct Cam {
     V3 prev;     /* 0x1a0 */
 };
 
-struct Glb {
-    u8 pad[0x30];
-    V3 ae0, aec, af8, b04, b10, b1c;
-};
-
-extern Glb lbl_80357AB0;
+u8 lbl_80357AB0[0xC];
+u8 lbl_80357ABC[0x24];
+V3 lbl_80357AE0;
+V3 lbl_80357AEC;
+V3 lbl_80357AF8;
+V3 lbl_80357B04;
+V3 lbl_80357B10;
+V3 lbl_80357B1C;
 extern V3 lbl_80357E90;
 extern f32 lbl_802F2924[];
 extern s32 lbl_80359748;
@@ -85,8 +87,8 @@ extern volatile s32 lbl_8035B6E0;
 extern volatile s32 lbl_8035B6E4;
 extern volatile s32 lbl_8035B6E8;
 extern volatile s32 lbl_8035B6EC;
-extern f32 lbl_8035B6F0;
-extern s8 lbl_8035B6F4;
+extern volatile f32 lbl_8035B6F0;
+extern volatile s8 lbl_8035B6F4;
 extern s32 lbl_8035B6F8;
 extern s8 lbl_8035B6FC;
 extern char lbl_8036696C[7];
@@ -150,7 +152,6 @@ void fn_8025C610(Cam *c, f32 dt) {
     V3 o2;
     f32 hitf;
     Act *act;
-    Glb *g;
     Prm *P;
     f32 upx, upy, upz;
     s32 b1, b2, b3;
@@ -158,7 +159,6 @@ void fn_8025C610(Cam *c, f32 dt) {
     s32 hit;
     f32 len;
 
-    g = &lbl_80357AB0;
     act = c->obj->act;
     fn_802610A0(c);
     Set(c->prev, c->pos);
@@ -216,8 +216,8 @@ void fn_8025C610(Cam *c, f32 dt) {
             fn_8023BE44(&c->tf, lbl_80366978, lbl_80366950, c->fwd, c->up, dt);
             fn_8023BE44(&c->tf, lbl_80366978, lbl_80366950, c->fwd, back, dt);
         } else if (lbl_8035B6E8 != 0) {
-            fn_8023BE44(&c->tf, lbl_80366978, lbl_80366950, g->ae0, c->up, dt);
-            fn_8023BE44(&c->tf, lbl_80366978, lbl_80366950, g->ae0, back, dt);
+            fn_8023BE44(&c->tf, lbl_80366978, lbl_80366950, lbl_80357AE0, c->up, dt);
+            fn_8023BE44(&c->tf, lbl_80366978, lbl_80366950, lbl_80357AE0, back, dt);
         }
     } else if (lbl_80359748 == 4) {
         fn_80101414(&c->tf, &lbl_80357E90, lbl_8036697C * (-lbl_8035A268 * dt));
@@ -229,9 +229,9 @@ void fn_8025C610(Cam *c, f32 dt) {
         if (lbl_8035B6EC != 0) {
             fn_8023BE44(&c->tf, lbl_80366974, lbl_80366950, c->fwd, lbl_80357E90, dt);
         } else if (lbl_8035B6E8 != 0) {
-            fn_8023BE44(&c->tf, lbl_80366954, lbl_80366950, g->ae0, c->up, dt);
+            fn_8023BE44(&c->tf, lbl_80366954, lbl_80366950, lbl_80357AE0, c->up, dt);
             Set(u, c->tf);
-            Set(v, g->ae0);
+            Set(v, lbl_80357AE0);
             u.z = v.z = lbl_80366950;
             fn_80101820(&u);
             fn_80101820(&v);
@@ -263,15 +263,15 @@ void fn_8025C610(Cam *c, f32 dt) {
         }
         if (c->hnd == 0) roll = lbl_80366950;
         if (!(roll >= lbl_80366964 && roll <= lbl_80366968)) {
-            fn_8025DE7C(&lbl_8035B6F0, roll, lbl_80366984, dt, lbl_80366950);
+            fn_8025DE7C((f32 *)&lbl_8035B6F0, roll, lbl_80366984, dt, lbl_80366950);
         } else if (b1 && b2) {
-            fn_8025DE7C(&lbl_8035B6F0, lbl_80366950, lbl_80366984, dt, lbl_80366950);
+            fn_8025DE7C((f32 *)&lbl_8035B6F0, lbl_80366950, lbl_80366984, dt, lbl_80366950);
         } else if (b1) {
-            fn_8025DE7C(&lbl_8035B6F0, lbl_80366954, lbl_80366984, dt, lbl_80366950);
+            fn_8025DE7C((f32 *)&lbl_8035B6F0, lbl_80366954, lbl_80366984, dt, lbl_80366950);
         } else if (b2) {
-            fn_8025DE7C(&lbl_8035B6F0, lbl_80366988, lbl_80366984, dt, lbl_80366950);
+            fn_8025DE7C((f32 *)&lbl_8035B6F0, lbl_80366988, lbl_80366984, dt, lbl_80366950);
         } else {
-            fn_8025DE7C(&lbl_8035B6F0, lbl_80366950, lbl_80366984, dt, lbl_80366950);
+            fn_8025DE7C((f32 *)&lbl_8035B6F0, lbl_80366950, lbl_80366984, dt, lbl_80366950);
         }
         fn_80101414(&c->tf, &lbl_80357E90, lbl_8035B6F0 * dt);
     }
@@ -392,9 +392,9 @@ void fn_8025C610(Cam *c, f32 dt) {
         c->tf.x = t.x;
         c->tf.y = t.y;
     }
-    Set(g->af8, c->fwd);
-    Set(g->b10, c->side);
-    Set(g->aec, c->up);
+    Set(lbl_80357AF8, c->fwd);
+    Set(lbl_80357B10, c->side);
+    Set(lbl_80357AEC, c->up);
     c->f184 = lbl_80366950;
     c->f180 = lbl_80366950;
     fn_8025DE7C(&c->yaw, lbl_8035A268, *c->rate, dt, lbl_8036698C);
@@ -521,8 +521,8 @@ void fn_8025C610(Cam *c, f32 dt) {
     } else if (lbl_8035B6F8 == 1) {
         lbl_8035B6F8 = 0;
     }
-    Set(g->b04, c->fwd);
-    Set(g->b1c, c->eye);
+    Set(lbl_80357B04, c->fwd);
+    Set(lbl_80357B1C, c->eye);
 }
 
 } /* extern "C" */
