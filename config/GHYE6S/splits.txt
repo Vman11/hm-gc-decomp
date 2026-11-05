@@ -33584,7 +33584,7 @@ auto/text_802542E8.cpp:
 	.sbss       start:0x8035B660 end:0x8035B678
 	.sdata2     start:0x803665C8 end:0x803665D0
 
-auto/text_80254640.c:
+auto/text_80254640.cpp:
 	extab       start:0x80016CD4 end:0x80016CDC
 	extabindex  start:0x800299A8 end:0x800299B4
 	.text       start:0x80254640 end:0x80254990
