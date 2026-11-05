@@ -437,6 +437,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wA_80200C24 (2026-11-05): fn_80228208 NonMatching .cpp draft, SDIFF 15 / DIFF 29; Ent vcall slot 0x8c = 34th virtual, Mdl vptr at 0x68 (after 0x68 bytes of members); only the d = hit - pos reload/schedule block differs.
 - wA_8021EA50 (2026-11-05): fn_8021EA50 NonMatching .cpp draft (BSP sphere walk), regs match, DIFF 10: the 4 sphere loads s[1],s[0],s[2],s[3] are scheduled after the prologue instead of interleaved with it. Key: write the plane-distance inline exactly like fn_8021EFA8 (f32* arrays, arg1[i]*arg0[i]) instead of __fmadds.
 - wA_80200C24 (2026-11-05): fn_8021A510 NonMatching .cpp draft (from wAD/fa2 fn_8020FAA8 template), SDIFF 2 / DIFF 148: dead 'lwz self+0x34; cmpwi' before fn_8021272C not reproduced; name/v regs swapped.
+- wA_8006025C (2026-11-05): matched fn_8006025C (sinit of 12 GmAcNode objects); unit now owns .rodata 0x80297208..0x80297268 (8-char name pool, -str reuse,readonly) and .bss 0x80302B90..0x80302DD0 (regmem/object pairs, one base reg).
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.

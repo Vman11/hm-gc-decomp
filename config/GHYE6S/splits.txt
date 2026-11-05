@@ -2569,11 +2569,13 @@ auto/text_800601E8.cpp:
 	.text       start:0x800601E8 end:0x8006025C
 	.ctors      start:0x80293FB0 end:0x80293FB4
 
-auto/text_8006025C.c:
+auto/text_8006025C.cpp:
 	extab       start:0x80006D3C end:0x80006D44
 	extabindex  start:0x80019328 end:0x80019334
 	.text       start:0x8006025C end:0x800604C4
 	.ctors      start:0x80293FB4 end:0x80293FB8
+	.rodata     start:0x80297208 end:0x80297268
+	.bss        start:0x80302B90 end:0x80302DD0
 
 auto/text_800604C4.cpp:
 	extab       start:0x80006D44 end:0x80006D54
