@@ -8676,7 +8676,7 @@ auto/text_80101C20.cpp:
 	extabindex  start:0x8001C4A8 end:0x8001C4B4
 	.text       start:0x80101C20 end:0x80101E38
 
-auto/text_80101E38.c:
+auto/text_80101E38.cpp:
 	extab       start:0x80009E98 end:0x80009EA0
 	extabindex  start:0x8001C4B4 end:0x8001C4C0
 	.text       start:0x80101E38 end:0x80101F5C
