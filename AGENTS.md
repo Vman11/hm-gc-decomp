@@ -610,3 +610,7 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJB (2026-11-05): fn_8021EDC4 NonMatching .cpp, SDIFF 4: plane-dot fmadds dest colouring only.
 - wJB (2026-11-05): fn_800F80DC NonMatching .cpp, SDIFF 10: probe-loop v test = ((TH*)tab)->it[k].a (array at +8, gives addi/lwzx, no CSE with &tab[k]); left: k/off/tab saved-reg order + prologue key lbz hoist.
 - wJB (2026-11-05): fn_8013FCD0 NonMatching .cpp, SDIFF 4: prologue param-copy/addi o scheduling only.
+- wJC (2026-11-05): fn_8003C674 Matching .cpp (GC/1.3.2 + lmw): find-or-alloc slot; `bool found` (int found adds a mr copy), `t` temp for the first find, `E *e = &o->tbl[idx]` local.
+- wJC (2026-11-05): fn_8023BE44 NonMatching .cpp (GC/1.3.2 + lmw), DIFF 70 / SDIFF 20 (was 82): cross y as a promoted `V3 c` member fixes the param FPR colouring (f26-f28); left dot/cy f24/f25 swap, cross-product load order and the entry V3 copy interleave (fieldwise/swapped copies no help).
+- wJC (2026-11-05): fn_80070054 NonMatching .cpp (GC/1.3.2 + lmw), DIFF 26 / SDIFF 0 (wEI draft): left the r524->v[h->n-1] r3/r4 swap and m (target r30) vs loop offset IV (r28) colouring; decl orders, scoped decls, inline body/loop, struct m tried.
+- wJC (2026-11-05): fn_8026E4C4 NonMatching .cpp (GC/1.3.2 + lmw), SDIFF 0 / DIFF 62: natural layout (fn-scope `char buf[64]; volatile f32 m[9];`, plain buf rematerialises addi r1,44); register-only: target colours name r31 before s r30 (wDI struct-bb draft gets that colouring but CSEs &bb.b into r28, DIFF 5). Permuter candidate.
