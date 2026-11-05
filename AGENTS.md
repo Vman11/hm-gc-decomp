@@ -635,3 +635,7 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJI (2026-11-05): fn_8003F18C NonMatching .cpp, DIFF 8: same as fn_80030318 (identical body).
 - wJI (2026-11-05): fn_80039988 NonMatching .cpp (wDZ P4 as C++), SDIFF 0 / DIFF 6: loop t/sum in f0 vs target f2 (fadds operand order too). Permuter candidate.
 - wJI (2026-11-05): fn_8003C4BC NonMatching .cpp, SDIFF 0 / DIFF 36: store temps r0/r5 vs target r4/r0 and G/cur regs after vcall. Split vcall result into a local to stop the constant being hoisted into r31. Permuter candidate.
+- wJH (2026-11-05): fn_8002AAD4 Matching .cpp (GC/1.3.2, no lmw): guard-static init via volatile stores (f32 then byte), r += t then f = t - r as separate passes, negate up in place then Cr(&b,&up,&d) by pointer (wBQ).
+- wJH (2026-11-05): fn_800A75B8 NonMatching .cpp (GC/1.3.2, wBM draft): SDIFF 2 / DIFF 12, only the f29/f30 swap of the first two crand() results; invariant to temp defs/copies/macro crand/2.0p1. Permuter candidate.
+- wJH (2026-11-05): fn_8006BB24 NonMatching .cpp (GC/2.0p1 + lmw, wAU/e3 draft): DIFF 2, only lfs d.x vs stfs s.y sched slot in the 2nd rnd block; dx copies (propagated), volatile dx/s.y (too early) no help.
+- wJH (2026-11-05): fn_800819F0 NonMatching .cpp (GC/1.3.2, wDE/c1 draft): DIFF 2 / SDIFF 0, fmuls operand order only (tmp,conv vs target conv,tmp); MWCC canonicalises the order regardless of source order; reading tmp after conv flips it but adds a reload.
