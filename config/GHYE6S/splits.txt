@@ -14381,7 +14381,7 @@ auto/text_801547BC.cpp:
 auto/text_801548EC.c:
 	.text       start:0x801548EC end:0x801548F0
 
-auto/text_801548F0.c:
+auto/text_801548F0.cpp:
 	extab       start:0x8000CB80 end:0x8000CB88
 	extabindex  start:0x8001F364 end:0x8001F370
 	.text       start:0x801548F0 end:0x80154BE0
