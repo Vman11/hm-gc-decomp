@@ -11711,16 +11711,10 @@ auto/text_80127940.c:
 	.text       start:0x80127940 end:0x80127D2C
 
 auto/text_80127D2C.cpp:
-	extab       start:0x8000B684 end:0x8000B68C
-	extabindex  start:0x8001DE28 end:0x8001DE34
-	.text       start:0x80127D2C end:0x80127F34
-	.data       start:0x802E4200 end:0x802E4274
-
-auto/text_80127F34.c:
-	extab       start:0x8000B68C end:0x8000B694
-	extabindex  start:0x8001DE34 end:0x8001DE40
-	.text       start:0x80127F34 end:0x8012844C
-	.data       start:0x802E4274 end:0x802E42E8
+	extab       start:0x8000B684 end:0x8000B694
+	extabindex  start:0x8001DE28 end:0x8001DE40
+	.text       start:0x80127D2C end:0x8012844C
+	.data       start:0x802E4200 end:0x802E42E8
 
 auto/text_8012844C.cpp:
 	extab       start:0x8000B694 end:0x8000B69C
