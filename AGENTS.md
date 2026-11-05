@@ -560,3 +560,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wIQ (2026-11-05): fn_80222DAC Matching .cpp (GC/1.3.2 + lmw): cache o->f2f0 in a local for the release block (else reload after stb).
 - wIP (2026-11-05): fn_80101E38 NonMatching .cpp (GC/1.3.2 + lmw), SDIFF 0 / DIFF 12: end computed before data, decl order data,i,end. Left: data vs rot-offset IV callee-saved swap (r27/r28).
 - wIR (2026-11-05): fn_801E66FC Matching .cpp (GC/2.0p1): u32->float magic reloaded per loop iteration only under 2.0p1 (1.3.2 hoists it); unit owns the 8-byte magic .sdata2 0x80365310; vcall through a real class (vptr at 0x14, slot 1).
+- wIQ (2026-11-05): fn_8024FF04 NonMatching .cpp (GC/1.3.2, no lmw), SDIFF 0 / DIFF 18: fn_80250028 clr-loop template from n-m to n. Left: mgr r30 / offset IV r31 swap (target mgr r31, IV r30); decl order, init placement, while-loop, inline body tried. Permuter candidate.
