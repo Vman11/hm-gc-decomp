@@ -173,8 +173,9 @@ extern u8 lbl_802AF340[];
         if ((u8)v != (L)) { p++; continue; } \
         switch (v & 0x300) { \
         case 0x000: \
+            { u8 *hh_ = h; \
             pos = v >> 10; \
-            *p = h[pos >> 4] + (((pos + 4) << 10) + 0x100); \
+            *p = hh_[pos >> 4] + (((pos + 4) << 10) + 0x100); } \
             goto C##L; \
         case 0x100: \
             pos = v >> 10; \
