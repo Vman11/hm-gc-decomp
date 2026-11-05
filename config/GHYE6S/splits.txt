@@ -11604,7 +11604,7 @@ auto/text_80121158.cpp:
 	.text       start:0x80121158 end:0x801218C4
 	.sdata2     start:0x80363DD8 end:0x80363DF0
 
-auto/text_801218C4.c:
+auto/text_801218C4.cpp:
 	extab       start:0x8000B5F4 end:0x8000B5FC
 	extabindex  start:0x8001DD50 end:0x8001DD5C
 	.text       start:0x801218C4 end:0x80121CE8
