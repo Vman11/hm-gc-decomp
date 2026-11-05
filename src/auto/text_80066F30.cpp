@@ -197,7 +197,10 @@ void fn_80066F30(P *p, f32 dt) {
     p->f94 = p->f90;
     vz0 = p->vel.z;
     if (p->ctl->p20c->type != 14) p->vel.z -= dt * *p->f184;
-    if (p->vel.z < Min(*p->f180, p->f1a4)) p->vel.z = Min(*p->f180, p->f1a4);
+    {
+        f32 lim = Min(*p->f180, p->f1a4);
+        if (p->vel.z < lim) p->vel.z = Min(*p->f180, p->f1a4);
+    }
     a = lbl_80357B10;
     b = lbl_80357AF8;
     a.z = lbl_8035E758;
@@ -224,16 +227,16 @@ void fn_80066F30(P *p, f32 dt) {
         t = lbl_8035B488->f14;
         if (p->f15c >= lbl_8035E780 && p->f15c <= lbl_8035E784 && p->f158 >= lbl_8035E780 && p->f158 <= lbl_8035E784) still = true;
         now = lbl_8035B488->time;
-        { int c1 = Bef(p->t17c + 500, now); int c2 = Bef(p->t17c + 250, now); if (!c1 || (!c2 && still)) p->f1ac = 1; }
+        { int st = still; int c1 = Bef(p->t17c + 500, now); int c2 = Bef(p->t17c + 250, now); if (!c1 || (!c2 && st)) p->f1ac = 1; }
     }
     if (fn_800724A4(act)) p->ofs = lbl_802BD354;
     else p->ofs = lbl_802BD300;
-    e.x = e.y = e.z = lbl_8035E758;
+    e.x = lbl_8035E758; e.y = lbl_8035E758; e.z = lbl_8035E758;
     e.z = p->vel.z;
     vel = p->vel;
     vel.z = lbl_8035E758;
     fn_8003714C(&vel);
-    acc.x = acc.y = acc.z = lbl_8035E758;
+    acc.x = lbl_8035E758; acc.y = lbl_8035E758; acc.z = lbl_8035E758;
     acc.x += s * b.x; acc.y += s * b.y; acc.z += s * b.z;
     if (act->f4d4 == 0 || p->f19c < 1) {
         acc.x += s * a.x; acc.y += s * a.y; acc.z += s * a.z;
@@ -248,7 +251,7 @@ void fn_80066F30(P *p, f32 dt) {
         Ctl *c = p->ctl;
         V3 *cn = &c->n;
         if (vel.x * cn->x + vel.y * cn->y + vel.z * cn->z < lbl_8035E758 && c->f5b0 != 0 && cn != 0) {
-            n = *cn;
+            n.x = cn->x; n.y = cn->y; n.z = cn->z;
             if (e.x * n.x + e.y * n.y + e.z * n.z < lbl_8035E758) fn_80100F24(&e, &n);
             {
                 bool z = false;
@@ -321,8 +324,8 @@ void fn_80066F30(P *p, f32 dt) {
     fn_80101820(&p->y);
     fn_80101820(&p->z);
     named = 0;
-    ofs = p->ofs;
     from = p->pos0;
+    ofs = p->ofs;
     from.x += ofs[0] * p->a0.x; from.y += ofs[0] * p->a0.y; from.z += ofs[0] * p->a0.z;
     from.x += ofs[1] * p->a1.x; from.y += ofs[1] * p->a1.y; from.z += ofs[1] * p->a1.z;
     from.x += ofs[2] * p->a2.x; from.y += ofs[2] * p->a2.y; from.z += ofs[2] * p->a2.z;
