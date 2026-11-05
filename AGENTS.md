@@ -614,3 +614,7 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJC (2026-11-05): fn_8023BE44 NonMatching .cpp (GC/1.3.2 + lmw), DIFF 70 / SDIFF 20 (was 82): cross y as a promoted `V3 c` member fixes the param FPR colouring (f26-f28); left dot/cy f24/f25 swap, cross-product load order and the entry V3 copy interleave (fieldwise/swapped copies no help).
 - wJC (2026-11-05): fn_80070054 NonMatching .cpp (GC/1.3.2 + lmw), DIFF 26 / SDIFF 0 (wEI draft): left the r524->v[h->n-1] r3/r4 swap and m (target r30) vs loop offset IV (r28) colouring; decl orders, scoped decls, inline body/loop, struct m tried.
 - wJC (2026-11-05): fn_8026E4C4 NonMatching .cpp (GC/1.3.2 + lmw), SDIFF 0 / DIFF 62: natural layout (fn-scope `char buf[64]; volatile f32 m[9];`, plain buf rematerialises addi r1,44); register-only: target colours name r31 before s r30 (wDI struct-bb draft gets that colouring but CSEs &bb.b into r28, DIFF 5). Permuter candidate.
+- wJE (2026-11-05): fn_8003AD38 NonMatching .cpp (GC/1.3.2 + lmw, from wDC draft): 2 diffs, 'addi r4,r1,8' call arg scheduled after the lwz of lbl_8035A1DC.
+- wJE (2026-11-05): fn_80272028 NonMatching .cpp (GC/1.3.2 + lmw, from wDR best): 2 diffs, only 'li r0,0' sched in the param-struct stores.
+- wJE (2026-11-05): fn_8023AFDC NonMatching .cpp (GC/1.3.2 + lmw, from wL/s3, opt_loop_invariants off): SDIFF 3 (one mr placement), params coloured r28-r31 vs target r21-r24.
+- wJE (2026-11-05): fn_8003B5F8 NonMatching .cpp (GC/2.0p1, from wK/c2): 8 diffs, first guard li r0,1 before stw, int->float magic lfd order.
