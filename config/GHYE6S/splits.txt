@@ -5405,7 +5405,7 @@ auto/text_8009D080.cpp:
 	.text       start:0x8009D080 end:0x8009D0F4
 	.ctors      start:0x80294070 end:0x80294074
 
-auto/text_8009D0F4.c:
+auto/text_8009D0F4.cpp:
 	extab       start:0x80008A58 end:0x80008A60
 	extabindex  start:0x8001AD38 end:0x8001AD44
 	.text       start:0x8009D0F4 end:0x8009D9B0
