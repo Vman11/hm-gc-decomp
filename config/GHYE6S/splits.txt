@@ -2938,7 +2938,7 @@ auto/text_800690FC.cpp:
 	.text       start:0x800690FC end:0x8006B5A4
 	.data       start:0x802C1E70 end:0x802C2238
 
-auto/text_8006B5A4.c:
+auto/text_8006B5A4.cpp:
 	extab       start:0x80007344 end:0x8000734C
 	extabindex  start:0x800196AC end:0x800196B8
 	.text       start:0x8006B5A4 end:0x8006B6C8
