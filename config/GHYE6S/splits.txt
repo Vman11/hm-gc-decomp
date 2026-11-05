@@ -26287,7 +26287,7 @@ auto/text_801FCFBC.cpp:
 	extabindex  start:0x80025C34 end:0x80025C40
 	.text       start:0x801FCFBC end:0x801FCFF0
 
-auto/text_801FCFF0.c:
+auto/text_801FCFF0.cpp:
 	extab       start:0x800130B8 end:0x800130D0
 	extabindex  start:0x80025C40 end:0x80025C4C
 	.text       start:0x801FCFF0 end:0x801FD224
