@@ -12,8 +12,9 @@ void fn_800F7E98(void);
 
 void __ct__9C80257738Fv(void *p);
 } /* extern "C" */
-/* Built by __ct__9C80257738Fv but destroyed by __dt__9C800604C4Fv (see text_80273730). */
-struct C800604C4 { C800604C4() { __ct__9C80257738Fv(this); } ~C800604C4(); };
+/* Base class C80257738 (ctor __ct__9C80257738Fv, dtor __dt__9C80257738Fv): the inline ctor takes a dummy
+ * defaulted int so its mangled name does not clash with the extern "C" ctor it calls. */
+struct C80257738 { C80257738(int = 0) { __ct__9C80257738Fv(this); } ~C80257738(); };
 extern "C" {
 struct C8025E920 {
     u8 d[208 - 192];
@@ -26,7 +27,7 @@ struct V_80273098 {
 };
 struct N_80273098;
 void fn_802575F0(N_80273098 *);
-struct N_80273098 : C800604C4 {
+struct N_80273098 : C80257738 {
     V_80273098 v;
     u8 pad[192 - 4];
     C8025E920 m;

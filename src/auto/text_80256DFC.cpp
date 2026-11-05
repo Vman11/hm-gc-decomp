@@ -32,8 +32,6 @@ struct N_80256DFC : C80261CB0 {
         f64 = lbl_803666B0;
     }
 };
-/* The array ctor is __ct__9C80257738Fv but its dtor is __dt__9C800604C4Fv (one class, two names in
- * symbols.txt): the dtor reloc cannot match until those symbols are unified. */
 struct C80257738 {
     u8 d[0xC0];
     C80257738();
