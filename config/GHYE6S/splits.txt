@@ -25751,7 +25751,7 @@ auto/text_801F5150.c:
 	extabindex  start:0x800257CC end:0x800257D8
 	.text       start:0x801F5150 end:0x801F55E0
 
-auto/text_801F55E0.c:
+auto/text_801F55E0.cpp:
 	extab       start:0x80012ABC end:0x80012AC4
 	extabindex  start:0x800257D8 end:0x800257E4
 	.text       start:0x801F55E0 end:0x801F5874
