@@ -8463,7 +8463,7 @@ auto/text_800FD4A4.cpp:
 auto/text_800FD528.c:
 	.text       start:0x800FD528 end:0x800FD530
 
-auto/text_800FD530.c:
+auto/text_800FD530.cpp:
 	extab       start:0x80009D70 end:0x80009D78
 	extabindex  start:0x8001C2F8 end:0x8001C304
 	.text       start:0x800FD530 end:0x800FDAC0
