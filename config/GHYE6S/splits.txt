@@ -34918,7 +34918,7 @@ auto/text_8026E4C4.c:
 	extabindex  start:0x8002A4F4 end:0x8002A500
 	.text       start:0x8026E4C4 end:0x8026E778
 
-auto/text_8026E778.c:
+auto/text_8026E778.cpp:
 	extab       start:0x80017818 end:0x80017838
 	extabindex  start:0x8002A500 end:0x8002A50C
 	.text       start:0x8026E778 end:0x8026ECA8
