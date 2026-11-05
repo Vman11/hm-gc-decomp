@@ -5092,7 +5092,7 @@ auto/text_80094C94.cpp:
 	extabindex  start:0x8001AA38 end:0x8001AA44
 	.text       start:0x80094C94 end:0x80094E24
 
-auto/text_80094E24.c:
+auto/text_80094E24.cpp:
 	extab       start:0x80008634 end:0x8000864C
 	extabindex  start:0x8001AA44 end:0x8001AA50
 	.text       start:0x80094E24 end:0x80095134
