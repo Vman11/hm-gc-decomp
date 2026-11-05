@@ -629,3 +629,9 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJG (2026-11-05): fn_8006C418 NonMatching .cpp (GC/2.0p1 + lmw), DIFF 24 / SDIFF 0: negcross = plain f32 'v.x = -v.x' x3 then c.x, c.y, c.z cross reading v (store-forwarding gives the raw fneg store + frsp copies); volatile v-init stores x,y,z order. Left: x = t->f280 in r28 vs target r29 (reg-only, permuter).
 - wJG (2026-11-05): fn_80130B4C NonMatching .cpp (GC/1.3.2), DIFF 4 (wCP p_ draft, __restrict params): only d->src1 lwz scheduled 2 slots early; hand-inlined alloc with src load between r and the n1 store, src after the alloc: no gain.
 - wJG (2026-11-05): matched fn_80164A54 (GC/1.3.2 + lmw): colour-product FP colouring fixed by loading r,g,b,a into f32 locals first, then 'f32 K = lbl_80364698; r *= K; ...' before the C4 ctor (probably applies to siblings 801647F8/80164584).
+- wJI (2026-11-05): fn_800302CC Matching .cpp: PTMF-by-value copy via volatile PM temp + volatile src ptr + *(void*volatile*)&mgr (8002D080 trick); PTMF const stays extern in the .data blob.
+- wJI (2026-11-05): fn_8003F140 Matching .cpp: same template as fn_800302CC (lbl_802B05AC).
+- wJI (2026-11-05): fn_80030318 NonMatching .cpp, DIFF 8 SDIFF 8: regs right, copy loads (4,0 then 8) scheduled too early (target: after mr r4/addi r5). Tried volatile src, plain/nested-struct copy, by-value PM, scheduling off, 2.0p1/1.2.5n.
+- wJI (2026-11-05): fn_8003F18C NonMatching .cpp, DIFF 8: same as fn_80030318 (identical body).
+- wJI (2026-11-05): fn_80039988 NonMatching .cpp (wDZ P4 as C++), SDIFF 0 / DIFF 6: loop t/sum in f0 vs target f2 (fadds operand order too). Permuter candidate.
+- wJI (2026-11-05): fn_8003C4BC NonMatching .cpp, SDIFF 0 / DIFF 36: store temps r0/r5 vs target r4/r0 and G/cur regs after vcall. Split vcall result into a local to stop the constant being hoisted into r31. Permuter candidate.

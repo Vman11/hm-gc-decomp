@@ -214,12 +214,12 @@ auto/text_80030270.cpp:
 	extabindex  start:0x80017D44 end:0x80017D50
 	.text       start:0x80030270 end:0x800302CC
 
-auto/text_800302CC.c:
+auto/text_800302CC.cpp:
 	extab       start:0x800058A4 end:0x800058AC
 	extabindex  start:0x80017D50 end:0x80017D5C
 	.text       start:0x800302CC end:0x80030318
 
-auto/text_80030318.c:
+auto/text_80030318.cpp:
 	extab       start:0x800058AC end:0x800058B4
 	extabindex  start:0x80017D5C end:0x80017D68
 	.text       start:0x80030318 end:0x80030368
@@ -725,7 +725,7 @@ auto/text_800396C0.cpp:
 	.text       start:0x800396C0 end:0x80039988
 	.sdata2     start:0x8035C070 end:0x8035C078
 
-auto/text_80039988.c:
+auto/text_80039988.cpp:
 	extab       start:0x80005CAC end:0x80005CB4
 	extabindex  start:0x8001811C end:0x80018128
 	.text       start:0x80039988 end:0x80039A3C
@@ -956,7 +956,7 @@ auto/text_8003C448.cpp:
 	extabindex  start:0x800182D8 end:0x800182E4
 	.text       start:0x8003C448 end:0x8003C4BC
 
-auto/text_8003C4BC.c:
+auto/text_8003C4BC.cpp:
 	extab       start:0x80005E5C end:0x80005E64
 	extabindex  start:0x800182E4 end:0x800182F0
 	.text       start:0x8003C4BC end:0x8003C590
@@ -1142,12 +1142,12 @@ auto/text_8003F108.cpp:
 	.text       start:0x8003F108 end:0x8003F140
 	.ctors      start:0x80293F38 end:0x80293F3C
 
-auto/text_8003F140.c:
+auto/text_8003F140.cpp:
 	extab       start:0x80005F54 end:0x80005F5C
 	extabindex  start:0x80018458 end:0x80018464
 	.text       start:0x8003F140 end:0x8003F18C
 
-auto/text_8003F18C.c:
+auto/text_8003F18C.cpp:
 	extab       start:0x80005F5C end:0x80005F64
 	extabindex  start:0x80018464 end:0x80018470
 	.text       start:0x8003F18C end:0x8003F1DC
