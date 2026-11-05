@@ -419,6 +419,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wHP (2026-11-05): fn_800548A4 (5.1 KB script-command jumptable switch) NonMatching .cpp draft, GC/1.3.2 + lmw (from wDY draft); see hm-work/wHP/STATUS.txt.
 - wA_8020CFE4 (2026-11-05): fn_801B6B9C (list widget input, wH b6g draft) NonMatching .cpp, GC/1.3.2 + lmw; DIFF 2 (desel loop IV seed li vs mr); see hm-work/wH/STATUS.txt.
 - wA_800FD530 (collaborator units, 2026-11-05): fn_800FD530 NonMatching draft (.cpp, GC/1.3.2; box-vs-sphere surface vector), DIFF 71 / SDIFF 47: only the shared zero const load (hoisted above d stores, CSEd into outside branch) + resulting f2/f4 regs.
+- wA_80030E98 (2026-11-05): matched fn_80030E98 (scene init; V3 with volatile members + volatile extern -1/KD8 consts for the in-order stack fill; 5-arg passthrough to fn_802551DC fixes lis r8; function-scope local decl order sc,t,n,a,b fixes saved regs).
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.

@@ -274,7 +274,7 @@ auto/text_80030E24.cpp:
 	extabindex  start:0x80017DBC end:0x80017DC8
 	.text       start:0x80030E24 end:0x80030E98
 
-auto/text_80030E98.c:
+auto/text_80030E98.cpp:
 	extab       start:0x800058F4 end:0x8000591C
 	extabindex  start:0x80017DC8 end:0x80017DD4
 	.text       start:0x80030E98 end:0x8003142C
