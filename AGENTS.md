@@ -602,3 +602,7 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wIY (2026-11-05): fn_801641F0 matched (classes with vptrs at 0x1930/0x30/0x20, w/h locals read before fn_801562D8).
 - wIY (2026-11-05): fn_8020E7D0 matched (u8* walk like 8020E738, mask ~0x20; each of the 3 loops' i/q colouring set by var scope: fn-scope, block-local, static inline).
 - wIY (2026-11-05): fn_8002BDD4 NonMatching .cpp (GC/2.0p1 + literals), SDIFF 4 / DIFF 50: guard store order, flag-0 copy, FP colouring; .sdata2 pool shared with 8002B760/8002C150.
+- wJD (2026-11-05): fn_80272AD0 Matching .cpp (GC/1.3.2 + lmw): volatile flag/ptr globals (F60..F6C, B460, B418, B690) + volatile stores *(volatile u32*)&s.fX to the local struct keep global loads after the stack stores.
+- wJD (2026-11-05): fn_801397FC NonMatching .cpp (wDD draft, 18 lines): only the per-lane float copy lfs/stfs order/colouring left (target x..w into f3..f0 ascending); 1.3.2 local orders and GC/2.5 V4 operator= + __restrict all fail.
+- wJD (2026-11-05): fn_8010917C NonMatching .cpp (wCS z3 draft): instructions match, only x(r29)/loop-offset IV(r27) colouring swap left (permuter candidate).
+- wJD (2026-11-05): fn_8022F544 NonMatching .cpp (wDC draft, 2 lines): only 'fneg f2,f1' scheduled before the first stfs (target after); -k inline / nk after first store tried.
