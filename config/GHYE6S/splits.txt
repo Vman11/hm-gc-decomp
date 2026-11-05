@@ -7974,7 +7974,7 @@ auto/text_800F8604.cpp:
 	extabindex  start:0x8001BE48 end:0x8001BE54
 	.text       start:0x800F8604 end:0x800F87F0
 
-auto/text_800F87F0.c:
+auto/text_800F87F0.cpp:
 	extab       start:0x800099CC end:0x800099E8
 	extabindex  start:0x8001BE54 end:0x8001BE60
 	.text       start:0x800F87F0 end:0x800F8CD8
@@ -32385,7 +32385,7 @@ auto/text_80244DC4.cpp:
 	extabindex  start:0x80028FC4 end:0x80028FD0
 	.text       start:0x80244DC4 end:0x80244FC8
 
-auto/text_80244FC8.c:
+auto/text_80244FC8.cpp:
 	extab       start:0x80016030 end:0x80016038
 	extabindex  start:0x80028FD0 end:0x80028FDC
 	.text       start:0x80244FC8 end:0x8024548C
