@@ -534,10 +534,7 @@ void fn_8027D050(s32 mode) {
     u32 rl, gl, bl, rm, gm, bm, white, white2, v, c;
     if (lbl_80301904 == 0) {
         for (i = 0, n = 0x100; n != 0; n--, i++) {
-            if (i > 16) {
-                if (i <= 234) { s32 t = ((i - 16) * 0x950a) / 32768; eT72A0[i] = t; }
-                else eT72A0[i] = 0xfe;
-            } else eT72A0[i] = 0;
+            eT72A0[i] = i > 16 ? (i <= 234 ? ((i - 16) * 0x950a) / 32768 : 0xfe) : 0;
             eT76C0[i] = eT72A0[i] << 2;
             k = i - 128;
             eE[1][i] = -((k * 0x680f) / 32768);
