@@ -16244,7 +16244,7 @@ auto/text_80170728.cpp:
 auto/text_80170788.c:
 	.text       start:0x80170788 end:0x80170798
 
-auto/text_80170798.c:
+auto/text_80170798.cpp:
 	extab       start:0x8000DDAC end:0x8000DDB4
 	extabindex  start:0x8002045C end:0x80020468
 	.text       start:0x80170798 end:0x80170CBC
@@ -27011,7 +27011,7 @@ auto/text_80203800.cpp:
 auto/text_8020383C.cpp:
 	.text       start:0x8020383C end:0x80203860
 
-auto/text_80203860.c:
+auto/text_80203860.cpp:
 	extab       start:0x800136FC end:0x80013738
 	extabindex  start:0x8002627C end:0x80026288
 	.text       start:0x80203860 end:0x80203D84
