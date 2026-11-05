@@ -25326,7 +25326,7 @@ auto/text_801EF3A0.cpp:
 	.data       start:0x802EE738 end:0x802EE7A8
 
 auto/jt_802EE7A8.c:
-	.data       start:0x802EE7A8 end:0x802EEB74
+	.data       start:0x802EE7A8 end:0x802EEB40
 
 auto/text_801EF504.cpp:
 	extab       start:0x8001283C end:0x80012844
@@ -25933,11 +25933,11 @@ auto/text_801F7430.cpp:
 auto/text_801F74D8.c:
 	.text       start:0x801F74D8 end:0x801F7518
 
-auto/text_801F7518.c:
+auto/text_801F7518.cpp:
 	extab       start:0x80012BEC end:0x80012BF4
 	extabindex  start:0x80025970 end:0x8002597C
 	.text       start:0x801F7518 end:0x801F7634
-	.data       start:0x802EEB74 end:0x802EEBB8
+	.data       start:0x802EEB40 end:0x802EEBB8
 
 auto/jt_802EEBB8.c:
 	.data       start:0x802EEBB8 end:0x802EEFF8
