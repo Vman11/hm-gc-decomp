@@ -18942,7 +18942,7 @@ auto/text_8019A75C.cpp:
 	extabindex  start:0x80021CB0 end:0x80021CBC
 	.text       start:0x8019A75C end:0x8019A7D0
 
-auto/text_8019A7D0.c:
+auto/text_8019A7D0.cpp:
 	extab       start:0x8000F64C end:0x8000F654
 	extabindex  start:0x80021CBC end:0x80021CC8
 	.text       start:0x8019A7D0 end:0x8019AA94
