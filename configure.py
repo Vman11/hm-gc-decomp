@@ -7072,6 +7072,7 @@ config.libs = [
             Object(Matching, "auto/text_80258E7C.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80258EE8.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80259220.cpp", extra_cflags=["-Cpp_exceptions on"], extab_padding=[0xB0, 0x02]),
+            Object(NonMatching, "auto/text_80259378.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"]),
             Object(Matching, "auto/text_8025AA70.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_8025AB4C.cpp", extra_cflags=["-Cpp_exceptions on"], mw_version="GC/2.0p1"),
             Object(Matching, "auto/text_8025ACF4.cpp", extra_cflags=["-Cpp_exceptions on"]),
