@@ -434,3 +434,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wHN (user-approved, collaborator units, 2026-11-05): fn_801229D0 (6.9 KB texture block decoder, wEK draft) NonMatching .cpp, GC/1.3.2 + lmw; DIFF 2 (one addi r4,r1,8 scheduled after the volatile lfs in block 1). Notes in hm-work/wHN/STATUS.txt.
 - wHL (2026-11-05): fn_8025C610 (6.2 KB camera orient/follow update: fn_8023BE44 slerps, mode 1/3/4/5, fn_80264E0C pull-in) NonMatching .cpp draft, GC/1.3.2 + lmw (version-insensitive); see hm-work/wHL/STATUS.txt.
 - wA_801E4CD0 (2026-11-05): matched fn_801E4CD0 (wN e2 draft; post-parse loops in one static inline with a single u32 counter, object pointers via per-array static inline getters g<f>(t,i) -> obj-offset IV created before string IV; extab_padding [0xB1,0x02] x5).
+- wHO (user-approved, collaborator units, 2026-11-05): fn_80124AE4 (6 KB texture block decoder, wEK draft) NonMatching .cpp, GC/1.3.2 + lmw; see hm-work/wHO/STATUS.txt.
