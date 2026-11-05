@@ -24099,7 +24099,7 @@ auto/text_801E4C2C.cpp:
 auto/text_801E4CA8.cpp:
 	.text       start:0x801E4CA8 end:0x801E4CD0
 
-auto/text_801E4CD0.c:
+auto/text_801E4CD0.cpp:
 	extab       start:0x80011D5C end:0x80011E20
 	extabindex  start:0x80024944 end:0x80024950
 	.text       start:0x801E4CD0 end:0x801E580C

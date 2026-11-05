@@ -5091,6 +5091,7 @@ config.libs = [
             Object(Matching, "auto/text_801E4B2C.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801E4BA0.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801E4C2C.cpp", extra_cflags=["-Cpp_exceptions on"]),
+            Object(Matching, "auto/text_801E4CD0.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"], extab_padding=[0xB1, 0x02, 0xB1, 0x02, 0xB1, 0x02, 0xB1, 0x02, 0xB1, 0x02]),
             Object(Matching, "auto/text_801E580C.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801E58DC.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801E5944.c"),
