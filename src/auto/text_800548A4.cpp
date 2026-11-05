@@ -2,6 +2,8 @@
 extern "C" {
 struct VO { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void getPos(void *p, void *a, int b, int c, int d); virtual void setPos(void *a, void *b, void *c, void *d, int e); virtual void w15(); virtual void w16(); virtual void w17(); virtual void w18(); virtual void w19(); virtual void w20(); virtual void w21(); virtual void w22(); virtual void showB(); virtual void hideB(); virtual void w25(); virtual void w26(); virtual void w27(); virtual void w28(); virtual void w29(); virtual void w30(); virtual void w31(); virtual void w32(); virtual void send(void *msg, u32 to, int a, void *d, int b); };
 struct VS0 { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void reset(); };
+// The tables really live in lbl_802BB050 (.data 0x802BB050, unit jt_802BB050). Only as statics in this TU
+// does MWCC address them from one section base; matching needs that data merged into this unit.
 static u8 sPad[0x578] = {1};
 static s32 tA[29] = {1};
 static s32 tB[114] = {1};
@@ -119,64 +121,48 @@ static inline void resetAnim(int p) {
     *(f32 *)(o + 8) = lbl_8035E198;
     if (*(void **)(o + 0x10) != 0) *(f32 *)(o + 0x24) = *(f32 *)(o + 8) / *(f32 *)(*(int *)(o + 0x10) + 4);
 }
+static inline void parse(int p, char *buf, int *ps, int *a, int *b) {
+    int i;
+    fn_800F6E88(buf, (void *)P(0x3b));
+    fn_800F70A8(buf);
+    if (fn_800F6C28(buf) == 0) *ps = 1;
+    for (i = 0; i < 3 && i < fn_800F6C28(buf) && buf[i] != 0; i++) {
+        switch (buf[i]) {
+        case 'A': *ps = 1; *a = 1; *b = 1; break;
+        case 'B': *a = 1; break;
+        case 'D': *ps = 1; break;
+        case 'L': *b = 1; break;
+        }
+    }
+}
 static inline void open(int p, char *buf, int k) {
-    int s; int a; int b; int i;
+    int s; int a; int b;
     s = PP(0x52) != 0;
     a = PP(0x53);
     b = PP(0x54);
-    fn_800F6E88(buf, (void *)P(0x3b));
-    fn_800F70A8(buf);
-    if (fn_800F6C28(buf) == 0) s = 1;
-    for (i = 0; i < 3 && i < fn_800F6C28(buf) && buf[i] != 0; i++) {
-        switch (buf[i]) {
-        case 'A': s = 1; a = 1; b = 1; break;
-        case 'B': a = 1; break;
-        case 'D': s = 1; break;
-        case 'L': b = 1; break;
-        }
-    }
+    parse(p, buf, &s, &a, &b);
     if (s) show(p);
     if (a != 0) fn_8022BBF4(*(int *)(p + 0xe0));
     if (b != 0) fn_8022AD0C(*(int *)(p + 0xe0));
     fn_800572DC(p, k);
 }
 static inline void open0(int p, char *buf, int k) {
-    int a; int b; int i; int s;
+    int s; int a; int b;
     s = PP(0x52) != 0;
     a = PP(0x53);
     b = PP(0x54);
-    fn_800F6E88(buf, (void *)P(0x3b));
-    fn_800F70A8(buf);
-    if (fn_800F6C28(buf) == 0) s = 1;
-    for (i = 0; i < 3 && i < fn_800F6C28(buf) && buf[i] != 0; i++) {
-        switch (buf[i]) {
-        case 'A': s = 1; a = 1; b = 1; break;
-        case 'B': a = 1; break;
-        case 'D': s = 1; break;
-        case 'L': b = 1; break;
-        }
-    }
+    parse(p, buf, &s, &a, &b);
     if (s) show(p);
     if (a != 0) fn_8022BBF4(*(int *)(p + 0xe0));
     if (b != 0) fn_8022AD0C(*(int *)(p + 0xe0));
     fn_800572DC(p, k);
 }
 static inline void close(int p, char *buf) {
-    int s; int a; int b; int i;
+    int s; int a; int b;
     s = PP(0x52) != 0;
     a = PP(0x53);
     b = PP(0x54);
-    fn_800F6E88(buf, (void *)P(0x3b));
-    fn_800F70A8(buf);
-    if (fn_800F6C28(buf) == 0) s = 1;
-    for (i = 0; i < 3 && i < fn_800F6C28(buf) && buf[i] != 0; i++) {
-        switch (buf[i]) {
-        case 'A': s = 1; a = 1; b = 1; break;
-        case 'B': a = 1; break;
-        case 'D': s = 1; break;
-        case 'L': b = 1; break;
-        }
-    }
+    parse(p, buf, &s, &a, &b);
     if (s) {
         int x = PP(0x6c);
         if (x != 0) {
@@ -188,24 +174,6 @@ static inline void close(int p, char *buf) {
     }
     if (a != 0) fn_8022B618(*(int *)(p + 0xe0));
     if (b != 0) fn_8022A7A8(*(int *)(p + 0xe0));
-}
-static inline int parse(char *buf, int p, int *a, int *b) {
-    int s = PP(0x52) != 0;
-    int i;
-    char *c;
-    fn_800F6E88(buf, (void *)P(0x3b));
-    fn_800F70A8(buf);
-    if (fn_800F6C28(buf) == 0) s = 1;
-    for (i = 0; i < 3 && i < fn_800F6C28(buf) && buf[i] != 0; i++) {
-        switch (buf[i]) {
-        case 'A': s = 1; *a = 1; *b = 1; break;
-        case 'B': *a = 1; break;
-        case 'D': s = 1; break;
-        case 'L': *b = 1; break;
-        }
-        i++;
-    }
-    return s;
 }
 #define KEYOK(p) ((fn_800F6CD0((void *)P(0x60), lbl_8035E060) != 0 && *(void **)(p + 0x3b * 4) == 0) || (*(void **)(p + 0x3b * 4) != 0 && fn_800F6CD0(*(void **)(p + 0x3b * 4), (void *)P(0x60)) != 0))
 
