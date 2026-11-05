@@ -34351,7 +34351,7 @@ auto/text_802625FC.c:
 	extabindex  start:0x80029FF0 end:0x80029FFC
 	.text       start:0x802625FC end:0x80262D38
 
-auto/text_80262D38.c:
+auto/text_80262D38.cpp:
 	extab       start:0x800173E0 end:0x800173E8
 	extabindex  start:0x80029FFC end:0x8002A008
 	.text       start:0x80262D38 end:0x80262E58
