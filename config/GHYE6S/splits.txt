@@ -16113,7 +16113,7 @@ auto/text_8016BC04.c:
 	extabindex  start:0x800201F8 end:0x80020204
 	.text       start:0x8016BC04 end:0x8016BFF0
 
-auto/text_8016BFF0.c:
+auto/text_8016BFF0.cpp:
 	extab       start:0x8000DA18 end:0x8000DA20
 	extabindex  start:0x80020204 end:0x80020210
 	.text       start:0x8016BFF0 end:0x8016C3CC
