@@ -24518,7 +24518,7 @@ auto/text_801E8268.cpp:
 	extabindex  start:0x80024D04 end:0x80024D10
 	.text       start:0x801E8268 end:0x801E8300
 
-auto/text_801E8300.c:
+auto/text_801E8300.cpp:
 	extab       start:0x800120EC end:0x800120F4
 	extabindex  start:0x80024D10 end:0x80024D1C
 	.text       start:0x801E8300 end:0x801E84A4
