@@ -12611,7 +12611,7 @@ auto/text_80134BD0.cpp:
 	extabindex  start:0x8001E530 end:0x8001E53C
 	.text       start:0x80134BD0 end:0x80134C30
 
-auto/text_80134C30.c:
+auto/text_80134C30.cpp:
 	extab       start:0x8000BDE8 end:0x8000BDF0
 	extabindex  start:0x8001E53C end:0x8001E548
 	.text       start:0x80134C30 end:0x801351AC
