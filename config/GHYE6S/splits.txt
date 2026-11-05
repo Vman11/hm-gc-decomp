@@ -14066,7 +14066,7 @@ auto/text_8014FA70.cpp:
 	extabindex  start:0x8001F0E8 end:0x8001F0F4
 	.text       start:0x8014FA70 end:0x8014FABC
 
-auto/text_8014FABC.c:
+auto/text_8014FABC.cpp:
 	extab       start:0x8000C9A4 end:0x8000C9AC
 	extabindex  start:0x8001F0F4 end:0x8001F100
 	.text       start:0x8014FABC end:0x8014FE14
