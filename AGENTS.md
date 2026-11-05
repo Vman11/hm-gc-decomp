@@ -651,3 +651,9 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJJ (2026-11-05): fn_801002B0 Matching .cpp (wCK quat-normalize draft + '*(f32 *)&lbl_803637A4 == d' in the zero test fixes FP colouring, wAD rule). Unit had no configure.py entry; added.
 - wJJ (2026-11-05): fn_80100754 NonMatching .cpp (SDIFF 0 / DIFF 32): load x,y,z,w first then 'x = K * x; o[0] = (s16)x;'. Only FP colouring left (target puts each product in the input's reg, K in a fresh one). Permuter candidate.
 - wJJ (2026-11-05): fn_801090D4 NonMatching .cpp (SDIFF 6): 's32 n = fn_800F8274(o, k) - b;' before the call; left: the T12 by-value copy loads (target loads all 3 words, then stores). Local T12 copy no change.
+- wJM (2026-11-05): fn_8014C830 NonMatching .cpp (1.3.2 + lmw), DIFF 2: stack args a/b must be u32 (lwz); left: prologue `mr r27,r3` scheduled after the stack lwz's.
+- wJM (2026-11-05): fn_80154354 NonMatching .cpp (GC/2.0p1, wDQ draft), regs only: copy loop d/c regs swapped (r5/r3 vs r3/r5). a2w param order (d,s), local copies, for/while forms all worse.
+- wJM (2026-11-05): fn_80155124 NonMatching .cpp (1.3.2 + lmw), DIFF 2: cb arg as `(f & 0x80) != 0` with u16 local f fixes the tail; left: stack arg lwz r30 scheduled in prologue vs after lhz in target.
+- wJM (2026-11-05): fn_80160B9C NonMatching .cpp (wCI bx.c), DIFF 6: prologue order of mr r25,r5 / li r26 / lbz r28; statement orders, local out copy, 2.0/2.0p1 invariant.
+- wJM (2026-11-05): fn_80160CD4 Matching .cpp: key must be u32 (not u16) to get i in r3, and compare as `key == *t`.
+- wJM (2026-11-05): fn_801638D4 NonMatching .cpp (wCI ao3), regs only: dc r4/temps r3,r0 in target vs r3/r0,r5,r4. operator= fieldwise copy, two reused temps, 2.0p1 no better.
