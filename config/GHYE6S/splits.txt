@@ -33773,7 +33773,7 @@ auto/text_80256D90.cpp:
 	.text       start:0x80256D90 end:0x80256DFC
 	.ctors      start:0x80294344 end:0x80294348
 
-auto/text_80256DFC.c:
+auto/text_80256DFC.cpp:
 	extab       start:0x80016EA0 end:0x80016ECC
 	extabindex  start:0x80029B1C end:0x80029B28
 	.text       start:0x80256DFC end:0x80256F8C
