@@ -16191,7 +16191,7 @@ auto/text_8016CEC0.cpp:
 	extabindex  start:0x800202AC end:0x800202B8
 	.text       start:0x8016CEC0 end:0x8016CEF4
 
-auto/text_8016CEF4.c:
+auto/text_8016CEF4.cpp:
 	extab       start:0x8000DA90 end:0x8000DA98
 	extabindex  start:0x800202B8 end:0x800202C4
 	.text       start:0x8016CEF4 end:0x8016D5B8
