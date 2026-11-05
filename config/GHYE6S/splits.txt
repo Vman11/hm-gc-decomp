@@ -76,7 +76,7 @@ auto/text_8002BDD4.c:
 	extabindex  start:0x80017C18 end:0x80017C24
 	.text       start:0x8002BDD4 end:0x8002C150
 
-auto/text_8002C150.c:
+auto/text_8002C150.cpp:
 	extab       start:0x80005738 end:0x80005740
 	extabindex  start:0x80017C24 end:0x80017C30
 	.text       start:0x8002C150 end:0x8002C34C
