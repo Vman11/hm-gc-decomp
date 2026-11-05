@@ -104,19 +104,19 @@ static inline f32 Len(V3 *v) {
     }
     return len;
 }
-static inline void Rumble(Cam *p, f32 v) {
-    H *h = p->h;
-    if (h->g && h->g->ac && fn_8022D694(h)) {
-        if (*p->b8) {
-            Rb *r = fn_8022D694(p->h);
-            if (r->f30 & 1) r->flags &= ~2;
-        } else if (*p->b4) {
-            Rb *r = fn_8022D694(p->h);
-            r->v = v;
-            if (r->len) r->rate = r->v / *(f32 *)((u8 *)r->len + 4);
-        }
-    }
-}
+#define RUMBLE(p, V) do { \
+    H *h_ = (p)->h; \
+    if (h_->g && h_->g->ac && fn_8022D694(h_)) { \
+        if (*(p)->b8) { \
+            Rb *r = fn_8022D694((p)->h); \
+            if (r->f30 & 1) r->flags &= ~2; \
+        } else if (*(p)->b4) { \
+            Rb *r = fn_8022D694((p)->h); \
+            r->v = (V); \
+            if (r->len) r->rate = r->v / *(f32 *)((u8 *)r->len + 4); \
+        } \
+    } \
+} while (0)
 static inline void Face(Cam *p) {
     cp(&p->fwd, &p->vel);
     fn_80100F24(&p->fwd, &p->up);
@@ -236,16 +236,25 @@ void fn_80259378(Cam *p, f32 dt) {
         f32 z;
         fn_80100CF4(&s);
         z = lbl_803667B4;
-        s.x = z;
-        s.y = z;
-        s.z = z;
-        s.r = z;
+        *(volatile f32 *)&s.x = z;
+        *(volatile f32 *)&s.y = z;
+        *(volatile f32 *)&s.z = z;
+        *(volatile f32 *)&s.r = z;
         s2 = lbl_802F26D8[0].z * d;
         s0 = lbl_802F26D8[0].x * d;
-        s1 = lbl_802F26D8[0].y * (lbl_803667B0 + d);
-        cx = p->pos.x + s0 * p->fwd.x + s1 * p->up.x + s2 * p->right.x;
-        cy = p->pos.y + s0 * p->fwd.y + s1 * p->up.y + s2 * p->right.y;
-        cz = p->pos.z + s0 * p->fwd.z + s1 * p->up.z + s2 * p->right.z;
+        s1 = lbl_802F26D8[0].y * (*(volatile f32 *)&lbl_803667B0 + d);
+        cx = p->pos.x;
+        cx += s0 * p->fwd.x;
+        cy = p->pos.y;
+        cy += s0 * p->fwd.y;
+        cz = p->pos.z;
+        cz += s0 * p->fwd.z;
+        cx += s1 * p->up.x;
+        cy += s1 * p->up.y;
+        cz += s1 * p->up.z;
+        cx += s2 * p->right.x;
+        cy += s2 * p->right.y;
+        cz += s2 * p->right.z;
         for (i = 0; i < 6; i++) {
             f32 k0, k1, k2, r;
             from[i].x = cx;
@@ -280,14 +289,20 @@ void fn_80259378(Cam *p, f32 dt) {
         f32 inv, w;
         bounce = 0;
         land = 0;
-        avg.x = p->pos.x - p->pos0.x;
-        avg.y = p->pos.y - p->pos0.y;
-        avg.z = p->pos.z - p->pos0.z;
-        inv = lbl_803667C8 / dt;
-        avg.x *= inv;
-        avg.y *= inv;
-        avg.z *= inv;
-        w = lbl_803667D8 * d;
+        {
+            f32 dx = p->pos.x - p->pos0.x;
+            f32 dy, dz;
+            *(volatile f32 *)&avg.x = dx;
+            dy = p->pos.y - p->pos0.y;
+            *(volatile f32 *)&avg.y = dy;
+            dz = p->pos.z - p->pos0.z;
+            *(volatile f32 *)&avg.z = dz;
+            inv = *(volatile f32 *)&lbl_803667C8 / dt;
+            *(volatile f32 *)&avg.x = dx * inv;
+            *(volatile f32 *)&avg.y = dy * inv;
+            *(volatile f32 *)&avg.z = dz * inv;
+        }
+        w = *(volatile f32 *)&lbl_803667D8 * d;
         for (i = 0; i < 6; i++) {
             if (hit[i]) {
                 V3 *n = &nrm[i];
@@ -318,13 +333,13 @@ void fn_80259378(Cam *p, f32 dt) {
                             p->vel.x = lbl_803667B4;
                             p->vel.y = lbl_803667B4;
                             p->vel.z = lbl_803667B4;
-                            Rumble(p, lbl_803667B4);
+                            RUMBLE(p, lbl_803667B4);
                             p->h->Snd(lbl_803667F0, 0, 0, 0, 0);
                         } else if (*p->b4 || *p->b8) {
                             f32 t;
                             fn_80100F24(&avg, n);
                             t = Len(&p->vel) / w;
-                            Rumble(p, lbl_803667F8 * t);
+                            RUMBLE(p, lbl_803667F8 * t);
                             if (*p->b8) {
                                 En *e;
                                 Gs *gs = p->h->g->gs;
@@ -341,10 +356,10 @@ void fn_80259378(Cam *p, f32 dt) {
 
                                 {
                                     f32 z = lbl_803667B4;
-                                    q2.x = z;
-                                    q2.y = z;
-                                    q2.z = z;
-                                    q2.w = lbl_803667C8;
+                                    *(volatile f32 *)&q2.x = z;
+                                    *(volatile f32 *)&q2.y = z;
+                                    *(volatile f32 *)&q2.z = z;
+                                    q2.w = *(volatile f32 *)&lbl_803667C8;
                                 }
                                 g = p->h->g;
                                 ob = g->o30;
@@ -357,8 +372,8 @@ void fn_80259378(Cam *p, f32 dt) {
                                 lbl_803286D0.set(ob->x10, &q2);
                                 ob->x20 |= lbl_803667CC;
                                 ang = (f32)(lbl_80366800 * (lbl_80366808 * t) * dt);
-                                while (ang > lbl_80366814) ang -= lbl_80366810;
-                                while (ang < lbl_80366818) ang += lbl_80366810;
+                                while (ang > *(volatile f32 *)&lbl_80366814) ang -= *(volatile f32 *)&lbl_80366810;
+                                while (ang < *(volatile f32 *)&lbl_80366818) ang += *(volatile f32 *)&lbl_80366810;
                                 fn_800FFE84(&q2, &axis, ang);
                                 fn_8010041C(&q, &q2);
                                 lbl_803286D0.set(e->x10, &q);
@@ -374,7 +389,7 @@ void fn_80259378(Cam *p, f32 dt) {
                         } else if (*p->b4) {
                             fn_80101744(&o78, &avg);
                             fn_80101590(&o78, n);
-                            Rumble(p, lbl_8036681C);
+                            RUMBLE(p, lbl_8036681C);
                             fn_80258EE8(p, n);
                             Face(p);
                             p->h->Snd(lbl_802A9AE0, 0, 0, 0, 0);
@@ -400,11 +415,26 @@ void fn_80259378(Cam *p, f32 dt) {
     }
     if (!bounce) p->vel = avg;
     {
-        f32 s = lbl_80366830 * d;
-        a2 = p->pos0;
-        madd(&a2, s, &p->up0);
-        b2 = p->pos;
-        madd(&b2, s, &p->up);
+        f32 s;
+        f32 x = p->pos0.x, y, z;
+        *(volatile f32 *)&a2.x = x;
+        y = p->pos0.y;
+        *(volatile f32 *)&a2.y = y;
+        z = p->pos0.z;
+        *(volatile f32 *)&a2.z = z;
+        s = *(volatile f32 *)&lbl_80366830 * d;
+        a2.x = s * p->up0.x + x;
+        a2.y = s * p->up0.y + y;
+        a2.z = s * p->up0.z + z;
+        x = p->pos.x;
+        *(volatile f32 *)&b2.x = x;
+        y = p->pos.y;
+        *(volatile f32 *)&b2.y = y;
+        z = p->pos.z;
+        *(volatile f32 *)&b2.z = z;
+        b2.x = s * p->up.x + x;
+        b2.y = s * p->up.y + y;
+        b2.z = s * p->up.z + z;
     }
     if (fn_80264E0C(&a2, &b2, &h2, &n2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)) {
         cp(&p->pos, &p->pos0);
