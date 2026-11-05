@@ -411,6 +411,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wGJ (collaborator unit, 2026-11-05): text_800824C0 NonMatching draft (.c -> .cpp, -Cpp_exceptions on), 16 reg-swap lines left.
 - wGU (user-approved, collaborator units, 2026-11-05): matched fn_8016BFF0 (light-header stores in an inline `Hdr()` returning the count, copy loop counter a function-level local), unit moved to .cpp (extab), Matching.
 - wGU (user-approved, collaborator units, 2026-11-05): matched fn_8016BC04 (index-binding loops in a static inline with the stored 0 passed as a param -> `li k,0; mr z,k`, inline locals declared in reverse; the virtual reset takes `e->n` as its arg, so the compare value sits in r4), unit moved to .cpp (extab), Matching.
+- wGV (user-approved, collaborator units, 2026-11-05): fn_8024A610 NonMatching draft (74 asm diff lines; needs opt_loop_invariants off, regalloc left).
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
