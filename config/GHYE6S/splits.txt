@@ -4241,7 +4241,7 @@ auto/text_80088294.cpp:
 	extabindex  start:0x8001A288 end:0x8001A294
 	.text       start:0x80088294 end:0x800885A0
 
-auto/text_800885A0.c:
+auto/text_800885A0.cpp:
 	extab       start:0x80007E7C end:0x80007E84
 	extabindex  start:0x8001A294 end:0x8001A2A0
 	.text       start:0x800885A0 end:0x80088B54
