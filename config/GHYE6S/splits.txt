@@ -132,7 +132,7 @@ auto/text_8002D080.cpp:
 auto/text_8002F118.c:
 	.text       start:0x8002F118 end:0x8002F3C8
 
-auto/text_8002F3C8.c:
+auto/text_8002F3C8.cpp:
 	extab       start:0x800057C8 end:0x800057D0
 	extabindex  start:0x80017C9C end:0x80017CA8
 	.text       start:0x8002F3C8 end:0x8002F968
