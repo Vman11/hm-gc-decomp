@@ -35063,7 +35063,7 @@ auto/text_80270A18.c:
 	extabindex  start:0x8002A614 end:0x8002A620
 	.text       start:0x80270A18 end:0x80270CDC
 
-auto/text_80270CDC.c:
+auto/text_80270CDC.cpp:
 	extab       start:0x80017990 end:0x80017998
 	extabindex  start:0x8002A620 end:0x8002A62C
 	.text       start:0x80270CDC end:0x8027182C
