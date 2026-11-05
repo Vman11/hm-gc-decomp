@@ -29427,7 +29427,7 @@ auto/text_8021C38C.cpp:
 	extabindex  start:0x800276B0 end:0x800276BC
 	.text       start:0x8021C38C end:0x8021C470
 
-auto/text_8021C470.c:
+auto/text_8021C470.cpp:
 	extab       start:0x800148A8 end:0x800148B0
 	extabindex  start:0x800276BC end:0x800276C8
 	.text       start:0x8021C470 end:0x8021C644
