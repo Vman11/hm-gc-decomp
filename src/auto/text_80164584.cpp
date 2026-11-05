@@ -2,6 +2,8 @@
 
 extern "C" {
 
+
+
 struct V { f32 x, y, z; };
 struct C4 { u8 r, g, b, a; C4() {} C4(u8 _r, u8 _g, u8 _b, u8 _a) { r = _r; g = _g; b = _b; a = _a; } };
 struct L { u8 pad[64]; };
@@ -35,7 +37,10 @@ void fn_80164584(T *t, u32 idx, S *s, V *pos, V *dir) {
     if (!l) return;
     t->f6808[idx] = l;
     t->f6772[idx] = 2;
-    C4 c((int)(s->c[0] * lbl_80364698), (int)(s->c[1] * lbl_80364698), (int)(s->c[2] * lbl_80364698), (int)(s->c[3] * lbl_80364698));
+    f32 r = s->c[0], g = s->c[1], b = s->c[2], a = s->c[3];
+    f32 K = lbl_80364698;
+    r *= K; g *= K; b *= K; a *= K;
+    C4 c((int)r, (int)g, (int)b, (int)a);
     fn_800D79F4(l, c);
     t->f6568 = 2;
     t->f6572 = 1;
@@ -66,5 +71,7 @@ void fn_80164584(T *t, u32 idx, S *s, V *pos, V *dir) {
         fn_800D7984(l, pos->x, pos->y, pos->z);
     }
 }
+
+
 
 } /* extern "C" */

@@ -3,7 +3,7 @@
 extern "C" {
 
 struct V { f32 x, y, z; };
-struct C4 { u8 r, g, b, a; };
+struct C4 { u8 r, g, b, a; C4() {} C4(u8 _r, u8 _g, u8 _b, u8 _a) { r = _r; g = _g; b = _b; a = _a; } };
 struct L { u8 b[64]; };
 struct FT { u8 pad[404]; void (*f404)(void *, V *, V *); };
 extern FT lbl_803286D0;
@@ -37,12 +37,10 @@ void fn_801647F8(T *t, u32 n, Src *s, V *pos) {
     if (!l) return;
     t->f6808[n] = l;
     t->f6772[n] = 1;
-    C4 c;
-    int r = s->r * lbl_80364698;
-    int g = s->g * lbl_80364698;
-    int b = s->b * lbl_80364698;
-    int a = s->a * lbl_80364698;
-    c.r = r; c.g = g; c.b = b; c.a = a;
+    f32 r = s->r, g = s->g, b = s->b, a = s->a;
+    f32 K = lbl_80364698;
+    r *= K; g *= K; b *= K; a *= K;
+    C4 c((int)r, (int)g, (int)b, (int)a);
     fn_800D79F4(l, c);
     t->f6568 = 2;
     t->f6572 = 1;
