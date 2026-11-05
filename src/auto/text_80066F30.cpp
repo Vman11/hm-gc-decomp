@@ -268,7 +268,8 @@ void fn_80066F30(P *p, f32 dt) {
     p->vel.x = vel.x + e.x;
     p->vel.y = vel.y + e.y;
     p->vel.z = vel.z + e.z;
-    if (lbl_80359748 != 5 && act->f4d4 == 0) {
+    s32 busy = act->f4d4;
+    if (lbl_80359748 != 5 && busy == 0) {
         f32 xx = p->f158 * p->f158;
         f32 yy = p->f15c * p->f15c;
         if (xx + yy > lbl_8035E790) {
