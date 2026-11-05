@@ -264,8 +264,8 @@ void fn_80288294(s32 count) {
     t1 = ct + 256;
     Rt = lbl_802F9340;
     Bt = lbl_802FAB80;
-    yt = lbl_802F72A0;
     Gt = lbl_802F9F60;
+    yt = lbl_802F72A0;
     d0 = (u32 *)(base + stride * (y0 >> 2) + (y0 & 3) * 8 + (p0 - (base + y0 * w)) * 4);
     d1 = (u32 *)(base + stride * (y1 >> 2) + (y1 & 3) * 8 + (p1 - (base + y1 * w)) * 4);
     do {
@@ -337,8 +337,8 @@ void fn_802885F4(s32 count) {
     t1 = ct + 256;
     Rt = lbl_802F9340;
     Bt = lbl_802FAB80;
-    yt = lbl_802F72A0;
     Gt = lbl_802F9F60;
+    yt = lbl_802F72A0;
     d0 = (u32 *)(base + stride * (y0 >> 2) + (y0 & 3) * 8 + (p0 - (base + y0 * w)) * 4);
     d1 = (u32 *)(base + stride * (y1 >> 2) + (y1 & 3) * 8 + (p1 - (base + y1 * w)) * 4);
     do {
