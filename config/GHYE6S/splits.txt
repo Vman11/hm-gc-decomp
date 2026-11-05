@@ -22494,7 +22494,7 @@ auto/text_801CA6CC.cpp:
 	extabindex  start:0x80023984 end:0x80023990
 	.text       start:0x801CA6CC end:0x801CA9E0
 
-auto/text_801CA9E0.c:
+auto/text_801CA9E0.cpp:
 	extab       start:0x80011004 end:0x8001100C
 	extabindex  start:0x80023990 end:0x8002399C
 	.text       start:0x801CA9E0 end:0x801CB090
