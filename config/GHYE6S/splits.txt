@@ -22289,7 +22289,7 @@ auto/text_801C6C58.cpp:
 auto/text_801C6D70.c:
 	.text       start:0x801C6D70 end:0x801C6D74
 
-auto/text_801C6D74.c:
+auto/text_801C6D74.cpp:
 	extab       start:0x80010EBC end:0x80010EC4
 	extabindex  start:0x800237A4 end:0x800237B0
 	.text       start:0x801C6D74 end:0x801C7388
