@@ -606,3 +606,7 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJD (2026-11-05): fn_801397FC NonMatching .cpp (wDD draft, 18 lines): only the per-lane float copy lfs/stfs order/colouring left (target x..w into f3..f0 ascending); 1.3.2 local orders and GC/2.5 V4 operator= + __restrict all fail.
 - wJD (2026-11-05): fn_8010917C NonMatching .cpp (wCS z3 draft): instructions match, only x(r29)/loop-offset IV(r27) colouring swap left (permuter candidate).
 - wJD (2026-11-05): fn_8022F544 NonMatching .cpp (wDC draft, 2 lines): only 'fneg f2,f1' scheduled before the first stfs (target after); -k inline / nk after first store tried.
+- wJB (2026-11-05): fn_801647F8 NonMatching .cpp, SDIFF 10: colour-product FP colouring family (K in f0, products f1/f2/f4/f5) as fn_80164A54; pos-block K/z colouring.
+- wJB (2026-11-05): fn_8021EDC4 NonMatching .cpp, SDIFF 4: plane-dot fmadds dest colouring only.
+- wJB (2026-11-05): fn_800F80DC NonMatching .cpp, SDIFF 10: probe-loop v test = ((TH*)tab)->it[k].a (array at +8, gives addi/lwzx, no CSE with &tab[k]); left: k/off/tab saved-reg order + prologue key lbz hoist.
+- wJB (2026-11-05): fn_8013FCD0 NonMatching .cpp, SDIFF 4: prologue param-copy/addi o scheduling only.
