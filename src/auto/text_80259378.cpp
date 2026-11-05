@@ -257,17 +257,18 @@ void fn_80259378(Cam *p, f32 dt) {
         cz += s2 * p->right.z;
         for (i = 0; i < 6; i++) {
             f32 k0, k1, k2, r;
+            V3 *e = &to[i];
             from[i].x = cx;
             from[i].y = cy;
             from[i].z = cz;
             k0 = d * lbl_802F26D8[i + 1].x;
             k1 = d * lbl_802F26D8[i + 1].y;
             k2 = d * lbl_802F26D8[i + 1].z;
-            cp(&to[i], &p->pos);
-            madd(&to[i], k0, &p->fwd);
-            madd(&to[i], k1, &p->up);
-            madd(&to[i], k2, &p->right);
-            r = fn_80101590(&to[i], &from[i]);
+            cp(e, &p->pos);
+            madd(e, k0, &p->fwd);
+            madd(e, k1, &p->up);
+            madd(e, k2, &p->right);
+            r = fn_80101590(e, &from[i]);
             if (r > s.r) s.r = r;
         }
         s.x = cx;
