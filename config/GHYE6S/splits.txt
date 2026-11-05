@@ -14710,7 +14710,7 @@ auto/text_8015921C.cpp:
 	extabindex  start:0x8001F634 end:0x8001F640
 	.text       start:0x8015921C end:0x80159284
 
-auto/text_80159284.c:
+auto/text_80159284.cpp:
 	extab       start:0x8000CE98 end:0x8000CEB0
 	extabindex  start:0x8001F640 end:0x8001F64C
 	.text       start:0x80159284 end:0x80159544
