@@ -35134,7 +35134,7 @@ auto/text_80272500.cpp:
 	.text       start:0x80272500 end:0x80272538
 	.ctors      start:0x802943B0 end:0x802943B4
 
-auto/text_80272538.c:
+auto/text_80272538.cpp:
 	extab       start:0x80017A20 end:0x80017A28
 	extabindex  start:0x8002A6C8 end:0x8002A6D4
 	.text       start:0x80272538 end:0x802729E0
