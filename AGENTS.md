@@ -439,6 +439,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wA_80200C24 (2026-11-05): fn_8021A510 NonMatching .cpp draft (from wAD/fa2 fn_8020FAA8 template), SDIFF 2 / DIFF 148: dead 'lwz self+0x34; cmpwi' before fn_8021272C not reproduced; name/v regs swapped.
 - wA_8006025C (2026-11-05): matched fn_8006025C (sinit of 12 GmAcNode objects); unit now owns .rodata 0x80297208..0x80297268 (8-char name pool, -str reuse,readonly) and .bss 0x80302B90..0x80302DD0 (regmem/object pairs, one base reg).
 - wA_8007BB14 (2026-11-05): fn_8007BB14 NonMatching .cpp (state walker, table inside jt_802C2B34 lbl_802C2B38): DIFF 48 / SDIFF 12. `#pragma opt_propagation off` + array-pointer locals gives the addi+lwzx table reads; left: register colouring (target B r4, s r7) and `addi r4,r7,0` for the string at s+0.
+- wA_8006025C (2026-11-05): fn_8025E1DC NonMatching .cpp draft (DIFF 10 / SDIFF 2): only the 12-byte ptmf arg copy before fn_80253B24 (r7/r3 order + late lbl_8035B65C load) differs; shared by 4 other callers.
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
