@@ -16186,7 +16186,7 @@ auto/text_8016F9F8.cpp:
 auto/text_8016FA30.c:
 	.text       start:0x8016FA30 end:0x8016FA80
 
-auto/text_8016FA80.c:
+auto/text_8016FA80.cpp:
 	extab       start:0x8000DD64 end:0x8000DD6C
 	extabindex  start:0x800203F0 end:0x800203FC
 	.text       start:0x8016FA80 end:0x8016FDE4
