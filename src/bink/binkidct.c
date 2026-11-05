@@ -161,12 +161,12 @@ extern u8 lbl_802AF340[];
 #define MX(a, b) ((a) < (b) ? (b) : (a))
 #define MXE(q, e) { u8 x_ = (e); if (q < x_) q = x_; }
 #define ONE(L, K) \
-    { u8 t_ = (K) ? *++bp : *bp; \
-    if (t_ != (L)) *--head = t_ | ((pos << 10) + 0x300); \
+    { if (K) bp++; \
+    if (*bp != (L)) *--head = *bp | ((pos << 10) + 0x300); \
     else cnt += (L); } \
     pos++;
 #define PASS(L) \
-    for (p = head; p < end;) { \
+    { u16 v; for (p = head; p < end;) { \
         v = *p; \
         if (v == 0) { p++; continue; } \
         cnt++; \
@@ -177,13 +177,13 @@ extern u8 lbl_802AF340[];
             pos = v >> 10; \
             *p = hh_[pos >> 4] + (((pos + 4) << 10) + 0x100); } \
             goto C##L; \
-        case 0x100: \
+        case 0x100: { u16 k; \
             pos = v >> 10; \
             k = pos >> 2; \
             *p = g[k - 1] + ((pos << 10) + 0x200); \
             *end++ = g[k] + (((pos + 4) << 10) + 0x200); \
             *end++ = g[k + 1] + (((pos + 8) << 10) + 0x200); \
-            *end++ = g[k + 2] + (((pos + 12) << 10) + 0x200); \
+            *end++ = g[k + 2] + (((pos + 12) << 10) + 0x200); } \
             break; \
         case 0x200: \
             *p = 0; \
@@ -201,7 +201,7 @@ extern u8 lbl_802AF340[];
         default: \
             p++; \
         } \
-    }
+    } }
 u32 fn_80290AAC(s16 *in) {
     u16 list[132];
     u8 bits[64];
@@ -211,7 +211,6 @@ u32 fn_80290AAC(s16 *in) {
     u8 *bp;
     u32 cnt;
     u8 mx, lvl, q;
-    u16 v, k;
 #define pos v
     s32 i;
     mx = 0;
