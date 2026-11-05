@@ -16363,7 +16363,7 @@ auto/text_801718AC.c:
 	extabindex  start:0x80020534 end:0x80020540
 	.text       start:0x801718AC end:0x80172788
 
-auto/text_80172788.c:
+auto/text_80172788.cpp:
 	extab       start:0x8000DE90 end:0x8000DE98
 	extabindex  start:0x80020540 end:0x8002054C
 	.text       start:0x80172788 end:0x801737D8
