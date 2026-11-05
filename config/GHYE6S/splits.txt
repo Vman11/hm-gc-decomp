@@ -30010,7 +30010,7 @@ auto/text_80222C88.c:
 	extabindex  start:0x80027B84 end:0x80027B90
 	.text       start:0x80222C88 end:0x80222DAC
 
-auto/text_80222DAC.c:
+auto/text_80222DAC.cpp:
 	extab       start:0x80014C94 end:0x80014C9C
 	extabindex  start:0x80027B90 end:0x80027B9C
 	.text       start:0x80222DAC end:0x80222ED0
