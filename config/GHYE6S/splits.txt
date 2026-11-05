@@ -20719,7 +20719,7 @@ auto/text_801B090C.cpp:
 	extabindex  start:0x80022B20 end:0x80022B2C
 	.text       start:0x801B090C end:0x801B0AE8
 
-auto/text_801B0AE8.c:
+auto/text_801B0AE8.cpp:
 	extab       start:0x8001055C end:0x80010564
 	extabindex  start:0x80022B2C end:0x80022B38
 	.text       start:0x801B0AE8 end:0x801B0EE0
