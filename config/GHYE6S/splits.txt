@@ -5257,14 +5257,11 @@ auto/text_80096AAC.cpp:
 	.data       start:0x802CC2B8 end:0x802CD6C8
 	.sdata2     start:0x803610D8 end:0x803614E8
 
-auto/jt_802CD6C8.c:
-	.data       start:0x802CD6C8 end:0x802CDDA4
-
-auto/text_8009909C.c:
+auto/text_8009909C.cpp:
 	extab       start:0x80008818 end:0x80008820
 	extabindex  start:0x8001AC0C end:0x8001AC18
 	.text       start:0x8009909C end:0x80099BF8
-	.data       start:0x802CDDA4 end:0x802CDE18
+	.data       start:0x802CD6C8 end:0x802CDE18
 
 auto/text_80099BF8.c:
 	extab       start:0x80008820 end:0x80008828
