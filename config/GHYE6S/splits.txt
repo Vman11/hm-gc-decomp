@@ -2454,7 +2454,7 @@ auto/text_8005D6D0.cpp:
 	extabindex  start:0x80019214 end:0x80019220
 	.text       start:0x8005D6D0 end:0x8005D9EC
 
-auto/text_8005D9EC.c:
+auto/text_8005D9EC.cpp:
 	extab       start:0x80006BDC end:0x80006BE4
 	extabindex  start:0x80019220 end:0x8001922C
 	.text       start:0x8005D9EC end:0x8005E00C
