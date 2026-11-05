@@ -3292,7 +3292,7 @@ auto/text_800730F4.c:
 	extabindex  start:0x800199C4 end:0x800199D0
 	.text       start:0x800730F4 end:0x800739F8
 
-auto/text_800739F8.c:
+auto/text_800739F8.cpp:
 	extab       start:0x800075A0 end:0x800075A8
 	extabindex  start:0x800199D0 end:0x800199DC
 	.text       start:0x800739F8 end:0x80073E4C
