@@ -10,6 +10,27 @@ typedef struct {
 } UnkList_80118F3C;
 
 void fn_80118D98(void*);
+
+asm void fn_80118F04(void) {
+    nofralloc
+    li r11, 212
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -16
+    b fn_80118D98
+}
+
+void __dt__9C80118E78Fv(void);
+
+asm void fn_80118F18(void) {
+    nofralloc
+    li r11, 212
+    lwzx r11, r3, r11
+    add r3, r3, r11
+    addi r3, r3, -16
+    b __dt__9C80118E78Fv
+}
+
 void fn_80118F2C(UnkList_80118F3C* list, s32 arg1, s32 arg2, s32 arg3) {
     list->unkC = arg1;
     list->unk10 = arg2;
@@ -39,6 +60,12 @@ u32 fn_80118F3C(u32 *param_1, u32 param_2) {
     return 1;
 }
 
+/* b fn_80118F3C+0x64: tail jump into fn_80118F3C's remove loop (MWCC asm can't encode sym+off) */
+asm void fn_80118FBC(void) {
+    nofralloc
+    opword 0x4BFFFFE4
+}
+
 int fn_80118FC0(int a) { return a; }
 
 BOOL fn_80118FC4(UnkList_80118F3C* list, u32 item) {
@@ -47,25 +74,4 @@ BOOL fn_80118FC4(UnkList_80118F3C* list, u32 item) {
     }
     list->items[list->count++] = item;
     return TRUE;
-}
-
-
-asm void fn_80118F04(void) {
-    nofralloc
-    li r11, 212
-    lwzx r11, r3, r11
-    add r3, r3, r11
-    addi r3, r3, -16
-    b fn_80118D98
-}
-
-void __dt__9C80118E78Fv(void);
-
-asm void fn_80118F18(void) {
-    nofralloc
-    li r11, 212
-    lwzx r11, r3, r11
-    add r3, r3, r11
-    addi r3, r3, -16
-    b __dt__9C80118E78Fv
 }

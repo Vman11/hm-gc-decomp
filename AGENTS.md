@@ -406,6 +406,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wFY (user-approved, collaborator units, 2026-11-04): matched fn_8006B5A4 (blocker of span 800690FC..8006ED08) and linked text_8006B5A4.cpp as Matching.
 - wFY (user-approved, collaborator units, 2026-11-04): matched fn_8006B908 (100%, GC/2.0p1; NonMatching until the 800690FC span merges: int->float magic lbl_8035F208 shared with 8006BB24/8006F808).
 - wGF: fn_8009FE98 NonMatching draft (8 diff lines of 495; left: inlined push-out dir vector z-sub/store schedule vs K28 load), unit text_8009FE98 now .cpp.
+- wGH (user-approved, collaborator units, 2026-11-05): matched fn_80118FBC (4-byte `b fn_80118F3C+0x64` tail jump: asm `opword 0x4BFFFFE4`, since MWCC asm cannot encode sym+off; objdiff shows 95% for the missing reloc, bytes identical), moved the unit's asm thunks to the top for TU order, force_active fn_80118FBC/fn_80118FC0 (unreferenced, dead-stripped otherwise); text_80118F04 linked Matching
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
