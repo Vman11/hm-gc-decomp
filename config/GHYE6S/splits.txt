@@ -7820,7 +7820,7 @@ auto/text_800F5EC0.cpp:
 	extabindex  start:0x8001BD10 end:0x8001BD1C
 	.text       start:0x800F5EC0 end:0x800F5F40
 
-auto/text_800F5F40.c:
+auto/text_800F5F40.cpp:
 	extab       start:0x800098BC end:0x800098C4
 	extabindex  start:0x8001BD1C end:0x8001BD28
 	.text       start:0x800F5F40 end:0x800F61A0
