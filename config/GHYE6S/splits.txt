@@ -19835,7 +19835,7 @@ auto/text_801A3DA8.c:
 	extabindex  start:0x80022448 end:0x80022454
 	.text       start:0x801A3DA8 end:0x801A4044
 
-auto/text_801A4044.c:
+auto/text_801A4044.cpp:
 	extab       start:0x8000FD74 end:0x8000FD7C
 	extabindex  start:0x80022454 end:0x80022460
 	.text       start:0x801A4044 end:0x801A435C
