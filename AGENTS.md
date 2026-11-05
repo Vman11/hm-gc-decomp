@@ -405,6 +405,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wFW (user-approved, collaborator units, 2026-11-04): merged `text_801D1FBC`..`text_801D55C0` (25 units, after matching fn_801D44D8) into `text_801D1FBC.cpp` (GC/2.0p1, `-use_lmw_stmw on`, owns .sdata2 0x80365190-0x803651A8: 0.0 + both int->float magics); linked as Matching.
 - wFY (user-approved, collaborator units, 2026-11-04): matched fn_8006B5A4 (blocker of span 800690FC..8006ED08) and linked text_8006B5A4.cpp as Matching.
 - wFY (user-approved, collaborator units, 2026-11-04): matched fn_8006B908 (100%, GC/2.0p1; NonMatching until the 800690FC span merges: int->float magic lbl_8035F208 shared with 8006BB24/8006F808).
+- wGF: fn_8009FE98 NonMatching draft (8 diff lines of 495; left: inlined push-out dir vector z-sub/store schedule vs K28 load), unit text_8009FE98 now .cpp.
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
