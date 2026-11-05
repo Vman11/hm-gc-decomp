@@ -34369,7 +34369,7 @@ auto/text_8026300C.cpp:
 	.text       start:0x8026300C end:0x80263044
 	.ctors      start:0x80294378 end:0x8029437C
 
-auto/text_80263044.c:
+auto/text_80263044.cpp:
 	extab       start:0x800173F8 end:0x80017400
 	extabindex  start:0x8002A020 end:0x8002A02C
 	.text       start:0x80263044 end:0x80263384
