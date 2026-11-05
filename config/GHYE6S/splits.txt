@@ -21130,7 +21130,7 @@ auto/text_801B6AA8.cpp:
 	extabindex  start:0x80022E50 end:0x80022E5C
 	.text       start:0x801B6AA8 end:0x801B6B9C
 
-auto/text_801B6B9C.c:
+auto/text_801B6B9C.cpp:
 	extab       start:0x8001079C end:0x800107A4
 	extabindex  start:0x80022E5C end:0x80022E68
 	.text       start:0x801B6B9C end:0x801B7144
