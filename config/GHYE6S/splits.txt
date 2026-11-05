@@ -11879,7 +11879,7 @@ auto/text_80129E00.cpp:
 	extabindex  start:0x8001DF84 end:0x8001DF90
 	.text       start:0x80129E00 end:0x8012A2E8
 
-auto/text_8012A2E8.c:
+auto/text_8012A2E8.cpp:
 	extab       start:0x8000B788 end:0x8000B790
 	extabindex  start:0x8001DF90 end:0x8001DF9C
 	.text       start:0x8012A2E8 end:0x8012ACAC
@@ -13076,10 +13076,11 @@ auto/text_8013A160.cpp:
 	extabindex  start:0x8001E8D8 end:0x8001E8E4
 	.text       start:0x8013A160 end:0x8013A1B0
 
-auto/text_8013A1B0.c:
+auto/text_8013A1B0.cpp:
 	extab       start:0x8000C1A4 end:0x8000C1AC
 	extabindex  start:0x8001E8E4 end:0x8001E8F0
 	.text       start:0x8013A1B0 end:0x8013AB10
+	.sdata2     start:0x80364240 end:0x80364248
 
 auto/text_8013AB10.cpp:
 	extab       start:0x8000C1AC end:0x8000C1B4
