@@ -87,13 +87,14 @@ void fn_80272538(Self *s, char *name, s32 wait, s32 *out) {
     Rect r;
     Pad *pad;
     s32 sOut = 0;
-    s32 pOut = 0;
     Snd *snd;
+    s32 pOut = 0;
     snd = GetSnd();
     {
         Pad **p = lbl_8035B5E4->inp->getPad();
         if (p) p = (Pad **)*p;
-        pad = (Pad *)p;
+        Pad * pm825 = (Pad *)p;
+        pad = pm825;
     }
     s->f8->scr->a11();
     fn_8015B000();
@@ -144,8 +145,10 @@ void fn_80272538(Self *s, char *name, s32 wait, s32 *out) {
         if (pad && pad->fbc && wait) {
             if (fn_8011DC28(pad, 0x10000001) == 1) pOut = 1;
             if (pOut && fn_8011DC28(pad, 0x10000001) == 0) {
-                if (out) *out = 1;
-                s->f18 = 0;
+                {
+                    if (out) *out = 1;
+                    s->f18 = 0;
+                }
             }
         }
         if (s->f18 == 1) {
