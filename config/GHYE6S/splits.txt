@@ -3170,7 +3170,7 @@ auto/text_800711D0.cpp:
 	extabindex  start:0x800198BC end:0x800198C8
 	.text       start:0x800711D0 end:0x800712B0
 
-auto/text_800712B0.c:
+auto/text_800712B0.cpp:
 	extab       start:0x800074F0 end:0x800074F8
 	extabindex  start:0x800198C8 end:0x800198D4
 	.text       start:0x800712B0 end:0x800713AC
