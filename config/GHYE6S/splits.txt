@@ -32407,7 +32407,7 @@ auto/text_8024548C.cpp:
 auto/text_802455A0.cpp:
 	.text       start:0x802455A0 end:0x802455E0
 
-auto/text_802455E0.c:
+auto/text_802455E0.cpp:
 	extab       start:0x80016040 end:0x80016084
 	extabindex  start:0x80028FE8 end:0x80028FF4
 	.text       start:0x802455E0 end:0x80245D9C
