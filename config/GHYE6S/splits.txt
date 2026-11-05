@@ -1716,7 +1716,7 @@ auto/text_8004AFF8.c:
 	extabindex  start:0x80018AC4 end:0x80018AD0
 	.text       start:0x8004AFF8 end:0x8004B388
 
-auto/text_8004B388.c:
+auto/text_8004B388.cpp:
 	extab       start:0x800064D4 end:0x800064DC
 	extabindex  start:0x80018AD0 end:0x80018ADC
 	.text       start:0x8004B388 end:0x8004B61C
