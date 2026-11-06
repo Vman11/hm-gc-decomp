@@ -43,6 +43,7 @@ s32 fn_801B0EE0(wA_Ed *e, u32 k, s32 b) {
             word = 1;
             u32 c = e->cur;
             if (c == wA_len(e->str)) {
+                c = e->cur;
             } else {
                 if (!wA_isAlnum(e->str->charAt(c))) {
                     word = 0;
