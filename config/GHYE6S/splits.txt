@@ -5993,7 +5993,7 @@ auto/text_800A5B74.cpp:
 	.text       start:0x800A5B74 end:0x800A5BE8
 	.ctors      start:0x8029409C end:0x802940A0
 
-auto/text_800A5BE8.c:
+auto/text_800A5BE8.cpp:
 	extab       start:0x80008F3C end:0x80008F44
 	extabindex  start:0x8001B29C end:0x8001B2A8
 	.text       start:0x800A5BE8 end:0x800A6630
@@ -15959,7 +15959,7 @@ auto/text_80166094.c:
 	.text       start:0x80166094 end:0x8016708C
 	.data       start:0x802E7D2C end:0x802E7DF4
 
-auto/text_8016708C.c:
+auto/text_8016708C.cpp:
 	extab       start:0x8000D948 end:0x8000D950
 	extabindex  start:0x800200CC end:0x800200D8
 	.text       start:0x8016708C end:0x80167AF4
