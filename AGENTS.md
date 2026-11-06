@@ -657,3 +657,9 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJM (2026-11-05): fn_80160B9C NonMatching .cpp (wCI bx.c), DIFF 6: prologue order of mr r25,r5 / li r26 / lbz r28; statement orders, local out copy, 2.0/2.0p1 invariant.
 - wJM (2026-11-05): fn_80160CD4 Matching .cpp: key must be u32 (not u16) to get i in r3, and compare as `key == *t`.
 - wJM (2026-11-05): fn_801638D4 NonMatching .cpp (wCI ao3), regs only: dc r4/temps r3,r0 in target vs r3/r0,r5,r4. operator= fieldwise copy, two reused temps, 2.0p1 no better.
+- wJO (2026-11-06): fn_801DAE5C Matching .cpp: dead trailing 'cmpwi r30,0' = 'if (fail) return;' at end of void fn; declare the list cursor before the flag ('Node *n; int fail = 0;') for the reg order.
+- wJO (2026-11-06): fn_801DE80C Matching .cpp: 801DEE18 template (__restrict o/a, 'f2c=0; v=a->f8; f28=0; f28=v;') plus 'if (o->f8) o->f18();' and f30=a->fc.
+- wJO (2026-11-06): fn_801E0628 Matching .cpp: same __restrict template (zero 34/30, f30=a->f10) + fn_800F6E88(o+0x28, a+8).
+- wJO (2026-11-06): fn_801E7750 Matching .cpp: as fn_801E0628 plus a V3 struct copy o->p = a->p (0x38 <- 0x14).
+- wJO (2026-11-06): fn_801E812C Matching .cpp: same as fn_801DE80C without the f8 guard.
+- wJO (2026-11-06): fn_801DEAD4 NonMatching .cpp (wCJ/bc.cpp shape, DIFF 3): call result copy 'mr r4,r3' still missing; tried early return, flag shift, ref/base-cast/copy var, param/member inlines, 2.0p1/1.2.5n.
