@@ -5448,7 +5448,7 @@ auto/text_8009DCB0.cpp:
 	.text       start:0x8009DCB0 end:0x8009DD24
 	.ctors      start:0x80294074 end:0x80294078
 
-auto/text_8009DD24.c:
+auto/text_8009DD24.cpp:
 	extab       start:0x80008AB4 end:0x80008ABC
 	extabindex  start:0x8001AD8C end:0x8001AD98
 	.text       start:0x8009DD24 end:0x8009E6D4
@@ -30924,7 +30924,7 @@ auto/text_8022FF54.cpp:
 	.text       start:0x8022FF54 end:0x8022FFC4
 	.ctors      start:0x80294258 end:0x8029425C
 
-auto/text_8022FFC4.c:
+auto/text_8022FFC4.cpp:
 	extab       start:0x80015524 end:0x8001552C
 	extabindex  start:0x80028394 end:0x800283A0
 	.text       start:0x8022FFC4 end:0x80230924
