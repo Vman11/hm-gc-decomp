@@ -33830,7 +33830,7 @@ auto/text_80257838.cpp:
 auto/text_80257A4C.cpp:
 	.text       start:0x80257A4C end:0x80257A98
 
-auto/text_80257A98.c:
+auto/text_80257A98.cpp:
 	extab       start:0x80016F4C end:0x80016F54
 	extabindex  start:0x80029B94 end:0x80029BA0
 	.text       start:0x80257A98 end:0x802585F0
@@ -34840,7 +34840,7 @@ auto/text_8026BD38.c:
 	extabindex  start:0x8002A44C end:0x8002A458
 	.text       start:0x8026BD38 end:0x8026C530
 
-auto/text_8026C530.c:
+auto/text_8026C530.cpp:
 	extab       start:0x80017798 end:0x800177A0
 	extabindex  start:0x8002A458 end:0x8002A464
 	.text       start:0x8026C530 end:0x8026D0B0
