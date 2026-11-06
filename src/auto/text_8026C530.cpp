@@ -80,8 +80,38 @@ inline void fin(wA_P *p, wA_E *e, wA_J *ja, V3 *pos, V3 *rot) {
     e->attach(ja, 0, 0);
 }
 
+inline void doOther(wA_P *p, wA_B *b, wA_Nm *nm, char *str) {
+    wA_J *jd;
+    if (fn_800F6CD0(nm, &lbl_80366DD8) != 0) {
+        jd = 0;
+    } else {
+        wA_find(p, nm, jd, str);
+    }
+    if (b != 0 && !(b->flags & 4) && jd != 0) {
+        jd->play(-1);
+        b->setw(0, p->w);
+        b->attach(jd, 0, 0);
+    }
+}
+inline void getJ(wA_P *p, wA_Nm *nm, wA_J *&jd, char *str) {
+    if (fn_800F6CD0(nm, &lbl_80366DD8) != 0) {
+        jd = 0;
+    } else {
+        wA_find(p, nm, jd, str);
+    }
+}
+inline wA_J *getJr(wA_P *p, wA_Nm *nm, char *str) {
+    wA_J *jd;
+    if (fn_800F6CD0(nm, &lbl_80366DD8) != 0) {
+        jd = 0;
+    } else {
+        wA_find(p, nm, jd, str);
+    }
+    return jd;
+}
 void fn_8026C530(wA_P *p, void *arg) {
     char *str = lbl_802AA558;
+    wA_E *e;
     s32 k;
     wA_B *b2;
     u32 i;
@@ -188,11 +218,7 @@ void fn_8026C530(wA_P *p, void *arg) {
                 }
             } else {
                 wA_J *jd;
-                if (fn_800F6CD0(&nm, &lbl_80366DD8) != 0) {
-                    jd = 0;
-                } else {
-                    wA_find(p, &nm, jd, str);
-                }
+                jd = getJr(p, &nm, str);
                 if (b != 0 && !(b->flags & 4) && jd != 0) {
                     jd->play(-1);
                     b->setw(0, p->w);
@@ -202,8 +228,8 @@ void fn_8026C530(wA_P *p, void *arg) {
         }
     }
     for (i = 0; i < r->n2; i++) {
-        b = r->node(i);
-        fn_800F806C(r, b, &nm);
+        b2 = r->node(i);
+        fn_800F806C(r, b2, &nm);
         if (fn_800F9398(*(u8 **)(lbl_8035B460 + 8) + 0x90, &nm) != 0) {
             wA_O *o = fn_801952A0();
             wA_J *jc;
@@ -211,18 +237,14 @@ void fn_8026C530(wA_P *p, void *arg) {
             fn_800F6E40(s, &nm);
             for (k = strlen(s) - 1; s[k] >= '0' && s[k] <= '9'; k--) s[k] = 0;
             fn_800F6FBC(s, &n10);
-            if (fn_800F6CD0(&n10, &lbl_80366DD8) != 0) {
-                jc = 0;
-            } else {
-                wA_find(p, &n10, jc, str);
-            }
-            if (b != 0 && (b->flags & 4) && jc != 0) {
+            jc = getJr(p, &n10, str);
+            if (b2 != 0 && (b2->flags & 4) && jc != 0) {
                 V3 pos;
                 V3 rot;
-                wA_E *e = (wA_E *)b;
+                e = (wA_E *)b2;
                 jc->play(-1);
-                b->enable(1);
-                o->f6c = b;
+                b2->enable(1);
+                o->f6c = b2;
                 if (o->f30 != 0) {
                     fn_80107244(o->f30, &pos);
                 } else {

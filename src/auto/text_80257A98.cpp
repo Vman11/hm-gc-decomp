@@ -149,17 +149,14 @@ void fn_80257A98(Cam *c, f32 dt) {
     f32 dot = n.x * c->s0.fwd.x + n.y * c->s0.fwd.y + n.z * c->s0.fwd.z;
     ang = sacos(dot);
     {
-        f32 fx = c->s0.fwd.x, dz = d.z, dx = d.x, fz = c->s0.fwd.z, dy = d.y, fy = c->s0.fwd.y;
-        f32 cx = fy * dz - fz * dy;
-        f32 cy = fz * dx - fx * dz;
-        f32 cz = fx * dy - fy * dx;
-        if (cx * lbl_80357E90.x + cy * lbl_80357E90.y + cz * lbl_80357E90.z > lbl_80366710) ang = -ang;
+        
+        if ((c->s0.fwd.y * d.z - c->s0.fwd.z * d.y) * lbl_80357E90.x + (c->s0.fwd.z * d.x - c->s0.fwd.x * d.z) * lbl_80357E90.y + (c->s0.fwd.x * d.y - c->s0.fwd.y * d.x) * lbl_80357E90.z > lbl_80366710) ang = -ang;
     }
-    if ((c->ang < lbl_80366710 && ang > lbl_80366710) || (c->ang > *(volatile f32 *)&lbl_80366710 && ang < lbl_80366710))
+    if ((c->ang < 0.0f && ang > 0.0f) || (c->ang > 0.0f && ang < 0.0f))
         c->own->msg(lbl_80366734, 0, 0, 0, 0);
     if (c->ie0) {
-        cp(&r, &c->s0.fwd);
-        c->t110 = lbl_8036673C;
+        *(volatile f32 *)&r.x = c->s0.fwd.x; *(volatile f32 *)&r.y = c->s0.fwd.y; *(volatile f32 *)&r.z = c->s0.fwd.z;
+        c->t110 = *(volatile f32 *)&lbl_8036673C;
     } else {
         if (c->t110 > lbl_80366710) {
             c->t110 = c->t110 - dt;
@@ -224,18 +221,23 @@ void fn_80257A98(Cam *c, f32 dt) {
         f32 l = sq(c->s1.vel.x * c->s1.vel.x + c->s1.vel.y * c->s1.vel.y + c->s1.vel.z * c->s1.vel.z);
         if (lbl_80366710 == l) cp(&c->s1.vel, &c->s1.fwd);
         else fn_80101820(&c->s1.vel);
+        { f32 spd, dd;
         {
-            f32 dx = d.x - c->s1.vel.x, dy = d.y - c->s1.vel.y, dz = d.z - c->s1.vel.z;
+            f32 dy, dz;
+            dd = d.x - c->s1.vel.x; dy = d.y - c->s1.vel.y; dz = d.z - c->s1.vel.z;
             f32 e = lbl_80366718 - (f32)fn_800F049C(rate);
-            c->s1.vel.x = e * dx + c->s1.vel.x;
+            c->s1.vel.x = e * dd + c->s1.vel.x;
             c->s1.vel.y = e * dy + c->s1.vel.y;
             c->s1.vel.z = e * dz + c->s1.vel.z;
         }
         fn_80101820(&c->s1.vel);
+        {
         SPEED();
         c->s1.vel.x = c->s1.vel.x * spd;
         c->s1.vel.y = c->s1.vel.y * spd;
         c->s1.vel.z = c->s1.vel.z * spd;
+        }
+        }
         if (c->p12c && *c->p12c) fn_80100F24(&c->s1.vel, &lbl_80357E90);
     }
     c->s1.pos.x = dt * c->s1.vel.x + c->s1.pos.x;
