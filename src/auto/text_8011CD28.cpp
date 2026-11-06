@@ -13,13 +13,13 @@ struct S {
 };
 s32 fn_8011DDE0(void *, N *);
 void fn_80118FC4(N ***, N *);
-static inline N *find(S *p, void *q, s32 a, u32 b) {
+static inline bool find(S *p, void *q, s32 a, u32 b) {
     u32 i;
     for (i = 0; i < p->n64; i++) {
         N *e = p->list56[i];
-        if (e->q20 == q && e->a8 == a && e->b16 == b) return e;
+        if (e->q20 == q && e->a8 == a && e->b16 == b) return true;
     }
-    return 0;
+    return false;
 }
 void fn_8011CD28(S *p, void *q, s32 a, s32 c, u32 b) {
     if (!find(p, q, a, b)) {

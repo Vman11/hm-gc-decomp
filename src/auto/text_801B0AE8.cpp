@@ -2,8 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching: instructions identical (SDIFF 0); callee-saved colouring differs
-// (target e/k/b = r28-r30, pos r31, word/bad r27, n/i r26).
+// NonMatching (wLD, DIFF 25): inline checkAll() + bool word fix param colouring;
+// left: loop node n r31 vs target r26, bool word adds clrlwi (target int).
 
 extern "C" {
 
@@ -23,22 +23,26 @@ void fn_801B1D54(u8 *, u32);
 static inline bool IsSpace(u32 c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r'; }
 static inline bool IsAlnum(u32 c) { return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); }
 
+static inline int checkAll(u8 *p, u32 k) {
+    Node *n;
+    int bad = 0;
+    for (n = *(Node **)(p + 136); n; n = n->next) {
+        if (n->flag && n->obj->Check(p, k) == 0) bad = 1;
+    }
+    return bad;
+}
+
 int fn_801B0AE8(u8 *p, u32 k, s32 b) {
     switch (*(s32 *)(p + 324)) {
     case 0x10:
         fn_801D8E50(p, k, b);
         break;
     case 0x20: {
-        Node *n;
-        int bad = 0;
-        for (n = *(Node **)(p + 136); n; n = n->next) {
-            if (n->flag && n->obj->Check(p, k) == 0) bad = 1;
-        }
-        if (bad) return 0;
+        if (checkAll(p, k)) return 0;
         if (!(U32(108) & 2)) return 0;
         if (k & 0x30) {
             u32 pos = U32(368);
-            int word = 1;
+            bool word = 1;
             if (pos == 0) {
                 pos = 0;
             } else {
@@ -75,12 +79,7 @@ int fn_801B0AE8(u8 *p, u32 k, s32 b) {
         break;
     }
     default: {
-        Node *n;
-        int bad = 0;
-        for (n = *(Node **)(p + 136); n; n = n->next) {
-            if (n->flag && n->obj->Check(p, k) == 0) bad = 1;
-        }
-        if (bad) return 0;
+        if (checkAll(p, k)) return 0;
         if (b != 0 && *(VC **)(p + 112)) (*(VC **)(p + 112))->notify(8, *(void **)(p + 104));
         break;
     }
