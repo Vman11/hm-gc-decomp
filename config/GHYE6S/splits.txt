@@ -15039,7 +15039,7 @@ auto/text_8015B350.cpp:
 	extabindex  start:0x8001F904 end:0x8001F910
 	.text       start:0x8015B350 end:0x8015B3BC
 
-auto/text_8015B3BC.c:
+auto/text_8015B3BC.cpp:
 	extab       start:0x8000D1E0 end:0x8000D1E8
 	extabindex  start:0x8001F910 end:0x8001F91C
 	.text       start:0x8015B3BC end:0x8015B7DC
@@ -15350,7 +15350,7 @@ auto/text_8015E158.cpp:
 	extabindex  start:0x8001FBB0 end:0x8001FBBC
 	.text       start:0x8015E158 end:0x8015E1F8
 
-auto/text_8015E1F8.c:
+auto/text_8015E1F8.cpp:
 	extab       start:0x8000D474 end:0x8000D47C
 	extabindex  start:0x8001FBBC end:0x8001FBC8
 	.text       start:0x8015E1F8 end:0x8015E5F8
