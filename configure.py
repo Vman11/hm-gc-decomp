@@ -7265,6 +7265,7 @@ config.libs = [
             Object(Matching, "auto/text_80255B64.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80255B9C.c"),
             Object(Matching, "auto/text_80255BD4.cpp", extra_cflags=["-Cpp_exceptions on"], mw_version="GC/2.0p1", extab_padding=[0xB0, 0x02]),
+            Object(Matching, "auto/text_80255D34.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_802563F0.c"),
             Object(Matching, "auto/text_802563FC.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_802564C0.cpp", extra_cflags=["-Cpp_exceptions on"]),
