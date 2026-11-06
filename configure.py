@@ -3240,7 +3240,7 @@ config.libs = [
             Object(Matching, "auto/text_801542CC.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80154300.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80154330.cpp", extra_cflags=["-Cpp_exceptions on"]),
-            Object(NonMatching, "auto/text_80154354.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"], mw_version="GC/2.0p1"),
+            Object(Matching, "auto/text_80154354.cpp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on"], mw_version="GC/2.0p1"),
             Object(Matching, "auto/text_8015444C.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_801544CC.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_80154510.c"),

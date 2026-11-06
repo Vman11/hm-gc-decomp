@@ -6,10 +6,10 @@ extern "C" {
 extern "C" unsigned long strlen(const char *);
 extern "C" u16 lbl_8032E4B8[];
 extern "C" u16 lbl_8032E4CC[];
-extern "C" char *lbl_80359720;
-extern "C" char *lbl_80359724;
+extern "C" char *volatile lbl_80359720;
+extern "C" char *volatile lbl_80359724;
 static inline void a2w(const char *s, u16 *d) {
-    while (*s) { *d = *s; s++; d++; } *d = 0;
+    while (*s) { *d = *s; s++; d++; } *(volatile u16 *)d = 0;
 }
 struct S {
     u8 s0[0x14];

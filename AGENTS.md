@@ -785,3 +785,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wKZ (2026-11-06): fn_80147CD8 Matching with mw_version GC/2.6 (entry `lwz r0,4(r3)` scheduled above stwu only in 2.6; wIW draft unchanged).
 - wLA (2026-11-06): fn_8022ED98 Matching (wKY .text-identical draft). The extab "difference" (0x001d066c vs 0x001db002) was only the 2 alignment-padding bytes after the DELETEPOINTERCOND (__dla__) action: extab_padding [0xB0, 0x02], one pad per padded action, nothing else changed.
 - fn_802006CC (GC/1.3) and fn_8023A490 (GC/3.0a3) matched by mw_version sweep of all NonMatching units (wLB); other versions gave no score 0.
+- wLD (2026-11-06): fn_80154354 Matching (GC/2.0p1): the d/c copy-loop register swap was fixed by declaring lbl_80359720/lbl_80359724 as `char *volatile` (pins the strlen arg reload after the terminating store).
