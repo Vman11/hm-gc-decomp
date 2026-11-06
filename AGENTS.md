@@ -663,3 +663,8 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJO (2026-11-06): fn_801E7750 Matching .cpp: as fn_801E0628 plus a V3 struct copy o->p = a->p (0x38 <- 0x14).
 - wJO (2026-11-06): fn_801E812C Matching .cpp: same as fn_801DE80C without the f8 guard.
 - wJO (2026-11-06): fn_801DEAD4 NonMatching .cpp (wCJ/bc.cpp shape, DIFF 3): call result copy 'mr r4,r3' still missing; tried early return, flag shift, ref/base-cast/copy var, param/member inlines, 2.0p1/1.2.5n.
+- wJN (2026-11-06): fn_80164414 NonMatching .cpp (DIFF 2): only 'mr r4,r31' scheduled before 'lwz r3,0x1a98' (target after); tried local/f32* args, restrict, volatile elem, member/ref inlines, scheduling once, -O4,s/-O2, 2.0p1. Same in 801644BC/80164518.
+- wJN (2026-11-06): fn_801644BC NonMatching .cpp (DIFF 2): same 'mr r4,r31' vs lwz order as fn_80164414.
+- wJN (2026-11-06): fn_80164518 NonMatching .cpp (DIFF 2): same 'mr r4,r31' vs lwz order as fn_80164414.
+- wJN (2026-11-06): fn_801800D8 Matching .cpp (GC/1.3.2, no lmw): 'add r5,base,off; lwz r4,0x10(r5)' = the element pointer is ALSO passed as a 2nd vcall arg (v73(e->f10, e)); fn-level shared u32 i for both loops.
+- wJN (2026-11-06): fn_801B1340 NonMatching .cpp (DIFF 3): 1.3.x hoists 'li r3,-6' above cmpwi; GC/1.2.5n gives the exact body but an old-style prologue (mflr/stw r0,4 before stwu, 32-byte frame).
