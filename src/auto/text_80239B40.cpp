@@ -26,14 +26,14 @@ struct C80031B94 {
     ~C80031B94();
 };
 
-struct M80239B40 : C80031B94 {
+struct C80033C38 : C80031B94 {
     void *vt;
     u8 pad8[212];
-    M80239B40() {
+    C80033C38() {
         vt = lbl_802F069C;
         fn_80222BE8(this);
     }
-    ~M80239B40();
+    ~C80033C38();
 };
 
 struct V80239B40 {
@@ -44,7 +44,7 @@ struct V80239B40 {
 struct C80239B40 : C8022DFC8 {
     V80239B40 v;
     u8 pad4[372];
-    M80239B40 m;
+    C80033C38 m;
     C80239B40();
     ~C80239B40();
 };
