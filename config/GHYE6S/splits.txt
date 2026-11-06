@@ -5070,7 +5070,7 @@ auto/text_800949B4.cpp:
 	.data       start:0x802CB720 end:0x802CBAFC
 
 auto/jt_802CBAFC.c:
-	.data       start:0x802CBAFC end:0x802CBE48
+	.data       start:0x802CBAFC end:0x802CBB00
 
 auto/text_80094B54.cpp:
 	extab       start:0x80008614 end:0x8000861C
@@ -5133,6 +5133,7 @@ auto/text_80095454.cpp:
 	extab       start:0x80008698 end:0x800086A0
 	extabindex  start:0x8001AA8C end:0x8001AA98
 	.text       start:0x80095454 end:0x8009555C
+	.data       start:0x802CBB00 end:0x802CBE48
 
 auto/text_8009555C.cpp:
 	extab       start:0x800086A0 end:0x800086A8
