@@ -1810,7 +1810,7 @@ auto/text_8004C488.cpp:
 	.text       start:0x8004C488 end:0x8004C4FC
 	.ctors      start:0x80293F78 end:0x80293F7C
 
-auto/text_8004C4FC.c:
+auto/text_8004C4FC.cpp:
 	extab       start:0x80006590 end:0x80006598
 	extabindex  start:0x80018B9C end:0x80018BA8
 	.text       start:0x8004C4FC end:0x8004D6EC
