@@ -27,14 +27,15 @@ void fn_801A0CBC(void *, OV *);
 
 static inline f32 Sqrtf(f32 x) {
     if (x > lbl_8035F3EC) {
-        f64 guess = __frsqrte((f64)x);
-        guess = lbl_8035F4D0 * guess * (lbl_8035F4D8 - guess * guess * x);
-        guess = lbl_8035F4D0 * guess * (lbl_8035F4D8 - guess * guess * x);
-        guess = lbl_8035F4D0 * guess * (lbl_8035F4D8 - guess * guess * x);
-        {
-            volatile f32 y = (f32)(x * guess);
-            return y;
-        }
+        const f64 _half = lbl_8035F4D0;
+        const f64 _three = lbl_8035F4D8;
+        volatile f32 y;
+        f64 g = __frsqrte((f64)x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        y = x * g;
+        return y;
     }
     return x;
 }
