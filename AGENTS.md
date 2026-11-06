@@ -668,3 +668,9 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJN (2026-11-06): fn_80164518 NonMatching .cpp (DIFF 2): same 'mr r4,r31' vs lwz order as fn_80164414.
 - wJN (2026-11-06): fn_801800D8 Matching .cpp (GC/1.3.2, no lmw): 'add r5,base,off; lwz r4,0x10(r5)' = the element pointer is ALSO passed as a 2nd vcall arg (v73(e->f10, e)); fn-level shared u32 i for both loops.
 - wJN (2026-11-06): fn_801B1340 NonMatching .cpp (DIFF 3): 1.3.x hoists 'li r3,-6' above cmpwi; GC/1.2.5n gives the exact body but an old-style prologue (mflr/stw r0,4 before stwu, 32-byte frame).
+- wJP (2026-11-06): matched fn_801E8B20 (.cpp): 'li r0,0; lwz v; stw 0; stw 0; stw v' family = __restrict on BOTH params + inline T::set(v){b=0;a=0;a=v;} (or local v first). Same fix should match fn_801E0628/801E3F70/801E7008/801DEE18.
+- wJP (2026-11-06): matched fn_801E90BC (.cpp): 'li r0,0; lwz v; stw 0; stw 0; stw v' family = __restrict on BOTH params + inline T::set(v){b=0;a=0;a=v;} (or local v first). Same fix should match fn_801E0628/801E3F70/801E7008/801DEE18.
+- wJP (2026-11-06): matched fn_801E9530 (.cpp): 'li r0,0; lwz v; stw 0; stw 0; stw v' family = __restrict on BOTH params + inline T::set(v){b=0;a=0;a=v;} (or local v first). Same fix should match fn_801E0628/801E3F70/801E7008/801DEE18.
+- wJP (2026-11-06): matched fn_801F0470 (.cpp): 'li r0,0; lwz v; stw 0; stw 0; stw v' family = __restrict on BOTH params + inline T::set(v){b=0;a=0;a=v;} (or local v first). Same fix should match fn_801E0628/801E3F70/801E7008/801DEE18.
+- wJP (2026-11-06): matched fn_801F37B0 (.cpp): plain 'for (i<n) (s->f38[i].*lbl_80330CC8)(&s->f40[i], s->f20)' with extern PMF.
+- wJP (2026-11-06): fn_801FDD1C NonMatching .cpp, DIFF 4 SDIFF 0: 2nd-loop next reg r31 vs target r30 (permuter).
