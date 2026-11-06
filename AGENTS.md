@@ -783,3 +783,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wKZ (2026-11-06): fn_801B1340 Matching (GC/1.3.2 + lmw): `switch (o->st) { default: return -6; case 16: return 1; }` gives the beq/li -6/b/li 1 layout (if/else and ternary hoist 'li r3' above the cmpwi).
 - wKZ (2026-11-06): fn_801B0EE0 Matching: the 'bne; b' (empty then-arm tail-merged to the call) comes from a redundant reload in the then-arm: `if (c == wA_len(e->str)) { c = e->cur; } else {...}` (CSE'd away after branch layout).
 - wKZ (2026-11-06): fn_80147CD8 Matching with mw_version GC/2.6 (entry `lwz r0,4(r3)` scheduled above stwu only in 2.6; wIW draft unchanged).
+- wLA (2026-11-06): fn_8022ED98 Matching (wKY .text-identical draft). The extab "difference" (0x001d066c vs 0x001db002) was only the 2 alignment-padding bytes after the DELETEPOINTERCOND (__dla__) action: extab_padding [0xB0, 0x02], one pad per padded action, nothing else changed.
