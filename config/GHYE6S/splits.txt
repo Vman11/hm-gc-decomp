@@ -21930,29 +21930,10 @@ auto/text_801C2860.cpp:
 	.text       start:0x801C2860 end:0x801C28C0
 
 auto/text_801C28C0.cpp:
-	extab       start:0x80010C9C end:0x80010CA4
-	extabindex  start:0x800234E0 end:0x800234EC
-	.text       start:0x801C28C0 end:0x801C2BB0
-	.data       start:0x802EBD10 end:0x802EBD64
-
-auto/text_801C2BB0.cpp:
-	extab       start:0x80010CA4 end:0x80010CAC
-	extabindex  start:0x800234EC end:0x800234F8
-	.text       start:0x801C2BB0 end:0x801C3050
-
-auto/text_801C3050.cpp:
-	extab       start:0x80010CAC end:0x80010CB4
-	extabindex  start:0x800234F8 end:0x80023504
-	.text       start:0x801C3050 end:0x801C30E0
-
-auto/text_801C30E0.c:
-	.text       start:0x801C30E0 end:0x801C30E8
-
-auto/text_801C30E8.cpp:
-	extab       start:0x80010CB4 end:0x80010CBC
-	extabindex  start:0x80023504 end:0x80023510
-	.text       start:0x801C30E8 end:0x801C3D84
-	.data       start:0x802EBD64 end:0x802EBDD8
+	extab       start:0x80010C9C end:0x80010CBC
+	extabindex  start:0x800234E0 end:0x80023510
+	.text       start:0x801C28C0 end:0x801C3D84
+	.data       start:0x802EBD10 end:0x802EBDD8
 
 auto/text_801C3D84.c:
 	.text       start:0x801C3D84 end:0x801C3DD8
