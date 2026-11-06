@@ -34569,7 +34569,7 @@ auto/text_80266A64.cpp:
 	.text       start:0x80266A64 end:0x80266AD0
 	.ctors      start:0x8029438C end:0x80294390
 
-auto/text_80266AD0.c:
+auto/text_80266AD0.cpp:
 	extab       start:0x800175D8 end:0x800175E0
 	extabindex  start:0x8002A218 end:0x8002A224
 	.text       start:0x80266AD0 end:0x80267CF8
