@@ -29,7 +29,7 @@ void __dt__9C80197988Fv(void *p, s16 f);
 void fn_8023C720(C8023C7CC *x, void *a);
 u32 fn_800FADA8(void *src);
 void fn_800FB064(void *src, wA_K *k);
-wA_M *fn_800F9398(void *tbl, wA_K *k);
+void *fn_800F9398(void *tbl, wA_K *k);
 void fn_800F6F68(wA_Info *i, wA_K *k);
 u32 fn_800FB33C(void *src);
 void fn_800F6E88(wA_K *d, wA_K *s);
@@ -142,7 +142,7 @@ void fn_8022ED98(wA_P *p, void *src) {
                 if (p->objs[i] == 0) {
                     fn_800604C4(-4, 0, 0, 0);
                 }
-                m = fn_800F9398(r + 0x90, &key);
+                { void *mm = fn_800F9398(r + 0x90, &key); m = (wA_M *)mm; }
                 m->flags &= ~1;
                 for (j = 0; j < p->cnt[i]; j++) {
                     C80197988 *o;
