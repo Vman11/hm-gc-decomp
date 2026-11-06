@@ -16,7 +16,7 @@ void __dt__9C801F591CFv(void);
 void fn_800E1F04(void *, void *, u32, u32);
 void __dt__9C801F5AC4Fv(void *, s32);
 
-void *dtor_8013D5C8(u8 *p, s16 f) {
+void *__dt__9C8013D770Fv(u8 *p, s16 f) {
     u32 i;
     u8 *t;
     if (p != NULL) {

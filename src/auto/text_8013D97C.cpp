@@ -18,8 +18,6 @@ extern char lbl_8029FAB0[];
 void fn_800604C4(int, int, int, int);
 void fn_800F7EC0(void *);
 void fn_800F7E98(void);
-void __ct__9C8013D770Fv(C_D97C *);
-void dtor_8013D5C8(C_D97C *, int);
 void fn_801485B4(P_D97C *, int);
 int fn_802108B4(void *, u8 *, u32, int *);
 void fn_8013D4CC(C_D97C *, u8 *, u32);
@@ -29,14 +27,16 @@ void fn_80129168(Q_D97C *, void *, void *, int);
 void fn_80148330(P_D97C *, int, Q_D97C *, int);
 void fn_80128F98(Q_D97C *, R_D97C *, int, int, R_D97C *);
 void fn_80128F54(Q_D97C *);
+}
+struct C8013D770 : C_D97C { C8013D770(); ~C8013D770(); };
+extern "C" {
 void fn_8013D97C(P_D97C *p, int a, Q_D97C *q, int c) {
-    C_D97C o;
+    C8013D770 o;
     R_D97C r2;
     R_D97C r1;
     int l8;
     u8 *buf;
     int e;
-    __ct__9C8013D770Fv(&o);
     if (p->f1348 == 0) {
         if (lbl_8035A9F4 == 0) fn_800604C4(-2, 0, 0, 0);
         fn_800F7EC0(lbl_8035A9F4);
@@ -63,7 +63,6 @@ void fn_8013D97C(P_D97C *p, int a, Q_D97C *q, int c) {
     fn_80128F98(q, &r1, o.f44, p->f24, &r2);
     fn_80128F54(q);
     if (p->f1348 == 0) delete[] buf;
-    dtor_8013D5C8(&o, -1);
 }
 }
 extern "C" {
