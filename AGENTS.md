@@ -674,3 +674,9 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wJP (2026-11-06): matched fn_801F0470 (.cpp): 'li r0,0; lwz v; stw 0; stw 0; stw v' family = __restrict on BOTH params + inline T::set(v){b=0;a=0;a=v;} (or local v first). Same fix should match fn_801E0628/801E3F70/801E7008/801DEE18.
 - wJP (2026-11-06): matched fn_801F37B0 (.cpp): plain 'for (i<n) (s->f38[i].*lbl_80330CC8)(&s->f40[i], s->f20)' with extern PMF.
 - wJP (2026-11-06): fn_801FDD1C NonMatching .cpp, DIFF 4 SDIFF 0: 2nd-loop next reg r31 vs target r30 (permuter).
+- wJQ (2026-11-06): fn_801FE3F0 NonMatching .cpp (s64 &= ~(1<<bit), DIFF 12 SDIFF 4): GC/1.3.2+ loads hi word first; 1.2.5n gives the right body (lo first) but an old-style prologue. Same as fn_801FE48C.
+- wJQ (2026-11-06): fn_801FE48C NonMatching .cpp (s64 |= 1<<sh, DIFF 12 SDIFF 4): same lo/hi load order issue as fn_801FE3F0 (body matches only under 1.2.5n, prologue then wrong).
+- wJQ (2026-11-06): fn_802006CC NonMatching .cpp (DIFF 2): local 'e = buf + n' for the loop end; only 'addi r5,r4,32' must follow 'stw r4' (b store). r->b+n, chained assign, 2.0p1/2.5: no change.
+- wJQ (2026-11-06): fn_80207510 NonMatching .cpp (wCK a27, lmw off, SDIFF 2): param colouring (target buf r31/p r30/n r29, mine reversed) plus i reg; param-copy locals in any order, inline body, 2.0p1: no change.
+- wJQ (2026-11-06): fn_802078EC NonMatching .cpp (wDR p72, lmw off, DIFF 6): target stores lbl_8035B19C=0 then li r6/li r3 before the base/size loads; volatile 19C, plain loads, 2.0p1/2.5: no better.
+- wJQ (2026-11-06): fn_80209224 NonMatching .cpp (wCI bv, DIFF 4): only the two stack-param lwz (g,h) must come after 'addi r3,r23,4'; param copies, volatile reads, 1.3/2.5/2.6: no change.
