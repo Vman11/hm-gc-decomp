@@ -90,20 +90,21 @@ static inline void madd(V3 *d, f32 s, V3 *v) { d->x += s * v->x; d->y += s * v->
 static inline void msub(V3 *d, f32 s, V3 *v) { d->x -= s * v->x; d->y -= s * v->y; d->z -= s * v->z; }
 static inline void cp(V3 *d, V3 *s) { d->x = s->x; d->y = s->y; d->z = s->z; }
 static inline f32 dot(V3 *a, V3 *b) { return a->x * b->x + a->y * b->y + a->z * b->z; }
-static inline f32 Len(V3 *v) {
-    f32 len = v->x * v->x + v->y * v->y + v->z * v->z;
-    if (len > lbl_803667B4) {
-        f64 guess;
+static inline f32 Sq(f32 x) {
+    if (x > lbl_803667B4) {
+        const f64 _half = lbl_803667B8;
+        const f64 _three = lbl_803667C0;
         volatile f32 y;
-        guess = __frsqrte((f64)len);
-        guess = lbl_803667B8 * guess * (lbl_803667C0 - guess * guess * len);
-        guess = lbl_803667B8 * guess * (lbl_803667C0 - guess * guess * len);
-        guess = lbl_803667B8 * guess * (lbl_803667C0 - guess * guess * len);
-        y = (f32)(len * guess);
-        len = y;
+        f64 g = __frsqrte((f64)x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        y = x * g;
+        return y;
     }
-    return len;
+    return x;
 }
+static inline f32 Len(V3 *v) { return Sq(v->x * v->x + v->y * v->y + v->z * v->z); }
 #define RUMBLE(p, V) do { \
     H *h_ = (p)->h; \
     if (h_->g && h_->g->ac && fn_8022D694(h_)) { \

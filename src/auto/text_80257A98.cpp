@@ -77,12 +77,14 @@ f64 fn_800F045C(f64);
 f64 fn_800F049C(f64);
 
 static inline f32 sq(f32 x) {
-    volatile f32 y;
     if (x > lbl_80366710) {
-        f64 g = __frsqrte(x);
-        g = lbl_80366748 * g * (lbl_80366750 - g * g * x);
-        g = lbl_80366748 * g * (lbl_80366750 - g * g * x);
-        g = lbl_80366748 * g * (lbl_80366750 - g * g * x);
+        const f64 _half = lbl_80366748;
+        const f64 _three = lbl_80366750;
+        volatile f32 y;
+        f64 g = __frsqrte((f64)x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
         y = x * g;
         return y;
     }

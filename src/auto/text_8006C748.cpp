@@ -28,20 +28,22 @@ extern f64 lbl_8035F250;
 extern f64 lbl_8035F258;
 
 inline f32 Sqrt6C(f32 x) {
-    volatile f32 y;
-    f64 g = __frsqrte(x);
-    g = lbl_8035F250 * g * (lbl_8035F258 - g * g * x);
-    g = lbl_8035F250 * g * (lbl_8035F258 - g * g * x);
-    g = lbl_8035F250 * g * (lbl_8035F258 - g * g * x);
-    y = x * g;
-    return y;
+    if (x > lbl_8035F0C0) {
+        const f64 _half = lbl_8035F250;
+        const f64 _three = lbl_8035F258;
+        volatile f32 y;
+        f64 g = __frsqrte((f64)x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        y = x * g;
+        return y;
+    }
+    return x;
 }
 
 inline f32 Mag6C(V6C *v) {
-    f32 m = v->x * v->x + v->y * v->y + v->z * v->z;
-    f32 r = m;
-    if (m > lbl_8035F0C0) r = Sqrt6C(m);
-    return r;
+    return Sqrt6C(v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
 inline void Apply6C(P6C *p, V6C t) {
