@@ -20,11 +20,13 @@ extern V3 lbl_80357E78;
 extern V3 lbl_80357E90;
 extern char lbl_802A87B0[];
 inline f32 Sq(f32 x) {
+    const f64 _half = lbl_80365E00;
+    const f64 _three = lbl_80365E08;
     volatile f32 y;
-    f64 g = __frsqrte(x);
-    g = lbl_80365E00 * g * (lbl_80365E08 - g * g * x);
-    g = lbl_80365E00 * g * (lbl_80365E08 - g * g * x);
-    g = lbl_80365E00 * g * (lbl_80365E08 - g * g * x);
+    f64 g = __frsqrte((f64)x);
+    g = _half * g * (_three - g * g * x);
+    g = _half * g * (_three - g * g * x);
+    g = _half * g * (_three - g * g * x);
     y = x * g;
     return y;
 }

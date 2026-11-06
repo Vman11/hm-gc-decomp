@@ -51,17 +51,19 @@ double fn_800F030C(double);
 double fn_800EFDA4(double);
 double fn_800F049C(double);
 
-static inline f32 Sqrt(f32 d) {
-    if (d > lbl_80366C00) {
+static inline f32 Sqrt(f32 x) {
+    if (x > lbl_80366C00) {
+        const f64 _half = lbl_80366C30;
+        const f64 _three = lbl_80366C38;
         volatile f32 y;
-        f64 g = __frsqrte((f64)d);
-        g = lbl_80366C30 * g * (lbl_80366C38 - g * g * d);
-        g = lbl_80366C30 * g * (lbl_80366C38 - g * g * d);
-        g = lbl_80366C30 * g * (lbl_80366C38 - g * g * d);
-        y = (f32)(d * g);
-        d = y;
+        f64 g = __frsqrte((f64)x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        y = x * g;
+        return y;
     }
-    return d;
+    return x;
 }
 
 static inline void Approach(Vec3 *v, f32 x, f32 y, f32 z, f32 t) {
