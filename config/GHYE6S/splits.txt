@@ -6052,7 +6052,7 @@ auto/text_800A6B8C.cpp:
 	.text       start:0x800A6B8C end:0x800A6BFC
 	.ctors      start:0x802940A0 end:0x802940A4
 
-auto/text_800A6BFC.c:
+auto/text_800A6BFC.cpp:
 	extab       start:0x80008FB0 end:0x80008FB8
 	extabindex  start:0x8001B314 end:0x8001B320
 	.text       start:0x800A6BFC end:0x800A73B0
