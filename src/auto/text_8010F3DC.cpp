@@ -164,8 +164,7 @@ s32 fn_8010F3DC(O *o, s32 a, R *r, u8 *name, O *parent) {
                     break;
                 }
                 case 84:
-                    x = *xp;
-                    (*xp)->c->fc |= 4;
+                    { X *y = *xp; C *cc = y->c; u32 t = cc->fc; x = y; cc->fc = t | 4; }
                     break;
                 default:
                     r->err(30);
