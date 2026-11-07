@@ -474,6 +474,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wNE (2026-11-06): matched fn_801644BC, fn_80164518 (GC/2.6 + __restrict on the FIRST param only; restrict on both ptrs breaks it).
 - wPK: matched fn_80228208 (Matching): volatile stores in V3::sub + compare against *(volatile f32 *)&lbl_80365CB0 pins the 0.0f load after the d.z store.
 - wPY (2026-11-07): fn_8019D110 MATCHED: FP accumulator colouring fixed by loading 'f32 sy = s->f28.y;' into a local right before the second (y) row of the 3x3 matrix-vector accumulation (only the middle multiplier as a local; all three as locals is worse).
+- wPY (2026-11-07): fn_80073FAC MATCHED: FPR f28/f29 swap of len2 fixed by computing it through one more inline level (L2(v){return L(v);}); the volatile sqrt stack slots then swapped, fixed by also wrapping the S2 call one level deeper (S3). Inline depth of the volatile-y sqrt inlines controls both FPR colouring and stack-slot order.
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.

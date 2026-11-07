@@ -1,6 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-// NonMatching draft: 30 diff lines, only len2 (3rd sqrt) colours f29 instead of f28.
+// Matched: len2 via depth-3 inline L2, S2 via depth-3 S3.
 #include "common.h"
 
 extern "C" {
@@ -51,6 +51,8 @@ static inline f32 Sq(f32 x) {
 static inline f32 S2(f32 a, f32 b) { return Sq(a * a - b * b); }
 static inline f32 L(Vec *v) { return Sq(v->x * v->x + v->y * v->y + v->z * v->z); }
 
+static inline f32 S3(f32 a, f32 b) { return S2(a, b); }
+static inline f32 L2(Vec *v) { return L(v); }
 void fn_80073FAC(X *a, P *b, void *out, Sh *sa, Sh *sb, int mode) {
     Vec n;
     Vec pa;
@@ -109,9 +111,9 @@ void fn_80073FAC(X *a, P *b, void *out, Sh *sa, Sh *sb, int mode) {
                 u = pb;
                 u.x += n.x; u.y += n.y; u.z += n.z;
                 d2 = fn_80101590(&u, &pa);
-                len2 = L(&n);
+                len2 = L2(&n);
                 fn_80101820(&t);
-                s = S2(sum, len2) - d2;
+                s = S3(sum, len2) - d2;
                 t.x *= s; t.y *= s; t.z *= s;
                 fn_80225EC0(out, a, &t);
             }
