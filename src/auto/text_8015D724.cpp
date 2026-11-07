@@ -1,4 +1,4 @@
-// NonMatching draft (wA_8007BB14): DIFF 43 / SDIFF 11, see hm-work/wA_8007BB14/STATUS.txt
+// NonMatching draft (wMS): DIFF 9 / SDIFF 3 - else-branch "bge;b" vs "blt" and f reg r25/r24 left
 #include "common.h"
 extern "C" {
 
@@ -15,18 +15,14 @@ int fn_8016E474(void *, void *, u8, u32 *);
 void fn_8016F10C(W *, F *, u8, int);
 int fn_8016EAAC(W *, F *, int);
 void fn_8016F704(W *);
-void fn_8015D724(T *t, void *x) {
+static inline void run1(T *t, void *x) {
+    E *e;
     u32 i;
     u32 cnt;
     u32 ptr;
-    E *e;
     W *w;
-    S *s = t->f20;
-    if (s && s->f0) {
-        t->f296 = (u16)s->f0;
-        if (t->f296 > 8) t->f296 = 8;
         ptr = 0;
-        cnt = 0;
+        cnt = ptr;
         if (t->f52 && t->f24) {
             ptr = t->f24;
             cnt = t->f52;
@@ -40,13 +36,25 @@ void fn_8015D724(T *t, void *x) {
                 u32 n = fn_8014A5DC(e);
                 if (cnt <= n) {
                     cnt = 0;
-                    ptr = 0;
+                    ptr = cnt;
                 } else {
                     cnt -= n;
                     ptr += n * 4;
                 }
             }
         }
+}
+void fn_8015D724(T *t, void *x) {
+    u32 i;
+    u32 cnt;
+    u32 ptr;
+    E *e;
+    W *w;
+    S *s = t->f20;
+    if (s && s->f0) {
+        t->f296 = (u16)s->f0;
+        if (t->f296 > 8) t->f296 = 8;
+        run1(t, x);
         fn_801365BC(t->f20);
     } else if (s) {
         if (s->f8 < 1) return;
