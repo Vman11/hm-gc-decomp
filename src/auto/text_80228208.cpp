@@ -1,11 +1,11 @@
 #include "common.h"
 
-// NonMatching draft (wA_80200C24): entity range/cone scan. SDIFF 15 / DIFF 29: only the d=hit-pos block;
-// target reloads pos->z for d.z after the d.x/d.y stores (and lfs 0.0f late); mine CSEs it.
+// NonMatching draft (wA_80200C24, wNA): entity range/cone scan. SDIFF 2 / DIFF 30: V3::sub member (this-ptr stores block the pos->z CSE, as in target);
+// left: lfs lbl_80365CB0 (0.0f) scheduled before the d.x store, target after d.z store; plus FP regs.
 
 extern "C" {
 
-struct V3 { f32 x, y, z; };
+struct V3 { f32 x, y, z; void sub(const V3 &a, const V3 &b) { x = a.x - b.x; y = a.y - b.y; z = a.z - b.z; } };
 struct C8023C7CC {
     u8 pad[8];
     void *a;
@@ -90,7 +90,7 @@ void fn_80228208(void *self, void *actor, V3 *pos, f32 range, f32 height, f32 mi
                         V3 d;
                         f32 dist;
                         f32 dz = pos->z - z0;
-                        vsub(&d, &hit, pos);
+                        d.sub(hit, *pos);
                         f32 l = d.x * d.x + d.y * d.y + d.z * d.z;
                         if (l > lbl_80365CB0) {
                             volatile f32 y;
