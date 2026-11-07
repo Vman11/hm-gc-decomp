@@ -859,3 +859,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wNG (2026-11-06): MATCHED fn_80228A48 with '#pragma scheduling once' before the fn (fixes entry fmr f30,f1 placement after the loads; volatile p->it kept).
 - wNJ (2026-11-06): MATCHED fn_8019F188 / fn_8019F8FC (plane from height, K-load-before-field-load scheduling): read K and the field through volatile casts in that order into locals declared 'f32 w, k;' (w first -> f0), stores non-volatile.
 - wNI (2026-11-06): MATCHED fn_80151E84 (Mtx44 translate) on GC/2.0p1: plain m[3]=v[0] reads with const f32 *v (1.3.2 always hoists the v loads above the first K load).
+- wNJ (2026-11-06): MATCHED fn_801AD0A8 (GC/2.0p1+lmw, wHQ draft): inner x1c loop index written self->x1c[j][(u32)k] (s32 k) -> target IV order (k inc before off) and off/zero/k regs r26/r27/r25.

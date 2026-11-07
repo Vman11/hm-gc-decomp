@@ -89,8 +89,8 @@ void fn_801AD0A8(S_AD0A8 *self) {
         for (j = 0; j < self->x44; j++) {
             for (k = 0; k < self->x48; k++) {
                 buf[0] = 0;
-                if (F(self->x1c[j][k], 0xc, void *)) fn_800F6E88(buf, F(self->x1c[j][k], 0xc, void *));
-                fn_801AAAB0(self->x0, self->x1c[j][k]);
+                if (F(self->x1c[j][(u32)k], 0xc, void *)) fn_800F6E88(buf, F(self->x1c[j][(u32)k], 0xc, void *));
+                fn_801AAAB0(self->x0, self->x1c[j][(u32)k]);
             }
         }
         for (m = 0; m < self->x44; m++) {
