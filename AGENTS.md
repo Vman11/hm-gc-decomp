@@ -899,3 +899,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wQM (2026-11-07): fn_80219EF4 MATCHED (GC/2.0p1+lmw): OR chain as one nested expr (0xFF000000 | (0xFF | (0xFF0000 | 0xFF00))), FP regs fixed by `ia = .../255; a = ia; ia = 1 - ia`, first loop counter j, decl order g,i,x,y,j,k; unit owns .sdata2 0x803658E0-0x803658F0.
 - wQT (2026-11-07): fn_80070054 MATCHED: scratch-reg swap in `v[(s32)(h->n - 1)]` fixed by a member helper `s32 H::last() { return n - 1; }` (`v[h->last()]`); expression rewrites/temps were all invariant.
 - wQR (2026-11-07): fn_8010EE60 MATCHED: cmplw k/n register swap fixed by an inline getter for the bound (`(u32)(p->base + i) < count(p->o)` with `count(o){return o->n;}`); `n > k` fixed regs but flipped cmplw.
+- wQS (2026-11-07): fn_80200988 MATCHED: prologue r0/r3 swap (o->cnt vs lbl->a) fixed by moving the 'if (h->a >= 6) h->b = h->a; else h->b = 6;' clamp into a static inline taking Heap *h.

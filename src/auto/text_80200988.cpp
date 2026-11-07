@@ -51,14 +51,15 @@ static inline void emit2(Obj *o, Ev *d, Node *p, u32 &t, s8 &ob0, s8 &ob2) {
     d->v = dt;
     ob0 = b0; ob2 = b2;
 }
+static inline void setb_0988(Heap *h) { if (h->a >= 6) h->b = h->a; else h->b = 6; }
+
 void fn_80200988(Obj *o) {
     u8 tmp[128];
     Ev *d;
     u8 *raw;
     u32 sz = o->cnt * 8;
     Node *nn;
-    if (lbl_8035B170->a >= 6) lbl_8035B170->b = lbl_8035B170->a;
-    else lbl_8035B170->b = 6;
+    setb_0988(lbl_8035B170);
     if (lbl_8035A9F4 == 0) fn_800604C4(-2, 0, 0, 0);
     fn_800F7EC0(lbl_8035A9F4);
     raw = new u8[sz + 64];
