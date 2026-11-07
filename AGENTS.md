@@ -870,3 +870,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wOE (2026-11-07): fn_801988DC NonMatching SDIFF 77->48 / DIFF 809->796: K (lbl_80364C68) declared non-volatile, volatile only via cast at the 2 clip uses; #pragma opt_loop_invariants off. Left: target loads K inside the unrolled classify body (once per 8 trips), mine hoists it with the plane fields; pl lis/addi placement; regs.
 - wOF (2026-11-07): text_80126A9C Matching (GC/2.6): unit owns .sdata2 0x80363E30-0x80363E38 (its int->float magic, no other user).
 - wOF (2026-11-07): text_80127940 Matching (GC/2.6, -str reuse,readonly): unit owns .rodata 0x8029DF70-0x8029E060 (its 4 strings, no other user).
+- wON (2026-11-07): fn_8021263C MATCHED (GC/2.0p1+lmw): body as static inline search() with 'return' in loops (gives bne;b shape + result coalesce), inline decl order lo,tbl,mid,n,step.
