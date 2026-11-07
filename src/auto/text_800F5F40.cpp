@@ -26,11 +26,11 @@ static void ins(T *t, Ent *e, char *buf) {
             sh += 6;
         }
     }
-    h = h % 331;
-    while (t->tab[h]) {
-        if (++h >= 331) h = 0;
+    sh = h % 331;
+    while (t->tab[sh]) {
+        if (++sh >= 331) sh = 0;
     }
-    t->tab[h] = e;
+    t->tab[sh] = e;
 }
 void fn_800F5F40(T *t, Ent *arr, u32 n, T *o) {
     char buf[64];
