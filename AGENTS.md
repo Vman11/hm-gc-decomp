@@ -480,6 +480,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wQV (2026-11-07): fn_8018D1F4 MATCHED: L2 inline manually inlined, loop 2 REUSES loop-1 counter i ('i = 0; p->f9c = i; ... for (; i < n; i++)'), locals 'u8 *b; u32 i;' - gives the target's shared off reg + 'mr off,j' copy (wEJ counter-reuse rule).
 - wQV (2026-11-07): fn_801C0358 MATCHED: final search loop moved into its own static inline setIds() (fixed li IV order), and the unrolled copy loop reads via a getId(o,i) inline (fixed unroll temp reg r20 reuse).
 - wQZ (2026-11-07): fn_8020DACC MATCHED: size sum written as 's32 v = s->base; v += dataSize(s)' (b coalesces with v), locals 'total, last, i' in that order, 'total = s->a268 + s->a276 + 96' as one expression (gives add r,a268,t operand order).
+- wQZ (2026-11-07): fn_801F3A88 MATCHED: explicit k-offset IV (for (k = 0, ko = 0; k < 8; ko += 8, k++), u32 ko declared right after u8 *p) + source pointer via trivial inline getp(t, idx, ko) { return &t->src[idx].d[ko]; } (colours p before the idx*68 IV).
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.

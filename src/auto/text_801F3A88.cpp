@@ -9,6 +9,7 @@ typedef struct { u8 pad[12]; u32 a; u32 b; u8 pad2[48 - 20]; u32 n; u32 m; Ent *
 u8 *fn_8013C11C(void *heap, u32 size);
 void *memcpy(void *, const void *, u32);
 
+static inline u8 *getp(T *t, s32 idx, u32 ko) { return &t->src[idx].d[ko]; }
 void fn_801F3A88(T *t, void *heap) {
     u32 size = t->n * t->a * t->m * t->b << 6;
     if (size) {
@@ -25,12 +26,12 @@ void fn_801F3A88(T *t, void *heap) {
                 base += t->m;
             }
         } else {
-            u8 *p; s32 idx; u32 k; u32 pos = 0; u32 i; u32 l; s32 j; s32 base = 0; u32 c;
+            u8 *p; u32 ko; s32 idx; u32 k; u32 pos = 0; u32 i; u32 l; s32 j; s32 base = 0; u32 c;
             for (i = 0; i < t->n; i++) {
-                for (k = 0; k < 8; k++) {
+                for (k = 0, ko = 0; k < 8; ko += 8, k++) {
                     for (l = 0; l < t->a; l++) {
                         for (j = 0, idx = base; j < t->m; idx++, j++) {
-                            p = &t->src[idx].d[k * 8];
+                            p = getp(t, idx, ko);
                             for (c = 0; c < t->b; c++) t->dst[pos++] = p[0];
                             for (c = 0; c < t->b; c++) t->dst[pos++] = p[1];
                             for (c = 0; c < t->b; c++) t->dst[pos++] = p[2];
