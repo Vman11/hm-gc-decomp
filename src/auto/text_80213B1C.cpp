@@ -1,3 +1,4 @@
+/* NonMatching (wQN): SDIFF 0 / DIFF 14: only path walker d gets r25 (target r26). Key: local e for the filter ext, j for loop2+block3, decl order p,n1,d,e,n2,j,i. */
 #include "common.h"
 extern "C" {
 extern "C" {
@@ -40,9 +41,11 @@ void fn_80213B1C(Arc *a, char *dir, char *filter, L *list) {
     Nd *nd;
     char *p;
     u32 n1;
-    u32 n2;
-    u32 i;
     char *d;
+    char *e;
+    u32 n2;
+    u32 j;
+    u32 i;
     if (dir == 0) {
         nd = &a->root;
     } else {
@@ -70,22 +73,22 @@ void fn_80213B1C(Arc *a, char *dir, char *filter, L *list) {
     upcase(name, strlen(name));
     p = strchr(name, '.');
     if (p == 0) {
-        filter = name + strlen(name);
+        e = name + strlen(name);
     } else {
         *p = 0;
-        filter = p + 1;
+        e = p + 1;
     }
     fn_80212DA4(nd, a->cfg->v);
     {
         n1 = 0;
         for (i = 0; i < nd->nx; i++) {
             X *x = fn_80212968(nd, i);
-            if (fn_8021272C(a->tbl, x->id, 0, &ent) && fn_802121C4(a, &ent, name, filter)) n1++;
+            if (fn_8021272C(a->tbl, x->id, 0, &ent) && fn_802121C4(a, &ent, name, e)) n1++;
         }
         n2 = 0;
-        for (i = 0; i < nd->ny; i++) {
-            Y *y = fn_802128E0(nd, i);
-            if (fn_8021272C(a->tbl, y->id, y->b, &ent) && fn_802121C4(a, &ent, name, filter)) n2++;
+        for (j = 0; j < nd->ny; j++) {
+            Y *y = fn_802128E0(nd, j);
+            if (fn_8021272C(a->tbl, y->id, y->b, &ent) && fn_802121C4(a, &ent, name, e)) n2++;
         }
         fn_8020EFE4(list, n2, n1);
     }
@@ -93,7 +96,7 @@ void fn_80213B1C(Arc *a, char *dir, char *filter, L *list) {
         n2 = 0;
         for (i = n2; i < nd->nx; i++) {
             X *x = fn_80212968(nd, i);
-            if (fn_8021272C(a->tbl, x->id, 0, &ent) && fn_802121C4(a, &ent, name, filter)) {
+            if (fn_8021272C(a->tbl, x->id, 0, &ent) && fn_802121C4(a, &ent, name, e)) {
                 fn_8020EBB0(list, n2, 3);
                 fn_8020EA90(list, n2, &ent);
                 n2++;
@@ -102,9 +105,9 @@ void fn_80213B1C(Arc *a, char *dir, char *filter, L *list) {
     }
     {
         n2 = 0;
-        for (i = n2; i < nd->ny; i++) {
-            Y *y = fn_802128E0(nd, i);
-            if (fn_8021272C(a->tbl, y->id, y->b, &ent) && fn_802121C4(a, &ent, name, filter)) {
+        for (j = n2; j < nd->ny; j++) {
+            Y *y = fn_802128E0(nd, j);
+            if (fn_8021272C(a->tbl, y->id, y->b, &ent) && fn_802121C4(a, &ent, name, e)) {
                 fn_8020EDB8(list, n2, 2);
                 fn_8020EC24(list, n2, &ent);
                 fn_8020ED44(list, n2, y->size);
