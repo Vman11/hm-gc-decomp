@@ -1,39 +1,35 @@
-// NonMatching draft (wA_8007BB14): state-table walker; DIFF 48 / SDIFF 12, see hm-work/wA_8007BB14/STATUS.txt
+// Code-matching draft (wMO): DIFF 0 vs target .o, but NOT linkable: the tables are TU-local .data (base lbl_802C2B38 in jt_802C2B34, a=+0x300 b=+0x310 c=+0x390, d0 = placeholder for +0..0x300) and the strings a .rodata pool at lbl_802986B0 (readonly strings); the TU spans the neighbours that share lbl_802C2B38 (8007BDF4 ...). Linking needs owning that .data/.rodata (merge).
 #include "common.h"
+#pragma readonly_strings on
 extern "C" {
 
 extern char lbl_8035F7D0[8], lbl_8035F7D8[8], lbl_8035F7E0[8], lbl_8035F7E8[8], lbl_8035F7F0[8], lbl_8035F7F8[8], lbl_8035F800[8], lbl_8035F808[8], lbl_8035F810[8], lbl_8035F818[8], lbl_8035F820[8], lbl_8035F828[8], lbl_8035F82C[8], lbl_8035F834[8], lbl_8035F83C[8], lbl_8035F844[8], lbl_8035F84C[8], lbl_8035F854[8], lbl_8035F85C[8], lbl_8035F864[8], lbl_8035F86C[8], lbl_8035F874[8], lbl_8035F87C[8], lbl_8035F884[8], lbl_8035F88C[8];
 struct Str { char a[12]; char b[12]; char c[12]; };
 extern Str lbl_802986B0;
 struct Tb { u8 pad[768]; s32 a[4]; s32 b[32]; s32 c[32]; };
-extern Tb lbl_802C2B38;
+static s32 d0[192] = {1}; static s32 tA[4] = {1}; static s32 tB[32] = {1}; static s32 tC[32] = {1};
 extern void *lbl_8035B65C;
 struct T { u8 pad[96]; int f96; };
 int fn_802491DC(T *, int);
 void fn_80242B58(T *, const char *);
 void fn_80254C90(void *);
-#pragma opt_propagation off
+void *keep_d0 = d0;
 void fn_8007BB14(T *t, int k) {
     s32 *q;
     s32 idx;
     s32 v;
-    Tb *tb = &lbl_802C2B38;
-    s32 *A = tb->a, *B;
-    Str *s;
-    idx = A[k];
+    idx = tA[k];
     v = t->f96;
-    s = &lbl_802986B0;
-    for (q = tb->b, B = q, q += idx; v > 0; q++) {
+    for (q = &tB[idx]; v > 0; q++) {
         if (*q > v) break;
-        v -= B[idx++];
+        v -= tB[idx++];
     }
-    s32 *C = tb->c;
-    switch (C[idx]) {
+    switch (tC[idx]) {
     case 0: fn_802491DC(t, 0); break;
     case 1: return;
     case 2: fn_802491DC(t, 1); break;
-    case 3: fn_80242B58(t, s->a); break;
-    case 4: fn_80242B58(t, s->b); break;
+    case 3: fn_80242B58(t, "BALLROOM"); break;
+    case 4: fn_80242B58(t, "CHILDREN"); break;
     case 5: fn_80242B58(t, lbl_8035F7D0); break;
     case 6: fn_80242B58(t, lbl_8035F7D8); break;
     case 7: fn_80242B58(t, lbl_8035F7E0); break;
@@ -48,7 +44,7 @@ void fn_8007BB14(T *t, int k) {
     case 16: fn_80242B58(t, lbl_8035F828); break;
     case 17: fn_80242B58(t, lbl_8035F82C); break;
     case 18: fn_80242B58(t, lbl_8035F834); break;
-    case 19: fn_80242B58(t, s->c); break;
+    case 19: fn_80242B58(t, "MASTRBED"); break;
     case 20: fn_80242B58(t, lbl_8035F83C); break;
     case 21: fn_80242B58(t, lbl_8035F844); break;
     case 22: fn_80242B58(t, lbl_8035F84C); break;
