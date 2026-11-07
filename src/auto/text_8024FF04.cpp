@@ -15,16 +15,17 @@ void fn_80253AD8(void *, void *, void *, void *);
 
 void fn_8024FF04(P_8024FF04 *p) {
     void *mgr;
+    u32 off;
     u32 i;
     mgr = lbl_8035B65C;
-    for (i = p->n - p->m; i < p->n; i++) {
-        if (fn_800F6CD0(p->e[i].name, lbl_80366498) == 0) {
-            if (p->e[i].flag != 0) {
+    for (i = p->n - p->m, off = i * 40; i < p->n; off += 40, i++) {
+        if (fn_800F6CD0(((E_8024FF04 *)((u8 *)p->e + off))->name, lbl_80366498) == 0) {
+            if (((E_8024FF04 *)((u8 *)p->e + off))->flag != 0) {
                 T_8024FF04 t = lbl_802F20B8;
-                fn_80253A48(mgr, p, &t, p->e[i].name);
+                fn_80253A48(mgr, p, &t, ((E_8024FF04 *)((u8 *)p->e + off))->name);
             } else {
                 T_8024FF04 t = lbl_802F20C4;
-                fn_80253AD8(mgr, p, &t, p->e[i].name);
+                fn_80253AD8(mgr, p, &t, ((E_8024FF04 *)((u8 *)p->e + off))->name);
             }
         }
     }
