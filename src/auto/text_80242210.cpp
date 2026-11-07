@@ -58,6 +58,8 @@ extern f32 lbl_8036613C, lbl_803661B0, lbl_80366198;
 
 void fn_80242210(Obj *o)
 {
+    void *r;
+    void *b;
     s32 i;
     if (o->cur > -1) o->nodes[o->cur]->Stop();
     for (i = 0; i < o->nNodes; i++) {
@@ -82,8 +84,8 @@ void fn_80242210(Obj *o)
             Item **it = o->items;
             if (it[i]) {
                 if (e.b == 0) {
-                    void *r = 0;
-                    void *b = o->bank->p;
+                    r = 0;
+                    b = o->bank->p;
                     if (b) r = fn_8019556C(b);
                     if (!b || r) {
                         if (fn_800F6CD0(e.name, "") == 0) fn_80190604(it[i], r, e.name);
