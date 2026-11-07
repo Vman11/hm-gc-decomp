@@ -49,6 +49,8 @@ static inline void hmode(Heap *h) {
     else h->b = 5;
 }
 
+static inline u8 *nb8() { return new u8[0x8000]; }
+
 void fn_80203860(T *t, u32 id) {
     Hdr hdr;
     u32 n;
@@ -59,6 +61,8 @@ void fn_80203860(T *t, u32 id) {
     x = fn_80203EE0(t->f18);
     if (t->f8 & 0x80) {
         u32 i;
+        u32 o;
+        s32 j;
         s32 *done;
         if (fn_80210ABC(&rd, t, lbl_80365748, 2)) return;
         fn_802108B4(&rd, &hdr, 0x1c, &n);
@@ -87,7 +91,7 @@ void fn_80203860(T *t, u32 id) {
             hmode(lbl_8035A9F4);
             if (lbl_8035A9F4 == 0) fn_800604C4(-2, 0, 0, 0);
             fn_800F7EC0(lbl_8035A9F4);
-            buf = new u8[0x8000];
+            buf = nb8();
             fn_800F7E98();
             if (buf == 0) fn_800604C4(-4, 0, 0, 0);
             lbl_8035A9F4->b = lbl_8035A9F4->a;
@@ -123,9 +127,7 @@ void fn_80203860(T *t, u32 id) {
         for (z = 0; z < hdr.n20; z++) done[z] = 0;
         }
         {
-        u32 o;
         for (o = 0; o < hdr.n1c; o++) {
-            s32 j;
             for (j = 0; j < t->f24[o].n; j++) {
                 u32 k = t->f24[o].idx[j];
                 if (!done[k]) {
