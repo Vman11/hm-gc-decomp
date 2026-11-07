@@ -72,8 +72,7 @@ s32 fn_80209470(F *f, u8 *dst, u32 len, u32 *out, void **req) {
     }
     b = lookup(f, len, full);
     if (b && full) {
-        /* NonMatching (DIFF 2, SDIFF 0): target computes pos - start into r0 first */
-        memcpy(dst, b->x->buf - b->x->start + f->pos, len);
+        X *x = b->x; u8 *bp = x->buf; bp += f->pos - x->start; memcpy(dst, bp, len);
         f->pos += len;
         if (out) *out = len;
         return 0;
