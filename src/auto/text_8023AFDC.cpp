@@ -36,8 +36,9 @@ static inline void fill(R *r, V3 *pos, V2 *uv, u32 start, u32 len) {
             pp = &pos[start];
             tp = &uv[start];
             end = start + len;
+            k = start;
             if (uv) {
-                for (k = start; k < end; k++) {
+                for (; k < end; k++) {
                     r->p[0] = pp->x; r->p[1] = pp->y; r->p[2] = pp->z; pp++;
                     r->p = (f32 *)((u8 *)r->p + r->ps);
                     r->n[0] = lbl_80366000; r->n[1] = lbl_80366004; r->n[2] = lbl_80366004;
@@ -46,7 +47,7 @@ static inline void fill(R *r, V3 *pos, V2 *uv, u32 start, u32 len) {
                     r->t = (f32 *)((u8 *)r->t + r->ts);
                 }
             } else {
-                for (k = start; k < end; k++) {
+                for (; k < end; k++) {
                     r->p[0] = pp->x; r->p[1] = pp->y; r->p[2] = pp->z; pp++;
                     r->p = (f32 *)((u8 *)r->p + r->ps);
                     r->n[0] = lbl_80366000; r->n[1] = lbl_80366004; r->n[2] = lbl_80366004;
