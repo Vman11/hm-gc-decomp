@@ -38,7 +38,9 @@ static inline u32 Tail(Ctx *c, Fmt *f) {
     u32 vf;
     Slot *s;
     u32 i, n;
-    vf = (((f->fl & 0x1000) ? 2 : 0) | ((f->fl & 0x80) ? 0 : 1)) | 4;
+    vf = (f->fl & 0x80) ? 0 : 1;
+    vf |= (f->fl & 0x1000) ? 2 : 0;
+    vf |= 4;
     s = &c->slot[(vf >> 1) & 1];
     if (!fn_8014C4B4(s, f)) {
         AttrFmts(vf, f);
