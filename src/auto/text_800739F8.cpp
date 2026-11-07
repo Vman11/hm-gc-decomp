@@ -1,4 +1,4 @@
-// NonMatching draft: 16 diff lines (instructions identical; reg swaps in r-branch p/k+m and x120 clamp, one lfs/lwz sched swap before fn_802488C4).
+// NonMatching draft: 14 diff lines, register-only (SDIFF 0): r-branch (k+m)*p operand regs, x120 clamp f0/f2.
 #include "common.h"
 
 struct Vec { f32 x, y, z; };
@@ -34,7 +34,7 @@ void fn_80100F24(Vec *, Vec *);
 void fn_80101030(Vec *, Vec *);
 double fn_800F030C(double);
 Ent *fn_8025EE5C(void *, const char *);
-void fn_802488C4(void *, u32, s32, Vec *, u32, f32);
+void fn_802488C4(void *, u32, s32, Vec *, f32, u32);
 void __ct__9C80253F24Fiiii(void *, char *, int, int, int);
 
 static inline f32 Sq(f32 x) {
@@ -74,8 +74,8 @@ void fn_800739F8(X *a) {
         f32 p;
         f32 c = lbl_8035F4E0 * (v.z * v.z);
         p = *a->x52c;
-        if (v.z < lbl_8035F3EC) r = (k + m) * p;
-        else r = (k + m) * p + c;
+        if (v.z < lbl_8035F3EC) r = p * (k + m);
+        else r = p * (k + m) + c;
     }
     s = Sq(lbl_8035F4F8 * r);
     w = a->x130;
@@ -109,7 +109,7 @@ void fn_800739F8(X *a) {
     if (m > lbl_8035F490) __ct__9C80253F24Fiiii(lbl_8035B65C, lbl_802980FC, 0, 0, 0);
     if (a->x338) {
         Ent *e = fn_8025EE5C(a->x338, lbl_8035F508);
-        if (e) fn_802488C4(a->x20c->x108, e->x10, 0, &a->x44, e->x14, lbl_8035F490);
+        if (e) fn_802488C4(a->x20c->x108, e->x10, 0, &a->x44, lbl_8035F490, e->x14);
     }
 }
 }
