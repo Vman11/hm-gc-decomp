@@ -36,8 +36,8 @@ struct Obj {
 };
 double fn_800F049C(double);
 extern Gm *lbl_8035B65C;
-extern f32 lbl_80359F50;
-extern s8 lbl_80359F54;
+extern volatile f32 lbl_80359F50;
+extern volatile s8 lbl_80359F54;
 extern f32 lbl_8035B99C;
 #define lbl_8035B9D8 1.0f
 #define lbl_8035B9DC 2.0f
@@ -51,6 +51,7 @@ static inline u8 IsBusy(Gx *gx) {
     if (gx->busy || gx->t != lbl_8035B99C) r = 1;
     return r;
 }
+static inline u8 Skip(Gm *g) { u8 s = 0; if (IsBusy(g->gx) && !(g->flags & 0x10)) s = 1; return s; }
 void fn_8002BDD4(Obj *o, f32 dt)
 {
     f32 sa = 0.0f;
@@ -67,17 +68,17 @@ void fn_8002BDD4(Obj *o, f32 dt)
         u8 busy, skip;
         if (p->f6c4) tgt = lbl_8035B9DC;
         g = lbl_8035B65C;
-        skip = 0;
-        if (IsBusy(g->gx) && !(g->flags & 0x10)) skip = 1;
+        skip = Skip(g);
         if (!skip) {
             f32 d = tgt - lbl_80359F50;
             if ((f32)__fabs(d) > 0.0f)
                 lbl_80359F50 += (lbl_8035B9D8 - (f32)fn_800F049C(lbl_8035B9E0 * dt)) * d;
         }
         p = o->pl;
-        sa = p->h * lbl_80359F50;
+        { f32 s = lbl_80359F50;
+        sa = p->h * s;
         ra = p->h / p->w;
-        sb = p->w * lbl_80359F50;
+        sb = p->w * s; }
         sc = sb / (p->sc ? *p->sc : 0.0f);
     }
     if (o->t0 > 0.0f) { *o->o0 = o->v0; o->t0 -= dt; }
