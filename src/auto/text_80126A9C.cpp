@@ -38,7 +38,7 @@ extern f32 lbl_8035AB70;
 extern f32 lbl_8035AB74;
 extern f32 lbl_80363E24, lbl_80363E28, lbl_80363E2C;
 
-void fn_80126A9C(Font *font, Rect *out, Glyph *glyphs, s32 n, Vec2 *pos, Vec2 *scale, u16 flags,
+void fn_80126A9C(Font *font, Rect *out, Glyph *glyphs, s32 n, Vec2 *__restrict pos, Vec2 *scale, u16 flags,
                  f32 maxWidth, f32 spacing, f32 lineSpacing) {
     f32 lineAdv;
     f32 h;

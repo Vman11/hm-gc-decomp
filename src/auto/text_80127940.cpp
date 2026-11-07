@@ -45,7 +45,7 @@ static inline u32 caps(Dev *d) {
     return f;
 }
 
-void fn_80127940(Font *t, Owner *o, Desc *desc) {
+void fn_80127940(Font *t, Owner *o, Desc *__restrict desc) {
     Dev *dev;
     u32 fmt;
     u32 k;
