@@ -29,6 +29,7 @@ void fn_8019B6B8(void *, Nd *);
 void fn_8003C674(void *, void *, u32 **);
 void __ct__9C80253F24Fiiii(void *, void *, int, int, int);
 static inline u32 Last(u8 *o) { u32 n = fn_8007239C(F(o, 0x118, void *)) - 1; return ((u32 *)F(o, 0x20c, Tb *)->xc)[n]; }
+static inline void clr(u8 *o, u32 i) { F(o, 0x228, V **)[i] = 0; }
 static inline u32 FindK(u8 *o, Tb *t1, K8 *a, K8 *b) {
     u32 k = 0, i;
     for (i = 0; i < t1->l->n; i++) {
@@ -54,7 +55,7 @@ void fn_8006F808(u8 *o) {
             for (i = 0; i < Last(o); i++) {
                 if (F(o, 0x228, V **)[i] == me) {
                     found = i;
-                    F(o, 0x228, V **)[i = Last(o)] = 0;
+                    clr(o, i = Last(o));
                 }
             }
             {
