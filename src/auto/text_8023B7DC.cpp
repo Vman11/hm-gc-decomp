@@ -13,10 +13,11 @@ E59 *fn_8023B7DC(void *a, s32 b, s32 n) {
         if (n <= 1) {
             r->owner = o;
         } else {
-            E59 *q = r;
-            for (s32 i = 0; i < n; i++) {
-                q->owner = o;
-                q = (E59 *)((u8 *)q + o->size);
+            s32 i;
+            u8 *q = (u8 *)r;
+            for (i = 0; i < n; i++) {
+                ((E59 *)q)->owner = o;
+                q += o->size;
             }
         }
         return r;

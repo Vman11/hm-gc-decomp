@@ -885,3 +885,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wPV (2026-11-07): fn_8006C418 MATCHED: block-local 'X *x' hoisted to a fn-scope decl right after 'key' so it shares key's saved reg (r29) instead of r's (wKS variable-colouring).
 - wQB (2026-11-07): fn_8021820C MATCHED: register-only diff (ring-entry ptr vs 1/50 magic const) fixed by writing the dist() inline with early return (`if (sz < pos) return sz + (cap - pos); return sz - pos;`) instead of a d temp.
 - wQF (2026-11-07): fn_8011F36C MATCHED: register-only diff fixed by moving each outer-loop body into its own static inline (drainN(p,i)) with locals declared `N *n; void *d; ...; L *a;` (a last = colored first); 2nd copy needed `L *a; u32 j;` swapped.
+- wQH (2026-11-07): fn_8023B7DC NonMatching: DIFF 82->2 SDIFF 0 (u8* loop ptr, i declared before q); left: lwz r12,0(r3) vs 0(r31) after call
