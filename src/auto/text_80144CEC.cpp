@@ -53,7 +53,7 @@ void fn_80144CEC(C80144CEC *t, u8 *dst, s32 dpitch, const Rc *d, u8 *src, s32 sp
     s32 step;
     u8 *e;
     s32 err, d2;
-    s32 y1, y0, x1, x0, dy1, dy0, dx1, dx0;
+    s32 dx0, dx1, dy0, x0, dy1, x1, y0, y1;
     if ((y1 = r->y1) <= (y0 = r->y0) || (x1 = r->x1) <= (x0 = r->x0) || (dy1 = d->y1) <= (dy0 = d->y0) || (dx1 = d->x1) <= (dx0 = d->x0)) return;
     t->f8c = x1 - x0;
     t->f94 = dx1 - dx0;
