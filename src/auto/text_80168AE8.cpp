@@ -1,6 +1,6 @@
 // fn_80168AE8: indexed shape draw (sibling of fn_801699D8: same Ctx/Shape, nrmLoad, setFmt, beginDL).
-// NonMatching draft: SDIFF 13 / DIFF 137 (stack-param load scheduling in the entry block, one
-// extra mr after the first fn_80101A7C, callee-saved register colouring). TU also pools with 8016B5F4.
+// NonMatching draft: SDIFF 12 / DIFF 152 (wOA: np = cvt() inline removed the extra mr). Left: stack-param
+// lwz scheduled after the first real load in target (no matched fn shows that pattern), callee-saved colouring. TU also pools with 8016B5F4.
 #include "common.h"
 extern "C" {
 typedef f32 Mtx[4][4];
@@ -177,6 +177,7 @@ struct IdxSrc {
 
 #define EMITN(K) for (; p < e; p++) { u32 k_; for (k_ = 0; k_ < K; k_++) WGP = *p; }
 
+static inline u32 cvt(u8 b) { return fn_80101A7C(b); }
 void fn_80168AE8(Ctx *c, Shape *s, IdxSrc *o, u32 nm, u8 *mi, u32 *types, u32 base, u32 nv, u32 off, u32 n, u32 arg) {
     Mtx m60;
     Mtx m20;
@@ -195,7 +196,7 @@ void fn_80168AE8(Ctx *c, Shape *s, IdxSrc *o, u32 nm, u8 *mi, u32 *types, u32 ba
         nrmLoad(c, &m60, c->mi);
     }
 
-    np = fn_80101A7C(s->t18);
+    np = cvt(s->t18);
     nc = fn_80101A7C(s->t1b);
     struct { u32 v; } fmt;
     fmt.v = 5;
