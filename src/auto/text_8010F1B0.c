@@ -1,4 +1,5 @@
 /* Functions from 0x8010F1B0 to 0x8010F3DC, found by decomp-toolkit. */
+/* fn_8010F1E0 (wMO): SDIFF 0 / DIFF 72 register-only (min clamp via local mn fixes load order; clamp regs left for permuter). */
 #include "common.h"
 
 typedef struct {
@@ -65,7 +66,7 @@ void fn_8010F1E0(void *arg0, u32 type, UnkParam *p) {
         u32 i;
         for (i = 0; i < p->desc->count; i++) {
             if (p->val.ints[i] > p->desc->max.i) p->val.ints[i] = p->desc->max.i;
-            if (p->val.ints[i] < p->desc->min.i) p->val.ints[i] = p->desc->min.i;
+            { s32 mn = p->desc->min.i; if (p->val.ints[i] < mn) p->val.ints[i] = mn; }
         }
         break;
     }
@@ -73,7 +74,7 @@ void fn_8010F1E0(void *arg0, u32 type, UnkParam *p) {
         u32 i;
         for (i = 0; i < p->desc->count; i++) {
             if (p->val.floats[i] > p->desc->max.f) p->val.floats[i] = p->desc->max.f;
-            if (p->val.floats[i] < p->desc->min.f) p->val.floats[i] = p->desc->min.f;
+            { f32 mn = p->desc->min.f; if (p->val.floats[i] < mn) p->val.floats[i] = mn; }
         }
         break;
     }
