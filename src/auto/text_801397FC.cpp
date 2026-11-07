@@ -1,4 +1,4 @@
-// fn_801397FC NonMatching (wOX): SDIFF 0 / DIFF 24 register-only. Volatile float reads/stores (decl w,z,y,x) + volatile ts-then-tb reads via off temp. Left: r0/r3 swap in d address calc.
+// fn_801397FC matched (wQX): ts read into a temp t, d = tb + idx * t (so d coalesces with tb).
 #include "common.h"
 
 struct F_97FC { u32 f0; u32 m[4]; };
@@ -39,13 +39,13 @@ void fn_801397FC(O_97FC *o, u32 idx, S_97FC *s) {
         u32 i;
         for (i = 0; i < n; i++) {
             if (o->f10 & (0x1000000 << i)) {
-                u32 off = idx * *(volatile u32 *)&b.ts[i]; f32 *d = (f32 *)(*(u8 *volatile *)&b.tb[i] + off);
+                u32 t = *(volatile u32 *)&b.ts[i]; f32 *d = (f32 *)(*(u8 *volatile *)&b.tb[i] + idx * t);
                 f32 w, z, y, x; x = VR(s->t[i][0]); y = VR(s->t[i][1]); z = VR(s->t[i][2]); w = VR(s->t[i][3]); VR(d[0]) = x; VR(d[1]) = y; VR(d[2]) = z; VR(d[3]) = w; 
             } else if (o->f10 & (0x10000 << i)) {
-                u32 off = idx * *(volatile u32 *)&b.ts[i]; f32 *d = (f32 *)(*(u8 *volatile *)&b.tb[i] + off);
+                u32 t = *(volatile u32 *)&b.ts[i]; f32 *d = (f32 *)(*(u8 *volatile *)&b.tb[i] + idx * t);
                 f32 z, y, x; x = VR(s->t[i][0]); y = VR(s->t[i][1]); z = VR(s->t[i][2]); VR(d[0]) = x; VR(d[1]) = y; VR(d[2]) = z; 
             } else {
-                u32 off = idx * *(volatile u32 *)&b.ts[i]; f32 *d = (f32 *)(*(u8 *volatile *)&b.tb[i] + off);
+                u32 t = *(volatile u32 *)&b.ts[i]; f32 *d = (f32 *)(*(u8 *volatile *)&b.tb[i] + idx * t);
                 f32 y, x; x = VR(s->t[i][0]); y = VR(s->t[i][1]); VR(d[0]) = x; VR(d[1]) = y; 
             }
         }
