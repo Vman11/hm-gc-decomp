@@ -850,3 +850,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wMA (2026-11-06): fn_8017D340 NonMatching .cpp (GC/1.3.2 + lmw, from wDE ii1), SDIFF 8 / DIFF 58: scripted statement-order search of the vec*matrix block (1500 variants, best kept); `*d = *dir` fallback as x,y,z temps stored z,x,y gives the target lfs order. Left: one stfs order in that copy, m[1]/m[2] load order and FP colouring.
 - wML (2026-11-06): fn_80030318/fn_8003F18C matched: by-value PTMF struct with inline copy ctor using volatile stores (b,a then c) + volatile global load.
 - wMP (2026-11-06): fn_80129404 DIFF 6->4 NonMatching: pipelined temps (a0=v->y; a1=v->x; st a0; a2=v->z; st a1; ...) fix 2nd pair; only 1st pair ld x/ld y swap left (li r0 between). zz local / f64=0 placement / 2.0p1 no.
+- wMP (2026-11-06): MATCHED fn_8014C4B4 with GC/2.6 + __restrict on both params (leaf prologue stw interleave; 2.6 alone or restrict alone no).
