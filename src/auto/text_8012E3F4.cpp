@@ -41,18 +41,18 @@ struct Tiler {
     virtual u32 split(u32, u32, u16, Q *, u32 *); /* 24 */
 };
 
-inline u32 GetFlags(Tex *t)
+inline u32 GetFlags(Tex *t, u32 g)
 {
     u32 f = t->flags;
-    if (t->f68) { f &= ~0x01000000; f |= lbl_80363F08; }
+    if (t->f68) { f &= ~0x01000000; f |= g; }
     if (t->f6c && !t->f70) f &= ~0x02000000;
     return f;
 }
 
-inline u32 Shift(Tex *t, u32 v, u32 lim)
+inline u32 Shift(Tex *t, u32 g, u32 v, u32 lim)
 {
     u32 n;
-    if (!(GetFlags(t) & 0x00100000)) return 0;
+    if (!(GetFlags(t, g) & 0x00100000)) return 0;
     n = 0;
     while (v < lim) { v <<= 1; n++; }
     if (n > 3) return n - 3;
@@ -61,6 +61,7 @@ inline u32 Shift(Tex *t, u32 v, u32 lim)
 
 void fn_8012E3F4(Tiler *t, Src *s, Q *q)
 {
+    u32 g;
     u16 id = q->id;
     Tex *tex = s->tex;
     u32 v, sh, bh, aw, hrem, wrem, yoff, xoff, cnt, j, i, ny, nx;
@@ -72,6 +73,7 @@ void fn_8012E3F4(Tiler *t, Src *s, Q *q)
     cnt = 0;
     for (j = 0; j < ny; j++) {
         wrem = t->w;
+        g = *(volatile u32 *)&lbl_80363F08;
         xoff = 0;
         for (i = 0; i < nx; i++) {
             aw = lbl_8032A490[i];
@@ -79,14 +81,14 @@ void fn_8012E3F4(Tiler *t, Src *s, Q *q)
             lbl_8032A510[cnt].x = xoff;
             lbl_8032A510[cnt].y = yoff;
             if (aw > bh) {
-                sh = Shift(tex, bh, aw);
+                sh = Shift(tex, g, bh, aw);
                 lbl_8032A510[cnt].w = aw;
                 v = bh << sh;
                 lbl_8032A510[cnt].h = v;
                 if (wrem < lbl_8032A490[i]) lbl_8032A510[cnt].x2 = xoff + wrem; else lbl_8032A510[cnt].x2 = xoff + lbl_8032A490[i];
                 if (hrem < v) lbl_8032A510[cnt].y2 = yoff + hrem; else lbl_8032A510[cnt].y2 = yoff + v;
             } else {
-                sh = Shift(tex, aw, bh);
+                sh = Shift(tex, g, aw, bh);
                 v = aw << sh;
                 lbl_8032A510[cnt].w = v;
                 lbl_8032A510[cnt].h = lbl_8032A4D0[j];
