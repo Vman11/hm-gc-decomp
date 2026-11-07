@@ -31,15 +31,13 @@ void fn_8016AE14(P *p, Ops *o, void *a, void *b, u32 n, void *c, void **tbl, voi
             p->f275c = 3;
             fn_800D9E98(p->f275c);
         }
-        q = lbl_802A0C60;
-        for (i = 0; i < n; i++) {
-            k = *q;
+                for (i = 0; i < n; i++) {
+            k = lbl_802A0C60[i];
             x = p->f2a78;
             C80152B64 obj;
             lbl_803286D0.f174(&obj, x);
             fn_800D9DF8(&obj, k);
             p->f1fb0[k] = x;
-            q++;
         }
     }
     o->f20(a, b, &L);

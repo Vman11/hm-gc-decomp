@@ -4,7 +4,7 @@
 
 extern "C" {
 
-extern void *lbl_8035A0A4;
+extern void *volatile lbl_8035A0A4;
 extern char lbl_80299B08[];
 int fn_8003C674(void *, char *, u32 **);
 void fn_80072438(void *, u32);
@@ -12,7 +12,7 @@ void fn_80242210(void *);
 typedef struct O { u8 p[284]; u32 *a; u32 *b; u8 q[308 - 292]; void *c; u8 r[364 - 312]; s32 f16C; s32 f170; } O;
 void fn_80094368(O *o) {
     if (o->f16C) {
-        u32 *p = 0;
+        u32 *p; *(u32 *volatile *)&p = 0;
         if (fn_8003C674(lbl_8035A0A4, lbl_80299B08, &p) == 0) *p = 0;
         *p += *o->b;
         o->f16C = 0;
