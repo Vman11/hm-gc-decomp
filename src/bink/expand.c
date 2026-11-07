@@ -315,8 +315,8 @@ void wEQ_C408(u32 x, u32 y, u32 a2, u32 pitch, u8 *mk, u32 a5, u8 *a6, s32 a7, u
     s32 d16, d32, dh8, col, ncol, step;
     u8 *m, *nm;
     ExpSave save;
-    pt = pitch;
-    p = pt;
+    p = pitch;
+    pt = p;
     st0 = st;
     h0 = h;
     a120 = a12;
