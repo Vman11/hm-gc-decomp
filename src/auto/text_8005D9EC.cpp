@@ -91,23 +91,25 @@ void fn_8005D9EC(T *t, void *a, int b, V *c, char *d, L *nl) {
     t->f840 = lbl_8035E4A8;
     fn_80231AD8(t, a, b, c, d);
     t->get(&p0, &p1, &p2, &p3, 0);
-    p0.x -= lbl_8035E4A8;
-    p0.y -= lbl_8035E4A8;
-    p0.z -= lbl_8035E4C4;
-    p0.x = p0.x - lbl_8035E4C8 * p1.x;
-    p0.y = p0.y - lbl_8035E4C8 * p1.y;
-    p0.z = p0.z - lbl_8035E4C8 * p1.z;
+    *(volatile f32 *)&p0.x = p0.x - lbl_8035E4A8;
+    *(volatile f32 *)&p0.y = p0.y - lbl_8035E4A8;
+    *(volatile f32 *)&p0.z = p0.z - *(volatile f32 *)&lbl_8035E4C4;
+    { f32 m = *(volatile f32 *)&lbl_8035E4C8;
+    p0.x = p0.x - m * p1.x;
+    p0.y = p0.y - m * p1.y;
+    p0.z = p0.z - m * p1.z; }
     if (t->f748) {
         P *pp;
         Q *q;
         R *r;
         V *src;
         lbl_8035A1A8 = t;
-        t->f748->f0 |= lbl_8035E4C0;
-        q = (Q *)t->f748->f108;
+        { O *w = *(O * volatile *)&t->f748; w->f0 |= *(volatile u32 *)&lbl_8035E4C0; }
         src = (V *)t->f868[3];
-        r = q->f16;
-        VSet(&r->f20, src->x, src->y, src->z);
+        q = (Q *)t->f748->f108;
+        { f32 z = *(volatile f32 *)&src->z; f32 y = *(volatile f32 *)&src->y;
+        r = *(R * volatile *)&q->f16;
+        VSet(&r->f20, *(volatile f32 *)&src->x, y, z); }
         r->f32_ = lbl_8035E4CC;
         t->f872 = lbl_8035E4CC;
         o = t->f748;
@@ -134,9 +136,12 @@ void fn_8005D9EC(T *t, void *a, int b, V *c, char *d, L *nl) {
             if (t->f740) t->f740->f108 = nl;
             if (t->f744) t->f744->f108 = nl;
         }
-        sv = t->f280;
+        *(volatile f32 *)&sv.x = t->f280.x;
+        *(volatile f32 *)&sv.y = t->f280.y;
+        *(volatile f32 *)&sv.z = t->f280.z;
         s = t->f340;
-        if (lbl_80359748 == 1 || lbl_80359748 == 5) {
+        int g = *(volatile int *)&lbl_80359748;
+        if (g == 1 || g == 5) {
             fn_80101414(&sv, &t->f20v, lbl_8035A270);
             p1 = sv;
             fn_80101820(&p1);
