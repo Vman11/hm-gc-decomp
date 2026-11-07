@@ -462,6 +462,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wMF (2026-11-06): __ct__9C80064474Fv Matching .cpp (-Cpp_exceptions on): real classes C80064474 : C80064530 with member C800644D0 (base C802208CC whose inline ctor calls fn_80220940), same template as text_80064530.
 - wMI (2026-11-06): fn_8012DCE8, fn_80137A5C Matching: byte color copy via static inline CopyColor with two reused u8 temps (x=r;y=g;d->r=x;x=b;...), inline gives the r5/r0 coloring.
 - wMI (2026-11-06): fn_80134918 Matching (same CopyColor inline template as fn_8012DCE8).
+- wMF (2026-11-06): __ct__9C80209368Fv NonMatching .cpp draft (SDIFF 9): vt store order + member ctor(lbl_802EFC40, this, uninit) right; FC40 address not hoisted. Linking needs the dtor_80208BF0 <-> __dt__9C80208C80Fv rename (see file comment).
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
