@@ -46,8 +46,9 @@ void fn_801647F8(T *t, u32 n, Src *s, V *pos) {
     t->f6572 = 1;
     mode(t->f6456, t->f6568, t->f6572);
     fn_800D77AC(l, lbl_80364680, lbl_80364684, lbl_80364684, lbl_80364680, lbl_80364684, lbl_80364684);
+    f32 k = *(volatile f32 *)&lbl_80364684;
     f32 x = pos->x, y = pos->y, z = pos->z;
-    t->f6580[n].x = lbl_80364684;
+    t->f6580[n].x = k;
     t->f6580[n].y = lbl_80364684;
     t->f6580[n].z = lbl_80364684;
     t->f6676[n].x = x;
