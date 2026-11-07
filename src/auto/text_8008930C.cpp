@@ -41,10 +41,7 @@ void fn_8008930C(O *o, V3 *pos, int mode, f32 range) {
     V3 v;
     C8023C7CC it;
     E *cand[255];
-    E **pe;
-    E **end;
-    E **base;
-    u32 n, i;
+    E **end; E **pe; E **base; E *e; u32 n, i;
     fn_8023C720(&it, lbl_8035B308);
     if (mode) {
         o->n = 0;
@@ -66,7 +63,7 @@ void fn_8008930C(O *o, V3 *pos, int mode, f32 range) {
     n = 0;
     fn_8023C528(&it, lbl_8035FF2C);
     while (n != 255 && it.cur) {
-        E *e = it.cur ? fn_8023A490(it.cur, it.x12) : 0;
+        e = it.cur ? fn_8023A490(it.cur, it.x12) : 0;
         if ((e->x180 & 2) && (e->x156->fl & 2) && Ok(e)) {
             e->pos(&v, 0, 0, 0, 0);
             if (fn_80101590(pos, &v) <= range) {
