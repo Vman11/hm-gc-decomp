@@ -71,7 +71,6 @@ extern void *volatile lbl_8035A0A4;
 extern void *lbl_8035B308;
 extern char lbl_80297D28[];
 extern char lbl_8035F1E8[8], lbl_8035F1F0[8], lbl_8035F1F8[8], lbl_8035F264[8], lbl_8035F0E4[4], lbl_8035F26C[8];
-extern u8 lbl_80306798[];
 extern volatile f32 lbl_8035A210, lbl_8035A218;
 extern volatile f32 lbl_8035A27C, lbl_8035A280;
 extern s32 lbl_8035A220;
@@ -103,12 +102,12 @@ inline f32 Len6D(f32 m) {
     return m > lbl_8035F0C0 ? Sqrt6D(m) : m;
 }
 
+static u8 o0[0xC]; static u8 o1[0x24]; static u8 c1[0xC]; static S s1o; static u8 c2[0xC]; static S s2o;
 void fn_8006D124(P *p, f32 dt) {
     V3 xd0, xc4, xb8, xac, xa0, x94, x88, x7c;
     V3 g70, g64, g58, g4c;
     V3 d, c, b;
     V3 a;
-    u8 *base = lbl_80306798;
     if (fn_800724A4(p->f118) && !p->fd8) {
         f32 s;
         f32 m = Dot6D(&p->fe0->v118);
@@ -194,18 +193,18 @@ void fn_8006D124(P *p, f32 dt) {
                 k = lbl_8035F274;
             } else if (fn_800F6CD0(p->f178, lbl_8035F264)) {
                 f32 t = lbl_8035F278 * dt;
-                xac.x = __fmadds(t, xc4.x, xac.x);
-                xac.y = __fmadds(t, xc4.y, xac.y);
-                xac.z = __fmadds(t, lbl_8035F0C0, xac.z);
-                k = lbl_8035F240;
+                *(volatile f32 *)&xac.x = __fmadds(t, xc4.x, xac.x);
+                *(volatile f32 *)&xac.y = __fmadds(t, xc4.y, xac.y);
+                *(volatile f32 *)&xac.z = __fmadds(t, lbl_8035F0C0, xac.z);
+                k = *(volatile f32 *)&lbl_8035F240;
             } else if (fn_800F6CD0(p->f178, lbl_8035F26C)) {
                 k = lbl_8035F240;
             }
             {
                 f32 len;
-                xa0.x = xd0.x - xac.x;
-                xa0.y = xd0.y - xac.y;
-                xa0.z = xd0.z - xac.z;
+                *(volatile f32 *)&xa0.x = xd0.x - xac.x;
+                *(volatile f32 *)&xa0.y = xd0.y - xac.y;
+                *(volatile f32 *)&xa0.z = xd0.z - xac.z;
                 xa0.z = lbl_8035F0C0;
                 len = fn_80101664(&xa0);
                 if (len < lbl_8035F27C) {
@@ -213,7 +212,7 @@ void fn_8006D124(P *p, f32 dt) {
                     xac.x = __fmadds(s, xa0.x, xac.x);
                     xac.y = __fmadds(s, xa0.y, xac.y);
                     xac.z = __fmadds(s, xa0.z, xac.z);
-                    x94 = xa0;
+                    x94.x = xa0.x; x94.y = xa0.y; x94.z = xa0.z;
                     x7c.x = __fmsubs(xa0.y, x88.z, xa0.z * x88.y);
                     x7c.y = __fmsubs(xa0.z, x88.x, xa0.x * x88.z);
                     x7c.z = __fmsubs(xa0.x, x88.y, xa0.y * x88.x);
@@ -230,20 +229,26 @@ void fn_8006D124(P *p, f32 dt) {
         if (!lbl_8035A214) { lbl_8035A210 = lbl_8035F0C0; lbl_8035A214 = 1; }
         if (!lbl_8035A21C) { lbl_8035A218 = lbl_8035F0C0; lbl_8035A21C = 1; }
         if (!lbl_8035A21D) {
-            __register_global_object(__ct__9C8023D65CFv(base + 0x3c), (void *)__dt__9C8023D65CFv, base + 0x30);
+            __register_global_object(__ct__9C8023D65CFv((u8 *)&s1o), (void *)__dt__9C8023D65CFv, c1);
             lbl_8035A21D = 1;
         }
         if (!lbl_8035A21E) {
-            __register_global_object(__ct__9C8023D65CFv(base + 0x74), (void *)__dt__9C8023D65CFv, base + 0x68);
+            __register_global_object(__ct__9C8023D65CFv((u8 *)&s2o), (void *)__dt__9C8023D65CFv, c2);
             lbl_8035A21E = 1;
         }
         if (!lbl_8035A224) { lbl_8035A220 = 1; lbl_8035A224 = 1; }
         if (lbl_8035A220) {
-            S *s1 = (S *)(base + 0x3c);
-            S *s2 = (S *)(base + 0x74);
-            s1->Set(lbl_8035F280, lbl_8035F284);
-            s2->Set(lbl_8035F280, lbl_8035F284);
-            lbl_8035A220 = 0;
+            S *s2 = (S *)((u8 *)&s2o);
+            S *s1 = (S *)((u8 *)&s1o);
+            {
+            f32 a = lbl_8035F280, b;
+            *(volatile f32 *)&s1->f10 = a;
+            b = *(volatile f32 *)&lbl_8035F284;
+            *(volatile f32 *)&s1->f18 = b;
+            *(volatile f32 *)&s2->f10 = a;
+            *(volatile f32 *)&s2->f18 = b;
+            }
+            *(volatile s32 *)&lbl_8035A220 = 0;
         }
         diff = lbl_8035A280 - lbl_8035A210;
         if ((f32)__fabs(diff) > lbl_8035F0C0)
@@ -251,14 +256,14 @@ void fn_8006D124(P *p, f32 dt) {
         diff = lbl_8035A27C - lbl_8035A218;
         if ((f32)__fabs(diff) > lbl_8035F0C0)
             lbl_8035A218 = __fmadds(lbl_8035F1C8 - (f32)fn_800F049C(lbl_8035F288 * dt), diff, lbl_8035A218);
-        diff = fn_8023D494((S *)(base + 0x3c), dt, lbl_8035A218);
-        bb = fn_8023D494((S *)(base + 0x74), dt, lbl_8035A210);
+        diff = fn_8023D494((S *)((u8 *)&s1o), dt, lbl_8035A218);
+        bb = fn_8023D494((S *)((u8 *)&s2o), dt, lbl_8035A210);
         p->fe0->GetPos(&g70, &g64, &g58, &g4c, 0);
         {
             f32 t = lbl_8035F27C * -bb;
-            g70.x = __fmadds(t, g58.x, g70.x);
-            g70.y = __fmadds(t, g58.y, g70.y);
-            g70.z = __fmadds(t, g58.z, g70.z);
+            *(volatile f32 *)&g70.x = __fmadds(t, g58.x, g70.x);
+            *(volatile f32 *)&g70.y = __fmadds(t, g58.y, g70.y);
+            *(volatile f32 *)&g70.z = __fmadds(t, g58.z, g70.z);
         }
         {
             f32 t = *(volatile f32 *)&lbl_8035F278 * diff;
