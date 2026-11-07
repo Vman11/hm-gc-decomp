@@ -5,7 +5,7 @@ extern "C" {
 }
 struct C801883E0 { C801883E0(); u8 b[204]; };
 extern "C" {
-struct H { u8 pad[16]; u32 n; };
+struct H { u8 pad[16]; u32 n; s32 last() { return n - 1; } };
 struct R524 { H *h; u8 pad[8]; u32 *v; };
 struct P {
     u8 pad0[524];
@@ -40,7 +40,7 @@ void fn_80070054(P *p) {
     if (!p->r524) {
         p->r524 = (R524 *)fn_8023F4A0(p, lbl_8035ED68, lbl_8035ED68, lbl_80297E10, 1);
         p->r528 = fn_8023F4A0(p, lbl_8035ED68, lbl_8035ED68, lbl_80297E1C, 1);
-        p->n532 = p->r524->v[(s32)(p->r524->h->n - 1)];
+        p->n532 = p->r524->v[p->r524->h->last()];
         if (!lbl_8035B530) fn_800604C4(-2, 0, 0, 0);
         fn_800F7EC0(lbl_8035B530);
         p->a548 = new C801883E0 *[p->n532];
