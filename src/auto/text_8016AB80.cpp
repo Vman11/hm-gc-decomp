@@ -1,5 +1,4 @@
-// NonMatching draft (wHY): SDIFF 10 / DIFF 114 - only callee-saved reg colouring: target puts loop counter i in r31 and params at r19-r30,
-// mine puts params at r20-r31; stack-param loads also scheduled after the mr block in target. Invariant to decl order, inline helper, i/m merge, 1.3.2/2.0p1/2.5.
+// NonMatching draft (wPF): DIFF 10 / SDIFF 10 - loop in Loop(q,n,&i) inline (late vreg -> i in r31). Left: stack-param lwz scheduled interleaved with the mr block (target: after it).
 #include "common.h"
 
 extern "C" {
@@ -44,6 +43,16 @@ u32 fn_80157DD4(void *, Fmt *, void *, void *, void *);
 void fn_800D6B8C(u32, u32, u16);
 void fn_800D65A8(u32);
 
+static inline void Loop(Q *q, u32 n, u32 *pi) {
+    for (*pi = 0; *pi < n; (*pi)++) {
+        u32 id = lbl_802A0C60[*pi];
+        u32 v = q->f2a78;
+        C80152B64 o;
+        T174(&o, v);
+        fn_800D9DF8(&o, id);
+        q->f1fb0[id] = v;
+    }
+}
 void fn_8016AB80(Q *q, Dl *d, void *a, void *b, u32 n, void *c, u32 *prims, void *e,
                  s32 stride, Idx *x, u32 start, u32 cnt, void *g) {
     Fmt fmt;
@@ -63,14 +72,7 @@ void fn_8016AB80(Q *q, Dl *d, void *a, void *b, u32 n, void *c, u32 *prims, void
             q->f275c = 3;
             fn_800D9E98(q->f275c);
         }
-        for (i = 0; i < n; i++) {
-            u32 id = lbl_802A0C60[i];
-            u32 v = q->f2a78;
-            C80152B64 o;
-            T174(&o, v);
-            fn_800D9DF8(&o, id);
-            q->f1fb0[id] = v;
-        }
+        Loop(q, n, &i);
     }
     d->f20(a, b, &fmt);
     sz = fn_80155F9C(&fmt);
