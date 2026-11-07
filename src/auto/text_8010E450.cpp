@@ -57,13 +57,29 @@ static inline E **Alloc(u32 sz) {
 
 void fn_8010E450(Sorter *s, Key *k, CmpFn cmp) {
     u8 buf[8];
-    u32 cn = k->c->n;
-    u32 n = s->t->n;
-    u32 size = 0;
-    E **arr;
+    u32 sw;
+    u32 n;
+    int doSw;
+    u32 sz;
+    u32 cn;
     E **p;
     u32 i;
+    u32 size;
     s32 type;
+    u32 m;
+    u32 j1;
+    u32 l1;
+    Rng *r;
+    u32 l;
+    int c;
+    u32 t;
+    void *s1;
+    u32 l2;
+    E **arr;
+    void *s2;
+    cn = k->c->n;
+    n = s->t->n;
+    size = 0;
     fn_800F6E88(buf, k->c);
     arr = Alloc(n * 4);
     for (p = arr, i = 0; i < n; i++) *p++ = fn_8010CE64(s->t->row(i), buf);
@@ -82,16 +98,13 @@ void fn_8010E450(Sorter *s, Key *k, CmpFn cmp) {
     case 11: size = 0; break;
     }
     if (type == 5) {
-        u32 m = n - 1;
-        u32 sw = 1;
+        m = n - 1;
+        sw = 1;
         while (sw) {
-            u32 j1;
             for (i = 0, sw = 0, j1 = 1; i < m; i++, j1++) {
-                int doSw = 0;
-                void *s1 = arr[s->idx[i]]->get(0);
-                void *s2 = arr[s->idx[j1]]->get(0);
-                Rng *r;
-                u32 l1, l2, l;
+                doSw = 0;
+                s1 = arr[s->idx[i]]->get(0);
+                s2 = arr[s->idx[j1]]->get(0);
                 r = R(arr[s->idx[i]]);
                 l1 = r->e - r->b;
                 r = R(arr[s->idx[j1]]);
@@ -99,16 +112,13 @@ void fn_8010E450(Sorter *s, Key *k, CmpFn cmp) {
                 l = l2;
                 if (l1 < l2) l = l1;
                 if (k->asc) {
-                    int c;
                     if (cmp) c = cmp(s1, s2, l); else c = strncmp(s1, s2, l);
                     if (c > 0 || (c == 0 && l1 > l2)) doSw = 1;
                 } else {
-                    int c;
                     if (cmp) c = cmp(s1, s2, l); else c = strncmp(s1, s2, l);
                     if (c < 0 || (c == 0 && l2 > l1)) doSw = 1;
                 }
                 if (doSw) {
-                    u32 t;
                     sw++;
                     t = s->idx[i];
                     s->idx[i] = s->idx[j1];
@@ -117,13 +127,12 @@ void fn_8010E450(Sorter *s, Key *k, CmpFn cmp) {
             }
         }
     } else {
-        u32 sz = size;
+        sz = size;
         n--;
         size = 1;
         while (size) {
-            u32 j1;
             for (size = 0, i = 0, j1 = 1; i < n; i++, j1++) {
-                int doSw = 0;
+                doSw = 0;
                 if (k->asc) {
                     switch (type) {
                     case 2:
@@ -150,7 +159,6 @@ void fn_8010E450(Sorter *s, Key *k, CmpFn cmp) {
                     }
                 }
                 if (doSw) {
-                    u32 t;
                     size++;
                     t = s->idx[i];
                     s->idx[i] = s->idx[j1];
