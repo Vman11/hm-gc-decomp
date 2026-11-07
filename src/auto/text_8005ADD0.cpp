@@ -25,7 +25,7 @@ void fn_80113140(X *, u32, char *);
 void fn_8010A244(X *, s32, int);
 void fn_80109DD4(X *, Rg *);
 void fn_8005ADD0(void *c, Nd *dst, Nd *src) {
-    Nd *sc; X *sx; X *nx; Nd *d; Nd *s; Nd *dc; int uniq; Nd *n; u32 i;
+    X *nx; Nd *sc; X *sx; u32 off; Nd *d; Nd *s; Nd *dc; int uniq; Nd *n; u32 i;
     for (s = src->child; s; s = s->next) {
         if (s->child == 0) continue;
         for (d = dst->child; d; d = d->next) {
@@ -46,11 +46,11 @@ void fn_8005ADD0(void *c, Nd *dst, Nd *src) {
                 nx->f0->a14.i = sx->f0->a14.i;
                 nx->f0->a14.f = sx->f0->a14.f;
                 fn_8010CC84(n, dc->name);
-                for (i = 0; i < sx->f0->n; i++) {
+                for (i = 0, off = 0; i < sx->f0->n; off += 20, i++) {
                     X2 *s2 = (X2 *)sx;
                     if (dc->f0->f0->type == 11) {
                         char buf[256];
-                        fn_800FA474(((X3 *)sx)->data + i * 20, buf, 255);
+                        fn_800FA474(((X3 *)sx)->data + off, buf, 255);
                         fn_80113140(nx, i, buf);
                     } else if (dc->f0->f0->type == 5) {
                         Rg *r = s2->f34 ? &s2->rB : &s2->rA;
