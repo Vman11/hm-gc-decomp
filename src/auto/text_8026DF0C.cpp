@@ -1,6 +1,5 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-// NonMatching: only ctx register differs (target r29, mine r27; 12 asm diff lines).
 #include "common.h"
 
 extern "C" {
@@ -130,6 +129,8 @@ static inline void *find26(P26D *p, char *key, char *pool) {
     return 0;
 }
 
+static inline void *gctx() { return lbl_8035B65C->f8; }
+
 void fn_8026DF0C(P26D *p, void *a) {
     char bufA8[0x80];
     char buf20[0x10];
@@ -143,7 +144,7 @@ void fn_8026DF0C(P26D *p, void *a) {
     u32 k;
     pool = lbl_802AA558;
 
-    ctx = lbl_8035B65C->f8;
+    ctx = gctx();
     lbl_8035B7C4->set(lbl_80366DD4);
     p->f1ac = 1;
     for (i = 0; i < p->f44; i++) p->f4c[i].a = 0;
