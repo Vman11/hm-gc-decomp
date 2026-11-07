@@ -55,21 +55,24 @@ void fn_80190604(Item *, void *, const char *);
 void fn_801907D8(Item *);
 void fn_80249E0C(Obj *);
 extern f32 lbl_8036613C, lbl_803661B0, lbl_80366198;
+extern char lbl_803661A4[7], lbl_80366138[1];
 
 void fn_80242210(Obj *o)
 {
     void *r;
     void *b;
+    u32 off;
     s32 i;
+    void *M;
     if (o->cur > -1) o->nodes[o->cur]->Stop();
-    for (i = 0; i < o->nNodes; i++) {
-        void *m = fn_8023BC90("Motion");
+    for (i = 0, off = 0; i < o->nNodes; off += 4, i++) {
+        M = fn_8023BC90(lbl_803661A4);
         if (o->nodes) {
-            if (o->nodes[i]) {
-                ((Node *)o->nodes[i])->Release();
-                fn_8023B7A0(m, o->nodes[i]);
+            if (*(Part **)((u8 *)o->nodes + off)) {
+                (*(Node **)((u8 *)o->nodes + off))->Release();
+                fn_8023B7A0(M, *(Part **)((u8 *)o->nodes + off));
             }
-            o->nodes[i] = 0;
+            *(Part **)((u8 *)o->nodes + off) = 0;
         }
     }
     if (o->fd0) delete[] o->fd0;
@@ -88,7 +91,7 @@ void fn_80242210(Obj *o)
                     b = o->bank->p;
                     if (b) r = fn_8019556C(b);
                     if (!b || r) {
-                        if (fn_800F6CD0(e.name, "") == 0) fn_80190604(it[i], r, e.name);
+                        if (fn_800F6CD0(e.name, lbl_80366138) == 0) fn_80190604(it[i], r, e.name);
                         else fn_801907D8(it[i]);
                     }
                 }
