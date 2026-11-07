@@ -87,6 +87,30 @@ inline void Apply(Obj *o)
     }
 }
 
+inline void Mark2(X *x, V3 *v)
+{
+    if (x) {
+        Y *y = x->y;
+        if (y) {
+            lbl_803286D0.fn(y->h, v);
+            y->flags |= lbl_8035D360;
+            fn_80190C98(x);
+        }
+    }
+}
+
+inline void Apply2(Obj *o)
+{
+    V3 v;
+    o->ctl->Get(&v, 0, 0, 0, 0);
+    if (o->xs) {
+        u32 off; u32 i = 0; off = i * 4;
+        for (; i < o->nx; off += 4, i++) {
+            Mark2(*(X **)((u8 *)o->xs + off), &v);
+        }
+    }
+}
+
 void fn_8004AFF8(Obj *o, f32 dt)
 {
     if (!(*o->flagp & o->mask) && fn_8022C558(o->ctl)) {
@@ -117,7 +141,7 @@ void fn_8004AFF8(Obj *o, f32 dt)
         Apply(o);
     } else if (o->f1bc) {
         fn_8004A7C8(o, dt);
-        Apply(o);
+        Apply2(o);
     }
     fn_8023FE08(o, dt);
 }
