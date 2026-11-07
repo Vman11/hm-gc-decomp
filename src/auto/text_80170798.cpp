@@ -16,14 +16,14 @@ typedef struct S80170798 {
     E80170798 ents[12];
 } S80170798;
 
-s32 fn_80147A68(E80170798 *e, K80170798 *k);
-s32 fn_80147800(E80170798 *e, K80170798 *k);
-s32 fn_80147570(E80170798 *e, K80170798 *k);
-u32 fn_80148018(void *e);
-u32 fn_80147FD8(void *e);
-void fn_801482DC(void *out, void *e);
+s32 fn_80147A68(E80170798 *e, const K80170798 *k);
+s32 fn_80147800(E80170798 *e, const K80170798 *k);
+s32 fn_80147570(E80170798 *e, const K80170798 *k);
+u32 fn_80148018(const void *e);
+u32 fn_80147FD8(const void *e);
+void fn_801482DC(void *out, const void *e);
 
-void fn_80170798(S80170798 *p, K80170798 *k, void *out) {
+void fn_80170798(S80170798 *p, const K80170798 *k, void *out) {
     u32 i;
     u32 j;
     S80170798 *q;
