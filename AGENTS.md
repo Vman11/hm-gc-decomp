@@ -883,3 +883,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wPR (2026-11-07): fn_80238CF4 MATCHED: inner2 loop with explicit byte offset IV 'u32 off = j * 60; ... off += 60, j++' (increment off before j) fixed j/off r5/r6 swap. Same trick matched fn_80101E38.
 - wPV (2026-11-07): fn_8002C150 MATCHED: FPR colouring fixed by explicit diff locals 'store = dx = v.x - c.x' then 'v.x = dx * inv' (instead of store-then-*=), locals declared s0,ns,k,inv then dx,dz,dy.
 - wPV (2026-11-07): fn_8006C418 MATCHED: block-local 'X *x' hoisted to a fn-scope decl right after 'key' so it shares key's saved reg (r29) instead of r's (wKS variable-colouring).
+- wQB (2026-11-07): fn_8021820C MATCHED: register-only diff (ring-entry ptr vs 1/50 magic const) fixed by writing the dist() inline with early return (`if (sz < pos) return sz + (cap - pos); return sz - pos;`) instead of a d temp.

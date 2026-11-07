@@ -23,7 +23,7 @@ static inline BOOL done(Ring *r, Ent *e, u16 t) {
     return FALSE;
 }
 
-static inline u32 dist(u32 sz, u32 pos, u32 cap) { u32 d = sz - pos; if (sz < pos) d = sz + (cap - pos); return d; }
+static inline u32 dist(u32 sz, u32 pos, u32 cap) { if (sz < pos) return sz + (cap - pos); return sz - pos; }
 static inline u32 avail(Ring *r) {
     u32 a = r->cap - r->head;
     if (r->used == r->cap) {
