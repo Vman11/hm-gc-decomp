@@ -120,6 +120,21 @@ static inline f32 Sq(f32 x) {
     }
     return x;
 }
+static inline f32 SqV(f32 x) {
+    if (x > *(volatile f32 *)&lbl_8035DCA0) {
+        const f64 _half = lbl_8035DCA8;
+        const f64 _three = lbl_8035DCB8;
+        volatile f32 y;
+        f64 g = __frsqrte((f64)x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        y = x * g;
+        return y;
+    }
+    return x;
+}
+static inline void ScaleV(V3 *v, f32 k) { *(volatile f32 *)&v->x = v->x * k; *(volatile f32 *)&v->y = v->y * k; *(volatile f32 *)&v->z = v->z * k; }
 static inline f32 crand() {
     s32 ri = (u32)rand() % 10000;
     f32 r = lbl_8035DCE8 * (f32)ri;
@@ -315,10 +330,10 @@ void fn_800502FC(P *p, int idx) {
         vset(&v, crand(), crand(), crand());
         fn_80101820(&v);
         f32 k = *p->f244;
-        v.x *= k;
-        v.y *= k;
-        v.z *= k;
-        fn_80072AC8(lbl_8035B308->f48, &w);
+        *(volatile f32 *)&v.x = v.x * k;
+        *(volatile f32 *)&v.y = v.y * k;
+        *(volatile f32 *)&v.z = v.z * k;
+        fn_80072AC8((*(GL *volatile *)&lbl_8035B308)->f48, &w);
         w.z -= *p->f22c;
         u.x = w.x + v.x;
         u.y = w.y + v.y;
@@ -350,8 +365,8 @@ void fn_800502FC(P *p, int idx) {
         V3 v;
         p->fe0->getPos(0, &v, 0, 0, 0);
         fn_80101820(&v);
-        Scale(&v, p->f1b0);
-        f32 l = Sq(v.x * v.x + v.y * v.y + v.z * v.z);
+        ScaleV(&v, p->f1b0);
+        f32 l = SqV(v.x * v.x + v.y * v.y + v.z * v.z);
         Act *a = p->fe0;
         a->f118 = v.x;
         a->f11c = v.y;
