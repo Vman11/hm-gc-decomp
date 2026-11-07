@@ -7313,7 +7313,7 @@ auto/text_800E1DA8.cpp:
 auto/text_800E1DF0.c:
 	.text       start:0x800E1DF0 end:0x800E1E08
 
-auto/text_800E1E08.c:
+auto/text_800E1E08.cpp:
 	extab       start:0x80009690 end:0x800096B8
 	extabindex  start:0x8001BA94 end:0x8001BAA0
 	.text       start:0x800E1E08 end:0x800E1E7C

@@ -465,6 +465,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wMF (2026-11-06): __ct__9C80209368Fv NonMatching .cpp draft (SDIFF 9): vt store order + member ctor(lbl_802EFC40, this, uninit) right; FC40 address not hoisted. Linking needs the dtor_80208BF0 <-> __dt__9C80208C80Fv rename (see file comment).
 - wMF (2026-11-06): __ct__9C8022F98CFv Matching .cpp (member
 - wMF (2026-11-06): main (text_800605AC) NonMatching .cpp draft, SDIFF 8 (only the lis/li scheduling of the first call args differs).
+- wMF (2026-11-06): __dt__Q23std9exceptionFv Matching .cpp:  +  (gives the SPECIFICATION extab); declare what() before the dtor so the vtable is not emitted here.
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
