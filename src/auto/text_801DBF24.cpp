@@ -54,12 +54,12 @@ void fn_801DBF24(W2 *p) {
                 if (!(c->flags & 2)) c->B = c->T + (o[3] - o[1]);
                 break;
             case 2:
-                if (r == p) c->T = (p->B - p->T) * lbl_80365258 + c->off[j];
-                else c->T = (r->B - r->T) * lbl_80365258 + c->off[j];
+                if (r == p) { f32 dd = (p->B - p->T); c->T = dd * lbl_80365258 + c->off[j]; }
+                else { f32 dd = (r->B - r->T); c->T = dd * lbl_80365258 + c->off[j]; }
                 if (!(c->flags & 2)) c->B = c->T + (o[3] - o[1]);
                 break;
             case 4:
-                if (r == p) c->T = (p->B - p->T) + c->off[j];
+                if (r == p) { f32 dd = (p->B - p->T); c->T = dd + c->off[j]; }
                 else c->T = r->B + c->off[j];
                 if (!(c->flags & 2)) c->B = c->T + (o[3] - o[1]);
                 break;
@@ -69,23 +69,23 @@ void fn_801DBF24(W2 *p) {
                 if (!(c->flags & 1)) c->T = c->B - (o[3] - o[1]);
                 break;
             case 0x10:
-                if (r == p) c->B = (p->B - p->T) * lbl_80365258 - c->off[j];
-                else c->B = (r->B - r->T) * lbl_80365258 - c->off[j];
+                if (r == p) { f32 dd = (p->B - p->T); c->B = dd * lbl_80365258 - c->off[j]; }
+                else { f32 dd = (r->B - r->T); c->B = dd * lbl_80365258 - c->off[j]; }
                 if (!(c->flags & 1)) c->T = c->B - (o[3] - o[1]);
                 break;
             case 0x20:
-                if (r == p) c->B = (p->B - p->T) - c->off[j];
+                if (r == p) { f32 dd = (p->B - p->T); c->B = dd - c->off[j]; }
                 else c->B = r->B - c->off[j];
                 if (!(c->flags & 1)) c->T = c->B - (o[3] - o[1]);
                 break;
             case 0x40:
-                if (r == p) c->R = (p->R - p->L) - c->off[j];
+                if (r == p) { f32 dd = (p->R - p->L); c->R = dd - c->off[j]; }
                 else c->R = r->R - c->off[j];
                 if (!(c->flags & 8)) c->L = c->R - (o[2] - o[0]);
                 break;
             case 0x80:
-                if (r == p) c->R = (p->R - p->L) * lbl_80365258 - c->off[j];
-                else c->R = (r->R - r->L) * lbl_80365258 - c->off[j];
+                if (r == p) { f32 dd = (p->R - p->L); c->R = dd * lbl_80365258 - c->off[j]; }
+                else { f32 dd = (r->R - r->L); c->R = dd * lbl_80365258 - c->off[j]; }
                 if (!(c->flags & 8)) c->L = c->R - (o[2] - o[0]);
                 break;
             case 0x100:
@@ -94,13 +94,13 @@ void fn_801DBF24(W2 *p) {
                 if (!(c->flags & 8)) c->L = c->R - (o[2] - o[0]);
                 break;
             case 0x200:
-                if (r == p) c->L = (p->R - p->L) + c->off[j];
+                if (r == p) { f32 dd = (p->R - p->L); c->L = dd + c->off[j]; }
                 else c->L = r->R + c->off[j];
                 if (!(c->flags & 4)) c->R = c->L + (o[2] - o[0]);
                 break;
             case 0x400:
-                if (r == p) c->L = (p->R - p->L) * lbl_80365258 + c->off[j];
-                else c->L = (r->R - r->L) * lbl_80365258 + c->off[j];
+                if (r == p) { f32 dd = (p->R - p->L); c->L = dd * lbl_80365258 + c->off[j]; }
+                else { f32 dd = (r->R - r->L); c->L = dd * lbl_80365258 + c->off[j]; }
                 if (!(c->flags & 4)) c->R = c->L + (o[2] - o[0]);
                 break;
             case 0x800:
@@ -110,20 +110,20 @@ void fn_801DBF24(W2 *p) {
                 break;
             case 0x1000:
                 if (r == p) {
-                    c->T = ((p->B - p->T) - (c->B - c->T)) * lbl_80365258;
+                    { f32 g = (p->B - p->T) - (c->B - c->T); c->T = g * lbl_80365258; }
                     c->B = (p->B - p->T) - c->T;
                 } else {
-                    f32 h = ((r->B - r->T) - (c->B - c->T)) * lbl_80365258;
+                    f32 g = (r->B - r->T) - (c->B - c->T); f32 h = g * lbl_80365258;
                     c->T = h + *(volatile f32 *)&r->T;
                     c->B = r->B - h;
                 }
                 break;
             case 0x2000:
                 if (r == p) {
-                    c->L = ((p->R - p->L) - (c->R - c->L)) * lbl_80365258;
+                    { f32 g = (p->R - p->L) - (c->R - c->L); c->L = g * lbl_80365258; }
                     c->R = (p->R - p->L) - c->L;
                 } else {
-                    f32 h = ((r->R - r->L) - (c->R - c->L)) * lbl_80365258;
+                    f32 g = (r->R - r->L) - (c->R - c->L); f32 h = g * lbl_80365258;
                     c->L = h + *(volatile f32 *)&r->L;
                     c->R = r->R - h;
                 }
@@ -142,11 +142,10 @@ void fn_801DBF24(W2 *p) {
                     o[1] = r->T;
                     o[2] = r->R;
                     o[3] = r->B;
-                    d = c->off[j];
-                    o[1] = o[1] + d;
-                    o[3] = o[3] - d;
-                    o[0] = o[0] + d;
-                    o[2] = o[2] - d;
+                    o[1] = o[1] + c->off[j];
+                    o[3] = o[3] - c->off[j];
+                    o[0] = o[0] + c->off[j];
+                    o[2] = o[2] - c->off[j];
                     c->setR(o);
                 }
                 break;

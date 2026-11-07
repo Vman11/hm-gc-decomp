@@ -894,3 +894,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wQH (2026-11-07): fn_80144CEC NonMatching: DIFF 86->64 SDIFF 0 (rect locals declared 'dx0, dx1, dy0, x0, dy1, x1, y0, y1'); left: dst/dpitch, src/e saved-reg swaps
 - wQL (2026-11-07): fn_8023B7DC MATCHED: last diff (vtable load base r3 vs r31 after call) was caused by #pragma peephole off; removing it matches.
 - wQI (2026-11-07): fn_80203860 MATCHED: o-loop counter 'u32 o' declared fn-block-scope next to i, 's32 j' declared there too; chunk buffer via 'static inline u8 *nb8() { return new u8[0x8000]; }' fixed buf/K swap; needs extab_padding=[0xB1, 0x02].
+- wQL (2026-11-07): fn_801DBF24 MATCHED: FPR colouring fixed by naming the sub-differences: `{ f32 dd = (p->B - p->T); c->T = dd * K + off; }` for every (a - b)*K / (a - b) +- off case, `f32 g = (..) - (..); x = g * K;` in 0x1000/0x2000, and using c->off[j] directly (no d temp) in the 0x4000 else-branch.
