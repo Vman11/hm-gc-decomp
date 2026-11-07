@@ -18,12 +18,12 @@ void fn_800C3AEC(void *, u32);
 int fn_8014D8D8(P *p) {
     u32 i;
     int h;
-    for (i = 0; i < p->obj->n; i++)
-        fn_8011D8A4(p->obj, i, (p->d->bits & lbl_802A0240[i]) != 0);
+    for (i = 0; i < p->obj->n; ++i)
+        fn_8011D8A4(p->obj, i, (lbl_802A0240[i] & p->d->bits) != 0);
     {
-        int v = p->d->a[0];
+        s32 v = p->d->a[0];
         f32 f = v;
-        h = p->obj->has;
+        h = *(int volatile *)&p->obj->has;
         if (h) f += fn_8011D82C(p->obj, 0);
         fn_8011D79C(p->obj, 0, f);
     }
@@ -51,7 +51,7 @@ int fn_8014D8D8(P *p) {
     {
         int v = p->d->b[0];
         f32 f = v;
-        h = p->obj->has;
+        h = (p->obj->has);
         if (h) f += fn_8011D82C(p->obj, 4);
         fn_8011D79C(p->obj, 4, f);
     }
@@ -68,7 +68,7 @@ int fn_8014D8D8(P *p) {
         if (p->x1c >= lbl_80364514 || p->x18 > lbl_80364514) {
             p->x18 = lbl_80364500;
             if (p->st != 1) { p->st = 1; fn_800C3AEC(p->x14, p->st); }
-        } else if (p->st != 0) { p->st = 0; fn_800C3AEC(p->x14, p->st); }
+        } else if (0 != p->st) { p->st = 0; fn_800C3AEC(p->x14, p->st); }
     }
     return 0;
 }
