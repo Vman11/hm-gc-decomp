@@ -858,3 +858,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wNB (2026-11-06): MATCHED fn_801F3174 (huffman build) on GC/1.3.2+lmw: __restrict on h and lens (unblocks x8 copy-loop load hoist), 'h->sym[i] = i;' before 'len[i] = lens[i];', decl order cur before c, 'for (i = 0, cur = 0, c = 0; ...)' for li order, fresh k/cl vars for the last loop (li not mr).
 - wNG (2026-11-06): MATCHED fn_80228A48 with '#pragma scheduling once' before the fn (fixes entry fmr f30,f1 placement after the loads; volatile p->it kept).
 - wNJ (2026-11-06): MATCHED fn_8019F188 / fn_8019F8FC (plane from height, K-load-before-field-load scheduling): read K and the field through volatile casts in that order into locals declared 'f32 w, k;' (w first -> f0), stores non-volatile.
+- wNI (2026-11-06): MATCHED fn_80151E84 (Mtx44 translate) on GC/2.0p1: plain m[3]=v[0] reads with const f32 *v (1.3.2 always hoists the v loads above the first K load).
