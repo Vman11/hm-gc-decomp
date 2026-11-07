@@ -62,11 +62,11 @@ static inline void L3(P *p) {
     for (k = 0; k < p->count; k++) {
         if (p->nodes[k]) {
             V3 *v = p->t668->v;
-            f32 x, y, z;
+            f32 z, f, y, x;
             z = v->z; y = v->y; x = v->x;
             s.x = x; s.y = y; s.z = z;
             if (p->f672 && p->u676) {
-                f32 f = *p->f672;
+                f = *p->f672;
                 s.x = x * f;
                 s.y = y * f;
                 s.z = z * f;

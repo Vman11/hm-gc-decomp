@@ -887,3 +887,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wQF (2026-11-07): fn_8011F36C MATCHED: register-only diff fixed by moving each outer-loop body into its own static inline (drainN(p,i)) with locals declared `N *n; void *d; ...; L *a;` (a last = colored first); 2nd copy needed `L *a; u32 j;` swapped.
 - wQH (2026-11-07): fn_8023B7DC NonMatching: DIFF 82->2 SDIFF 0 (u8* loop ptr, i declared before q); left: lwz r12,0(r3) vs 0(r31) after call
 - wQB (2026-11-07): fn_801009DC MATCHED (GC/2.0p1): FP colouring of dist2/proj/disc fixed by reading the zero constant as `*(f32 *)&lbl_803637F4` in the `disc <= K` test only (wPQ unshared-constant trick).
+- wQH (2026-11-07): fn_8005C7D8 NonMatching: DIFF 86->70 SDIFF 0 (L3 floats: 'f32 z, f, y, x;' decl order fixes FPR colouring); left: p r27 vs r28 / loop IV regs
