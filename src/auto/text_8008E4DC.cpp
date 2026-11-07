@@ -100,8 +100,8 @@ extern "C" void fn_8008E4DC(O *o, s32 idx) {
         a.z += *o->f368;
         d.x = a.x - px; d.y = a.y - py; d.z = a.z - pz;
         l = fn_80101664(&d) / *o->f280;
-        d.x *= *o->f280; d.y *= *o->f280; d.z *= *o->f280;
-        l = lbl_80360694 * l * *o->f372;
+        *(volatile f32 *)&d.x = d.x * *o->f280; *(volatile f32 *)&d.y = d.y * *o->f280; *(volatile f32 *)&d.z = d.z * *o->f280;
+        l = *(volatile f32 *)&lbl_80360694 * l * *o->f372;
         d.z = d.z + l;
         { Cam *c = o->f224; c->f316 = d.x; c->f320 = d.y; c->f324 = d.z; }
         fn_802494A4(o, 2);
