@@ -32,9 +32,8 @@ int fn_8014E464(u8 *p, u32 a) {
     mask = 0;
     m2 = 0;
     for (i = 0; i < 4; i++) {
-        s8 c = ((El *)(p + 48))[i].f10;
-        if (c == 0 || c == -3) mask |= 1 << i;
-        else if (c == -1) m2 |= tbl[i];
+        if (((El *)(p + 48))[i].f10 == 0 || ((El *)(p + 48))[i].f10 == -3) mask |= 1 << i;
+        else if (((El *)(p + 48))[i].f10 == -1) m2 |= tbl[i];
     }
     if (m2) fn_800C3324(m2);
     old = U32(3152);
