@@ -75,8 +75,9 @@ void fn_802551DC(S *s, u8 *b, s32 a5, u32 a6, u32 a7) {
     s->f44 = s->f4->f16->v25();
     fn_80129938(s->f44, s->f32);
     {
-        R4 r(lbl_803665B8, lbl_803665B8, s2->f640, s2->f644);
-        fn_80129564(s->f44, r.v, lbl_803665B8, lbl_803665A8);
+        f32 b_ = (f32)s2->f644; f32 a_ = (f32)s2->f640; f32 k0 = lbl_803665B8;
+        R4 r(k0, k0, a_, b_);
+        fn_80129564(*(void *volatile *)&s->f44, r.v, k0, lbl_803665A8);
     }
     {
         V3c eye, at, up;
@@ -84,8 +85,8 @@ void fn_802551DC(S *s, u8 *b, s32 a5, u32 a6, u32 a7) {
         f32 k = VS(lbl_803665B8);
         VS(eye.y) = k; VS(eye.z) = k;
         VS(at.x) = eye.x; VS(at.y) = k; VS(at.z) = k;
-        at.z += lbl_803665A8;
-        VS(up.x) = k; VS(up.y) = -1.0f; VS(up.z) = k;
+        { f32 z = at.z + lbl_803665A8; VS(up.x) = k; VS(at.z) = z; }
+        VS(up.y) = -1.0f; VS(up.z) = k;
         fn_80129710(s->f44, &eye.x, &at.x, &up.x);
     }
     s->f128 = lbl_8035B7AC[0];
