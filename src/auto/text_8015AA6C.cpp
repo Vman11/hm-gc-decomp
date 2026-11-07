@@ -48,7 +48,8 @@ static inline s32 rd(C80215414 *f, void *buf, u32 n, Rq *&rq) {
     return e;
 }
 extern "C" {
-void fn_8015AA6C(Res *res, X *x, char *path) {
+void fn_8015AA6C(Res *res, void *xp, char *path) {
+    X *x = (X *)xp;
     Rq *rq;
     u8 *op;
     u8 *dp;
@@ -59,6 +60,9 @@ void fn_8015AA6C(Res *res, X *x, char *path) {
     s32 e;
     u8 *buf;
     u32 sz;
+    u32 i;
+    u32 off;
+    u32 off2;
     if ((e = fn_80215284(&f, path, lbl_803645B8, 2)) != 0) fn_80060E30(e, lbl_803645BC, path, lbl_803645B8);
     if ((e = fn_80215154(&f, &h1, 16, 0)) != 0) fn_80060E30(e, lbl_803645BC, path, lbl_803645B8);
     if ((e = fn_80215154(&f, &h2, 32, 0)) != 0) fn_80060E30(e, lbl_803645BC, path, lbl_803645B8);
@@ -80,18 +84,16 @@ void fn_8015AA6C(Res *res, X *x, char *path) {
     fn_8012D6D8(res, x, h2.h66, nz(h2.name));
     {
         Ref *r = (Ref *)(buf + h2.refOff);
-        u32 i;
         fn_8013EBAC(res->refs, x, h2.nRefs);
-        for (i = 0; i < h2.nRefs; r++, i++) res->ptrs[i] = findC(x, r->grp, r);
+        for (i = 0, off = 0; i < h2.nRefs; r++, off += 4, i++) *(void **)((u8 *)res->ptrs + off) = findC(x, r->grp, r);
     }
     op = buf + h2.objOff;
     dp = res->data + h2.dataOff;
     {
-        u32 i;
-        for (i = 0; i < res->nObj; i++) {
-            fn_80179250(res->objs + i * 236, x, res, &op, &dp);
-            memcpy(&k, res->objs + i * 236, 8);
-            fn_800F87F0(res, &k, res->objs + i * 236);
+        for (i = 0, off2 = 0; i < res->nObj; off2 += 236, i++) {
+            fn_80179250(res->objs + off2, x, res, &op, &dp);
+            memcpy(&k, res->objs + off2, 8);
+            fn_800F87F0(res, &k, res->objs + off2);
         }
     }
     delete[] buf;
