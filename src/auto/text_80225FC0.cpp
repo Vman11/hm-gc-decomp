@@ -45,7 +45,7 @@ static inline void Ins(Pr *t, Pr *p) {
 }
 void fn_80225FC0(O *o) {
     N *na, *nb;
-    void *c1, *c2;
+    C36 c;
     X *xa, *xb;
     u32 off, i, j;
     memset(o->cur, 0, 2648);
@@ -59,10 +59,9 @@ void fn_80225FC0(O *o) {
             fn_8017B9C8(o->x10624, 1);
             fn_80190C48(na, nb, o->x10624);
             if (!o->x10628) continue;
-            c1 = o->x10636->a;
-            c2 = o->x10636->b;
+            c = *o->x10636;
         } else {
-            c2 = c1 = 0;
+            c.a = 0; c.b = 0;
         }
         xa = na->x60;
         xb = nb->x60;
@@ -76,19 +75,19 @@ void fn_80225FC0(O *o) {
             }
             Ins(o->cur, &(*(Pr *)((u8 *)o->pairs + off)));
             if ((xa->x552 & 1) && (xb->x552 & 1)) {
-                xa->touch(nb, o, c1, c2, 0);
-                xb->touch(na, o, c2, c1, 1);
+                xa->touch(nb, o, c.a, c.b, 0);
+                xb->touch(na, o, c.b, c.a, 1);
             }
         } else if (xa) {
             u32 k = Find(o->prev, &(*(Pr *)((u8 *)o->pairs + off)));
             if (k < 331) Clear(o->prev, k);
             Ins(o->cur, &(*(Pr *)((u8 *)o->pairs + off)));
-            if (xa->x552 & 1) xa->touch(nb, o, c1, c2, 0);
+            if (xa->x552 & 1) xa->touch(nb, o, c.a, c.b, 0);
         } else if (xb) {
             u32 k = Find(o->prev, &(*(Pr *)((u8 *)o->pairs + off)));
             if (k < 331) Clear(o->prev, k);
             Ins(o->cur, &(*(Pr *)((u8 *)o->pairs + off)));
-            if (xb->x552 & 1) xb->touch(na, o, c2, c1, 1);
+            if (xb->x552 & 1) xb->touch(na, o, c.b, c.a, 1);
         }
     }
     for (i = 0; i < 331; i++) {
