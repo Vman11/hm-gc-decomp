@@ -59,8 +59,9 @@ void fn_80212DA4(C80213428 *p, wA_F *f) {
             fn_80060568("AtIoSafeJamDirectory::vLoad:  error loading!\n", 0, 0, 0);
         }
         {
-            u32 i;
+            C80213428 *d;
             u32 o;
+            u32 i;
             for (i = 0, o = 0; i < p->nd; i++) {
                 s32 r = wA_rd(f, buf, 8, &got, t);
                 if (r != 0) {
@@ -70,7 +71,7 @@ void fn_80212DA4(C80213428 *p, wA_F *f) {
                     fn_80060568("AtIoSafeJamDirectory::vLoad:  unable to load the entire directory entry!\n", 0, 0, 0);
                 }
                 {
-                    C80213428 *d = (C80213428 *)((u8 *)p->dirs + o);
+                    d = (C80213428 *)((u8 *)p->dirs + o);
                     u32 w = buf[4] + (buf[5] << 8) + (buf[6] << 16) + (buf[7] << 24);
                     u32 v = buf[0] + (buf[1] << 8) + (buf[2] << 16) + (buf[3] << 24);
                     u16 a = v & 0xfff;
