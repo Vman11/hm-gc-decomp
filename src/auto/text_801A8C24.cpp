@@ -158,12 +158,17 @@ s32 fn_801A8C24(P *p, s32 a, s32 b) {
             break;
         }
     } else {
-        u32 key = (u16)a;
-        s32 kl = key | 0x20;
-        It *o = p->f170;
-        s32 cnt = o->f188 - 1;
-        s32 start = o->f1d4->fc[0];
+        It *o;
         s32 i;
+        s32 cnt;
+        s32 kl;
+        u32 key;
+        s32 start;
+        key = (u16)a;
+        kl = key | 0x20;
+        o = p->f170;
+        cnt = o->f188 - 1;
+        start = o->f1d4->fc[0];
         for (i = start + 1; i != start; i++) {
             if (i > cnt) i = 0;
             It *q = p->f170;
