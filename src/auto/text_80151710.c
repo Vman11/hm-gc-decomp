@@ -1,34 +1,31 @@
 /* Functions from 0x80151710 to 0x80151958, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80151710(void *arg0, void *arg1) {
-extern f32 lbl_8036453C, lbl_80364540, lbl_80364544;
-f32 normal[3];
-f32 x,y,z,xx,yy,zz,d;
-normal[0]=M2C_FIELD(arg1,f32 *,0);
-normal[1]=M2C_FIELD(arg1,f32 *,4);
-normal[2]=M2C_FIELD(arg1,f32 *,8);
-x=normal[0]; y=normal[1]; z=normal[2];
-xx=x*lbl_80364540;
-yy=y*lbl_80364540;
-M2C_FIELD(arg0,f32 *,0)=-(xx*x-lbl_8036453C);
-zz=z*lbl_80364540;
-M2C_FIELD(arg0,f32 *,0x10)=-(xx*y);
-M2C_FIELD(arg0,f32 *,0x20)=-(xx*z);
-M2C_FIELD(arg0,f32 *,0x30)=lbl_80364544;
-d=-M2C_FIELD(arg1,f32 *,0xC);
-M2C_FIELD(arg0,f32 *,4)=-(yy*x);
-M2C_FIELD(arg0,f32 *,0x14)=-(yy*y-lbl_8036453C);
-M2C_FIELD(arg0,f32 *,0x24)=-(yy*z);
-M2C_FIELD(arg0,f32 *,0x34)=lbl_80364544;
-M2C_FIELD(arg0,f32 *,8)=-(zz*x);
-M2C_FIELD(arg0,f32 *,0x18)=-(zz*y);
-M2C_FIELD(arg0,f32 *,0x28)=-(zz*z-lbl_8036453C);
-M2C_FIELD(arg0,f32 *,0x38)=lbl_80364544;
-M2C_FIELD(arg0,f32 *,0xC)=xx*d;
-M2C_FIELD(arg0,f32 *,0x1C)=yy*d;
-M2C_FIELD(arg0,f32 *,0x2C)=zz*d;
-M2C_FIELD(arg0,f32 *,0x3C)=lbl_8036453C;
+void fn_80151710(f32 *m, f32 *p) {
+    extern f32 lbl_8036453C, lbl_80364540, lbl_80364544;
+    f32 a, b, c, x, y, z, d;
+    a = p[0]; y = p[1]; z = p[2];
+    b = y; c = z;
+    x = a * lbl_80364540;
+    y *= lbl_80364540;
+    z *= lbl_80364540;
+    d = -p[3];
+    m[0] = -(x * a - lbl_8036453C);
+    m[4] = -(x * b);
+    m[8] = -(x * c);
+    m[12] = lbl_80364544;
+    m[1] = -(y * a);
+    m[5] = -(y * b - lbl_8036453C);
+    m[9] = -(y * c);
+    m[13] = lbl_80364544;
+    m[2] = -(z * a);
+    m[6] = -(z * b);
+    m[10] = -(z * c - lbl_8036453C);
+    m[14] = lbl_80364544;
+    m[3] = x * d;
+    m[7] = y * d;
+    m[11] = z * d;
+    m[15] = lbl_8036453C;
 }
 
 void fn_801517E4(void *arg0, f32 farg0, f32 farg1) {
