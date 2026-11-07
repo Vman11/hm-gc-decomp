@@ -18,7 +18,7 @@ void fn_800F7E98(void);
 extern void *lbl_8035AFCC;
 
 static inline void copyIds(O1C *o, s32 n) {
-    for (s32 i = 0; i < n; i++) o->map[i] = o->list->ent[i].id;
+    for (s32 i = 0; i < n; i++) o->map[i] = o->list->ent[(u32)i].id;
 }
 void fn_801C0358(O1C *o, void *s, s32 b) {
     K8 k0, k2, k1, k3;
@@ -41,7 +41,7 @@ void fn_801C0358(O1C *o, void *s, s32 b) {
             copyIds(o, n);
         }
         for (j = 0; j < n; j++)
-            if (from == o->list->ent[j].id) o->map[j] = to;
+            if (from == o->list->ent[(u32)j].id) o->map[j] = to;
     }
 }
 }
