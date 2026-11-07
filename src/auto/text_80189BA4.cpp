@@ -1,4 +1,4 @@
-// fn_80189BA4: NonMatching (GC/2.0p1), only FP reg swap x0(f7)/w(f9) left in rect setup; see hm-work/wA_80189BA4/STATUS.txt
+// fn_80189BA4: NonMatching (GC/2.0p1), GW/GH getters (wRP) -> DIFF 8 SDIFF 0, only x0(f7)/w(f9) FP swap left; see hm-work/wA_80189BA4/STATUS.txt
 #include "common.h"
 
 extern "C" {
@@ -78,6 +78,8 @@ inline f32 Sq(f32 x)
     return x;
 }
 
+inline f32 GW(W *w) { return w->w; }
+inline f32 GH(W *w) { return w->h; }
 void fn_80189BA4(Fx *fx, Ctx *c, W *w)
 {
     Mat m;
@@ -92,8 +94,8 @@ void fn_80189BA4(Fx *fx, Ctx *c, W *w)
     w->m = w->w;
     if (w->m < w->h) w->m = w->h;
     {
-    f32 tx = lbl_80364A00 * (lbl_803649FC + w->dx) * w->w + x0;
-    f32 ty = lbl_80364A00 * (lbl_803649FC + w->dy) * w->h + y0;
+    f32 tx = lbl_80364A00 * (lbl_803649FC + w->dx) * GW(w) + x0;
+    f32 ty = lbl_80364A00 * (lbl_803649FC + w->dy) * GH(w) + y0;
     w->cx = lbl_80364A00 * w->w + x0;
     w->cy = lbl_80364A00 * w->h + y0;
     w->ox = tx - w->cx;
