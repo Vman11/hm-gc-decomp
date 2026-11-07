@@ -2,16 +2,16 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching (DIFF 32, SDIFF 4): 12-byte V copy regs (r5/r3 + late global load, same as fn_8025E1DC), f3/f4 swap in the dot, f0/f2 in the f1c product.
+// NonMatching (DIFF 20, SDIFF 0): volatile copy-ctor + volatile globals fix the 12-byte copy order; left: f3/f4 swap in the dot, f0/f2 in the f1c product.
 
 extern "C" {
 
 struct W_7148C { u32 v[3]; };
-struct V_7148C { f32 x, y, z; V_7148C() {} V_7148C(const V_7148C &o) { *(W_7148C *)this = *(const W_7148C *)&o; } };
+struct V_7148C { f32 x, y, z; V_7148C() {} V_7148C(const V_7148C &o) { volatile u32 *d = (volatile u32 *)this; const volatile u32 *q = (const volatile u32 *)&o; u32 a = q[0], b = q[1], c = q[2]; d[0] = a; d[1] = b; d[2] = c; } };
 struct FT_7148C { u8 pad[12]; void (*f12)(void *, V_7148C *); };
 extern FT_7148C lbl_803286D0;
 struct G334_7148C { u8 pad[8]; void *f8; };
-extern G334_7148C *lbl_8035B334;
+extern G334_7148C *volatile lbl_8035B334;
 struct P_7148C { u8 pad[16]; void *f16; u8 pad20[12]; u32 f32; };
 struct O_7148C { u32 f0; u8 pad4[44]; P_7148C *f48; u8 pad52[100]; u32 f152; f32 f156; u8 pad160[12]; f32 f172; };
 struct E_7148C { u8 pad[0x5c]; char *f5c[2]; char *f64; u8 f68; };
@@ -55,7 +55,7 @@ static inline void spawn_7148C(char *nm, V_7148C p) {
 }
 
 static inline void snd_7148C(T_7148C *t, char *nm, V_7148C p) {
-    fn_8023F5FC(t, nm, lbl_8035F35C);
+    fn_8023F5FC(t, nm, *(volatile f32 *)&lbl_8035F35C);
     if (t->f114) {
         act_7148C(t->f114->f0, &p);
         t->f114->fc = 1;
