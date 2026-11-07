@@ -1,4 +1,4 @@
-// NonMatching draft (wMU: AttrFmts(int v) + fn_8014C784(&l, &g->fmt): SDIFF 0, regs only: vf r30 vs r29)
+// NonMatching draft (wMU: AttrFmts(int v) + fn_8014C784(&l, &g->fmt); wRA: fl/h temps in Tail fix vf-expr temps: DIFF 18, SDIFF 0, only vf r30 vs r29)
 #include "common.h"
 extern "C" {
 typedef struct Fl {
@@ -44,8 +44,10 @@ static inline void AttrFmts(int v, Fmt *f) {
 static inline u32 Tail(Ctx *c, Geo *g, Fmt *l) {
     u32 vf;
     Slot *sl;
-    vf = (((l->fl >> 7) & 1) ^ 1) | (((l->fl >> 12) & 1) ? 2 : 0);
-    if ((g->fl >> 5) & 1) {
+    u32 h = (g->fl >> 5) & 1;
+    u32 fl = l->fl;
+    vf = (((fl >> 7) & 1) ^ 1) | (((fl >> 12) & 1) ? 2 : 0);
+    if (h) {
         vf |= 4;
         sl = &c->slot[(vf >> 1) & 1];
         if (!fn_8014C4B4(sl, l)) {
