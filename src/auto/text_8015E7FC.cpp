@@ -22,10 +22,11 @@ void fn_8016BC04(Ctx *, R *);
 void fn_8016BB80(Ctx *, void *, void *, R *);
 void fn_8016BAF8(Ctx *, void *, void *, R *);
 
-void fn_8015E7FC(A *a, R *r, int start, int cnt, L *l, void *p8, void *p9) {
+void fn_8015E7FC(A *a, void *rp, int start, int cnt, L *l, void *p8, void *p9) {
     Ctx *c;
     u32 k;
     u32 pass;
+    R *r;
     It *it;
     It *end;
     It *first;
@@ -34,6 +35,7 @@ void fn_8015E7FC(A *a, R *r, int start, int cnt, L *l, void *p8, void *p9) {
     int any;
     drew = 0;
     any = 0;
+    r = (R *)rp;
     c = r->ctx;
     if (!l) l = &a->l;
     if (l->n < 1) return;
