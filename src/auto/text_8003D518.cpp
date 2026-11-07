@@ -47,7 +47,7 @@ void fn_8003D518(T *t, u8 **pbuf, s32 *pos) {
     fn_800F6FBC(lbl_80357740, k24);
     (*pbuf)[*pos] = lbl_8035B684->a5(k24);
     (*pos)++;
-    SumA(t, &sum);
+    sum = 0; for (j = 0; j < 31; j++) sum += t->a1484[j];
     memcpy(*pbuf + *pos, &sum, 4);
     *pos += 4;
     for (i = 0; i < lbl_8035B684->a6(); i++) {
