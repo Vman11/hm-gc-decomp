@@ -41,16 +41,19 @@ static inline Item *Alloc(Pool *P, E *e) {
     return q;
 }
 
-void fn_8015E1F8(G *g, B *b, Lst *lst, int x, It *it, u32 n) {
-    E *e;
-    E *end;
-    E *first;
-    C *c;
+void fn_8015E1F8(G *g, B *b_, Lst *lst, int x, It *it_, u32 n_) {
+    u32 j;
     int drew;
     u32 i;
     Pool *P;
-    u32 j;
+    It *it = it_;
     u32 k;
+    E *first;
+    C *c;
+    u32 n = n_;
+    E *e;
+    B *b = b_;
+    E *end;
     P = b->pool;
     drew = 0;
     if (lst == 0) lst = &g->lst;
@@ -77,7 +80,7 @@ void fn_8015E1F8(G *g, B *b, Lst *lst, int x, It *it, u32 n) {
                         fn_8016BFF0(P, q, c, b);
                     }
                     e++;
-                } while (e < end && e->key == k);
+                } while (e < end && k == e->key);
                 if (!(c->flags & 0x300)) continue;
                 e = first;
             }
@@ -111,7 +114,7 @@ void fn_8015E1F8(G *g, B *b, Lst *lst, int x, It *it, u32 n) {
                     }
                 }
                 e++;
-            } while (e < end && e->key == k);
+            } while (e < end && k == e->key);
             j++;
         } while (j < c->passes);
     }
