@@ -1,4 +1,4 @@
-// fn_8016FA80: NonMatching, billboard quad emit; logic right, uv consts reload + v3/v4 colour loads match; left: FP scheduling/regalloc (target keeps z1 in f31, 4 more insns); see hm-work/wA_80189BA4/STATUS.txt
+// fn_8016FA80: NonMatching (DIFF 212; decl order ax,az,ay then c), billboard quad emit; logic right, uv consts reload + v3/v4 colour loads match; left: FP scheduling/regalloc (target keeps z1 in f31, 4 more insns); see hm-work/wA_80189BA4/STATUS.txt
 #include "common.h"
 
 extern "C" {
@@ -23,8 +23,8 @@ extern f32 lbl_8036471C;
 
 void fn_8016FA80(Emi *e, Part *p, Strm *s) {
 //P{
+    f32 ax, az, ay;
     f32 cx, cy, cz;
-    f32 ax, ay, az;
     f32 bx, by, bz;
     u32 *cp;
     s32 st;
