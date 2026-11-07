@@ -471,6 +471,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wMF (2026-11-06): fn_800326D0 NonMatching .cpp draft (wDJ best, DIFF 26): rect conversion scheduling + zero CSE left.
 - wMM (2026-11-06): fn_80106B40 Matching: compound 'o->x += a->x' inline (vs 'o->x = o->x + a->x') makes MWCC reload the field instead of CSE'ing the earlier load of the same address.
 - wMU (2026-11-06): NonMatching progress: fn_801581F0 SDIFF 17->0 (AttrFmts(int v) + fn_8014C784(&l, &g->fmt); regs only, vf r30 vs r29); fn_80145114 SDIFF 18->8 (GC/2.6 + __restrict r fixed prologue; left entry mullw/srawi order); fn_800AA770 SDIFF 18->12 (volatile p0=a+f stores + volatile 0.05 read).
+- wNE (2026-11-06): matched fn_801644BC, fn_80164518 (GC/2.6 + __restrict on the FIRST param only; restrict on both ptrs breaks it).
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
