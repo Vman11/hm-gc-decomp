@@ -1,3 +1,4 @@
+// Matched (wQU): res/fill moved into static inline inqB (res declared before the fill loop index u32 i, passed by ref to fillr).
 #include "common.h"
 extern "C" {
 struct R { u8 pad_[292]; virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3(); virtual void v4(int); virtual u32 v5(); };
@@ -19,8 +20,8 @@ struct E64 { u8 b[64]; };
 struct P { u32 n0, n1, n2; u8 pad[0x18 - 12]; u32 v18; u8 pad2[0x50 - 0x1c]; E8 *e80; u8 pad3[0xa8 - 0x54]; u32 tot, sub; u8 pad4[0xd0 - 0xb0]; u32 vp_; E64 *e212; u8 b216[4]; };
 static inline void upd(P *p) { p->tot = p->n0 + p->n1 + p->n2; }
 static inline void upd2(P *p) { p->sub = p->n1 + p->n2; }
-static inline void fill(P *p, ST *st, u32 i) {
-    for (; i < p->n1; i++) {
+static inline void fillr(P *p, ST *st, u32 &i) {
+    for (i = 0; i < p->n1; i++) {
         DD d;
         memset(&d, 0, sizeof(DD));
         *(volatile u32 *)&d.c = p->e80[i].a;
@@ -36,10 +37,10 @@ static inline void fill(P *p, ST *st, u32 i) {
         fn_80118B5C(&p->e212[i], &d);
     }
 }
+static inline int inqB(P *p, ST *st) { int res = fn_8011F5C0(p, st); u32 i; if (!res) { res = ((P0 *)p)->v3(); if (!res) fillr(p, st, i); } return res; }
 int fn_80117434(P *p, void *u, R *r) {
     ST st;
     u32 t;
-    int res;
     memset(&st, 0, sizeof(ST));
     memset(&st, 0, sizeof(ST));
     st.e = lbl_80363A78;
@@ -56,13 +57,6 @@ int fn_80117434(P *p, void *u, R *r) {
         }
     }
     fn_80118694(p->b216, p->tot * 2, 255);
-    res = fn_8011F5C0(p, &st);
-    if (!res) {
-        res = ((P0 *)p)->v3();
-        if (!res) {
-            fill(p, &st, 0);
-        }
-    }
-    return res;
+    return inqB(p, &st);
 }
 }
