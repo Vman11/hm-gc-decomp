@@ -50,28 +50,30 @@ void fn_80144B64(C80144CEC *);
 
 void fn_80144CEC(C80144CEC *t, u8 *dst, s32 dpitch, const Rc *d, u8 *src, s32 spitch, const Rc *r) {
     u32 sh, dh;
-    s32 step;
-    u8 *e;
     s32 err, d2;
     s32 dx0, dx1, dy0, x0, dy1, x1, y0, y1;
+    s32 step;
+    u8 *sp;
+    u8 *e;
+    u8 *dp;
     if ((y1 = r->y1) <= (y0 = r->y0) || (x1 = r->x1) <= (x0 = r->x0) || (dy1 = d->y1) <= (dy0 = d->y0) || (dx1 = d->x1) <= (dx0 = d->x0)) return;
     t->f8c = x1 - x0;
     t->f94 = dx1 - dx0;
     dh = dy1 - dy0;
     sh = y1 - y0;
-    dst = dst + (dy0 * dpitch + ((u32)(dx0 * t->f2a) >> 3));
-    src = src + ((u32)(x0 * t->f16) >> 3);
+    dp = dst + dy0 * dpitch + ((u32)(dx0 * t->f2a) >> 3);
+    sp = src + ((u32)(x0 * t->f16) >> 3);
     if (t->f0 & 0x40) {
         step = -spitch;
-        e = src + (y0 - 1) * spitch;
-        src = src + (y1 - 1) * spitch;
+        e = sp + (y0 - 1) * spitch;
+        sp = sp + (y1 - 1) * spitch;
     } else {
         step = spitch;
-        e = src + y1 * spitch;
-        src = src + y0 * spitch;
+        e = sp + y1 * spitch;
+        sp = sp + y0 * spitch;
     }
-    t->fb0 = src;
-    t->fb4 = dst;
+    t->fb0 = sp;
+    t->fb4 = dp;
     {
         s32 v = r->x0;
         t->f90 = v;
@@ -119,32 +121,32 @@ void fn_80144CEC(C80144CEC *t, u8 *dst, s32 dpitch, const Rc *d, u8 *src, s32 sp
             if (err <= 0) {
                 err += d2;
             } else {
-                t->fb0 = src;
-                t->fb4 = dst;
+                t->fb0 = sp;
+                t->fb4 = dp;
                 fn_80144B64(t);
-                dst += dpitch;
+                dp += dpitch;
             }
-            src += step;
-        } while (src != e);
+            sp += step;
+        } while (sp != e);
     } else {
         s32 s2, sd;
         u8 *de;
-        de = dst + dh * dpitch;
         d2 = sh * 2;
         sd = (sh - dh) * 2;
+        de = dp + dh * dpitch;
         err = d2 - dh;
         do {
-            t->fb4 = dst;
+            t->fb4 = dp;
             fn_80144B64(t);
             if (err <= 0) {
                 err += d2;
             } else {
-                src += step;
+                sp += step;
                 err += sd;
-                t->fb0 = src;
+                t->fb0 = sp;
             }
-            dst += dpitch;
-        } while (dst < de);
+            dp += dpitch;
+        } while (dp < de);
     }
     if (t->f180) {
         delete[] t->f180;
