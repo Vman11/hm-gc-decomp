@@ -72,7 +72,8 @@ static inline void inner(u8 *p, u32 i, u32 j) {
         fn_8019556C((*(G **)(U32(160) + 136))->arr[i])->arr[j].f12 = p + 376;
 }
 static inline void inner2(u8 *p, u32 j) {
-    for (; j < ((L *)U32(160))->n; j++) ((L *)U32(160))->arr[j].f12 = p + 376;
+    u32 off = j * 60;
+    for (; j < ((L *)U32(160))->n; off += 60, j++) ((E60 *)((u8 *)((L *)U32(160))->arr + off))->f12 = p + 376;
 }
 static inline void outer(u8 *p, u32 i) {
     for (; i < (*(G **)(U32(160) + 136))->n; i++) inner(p, i, 0);

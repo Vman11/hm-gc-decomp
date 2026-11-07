@@ -877,3 +877,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wPG (2026-11-07): fn_8015012C MATCHED: a*(b*a^T) - first product written with direct array reads (no locals), second caches only a's 9 floats in locals and reads t[][] directly (scripted 196-variant locals/order sweep).
 - wPR (2026-11-07): fn_80101E38 MATCHED: explicit u32 off IV (off = a->f32*12; 'off += 12, i++'), off declared right after data -> data/off/i/end callee-saved order fixed.
 - wPR (2026-11-07): fn_801365BC MATCHED (unit text_80136560 now Matching): inner-loop body as 'static inline void chk(IdList*, Entry10 *e)' called with p->groups[i].entries + j fixed the leaf volatile-reg swap (groups r8 / e r5).
+- wPR (2026-11-07): fn_80238CF4 MATCHED: inner2 loop with explicit byte offset IV 'u32 off = j * 60; ... off += 60, j++' (increment off before j) fixed j/off r5/r6 swap. Same trick matched fn_80101E38.
