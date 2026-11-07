@@ -1,5 +1,5 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
-// fn_8007AC1C NonMatching draft: 44 asm diff lines (ax copy store order, first cross-product scheduling/K reloads).
+// fn_8007AC1C NonMatching draft (wMY): DIFF 28 / SDIFF 6. Volatile ax-neg stores + volatile K read pin the K load; left: post-RA order of ay.x / c.z stores vs fmuls in the first cross product.
 #include "common.h"
 
 extern "C" {
@@ -96,6 +96,11 @@ static inline void Chk(Obj *o, char *s, s32 v) {
     }
 }
 
+static inline void Cross2(V3 *r, V3 *a, V3 *b) {
+    r->z = a->x * b->y - a->y * b->x;
+    r->x = a->y * b->z - a->z * b->y;
+    r->y = a->z * b->x - a->x * b->z;
+}
 static inline void Cross(V3 *r, V3 *a, V3 *b) {
     r->x = a->y * b->z - a->z * b->y;
     r->y = a->z * b->x - a->x * b->z;
@@ -120,7 +125,7 @@ void fn_8007AC1C(Obj *o, f32 dt) {
         if (x) {
             fn_80107244(x, &tp);
         } else {
-            f32 k = lbl_8035F76C;
+            f32 k = *(volatile f32 *)&lbl_8035F76C;
             tp.x = k;
             tp.y = k;
             tp.z = k;
@@ -154,16 +159,27 @@ void fn_8007AC1C(Obj *o, f32 dt) {
             if (*o->f174 != 0) {
                 ax.x = dir.x;
                 ax.y = dir.y;
-                ax.z = dir.z;
+                ((f32 *)&ay)[5] = dir.z;
                 ax.z = lbl_8035F76C;
                 fn_80101820(&ax);
-                ax.x = -ax.x;
-                ax.y = -ax.y;
-                ax.z = -ax.z;
-                ay.x = lbl_8035F76C;
-                ay.y = lbl_8035F76C;
-                ay.z = lbl_8035F790;
-                Cross(&c, &ax, &ay);
+                {
+                    *(volatile f32 *)&ax.x = -ax.x;
+                    *(volatile f32 *)&ax.y = -ax.y;
+                    *(volatile f32 *)&ax.z = -ax.z;
+                    f32 nx = ax.x, ny = ax.y, nz = ax.z;
+                    {
+                        f32 k = *(volatile f32 *)&lbl_8035F76C;
+                        ay.x = k;
+                        ((f32 *)&c)[4] = k;
+                        c.z = nx * k - ny * k;
+                        {
+                            f32 k2 = lbl_8035F790;
+                            ay.z = k2;
+                            c.x = ny * k2 - k * nz;
+                            c.y = nz * k - nx * k2;
+                        }
+                    }
+                }
                 fn_80101820(&c);
                 Cross(&ay, &c, &ax);
                 fn_80101820(&ay);
