@@ -31,7 +31,7 @@ static inline Y *getY(Z *z) { if (z == 0) return 0; else return z->y; }
 
 
 static inline u32 mx(O *o) { u32 i = fn_8007239C(o->f280) - 1; return o->f524->u[i]; }
-static inline f32 tm(O *o) { u32 i = fn_8007239C(o->f280) - 1; f32 *f = o->f528->f; return f[i]; }
+static inline f32 tm(O *o) { u32 i = fn_8007239C(o->f280); Tf *t = o->f528; i--; return t->f[i]; }
 s32 fn_8006C128(O *o) {
     s32 r = 0;
     if (o->cnt < mx(o)) {
