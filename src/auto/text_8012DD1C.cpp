@@ -28,7 +28,7 @@ int fn_80100504(Q4 *, Q4 *, Q4 *, Q4 *);
 static inline s32 W(const Rc *r) { return r->x1 - r->x0; }
 static inline s32 H(const Rc *r) { return r->y1 - r->y0; }
 
-void fn_8012DD1C(T *t, G *g, V2 *pos, V2 *scale, K *col, Q4 *clip) {
+void fn_8012DD1C(T *t, G *g, V2 *__restrict pos, V2 *scale, K *col, Q4 *clip) {
     Q4 out;
     Q4 a;
     Q4 uv;

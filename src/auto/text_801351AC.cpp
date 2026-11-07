@@ -24,7 +24,7 @@ static inline void uv(VL *v, int a, int b) {
     v->uv = (f32 *)((u8 *)v->uv + v->uvstride);
 }
 static inline void tri(IL *l, u16 a, u16 b, u16 c) { *l->p++ = a; *l->p++ = b; *l->p++ = c; }
-int fn_801351AC(Mk **o, f32 *box, void *q, u8 fl) {
+int fn_801351AC(Mk **__restrict o, f32 *__restrict box, void *__restrict q, u8 fl) {
     u8 f = fl;
     IL il;
     Desc d;

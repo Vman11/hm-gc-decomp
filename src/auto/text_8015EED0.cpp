@@ -25,7 +25,7 @@ static inline void hd(T *t, C *c, H *h, u8 **p24, u32 &i) {
         *p24 += 16;
     }
 }
-void fn_8015EED0(T *t, C *c, u32 x, u8 **p22, u8 **p23, u8 **p24, u8 **p25, void *p8, B *name) {
+void fn_8015EED0(T *__restrict t, C *c, u32 x, u8 **p22, u8 **p23, u8 **p24, u8 **p25, void *p8, B *name) {
     H *h;
     u32 i;
     u32 j;

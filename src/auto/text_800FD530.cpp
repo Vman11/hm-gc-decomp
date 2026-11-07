@@ -32,7 +32,7 @@ static inline f32 sqrtf_800FD530(f32 x) {
 
 static inline f64 FA(f64 x) { return __fabs(x); }
 
-f32 fn_800FD530(Box_800FD530 *a, Sph_800FD530 *p, V3_800FD530 *out, f32 *o1, f32 *o2) {
+f32 fn_800FD530(Box_800FD530 *a, Sph_800FD530 *__restrict p, V3_800FD530 *out, f32 *o1, f32 *o2) {
     V3_800FD530 d;
     f32 ax, ay, az;
     f32 s;
