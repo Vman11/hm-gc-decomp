@@ -37,7 +37,7 @@ void fn_8005ADD0(void *c, Nd *dst, Nd *src) {
                 }
                 if (uniq != 1) continue;
                 void *m = ((NB *)s)->mk();
-                n = fn_8010F0F8(m, dc->f0->f0->type, dc->f0->f0->n);
+                { Y *t = dc->f0->f0; u32 nn = *(volatile u32 *)&t->n; n = fn_8010F0F8(m, *(volatile s32 *)&t->type, nn); }
                 fn_8010CAF4(n, s);
                 sx = dc->f0;
                 nx = n->f0;
