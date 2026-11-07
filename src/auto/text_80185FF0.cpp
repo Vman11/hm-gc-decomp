@@ -136,10 +136,17 @@ void fn_80185FF0(G *g, Bb *b, void *a5, f32 *uv, f32 *du, f32 *dv, s32 a9, u8 *a
                 pv[1] = y;
                 pv[2] = *c;
                 pn = (f32 *)vb.p1;
-                vb.p1 += vb.s1;
-                h = *c;
-                d = lbl_80364998 * ((prev[-1] - h) + (h - nn[1]));
-                pn[0] = lbl_8036499C * (d + ((c[-1] - h) + (h - c[1])));
+                *(u8 *volatile *)&vb.p1 = vb.p1 + vb.s1;
+                {
+                f32 a0, a1, a2, a3;
+                h = *(volatile f32 *)c;
+                a0 = ((volatile f32 *)prev)[-1];
+                a1 = ((volatile f32 *)nn)[1];
+                a2 = ((volatile f32 *)c)[-1];
+                a3 = ((volatile f32 *)c)[1];
+                d = *(volatile f32 *)&lbl_80364998 * ((a0 - h) + (h - a1));
+                pn[0] = *(volatile f32 *)&lbl_8036499C * (d + ((a2 - h) + (h - a3)));
+                }
                 h = *c++;
                 pn[1] = lbl_8036499C * (d + ((*prev++ - h) + (h - *nn++)));
                 pn[2] = nz;
