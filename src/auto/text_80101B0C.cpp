@@ -9,14 +9,14 @@ virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); 
 virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23(); 
     virtual void v24(E35 *e, u16 k, S35 *s, void *c, f32 a, f32 b);
 };
-struct R35 { u8 pad[0x18]; O35 *o; u8 p1c[0x28 - 0x1c]; E35 *e; };
+struct R35 { u8 pad[0x18]; O35 *o; O35 *getO() { return o; } E35 *getE() { return e; } u8 p1c[0x28 - 0x1c]; E35 *e; };
 struct Q35 { u8 pad[0x18]; S35 *s; };
 struct P35 { R35 *r; u8 p4[0x2c - 4]; u16 n0, n1; u8 p30[6]; u16 k; };
 void fn_80101B0C(P35 *p, Q35 *q, void *c, f32 a, f32 b) {
-    u32 i = p->n0;
     u32 st;
-    O35 *o = p->r->o;
-    u32 end = i + p->n1;
+    O35 *o = p->r->getO();
+    u32 end = p->n0 + p->n1;
+    u32 i = p->n0;
     if (q != 0) {
         for (st = i; st < end; st++) {
             E35 *e = &p->r->e[st];
@@ -25,7 +25,7 @@ void fn_80101B0C(P35 *p, Q35 *q, void *c, f32 a, f32 b) {
             o->v24(e, p->k, s, c, a, b);
         }
     } else {
-        for (i = i; i < end; i++) o->v24(&p->r->e[i], p->k, 0, c, a, b);
+        for (st = i; st < end; st++) o->v24(&p->r->e[st], p->k, 0, c, a, b);
     }
 }
 }
