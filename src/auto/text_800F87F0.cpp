@@ -2,8 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching draft (wA_80127F34, wPE): const char *k fixed the prologue load hoist; SDIFF 0, register-only.
-// saved-GPR colouring of start/idx/oldn/new[]/loop vars differs. DIFF 94 / SDIFF 0.
+// const char *k fixed the prologue load hoist (wPE); a separate copy-loop counter j fixed the saved-GPR colouring (wRF).
 
 extern "C" {
 class C800F930C { public: char key[8]; void *v; C800F930C(); };
@@ -51,7 +50,7 @@ inline void fn_800F8FF4(H8F *h) {
     fn_800F7E98();
     if (!h->arr) fn_800604C4(-4, 0, 0, 0);
     e = old;
-    for (i = 0; i < oldn; e++, i++) {
+    for (u32 j = 0; j < oldn; e++, j++) {
         if (e->v) fn_800F87F0(h, e->key, e->v);
     }
     delete[] old;
