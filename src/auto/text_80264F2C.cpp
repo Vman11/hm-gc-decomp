@@ -74,7 +74,7 @@ int fn_80264F2C(P *p, void *a, void *b, void *c, V3 *pos, f32 *d, u32 *cnt, M **
                     Ent *en;
                     lbl_8035B76C = r->m;
                     en = &p->f80[p->f7c[sel].i];
-                    s = en->fc;
+                    s = *(volatile u16 *)&en->fc;
                     ent = en;
                     mi = fn_801955D8(lbl_8035B76C);
                     t = mi->f6c;
