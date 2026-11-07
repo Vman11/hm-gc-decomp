@@ -10,7 +10,7 @@ struct T {
     GXLightObj *lights[8];
     void get(u32 i, V4 *v);
 };
-extern "C" void fn_80164414(T *t, u32 i, V4 *v) {
+extern "C" void fn_80164414(T *__restrict t, u32 i, V4 *__restrict v) {
     fn_800D77D8(t->lights[i], &v->x, &v->y, &v->z);
     v->w = lbl_80364684;
 }
