@@ -57,6 +57,32 @@ static inline u32 primCount(Prim *pr)
 }
 
 static inline u32 cvt(u8 b) { return fn_80101A7C(b); }
+static inline void bindA(Rend *r, u32 s)
+{
+    C80152B64 o;
+    u32 v = r->f10872;
+    __ct__9C80152B64Fv(&o);
+    lbl_803286D0.set(&o, v);
+    fn_800D9DF8(&o, s);
+    r->a8112[s] = v;
+}
+static inline void bindB(Rend *r, u32 s)
+{
+    C80152B64 o;
+    u32 v = r->f10872;
+    __ct__9C80152B64Fv(&o);
+    lbl_803286D0.set(&o, v);
+    fn_800D9E48(&o, s);
+    r->a8624[s] = v;
+}
+static inline void bindC(Rend *r, u32 v, u32 s)
+{
+    C80152B64 o;
+    __ct__9C80152B64Fv(&o);
+    lbl_803286D0.set(&o, v);
+    fn_800D9E48(&o, s);
+    r->a8624[s] = v;
+}
 void fn_801683BC(Rend *r, Mesh *m, u32 n, u8 *idx, u32 st, u32 a, Prim *pr, u32 ex)
 {
     u32 c;
@@ -74,25 +100,9 @@ void fn_801683BC(Rend *r, Mesh *m, u32 n, u8 *idx, u32 st, u32 a, Prim *pr, u32 
             fn_800D9E98(r->f10076);
         }
         sl = tb->slots;
-        for (i = 0; i < n; i++) {
-            C80152B64 o;
-            u32 s = sl[i];
-            u32 v = r->f10872;
-            __ct__9C80152B64Fv(&o);
-            lbl_803286D0.set(&o, v);
-            fn_800D9DF8(&o, s);
-            r->a8112[s] = v;
-        }
+        for (i = 0; i < n; i++) bindA(r, sl[i]);
         if (m->fl & 0x800) {
-            for (i = 0; i < n; sl++, i++) {
-                C80152B64 o;
-                u32 s = *sl;
-                u32 v = r->f10872;
-                __ct__9C80152B64Fv(&o);
-                lbl_803286D0.set(&o, v);
-                fn_800D9E48(&o, s);
-                r->a8624[s] = v;
-            }
+            for (i = 0; i < n; sl++, i++) bindB(r, *sl);
         }
         fn_80167AF4(r, m, n, idx, st, a, pr, ex);
         return;
@@ -114,13 +124,9 @@ void fn_801683BC(Rend *r, Mesh *m, u32 n, u8 *idx, u32 st, u32 a, Prim *pr, u32 
     if (m->fl & 0x800) {
         sl = tb->slots;
         for (i = 0; i < n; i++) {
-            C80152B64 o;
             u32 v = r->f10912[idx[i]];
             u32 s = sl[i];
-            __ct__9C80152B64Fv(&o);
-            lbl_803286D0.set(&o, v);
-            fn_800D9E48(&o, s);
-            r->a8624[s] = v;
+            bindC(r, v, s);
         }
         sz = a * ((c1 + 4) * 3);
         buf = fn_8021820C(r->heap, sz, sz / a);
