@@ -91,10 +91,12 @@ void fn_800A5BE8(int p, int st) {
 
     u8 *base = lbl_802D0D58;
     s32 *tA = (s32 *)(base + 0x2dc);
-    s32 *tB = (s32 *)(base + 0x2f8);
+    s32 *tB;
     t = *(s32 *)(p + 0x60);
     idx = tA[st];
-    for (q = tB + idx; t > 0; q++) {
+    q = (s32 *)(base + 0x2f8);
+    tB = q;
+    for (q += idx; t > 0; q++) {
         if (*q > t) break;
         t -= tB[idx++];
     }
