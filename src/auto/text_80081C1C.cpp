@@ -36,8 +36,8 @@ void fn_80081C1C(P *p) {
     if (*p->f356 > lbl_8035FC28) {
         set(p, *p->f356);
         if (p->f424 == 0) {
-            f32 d = fn_800F04FC(lbl_8035FC20, p->f436);
-            tmp = (s32)(*p->f440 & p->f460) / d;
+            f64 d = fn_800F04FC(lbl_8035FC20, p->f436);
+            tmp = (s32)(*p->f440 & p->f460) / (f32)d;
             p->f236 = &tmp;
         } else {
             p->f428 = p->f228;
