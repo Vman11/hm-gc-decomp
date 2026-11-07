@@ -1,5 +1,5 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
-// fn_8007AC1C NonMatching draft (wMY): DIFF 28 / SDIFF 6. Volatile ax-neg stores + volatile K read pin the K load; left: post-RA order of ay.x / c.z stores vs fmuls in the first cross product.
+// fn_8007AC1C NonMatching draft (wMY, wOX): DIFF 28 / SDIFF 2. Volatile ax-neg stores + volatile K read pin the K load; volatile ay.x/ay.y/ay.z/c.z stores in target order (wOX). Left: one fmuls vs ay.x store + FPR colouring.
 #include "common.h"
 
 extern "C" {
@@ -107,6 +107,8 @@ static inline void Cross(V3 *r, V3 *a, V3 *b) {
     r->z = a->x * b->y - a->y * b->x;
 }
 
+#define VS(a) (*(volatile f32 *)&(a))
+
 void fn_8007AC1C(Obj *o, f32 dt) {
     V3 cp;
     V3 tp;
@@ -169,12 +171,13 @@ void fn_8007AC1C(Obj *o, f32 dt) {
                     f32 nx = ax.x, ny = ax.y, nz = ax.z;
                     {
                         f32 k = *(volatile f32 *)&lbl_8035F76C;
-                        ay.x = k;
-                        ((f32 *)&c)[4] = k;
-                        c.z = nx * k - ny * k;
+                        VS(ay.x) = k;
+                        VS(((f32 *)&c)[4]) = k;
+                        f32 cz = nx * k - ny * k;
                         {
                             f32 k2 = lbl_8035F790;
-                            ay.z = k2;
+                            VS(ay.z) = k2;
+                            VS(c.z) = cz;
                             c.x = ny * k2 - k * nz;
                             c.y = nz * k - nx * k2;
                         }
