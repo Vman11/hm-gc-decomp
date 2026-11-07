@@ -912,3 +912,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wRA (2026-11-07): fn_8003C4BC MATCHED: const-store temps took wrong regs; fixed by storing via inline setter `SetE(G->Cur(), 0)` (constant arg materialized before the address loads).
 - wQW (2026-11-07): fn_80242210 MATCHED: loop1 explicit byte offset `u32 off` (decl order r,b,off,i,M; fn-scope M; strings as extern char lbl_803661A4[7]/lbl_80366138[1] for sda21) with `for (i = 0, off = 0; ...; off += 4, i++)` - init in the for, not the decl, fixes li order.
 - wRA (2026-11-07): fn_8009FE98 MATCHED: dir = a-b with dead z store: compute dx,dy,dz into temps, then store via `*(volatile f32 *)&dir.z = dz;` (z,x,y order) on a NON-volatile V3.
+- wRC (2026-11-07): fn_8026E778 MATCHED: register-only diff (string-reader ptr p r20) fixed by reading o.f44 through a member getter (`E_E778 *get() { return f44; }`, p = o.get()).

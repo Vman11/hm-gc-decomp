@@ -8,7 +8,7 @@ extern "C" {
 struct E_E778 { u8 pad_[292];
     virtual void v0(); virtual void v1(); virtual void m2(char *, int, int); virtual void v3(); virtual void m4(int); virtual u32 m5();
 };
-struct C80215F50 { u8 pad[0x2C]; E_E778 *f44; u8 pad2[0x10]; C80215F50(); ~C80215F50(); };
+struct C80215F50 { u8 pad[0x2C]; E_E778 *f44; u8 pad2[0x10]; C80215F50(); ~C80215F50(); E_E778 *get() { return f44; } };
 struct M_E778 { u8 pad[0x6a0]; s32 f6a0; u8 pad2[0x14];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual int has(char *);
 };
@@ -62,7 +62,7 @@ void fn_8026E778(S_E778 *self, void *mgr, char *name, u32 *count) {
     }
     if (r == 0) {
         if ((e = fn_80215C84(&o, name, lbl_80366E1C, 2, 0)) != 0) fn_80060E30(e, lbl_802AA87C);
-        E_E778 *p = o.f44;
+        E_E778 *p = o.get();
         p->m2(lbl_802F3420, 8, 0);
         if (p->m5() == 0x3a) {
             n = fn_800FADA8(p);
