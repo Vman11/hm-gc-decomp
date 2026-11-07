@@ -461,6 +461,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wA_8013DFBC (2026-11-05): fn_801A71DC NonMatching draft in text_801A717C.c (twin of fn_8010F1E0, register-only DIFF 72): per-case loop vars fix the IV li/mr seeds; the clamp colouring (desc r4/val r3/max r0) stayed invariant to getters, locals, operand order, Val* inlines, s32 types, C vs C++, QV 2.0p1/2.6.
 - wMF (2026-11-06): __ct__9C80064474Fv Matching .cpp (-Cpp_exceptions on): real classes C80064474 : C80064530 with member C800644D0 (base C802208CC whose inline ctor calls fn_80220940), same template as text_80064530.
 - wMI (2026-11-06): fn_8012DCE8, fn_80137A5C Matching: byte color copy via static inline CopyColor with two reused u8 temps (x=r;y=g;d->r=x;x=b;...), inline gives the r5/r0 coloring.
+- wMI (2026-11-06): fn_80134918 Matching (same CopyColor inline template as fn_8012DCE8).
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
