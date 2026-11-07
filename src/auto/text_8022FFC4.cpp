@@ -123,8 +123,7 @@ void fn_8022FFC4(O *o, T *t) {
     o->o14(&p, &f, &r, &s, 0);
     a.x *= k; a.y *= k; *(volatile f32 *)&a.z = a.z * k;
     {
-        f32 l = a.x * a.x + a.y * a.y + a.z * a.z;
-        if (l > *(volatile f32 *)&lbl_80365DF8) l = Sq(l);
+        f32 l = Len(a);
         o->f118 = a;
         o->f154 = l;
     }
