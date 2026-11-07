@@ -1,4 +1,4 @@
-// fn_8005E354: NonMatching, SDIFF 0 / DIFF 78: FP regs in dist (dx/dy/dz) and l/m r6/r7 swap in the 752/756 loops; see hm-work/wA_80189BA4/STATUS.txt
+// fn_8005E354: matched (wQG): dist subtracts in place (dz,dy,dx decl order), setB m declared before the if
 #include "common.h"
 
 extern "C" {
@@ -46,13 +46,13 @@ static inline void setA(L *l, u32 a) {
     }
 }
 static inline L *getL(O *o) { L *l = o->f108; if (!l) l = (L *)(o->f144 + 28); return l; }
-static inline f32 dist(P *p) { f32 dx = p->x - p->px; f32 dy = p->y - p->py; f32 dz = p->z - p->pz; return Sq(dx * dx + dy * dy + dz * dz); }
+static inline f32 dist(P *p) { f32 dz = p->z; f32 dy = p->y; f32 dx = p->x; dx -= p->px; dy -= p->py; dz -= p->pz; return Sq(dx * dx + dy * dy + dz * dz); }
 static inline f32 range(P *p) { return farR(p) - nearR(p); }
 static inline void setB(O *o, u32 a) {
+    M *m;
     if (o) {
         L *l = o->f108;
         if (l) {
-            M *m;
             u32 i;
             for (i = 0; i < l->n; i++) {
                 m = l->arr[i];
