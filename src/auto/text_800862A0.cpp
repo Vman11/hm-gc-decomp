@@ -136,9 +136,9 @@ void fn_800862A0(Obj *o, f32 dt) {
             fn_80230928(o, dt);
         } else {
             o->getXf(&pos, 0, 0, 0, 0);
-            f32 pz;
-            b.x = pos.x; b.y = pos.y; ((f32 *)&v)[11] = pz = pos.z;
-            b.z = pz - lbl_8035FDFC;
+            f32 py, pz, px; px = *(volatile f32 *)&pos.x; py = *(volatile f32 *)&pos.y; pz = *(volatile f32 *)&pos.z;
+            *(volatile f32 *)&b.x = px; *(volatile f32 *)&b.y = py; *(volatile f32 *)&b.z = pz;
+            b.z = pz - *(volatile f32 *)&lbl_8035FDFC;
             s32 hit = fn_80264E0C(&pos, &b, &hp, &hn, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
             g = o->f2ec;
             if (g && lbl_8035A1A8 == o) {
