@@ -75,16 +75,21 @@ inline void Mark(X *x, V3 *v)
     }
 }
 
+inline void Loop(Obj *o, V3 *v)
+{
+    if (o->xs) {
+        u32 i; u32 off;
+        for (i = 0, off = 0; i < o->nx; off += 4, i++) {
+            Mark(*(X **)((u8 *)o->xs + off), v);
+        }
+    }
+}
+
 inline void Apply(Obj *o)
 {
     V3 v;
     o->ctl->Get(&v, 0, 0, 0, 0);
-    if (o->xs) {
-        u32 i;
-        for (i = 0; i < o->nx; i++) {
-            Mark(o->xs[i], &v);
-        }
-    }
+    Loop(o, &v);
 }
 
 inline void Mark2(X *x, V3 *v)
