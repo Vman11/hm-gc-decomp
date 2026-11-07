@@ -54,6 +54,9 @@ struct Obj {
 };
 
 extern u32 lbl_8035F3E8;
+extern f32 lbl_8035F4E0; extern f64 lbl_8035F4E8;
+extern f32 lbl_8035F4AC, lbl_8035F4B0, lbl_8035F48C;
+extern f32 lbl_8035F490, lbl_8035F4A0, lbl_8035F4A4, lbl_8035F3EC;
 extern f32 lbl_80359FC0;
 extern void *lbl_8035B65C;
 extern GP *lbl_8035B488;
@@ -75,6 +78,7 @@ void fn_80107B04(void *o, void *m, s32 k);
 void fn_80190C98(void *o);
 
 inline bool Busy(Q *q) { return q->f284 != 0 || q->f290 != 0.0f; }
+inline bool Busy2(Q *q) { return q->f284 != 0 || q->f290 != *(volatile f32 *)&lbl_8035F3EC; }
 inline f32 RadH(Rad *r) { return r ? r->h : 2.5f; }
 inline Elem *GetElem(Skel *s) {
     if (s->n > 1) return &s->sub->e;
@@ -98,29 +102,29 @@ inline f32 Sq(f32 x) {
 
 void fn_800730F4(Obj *o) {
     V3 pos, v, w, e0, d4, hit, nrm, ax, base;
-    V3 sc, up;
     s32 col;
     s32 r;
     Other *p = o->other;
-    if (p && !Busy(o->q)) {
+    if (p && !Busy2(o->q)) {
         p->getXf(&pos, 0, 0, 0, 0);
         if (RadH(p->rad) > 0.0f) {
             pos.z += RadH(p->rad);
-            f32 a = p->f1a8;
-            f32 b = p->f1ac;
-            f32 s = 0.00075f * -a;
+            f32 b, a;
+            a = p->f1a8;
+            b = p->f1ac;
+            f32 s = *(volatile f32 *)&lbl_8035F48C * -a;
             pos.x += s * lbl_80357B10.x;
             pos.y += s * lbl_80357B10.y;
             pos.z += s * lbl_80357B10.z;
             if (fn_80101590(&pos, &o->f44) < 1.0f) o->other = 0;
-            v.x = 0.0015 * b;
-            v.y = 1.0f;
-            v.z = 0.25f;
-            fn_802540E4(lbl_8035B65C, o->f448, &pos, &lbl_80357B10, &lbl_80357E90, &v, 0);
-            w.x = 0.0015 * (a - b);
-            w.y = 1.0f;
-            w.z = 0.25f;
-            s = 0.0015f * b;
+            *(volatile f32 *)&v.x = 0.0015 * b;
+            *(volatile f32 *)&v.y = *(volatile f32 *)&lbl_8035F490;
+            *(volatile f32 *)&v.z = *(volatile f32 *)&lbl_8035F4A0;
+            fn_802540E4(*(void *volatile *)&lbl_8035B65C, o->f448, &pos, &lbl_80357B10, &lbl_80357E90, &v, 0);
+            *(volatile f32 *)&w.x = 0.0015 * (a - b);
+            *(volatile f32 *)&w.y = *(volatile f32 *)&lbl_8035F490;
+            *(volatile f32 *)&w.z = *(volatile f32 *)&lbl_8035F4A0;
+            s = *(volatile f32 *)&lbl_8035F4A4 * b;
             pos.x += s * lbl_80357B10.x;
             pos.y += s * lbl_80357B10.y;
             pos.z += s * lbl_80357B10.z;
@@ -140,18 +144,19 @@ void fn_800730F4(Obj *o) {
         f32 t;
         hit = base;
         nrm = o->f2c;
-        e0.x = base.x + 1.0f * o->f610.x;
-        e0.y = base.y + 1.0f * o->f610.y;
-        e0.z = base.z + 1.0f * o->f610.z;
-        d4.x = base.x + -5.0f * o->f610.x;
-        d4.y = base.y + -5.0f * o->f610.y;
-        d4.z = base.z + -5.0f * o->f610.z;
-        s0.x = base.x + 1.0f * nrm.x;
-        s0.y = base.y + 1.0f * nrm.y;
-        s0.z = base.z + 1.0f * nrm.z;
-        s1.x = base.x + -5.0f * nrm.x;
-        s1.y = base.y + -5.0f * nrm.y;
-        s1.z = base.z + -5.0f * nrm.z;
+        *(volatile f32 *)&e0.x = base.x + lbl_8035F490 * o->f610.x;
+        *(volatile f32 *)&e0.y = base.y + lbl_8035F490 * o->f610.y;
+        *(volatile f32 *)&e0.z = base.z + lbl_8035F490 * o->f610.z;
+        f32 m5 = *(volatile f32 *)&lbl_8035F4AC;
+        d4.x = base.x + m5 * o->f610.x;
+        d4.y = base.y + m5 * o->f610.y;
+        d4.z = base.z + m5 * o->f610.z;
+        s0.x = base.x + lbl_8035F490 * nrm.x;
+        s0.y = base.y + lbl_8035F490 * nrm.y;
+        s0.z = base.z + lbl_8035F490 * nrm.z;
+        s1.x = base.x + m5 * nrm.x;
+        s1.y = base.y + m5 * nrm.y;
+        s1.z = base.z + m5 * nrm.z;
         fn_80264E0C(&s0, &s1, &hit, &nrm, 0, 0, &col, 0, 0, 0, 0, 0, 0, 0, 1);
         pl.x = nrm.x;
         pl.y = nrm.y;
@@ -162,18 +167,19 @@ void fn_800730F4(Obj *o) {
         V3 s0, s1;
         V4 pl;
         f32 t;
-        e0.x = base.x + 1.0f * o->f610.x;
-        e0.y = base.y + 1.0f * o->f610.y;
-        e0.z = base.z + 1.0f * o->f610.z;
-        d4.x = o->f44.x + -100.0f * o->f610.x;
-        d4.y = o->f44.y + -100.0f * o->f610.y;
-        d4.z = o->f44.z + -100.0f * o->f610.z;
-        s0.x = base.x + 1.0f * o->f2c.x;
-        s0.y = base.y + 1.0f * o->f2c.y;
-        s0.z = base.z + 1.0f * o->f2c.z;
-        s1.x = base.x + -100.0f * o->f2c.x;
-        s1.y = base.y + -100.0f * o->f2c.y;
-        s1.z = base.z + -100.0f * o->f2c.z;
+        *(volatile f32 *)&e0.x = base.x + lbl_8035F490 * o->f610.x;
+        *(volatile f32 *)&e0.y = base.y + lbl_8035F490 * o->f610.y;
+        *(volatile f32 *)&e0.z = base.z + lbl_8035F490 * o->f610.z;
+        f32 m5 = *(volatile f32 *)&lbl_8035F4B0;
+        d4.x = o->f44.x + m5 * o->f610.x;
+        d4.y = o->f44.y + m5 * o->f610.y;
+        d4.z = o->f44.z + m5 * o->f610.z;
+        s0.x = base.x + lbl_8035F490 * o->f2c.x;
+        s0.y = base.y + lbl_8035F490 * o->f2c.y;
+        s0.z = base.z + lbl_8035F490 * o->f2c.z;
+        s1.x = base.x + m5 * o->f2c.x;
+        s1.y = base.y + m5 * o->f2c.y;
+        s1.z = base.z + m5 * o->f2c.z;
         fn_80264E0C(&s0, &s1, &hit, &nrm, 0, 0, &col, 0, 0, 0, 0, 0, 0, 0, 1);
         pl.x = nrm.x;
         pl.y = nrm.y;
@@ -182,13 +188,15 @@ void fn_800730F4(Obj *o) {
         r = fn_800FF778(&pl, &e0, &d4, &hit, &t);
         if (r && hit.z > lbl_80359FC0) {
             f32 dz = hit.z - lbl_80359FC0;
+            f32 g = lbl_8035B488->f14;
             if (Fabsf(dz) > 0.0f) {
-                f32 k = fn_800F049C(-8.0f * lbl_8035B488->f14);
+                f32 k = fn_800F049C(-8.0f * g);
                 lbl_80359FC0 += (1.0f - k) * dz;
             }
         }
     }
     if (r != 0) {
+        V3 sc, up;
         up.x = 0.0f; up.y = 0.0f; up.z = 1.0f;
         f32 ang = SAcos(up.x * nrm.x + up.y * nrm.y + up.z * nrm.z);
         if (ang < 0.7853981634) {
@@ -215,12 +223,18 @@ void fn_800730F4(Obj *o) {
                 ax.x *= inv; ax.y *= inv; ax.z *= inv;
             }
         } else {
-            ax.x = 0.0f; ax.y = 0.0f; ax.z = 1.0f;
+            *(volatile f32 *)&ax.x = 0.0f; *(volatile f32 *)&ax.y = 0.0f; ax.z = *(volatile f32 *)&lbl_8035F490;
         }
         f32 c = SAcos(nrm.x * o->f610.x + nrm.y * o->f610.y + nrm.z * o->f610.z);
-        f32 f = (f32)fn_800F03E4(c > 1.0 ? 1.0f : c);
-        sc.x = 1.0f;
-        sc.y = 1.0f + 0.5f * f + f / 6.0;
+        f32 cc = c;
+        if (c > 1.0) cc = 1.0f;
+        f32 f = (f32)fn_800F03E4(cc);
+        *(volatile f32 *)&sc.x = 1.0f;
+        {
+        f64 six = *(volatile f64 *)&lbl_8035F4E8;
+        f32 half = *(volatile f32 *)&lbl_8035F4E0;
+        sc.y = 1.0f + half * f + f / six;
+        }
         sc.z = 1.0f;
         if (o->mdl->f78) fn_80107F3C(o->mdl->f78, &sc);
         V3 dir;
