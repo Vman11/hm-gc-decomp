@@ -1,4 +1,6 @@
-// NonMatching draft (wIF): instructions match, register colouring differs in case 4 (match() inline).
+// NonMatching draft (wIF, wQE): code is byte-identical (DIFF 0 ignoring relocs). Blocker is linking only:
+// the tables must be TU-owned statics (lbl_802C6D70+760/784/840 off one base; extern struct/array folds offsets),
+// so the unit has to own .data lbl_802C6D70 (now in asm jt_802C6D6C, also used by fn_8008C094), and the unit has extab -> .cpp.
 #include "common.h"
 static u8 sPad[760] = {1};
 static s32 tA[6] = {1};
@@ -23,33 +25,17 @@ void __ct__9C80253F24Fiiii(void *, u32, u32, s32, u32);
 #define U32(o) (*(u32 *)(p + (o)))
 #define ARR(o) (*(s32 **)(p + (o)))
 static inline void cp0(u8 *p, u32 j) { for (; j < U32(312); j++) ARR(304)[j] = (*(s32 **)(U32(296) + 12))[j]; }
-static inline u32 findk(u8 *p) {
-    u32 k = 0;
-    u32 a, b2, m;
-    if (**(s32 **)(p + 280) == 0) {
-        m = U32(312);
-        for (a = 0; a < m; a++) {
-            s32 v;
-            v = ARR(304)[a];
-            for (b2 = 0; b2 < m; b2++) {
-                if (v == (*(s32 **)(U32(300) + 12))[b2]) {
-                    k = b2;
-                    a = m;
-                    b2 = m;
-                }
-            }
-        }
-    }
-    return k;
-}
 static inline s32 match(u8 *p) {
-    u32 m, b2, a;
+    u32 m;
     u32 k = 0;
     s32 ok;
+    u32 a;
+    s32 v;
+    u32 a2;
+    u32 b2;
     if (**(s32 **)(p + 280) == 0) {
         m = U32(312);
         for (a = 0; a < m; a++) {
-            s32 v;
             v = ARR(304)[a];
             for (b2 = 0; b2 < m; b2++) {
                 if (v == (*(s32 **)(U32(300) + 12))[b2]) {
@@ -62,9 +48,9 @@ static inline s32 match(u8 *p) {
     }
     ok = 1;
     m = U32(312);
-    for (a = 0; a < m; a++) {
-        s32 w = (*(s32 **)(U32(300) + 12))[(a + k) % m];
-        if (w != -1 && w != ARR(304)[a]) ok = 0;
+    for (a2 = 0; a2 < m; a2++) {
+        s32 w = (*(s32 **)(U32(300) + 12))[(a2 + k) % m];
+        if (w != -1 && w != ARR(304)[a2]) ok = 0;
     }
     return ok;
 }
