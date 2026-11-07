@@ -80,7 +80,7 @@ void fn_80155AE4(S *a, void *b, Tex *tex, void *d) {
                         char nb[4];
                         fn_800F6E40(&s, d);
                         s.f8 = 0;
-                        if (i != 0 && (u32)i < 100) {
+                        if ((u32)i != 0 && (u32)i < 100) {
                             fn_800E8F6C(nb, lbl_80364594, i);
                             strcat((char *)&s, nb);
                         }
