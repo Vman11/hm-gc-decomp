@@ -12,16 +12,16 @@ void fn_800AF76C(O800AF76C *o, s32 idx) {
     u8 *b = lbl_802D55C8;
     s32 *st = (s32 *)(b + 0x2ec);
     s32 *len = (s32 *)(b + 0x308);
+    s32 *l2 = len;
     s32 n;
     s32 t;
     t = o->f60;
     n = st[idx];
     while (t > 0) {
         if (len[n] > t) break;
-        t -= ((s32 *)(b + 0x308))[n++];
+        t -= l2[n++];
     }
-    u32 *ty = (u32 *)(b + 0x324);
-    switch (ty[n]) {
+    switch (*(u32 *)(b + 0x324 + n * 4)) {
     case 0: fn_80241628(o, 0, 0); break;
     case 1: fn_802491DC(o, 0); break;
     case 2: fn_8026820C(lbl_8035B79C, 7); break;
