@@ -14,10 +14,22 @@ struct S801638D4 : P801638D4 {
     virtual void v30(C801638D4 *c);
     D801638D4 *d;
 };
+static inline void CopyColor(C801638D4 *d, const C801638D4 *s) {
+    u8 x, y;
+    x = s->r;
+    y = s->g;
+    d->r = x;
+    x = s->b;
+    d->g = y;
+    y = s->a;
+    d->b = x;
+    d->a = y;
+}
+
 void fn_801638D4(S801638D4 *p, C801638D4 *c) {
     if (p->flags & 2) {
         p->v30(c);
-        C801638D4 *dc = &p->d->c; u8 a, b, g, r; r = c->r; g = c->g; dc->r = r; b = c->b; dc->g = g; a = c->a; dc->b = b; dc->a = a;
+        CopyColor(&p->d->c, c);
     }
 }
 
