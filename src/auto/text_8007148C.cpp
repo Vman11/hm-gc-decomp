@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching (DIFF 20, SDIFF 0): volatile copy-ctor + volatile globals fix the 12-byte copy order; left: f3/f4 swap in the dot, f0/f2 in the f1c product.
+// NonMatching (DIFF 10, SDIFF 0): f1c product fixed via temp; left: f3/f4 swap (K33C vs dir.z) in the dot.
 
 extern "C" {
 
@@ -62,7 +62,7 @@ static inline void snd_7148C(T_7148C *t, char *nm, V_7148C p) {
         t->f114->f10 = 1;
         t->f114->f18 = lbl_8035F33C;
         t->f114->f14 = lbl_8035F360;
-        t->f114->f1c = (t->f114->f18 - t->f114->f14) * lbl_8035F364;
+        f32 d = t->f114->f18 - t->f114->f14; t->f114->f1c = d * lbl_8035F364;
     }
 }
 
