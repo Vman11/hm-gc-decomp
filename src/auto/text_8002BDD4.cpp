@@ -51,8 +51,8 @@ static inline u8 IsBusy(Gx *gx) {
     if (gx->busy || gx->t != lbl_8035B99C) r = 1;
     return r;
 }
-static inline u8 Skip(Gm *g) { u8 s = 0; if (IsBusy(g->gx) && !(g->flags & 0x10)) s = 1; return s; }
-/* wQG: sb reused for lbl_80359F50 scale (FP colouring), __fmadds operand order. DIFF 48 SDIFF 0, left: skip/busy r3/r5, e ptr r3/r4 */
+static inline u8 Skip(Gm *g) { Gx *gx = g->gx; u8 s = 0; if (IsBusy(gx) && !(g->flags & 0x10)) s = 1; return s; }
+/* wQG: sb reused for lbl_80359F50 scale (FP colouring), __fmadds operand order. wRB: gx local first in Skip, e via if/else: DIFF 32 SDIFF 0, left: skip/busy r3/r5 swap, e r5 vs r4 */
 void fn_8002BDD4(Obj *o, f32 dt)
 {
     f32 sa = 0.0f;
@@ -89,7 +89,7 @@ void fn_8002BDD4(Obj *o, f32 dt)
     else if (ra <= lbl_8035B9E4) *o->o1 = 2;
     else if (ra <= lbl_8035B9E8) *o->o1 = 1;
     else *o->o1 = 0;
-    e = o->lst->ok[0] ? o->lst->e : 0;
+    if (o->lst->ok[0]) e = o->lst->e; else e = 0;
     q = sa / sb;
     e->v = sc * (o->r0->x1 - o->r0->x0);
     {
