@@ -21,7 +21,7 @@ static inline void getDir(A *a, O *o, V *dir, V *d) {
     if (a->f4 == 0) {
         void *x = o->xf();
         if (x) fn_80103E84(x, dir, d);
-        else { f32 x, y, z; x = dir->x; y = dir->y; z = dir->z; d->z = z; d->x = x; d->y = y; }
+        else { f32 x, y, z; x = *(volatile f32 *)&dir->x; y = *(volatile f32 *)&dir->y; z = *(volatile f32 *)&dir->z; *(volatile f32 *)&d->x = x; *(volatile f32 *)&d->y = y; *(volatile f32 *)&d->z = z; }
     } else {
         fn_80103E84(&o->f168->f36[a->f4 - 1], dir, d);
     }
