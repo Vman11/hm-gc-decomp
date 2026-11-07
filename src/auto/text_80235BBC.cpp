@@ -1,4 +1,6 @@
 #include "common.h"
+// NonMatching draft (wNA): SDIFF 4 / DIFF 338. j-loop in static inline fill() (li j; mr off,j) with m a caller local by ref (li;li).
+// Left: 8x-unrolled a/b sum loop load order (target loads e0->f34 first) + GPR coloring.
 
 extern "C" {
 
@@ -49,6 +51,19 @@ void fn_800F7E98(void);
 void fn_8013EBAC(C8013ECE4 *, void *, u32);
 void fn_8012FE8C(void *, void *, V35 *, E35 *);
 
+static inline void fill(P35 *p, u32 i, I35 *n, void *ctx, u32 &k, u32 &idx, u32 &m) {
+        for (u32 j = 0; j < p->f4[i]; j++) {
+            fn_8013EBAC(&p->f88[k], ctx, n->f0);
+            for (m = 0; m < n->f0; m++) {
+                void *x = p->f8c->Get(idx++);
+                fn_8012FE8C(x, ctx, p->f8c, n->f4[m]);
+                p->f88[k].f4[m] = x;
+            }
+            p->f80[i][j]->f0->f6c = (I35 *)&p->f88[k];
+            k++;
+        }
+}
+
 void fn_80235BBC(P35 *p) {
     u32 total = 0;
     u32 slots = 0;
@@ -85,18 +100,10 @@ void fn_80235BBC(P35 *p) {
     p->f8c->Setup(ctx, sb, sa, slots, 0);
     u32 k = 0;
     u32 idx = 0;
+    u32 m;
     for (i = 0; i < p->f7c; i++) {
         I35 *n = (*p->f80[i])->f0->Info();
-        for (u32 j = 0; j < p->f4[i]; j++) {
-            fn_8013EBAC(&p->f88[k], ctx, n->f0);
-            for (u32 m = 0; m < n->f0; m++) {
-                void *x = p->f8c->Get(idx++);
-                fn_8012FE8C(x, ctx, p->f8c, n->f4[m]);
-                p->f88[k].f4[m] = x;
-            }
-            p->f80[i][j]->f0->f6c = (I35 *)&p->f88[k];
-            k++;
-        }
+        fill(p, i, n, ctx, k, idx, m);
     }
 }
 
