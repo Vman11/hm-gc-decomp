@@ -1,4 +1,5 @@
-// fn_801A4044: segment-vs-polygon test (NonMatching draft, GC/2.0p1).
+// fn_801A4044: segment-vs-polygon test (NonMatching draft, GC/2.0p1). wPG: volatile d stores + volatile 0.0f read in Sq (SDIFF 14->8);
+// left: target loads q.x/p.x before the y pair, and lwz a->n earlier.
 // Literals are this unit's pool: matching also needs .sdata2 0x80364DA8-0x80364DD0 in splits.txt.
 #include "common.h"
 
@@ -8,8 +9,9 @@ struct Poly { u32 x0; u32 n; Edge **e; Vec3 nrm; };
 extern "C" {
 void fn_80101820(Vec3 *);
 }
+extern "C" const f32 lbl_80364DA8;
 static inline f32 Sq(f32 x) {
-    if (x > 0.0f) {
+    if (x > *(volatile const f32 *)&lbl_80364DA8) {
         const f64 _half = 0.5;
         const f64 _three = 3.0;
         volatile f32 y;
@@ -30,7 +32,7 @@ extern "C" int fn_801A4044(Poly *a, Vec3 *p, Vec3 *q, f32 *t) {
     Edge **e;
     f32 px, py, pz;
     f32 dx = q->x - p->x, dy = q->y - p->y, dz = q->z - p->z;
-    d.x = dx; d.y = dy; d.z = dz;
+    *(volatile f32 *)&d.x = dx; *(volatile f32 *)&d.y = dy; *(volatile f32 *)&d.z = dz;
     n = a->n;
     len = Sq(d.x * d.x + d.y * d.y + d.z * d.z);
     fn_80101820(&d);
