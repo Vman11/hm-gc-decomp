@@ -1,4 +1,5 @@
 #include "common.h"
+/* NonMatching draft (wIY, wMO): DIFF 72 / SDIFF 10. Entry stride is 24 (fields at +28/+32 overlap the next entry). Left: i/e reg swap; target keeps the 1.0f and 0.0f sdata2 loads below the stack stores and does sc-dt before the fdivs (wDG-style no pre-RA hoist; literals, temps, 2.0p1 no help). */
 extern "C" {
 struct Vec { f32 x, y, z; };
 struct Y { u8 pad[16]; void *f16; u8 pad20[12]; u32 f32; };
@@ -19,7 +20,7 @@ void fn_8002C150(E *ep) {
     E *e = ep;
     f32 dt = lbl_8035B488->dt;
     FT *ft = (FT *)lbl_803286D0;
-    for (; i < 6; i++, e++) {
+    for (; i < 6; i++, e = (E *)((u8 *)e + 24)) {
         if (!e->f12) continue;
         if (e->f28) {
             Vec v;
