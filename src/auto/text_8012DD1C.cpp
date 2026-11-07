@@ -71,9 +71,9 @@ void fn_8012DD1C(T *t, G *g, V2 *__restrict pos, V2 *scale, K *col, Q4 *clip) {
             a.x0 = pos->x;
             a.y0 = a.y1;
         }
-        a.x1 = scale->x * (f32)W(&t->f2c[i].r) + a.x0;
-        a.y1 = scale->y * (f32)H(&t->f2c[i].r) + a.y0;
-        { f32 v = lbl_80363EF0; uv.x0 = v; uv.y0 = v; }
+        *(volatile f32 *)&a.x1 = scale->x * (f32)W(&t->f2c[i].r) + a.x0;
+        *(volatile f32 *)&a.y1 = scale->y * (f32)H(&t->f2c[i].r) + a.y0;
+        { f32 v = *(volatile f32 *)&lbl_80363EF0; uv.x0 = v; uv.y0 = v; }
         uv.x1 = (f32)W(&t->f2c[i].r);
         uv.y1 = (f32)H(&t->f2c[i].r);
         if (fn_80100504(&out, clip, &a, &uv)) {
