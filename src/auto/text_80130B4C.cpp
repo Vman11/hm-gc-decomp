@@ -54,7 +54,7 @@ static inline u32 *alloc2_80130B4C(Pool_80130B4C *p, u32 n) {
     p->n2 += n;
     return r;
 }
-void fn_80130B4C(Obj_80130B4C *__restrict o, Desc_80130B4C *__restrict d) {
+void fn_80130B4C(Obj_80130B4C * o, Desc_80130B4C *__restrict d) {
     if (o->flags & 1) {
         o->v2();
     }
