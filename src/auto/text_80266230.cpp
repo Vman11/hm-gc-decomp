@@ -1,6 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-// NonMatching: instructions identical, 40 diff lines = FPR colouring only (tx f27 vs f31, Sqrt f7/f8).
+// NonMatching: instructions identical, 16 diff lines = FPR colouring only (tx f27 vs f31).
 #include "common.h"
 
 extern "C" {
@@ -98,11 +98,10 @@ static inline f32 RandF(f32 r) {
 }
 
 static inline void Follow(Cam *p, f32 dt) {
-    f32 dd = p->dist;
     f32 tz, ty, tx;
-    tx = p->cur.a.x * dd;
-    ty = p->cur.a.y * dd;
-    tz = p->cur.a.z * dd;
+    tx = p->dist * p->cur.a.x;
+    ty = p->dist * p->cur.a.y;
+    tz = p->dist * p->cur.a.z;
     f32 len = Sqrt(p->src.e.x * p->src.e.x + p->src.e.y * p->src.e.y + p->src.e.z * p->src.e.z);
     p->cur.e.x = p->cur.a.x * len;
     p->cur.e.y = p->cur.a.y * len;
