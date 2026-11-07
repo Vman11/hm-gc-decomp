@@ -165,14 +165,16 @@ static inline void L11(T *self, A *a, void *b, u32 i, char *buf) {
 
 static inline void L14(T *self, A *a, void *b, char *prefix, u32 plen, u32 i) {
     if (prefix) {
+        char *path;
         char *p;
+        char *s;
         if (lbl_8035A9F4 == 0) fn_800604C4(-2, 0, 0, 0);
         fn_800F7EC0(lbl_8035A9F4);
         { u32 l = strlen(lbl_8035ABB4[i]) + 1; p = new char[plen + l]; }
         fn_800F7E98();
         if (p == 0) fn_800604C4(-4, 0, 0, 0);
-        char *path = lbl_8035ABB4[i];
-        char *s = strrchr(path, '\\');
+        path = lbl_8035ABB4[i];
+        s = strrchr(path, '\\');
         if (s == 0) {
             strcpy(p, prefix);
             strcat(p, lbl_80363E88);
