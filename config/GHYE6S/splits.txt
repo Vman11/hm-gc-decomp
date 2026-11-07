@@ -13805,10 +13805,19 @@ auto/text_8014BC1C.cpp:
 	.text       start:0x8014BC1C end:0x8014BDD4
 
 auto/text_8014BDD4.cpp:
-	extab       start:0x8000C784 end:0x8000C79C
-	extabindex  start:0x8001EECC end:0x8001EEF0
-	.text       start:0x8014BDD4 end:0x8014C450
-	.rodata     start:0x802A01C8 end:0x802A0240
+	extab       start:0x8000C784 end:0x8000C78C
+	extabindex  start:0x8001EECC end:0x8001EED8
+	.text       start:0x8014BDD4 end:0x8014C150
+
+auto/text_8014C150.cpp:
+	extab       start:0x8000C78C end:0x8000C794
+	extabindex  start:0x8001EED8 end:0x8001EEE4
+	.text       start:0x8014C150 end:0x8014C1A4
+
+auto/text_8014C1A4.cpp:
+	extab       start:0x8000C794 end:0x8000C79C
+	extabindex  start:0x8001EEE4 end:0x8001EEF0
+	.text       start:0x8014C1A4 end:0x8014C450
 
 auto/text_8014C450.cpp:
 	extab       start:0x8000C79C end:0x8000C7B8
