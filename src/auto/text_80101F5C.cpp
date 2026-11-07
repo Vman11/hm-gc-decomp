@@ -36,6 +36,7 @@ void fn_80101F5C(AN *a, TG *tg, V3 *scale, f32 t) {
     ND *n;
     u32 end;
     CH *ch2;
+    u32 off;
     end = a->r0 + a->rn;
     data = getData(a);
     for (i = a->r0; i < end; i++) {
@@ -47,8 +48,8 @@ void fn_80101F5C(AN *a, TG *tg, V3 *scale, f32 t) {
     }
     end = a->p0 + a->pn;
     if (!scale) {
-        for (i = a->p0; i < end; i++) {
-            ch = &a->clip->pos[i];
+        for (i = a->p0, off = i * 12; i < end; off += 12, i++) {
+            ch = (CH *)((u8 *)a->clip->pos + off);
             fn_8021BD48(data, ch, a->frame, &p, t);
             n = &tg->nodes[ch->node];
             lbl_803286D0.f12(n->h, &p);
