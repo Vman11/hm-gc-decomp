@@ -13,7 +13,7 @@ struct G308 { u8 pad[0x48]; Plr *f48; };
 struct GUi { u8 pad[0x2f0]; virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void hud(int); };
 struct G65C { u8 pad[0x8c]; u32 f8c; };
 struct G7BC { u8 pad[0x20]; f32 *f20; u8 pad24[4]; Mus *f28; };
-struct Txt { int a, b, c; };
+struct C800322B0 { int a, b, c; ~C800322B0() {} };
 struct T {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void done(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void finish(int);
     u8 pad4[0x10]; u8 f14[8]; u32 f1c; u8 pad20[8]; int f28; u8 pad2c[0x20]; f32 f4c; f32 f50; f32 f54; u32 f58; u8 *f5c; int *f60; f32 *f64; int *f68; Snd **f6c; int f70; u8 pad74[8]; int f7c; f32 f80; int f84; int f88; int f8c;
@@ -40,7 +40,7 @@ void fn_801F74D8(u8 *);
 void fn_8024E3DC(void *, u8 *, int *);
 void fn_800E8F6C(char *, const char *, ...);
 int fn_800F9398(void *, char *);
-void fn_801089F0(int, Txt *);
+void fn_801089F0(int, C800322B0 *);
 void *fn_8024E69C(void *, u8 *);
 void *fn_8024E57C(void *, u8 *);
 void fn_802501D4(void *);
@@ -75,20 +75,23 @@ static inline void Stop(T *t) {
     }
 }
 
-static inline bool Can(T *t) {
-    bool a, b;
-    a = 0;
-    b = a;
-    if (!t->f70 && (((G65C *)lbl_8035B65C)->f8c & 0x10)) b = 1;
-    if (b && lbl_8035B308->f48->f33c) a = 1;
-    return a;
+static inline void Can(T *t, int &pl) {
+    bool b, a;
+    Plr *g;
+    if ((g = lbl_8035B308->f48) != 0) {
+        a = 0;
+        b = a;
+        if (!t->f70 && (((G65C *)lbl_8035B65C)->f8c & 0x10)) b = 1;
+        if (b && g->f33c) a = 1;
+        pl = a;
+    }
 }
 void fn_8024CAE0(T *t, f32 dt) {
     u32 o;
     int pl = 0;
     int any;
     u32 i;
-    if (lbl_8035B308->f48) pl = Can(t);
+    Can(t, pl);
     if (t->f1c == 1 && t->f4c > lbl_803663B8 && !(((G65C *)lbl_8035B65C)->f8c & 0x10)) {
         t->f50 -= dt;
         f32 k, v;
@@ -158,7 +161,7 @@ void fn_8024CAE0(T *t, f32 dt) {
         if (v < k) {
             t->f90 = k;
             if (t->f70 == 0 && t->f84 == 0) {
-                Txt s;
+                C800322B0 s;
                 int ok;
                 char buf[8];
                 *(volatile int *)&s.a = 0;
