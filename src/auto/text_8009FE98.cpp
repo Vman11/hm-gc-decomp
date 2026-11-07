@@ -1,4 +1,3 @@
-// NonMatching draft (wGF/wOQ): register-only (SDIFF 0, DIFF 36): volatile V3 dir gives the exact schedule; FPR colouring of the dir sub block left (permuter).
 #include "common.h"
 
 struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } };
@@ -93,8 +92,11 @@ static inline void pushOut(Obj *o) {
         o->f14c->get(&a, 0, 0, 0, 0);
         o->fe0->get(&b, &c, &d, &e, 0);
         if (a.z < b.z - lbl_80361B20 && a.z > b.z - lbl_80361B24) {
-            volatile V3 dir; dir.z = a.z - b.z; dir.x = a.x - b.x; dir.y = a.y - b.y; dir.z = lbl_80361B28;
-            f32 l = fn_80101664((V3 *)&dir);
+            V3 dir;
+            f32 dx = a.x - b.x; f32 dy = a.y - b.y; f32 dz = a.z - b.z;
+            *(volatile f32 *)&dir.z = dz; *(volatile f32 *)&dir.x = dx; *(volatile f32 *)&dir.y = dy;
+            *(volatile f32 *)&dir.z = lbl_80361B28;
+            f32 l = fn_80101664(&dir);
             if (l < lbl_80361B2C) {
                 f32 s = lbl_80361B2C - l;
                 a.x = s * dir.x + a.x;
