@@ -466,6 +466,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wMF (2026-11-06): __ct__9C8022F98CFv Matching .cpp (member
 - wMF (2026-11-06): main (text_800605AC) NonMatching .cpp draft, SDIFF 8 (only the lis/li scheduling of the first call args differs).
 - wMF (2026-11-06): __dt__Q23std9exceptionFv Matching .cpp:  +  (gives the SPECIFICATION extab); declare what() before the dtor so the vtable is not emitted here.
+- wMF (2026-11-06): fn_80179664 (sinit, .ctors) Matching .cpp: unit now owns .bss 0x8032FF18..0x80330188 as TU globals lbl_8032FF18[0xc], lbl_8032FF24[0x12c], static regmem lbl_80330050[0xc], lbl_8033005C[0x12c] (separate regmem object gives the folded addi r5,r31,0x138).
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.

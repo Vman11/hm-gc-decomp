@@ -16663,11 +16663,12 @@ auto/text_80179618.cpp:
 	extabindex  start:0x80020870 end:0x8002087C
 	.text       start:0x80179618 end:0x80179664
 
-auto/text_80179664.c:
+auto/text_80179664.cpp:
 	extab       start:0x8000E0F4 end:0x8000E0FC
 	extabindex  start:0x8002087C end:0x80020888
 	.text       start:0x80179664 end:0x801796CC
 	.ctors      start:0x80294128 end:0x8029412C
+	.bss        start:0x8032FF18 end:0x80330188
 
 auto/text_801796CC.cpp:
 	extab       start:0x8000E0FC end:0x8000E104
