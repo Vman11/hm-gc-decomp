@@ -2,8 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching (wLD, DIFF 25): inline checkAll() + bool word fix param colouring;
-// left: loop node n r31 vs target r26, bool word adds clrlwi (target int).
+// NonMatching (wLD/wMW): int word -> SDIFF 0, DIFF 142 register-only (params r27-29 vs r28-30; n/bad r31/r30 vs r26/r27).
+// (bool word gave DIFF 25 but adds clrlwi/cmplwi.)
 
 extern "C" {
 
@@ -42,7 +42,7 @@ int fn_801B0AE8(u8 *p, u32 k, s32 b) {
         if (!(U32(108) & 2)) return 0;
         if (k & 0x30) {
             u32 pos = U32(368);
-            bool word = 1;
+            int word = 1;
             if (pos == 0) {
                 pos = 0;
             } else {
