@@ -1,3 +1,4 @@
+// NonMatching (wRE): SDIFF 0 / DIFF 26 register-only (2nd-loop Fire(s,i,0): n/k colour swap).
 #include "common.h"
 struct S;
 struct Ev { S *owner; s32 z1; s32 id; s32 arg; s32 state; s32 b0; s32 flag; };
@@ -20,6 +21,38 @@ static inline void All(S *s, u32 n, Ev *e) {
     }
 }
 static inline void Fire(S *s, u32 i, s32 state) {
+    u32 n;
+    LH *lh;
+    Ev e;
+    u32 k;
+    u8 f;
+    lh = (LH *)List(s, i);
+    n = s->nls;
+    e.owner = s;
+    e.z1 = 0;
+    e.id = s->ids[i].id;
+    e.arg = 0;
+    e.state = state;
+    e.b0 = s->b0;
+    f = 0;
+    if (s->cur[i] == s->prev[i] && state != 0) f = 1;
+    e.flag = f != 0;
+    All(s, n, &e);
+    if (lh) {
+        Nd *nd = lh->first;
+        while (nd) {
+            if (nd->key == e.state) {
+                e.arg = nd->arg;
+                if (e.state == 0) nd->obj->off(&e);
+                else nd->obj->on(&e);
+            }
+            if (nd) nd = nd->next;
+            else nd = lh->first;
+        }
+    }
+}
+/* same as Fire but lh declared before n (register colouring) */
+static inline void FireB(S *s, u32 i, s32 state) {
     LH *lh;
     u32 n;
     Ev e;
@@ -61,7 +94,7 @@ void fn_8011E5B0(S *s) {
         if (i < s->lim) { a = s->cur[i]; b = s->prev[i]; } else { a = b = 0; }
         if (a != b) {
             if (b != 0) Fire(s, i, 0);
-            if (a != 0) Fire(s, i, a);
+            if (a != 0) FireB(s, i, a);
         }
     }
 }
