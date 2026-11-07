@@ -42,7 +42,17 @@ inline f32 Sqrt6C(f32 x) {
     return x;
 }
 
+inline f32 MagF6C(f32 x, f32 y, f32 z) {
+    return Sqrt6C(__fmadds(z, z, __fmadds(x, x, y * y)));
+}
+
 inline f32 Mag6C(V6C *v) {
+    f32 x = v->x, y = v->y, z = v->z;
+    f32 xx = x * x, yy = y * y, zz = z * z;
+    return Sqrt6C(xx + yy + zz);
+}
+
+inline f32 MagB6C(V6C *v) {
     return Sqrt6C(v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
@@ -64,7 +74,9 @@ inline void Apply6C(P6C *p, V6C t) {
 
 void fn_8006C748(P6C *p, f32 dt, s32 b) {
     V6C s;
-    V6C d;
+    f32 dy;
+    f32 dx;
+    f32 dz;
     f32 k;
     f32 y0;
     H6C *h = p->fe0->f9c;
@@ -82,18 +94,18 @@ void fn_8006C748(P6C *p, f32 dt, s32 b) {
     if (h->f0 & 4) h->Update();
     k = dt / *p->f19c;
     y0 = h->f24;
-    d.x = k;
-    d.y = k;
-    d.z = k;
+    dx = k;
+    dy = k;
+    dz = k;
     if (p->f1c4) {
-        d.x = -k;
-        d.y = d.x;
-        d.z = d.x;
+        dx = -k;
+        dy = dx;
+        dz = dx;
     }
-    s.x -= d.x;
-    s.y -= d.y;
-    s.z -= d.z;
-    if (b || (!p->f1c4 && Mag6C(&s) <= Mag6C(&p->v1d0)) || (p->f1c4 && Mag6C(&s) >= Mag6C(&p->v1d0))) {
+    s.x -= dx;
+    s.y -= dy;
+    s.z -= dz;
+    if (b || (!p->f1c4 && Mag6C(&s) <= Mag6C(&p->v1d0)) || (p->f1c4 && MagB6C(&s) >= Mag6C(&p->v1d0))) {
         p->f1a8 = 0;
         if (p->f1c8 && !p->f1cc) {
             Apply6C(p, p->v1dc);
@@ -102,17 +114,15 @@ void fn_8006C748(P6C *p, f32 dt, s32 b) {
         }
         if (!b) fn_802494A4(p, 0);
     } else {
-        H6C *h2;
         f32 y1;
         V6C w;
         Apply6C(p, s);
-        h2 = p->fe0->f9c;
-        if (h2->f0 & 4) h2->Update();
-        y1 = h2->f24;
+        h = p->fe0->f9c;
+        if (h->f0 & 4) h->Update();
+        y1 = h->f24;
         p->fe0->GetPos(&w, 0, 0, 0, 0);
         w.z -= y0 - y1;
         p->fe0->SetPos(&w, 0, 0, 0, 0);
     }
 }
-
 }
