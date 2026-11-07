@@ -1,4 +1,5 @@
 #include "common.h"
+/* NonMatching draft (wMO): DIFF 28 / SDIFF 10. r.z computed first fixes r store order. Left: target keeps the u const loads/stores below the f loads (no hoist of sdata2 loads above stack stores, wDG-like) + f-scale stfs 40 sched. Pointer/inline u stores, 2.0p1 no help. */
 extern "C" {
 struct V3 { f32 x, y, z; };
 struct A {
@@ -72,9 +73,9 @@ void fn_8004B388(P *p) {
     fn_80101820(&f);
     u.x = lbl_8035D364;
     u.y = u.z = lbl_8035D34C;
+    r.z = f.x * u.y - f.y * u.x;
     r.x = f.y * u.z - f.z * u.y;
     r.y = f.z * u.x - f.x * u.z;
-    r.z = f.x * u.y - f.y * u.x;
     fn_80101820(&r);
     u.x = r.y * f.z - r.z * f.y;
     u.y = r.z * f.x - r.x * f.z;
