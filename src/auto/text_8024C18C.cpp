@@ -50,13 +50,15 @@ static inline void tl(P18C *p, s32 n, s32 cnt) {
         y = o->f116->f16;
     }
     if (o->f120->f4 & 8) {
-        y -= (f32)(s32)(lbl_803663CC * (f32)(u32)((n - 4) * cnt)) / (f32)lbl_8035B460->f12->f11344->f4->h30;
+        s32 hh = lbl_8035B460->f12->f11344->f4->h30;
+        y -= (f32)(s32)(lbl_803663CC * (f32)(u32)((n - 4) * cnt)) / (f32)hh;
     } else {
         y -= (f32)(u32)((n - 4) * cnt);
     }
     o->f108 = lbl_803663B8;
-    p->f152->f96 = x;
-    p->f152->f100 = y;
+    o = p->f152;
+    o->f96 = x;
+    o->f100 = y;
 }
 void fn_8024C18C(P18C *p) {
     char buf[12];
