@@ -47,6 +47,8 @@ static inline void stop(Q *q) {
 
 #define COL(c) (((u32)(c)[0] << 24) | ((u32)(c)[1] << 16) | ((u32)(c)[2] << 8) | ((u32)(c)[3] & 0xff))
 
+#define COLM(c) (((u32)(c)[0] << 24) | (((u32)(c)[1] << 16) & 0xff0000) | ((u32)(c)[2] << 8) | ((u32)(c)[3] & 0xff))
+static inline u32 orA(u32 rgb, u32 a) { return rgb | a; }
 void fn_8015B3BC(A *__restrict a, B *__restrict b, void *__restrict arg, C *__restrict c, f32 *__restrict pos, f32 *__restrict uv, u8 *__restrict col) {
     Fmt fmt;
     Lock lk;
@@ -74,7 +76,7 @@ void fn_8015B3BC(A *__restrict a, B *__restrict b, void *__restrict arg, C *__re
     ((f32 *)lk.pos)[0] = pos[0];
     ((f32 *)lk.pos)[1] = pos[1];
     lk.pos += lk.posStride;
-    *(u32 *)lk.col = COL(col);
+    *(u32 *)lk.col = orA(((u32)col[0] << 24) | ((u32)col[1] << 16) | ((u32)col[2] << 8), col[3]);
     lk.col += lk.colStride;
     ((f32 *)lk.tex[0])[0] = u0;
     ((f32 *)lk.tex[0])[1] = v0;
@@ -92,7 +94,7 @@ void fn_8015B3BC(A *__restrict a, B *__restrict b, void *__restrict arg, C *__re
     ((f32 *)lk.pos)[0] = pos[0];
     ((f32 *)lk.pos)[1] = pos[3];
     lk.pos += lk.posStride;
-    *(u32 *)lk.col = COL(col + 8);
+    *(u32 *)lk.col = COLM(col + 8);
     lk.col += lk.colStride;
     ((f32 *)lk.tex[0])[0] = u0;
     ((f32 *)lk.tex[0])[1] = v1;
@@ -101,7 +103,7 @@ void fn_8015B3BC(A *__restrict a, B *__restrict b, void *__restrict arg, C *__re
     ((f32 *)lk.pos)[0] = pos[2];
     ((f32 *)lk.pos)[1] = pos[3];
     lk.pos += lk.posStride;
-    *(u32 *)lk.col = COL(col + 12);
+    *(u32 *)lk.col = COLM(col + 12);
     lk.col += lk.colStride;
     ((f32 *)lk.tex[0])[0] = u1;
     ((f32 *)lk.tex[0])[1] = v1;
