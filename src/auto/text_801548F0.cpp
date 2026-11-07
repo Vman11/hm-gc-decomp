@@ -56,22 +56,22 @@ void fn_801548F0(Tex *a, Tex *b) {
         } while (d < de);
         break;
     case 32:
-        t = s; p = s; d = dst; re = s + b->w; ce = s + sp * 4; de = dst + dp * a->h;
+        t = s; p = s; re = s + b->w; ce = s + sp * 4; de = dst + dp * a->h;
         do {
-            d[0] = (p[1] >> 16) | (p[0] & 0xFFFF0000);
-            d[1] = (p[3] >> 16) | (p[2] & 0xFFFF0000);
-            d[8] = (p[1] & 0xFFFF) | (p[0] << 16);
-            d[9] = (p[3] & 0xFFFF) | (p[2] << 16);
+            dst[0] = (p[1] >> 16) | (p[0] & 0xFFFF0000);
+            dst[1] = (p[3] >> 16) | (p[2] & 0xFFFF0000);
+            dst[8] = (p[1] & 0xFFFF) | (p[0] << 16);
+            dst[9] = (p[3] & 0xFFFF) | (p[2] << 16);
             p += sp;
             if (p >= ce) {
                 t += 4;
-                d += 10;
+                dst += 10;
                 if (t >= re) { s += sp * 4; t = s; re = s + a->w; }
                 p = t; ce = t + sp * 4;
             } else {
-                d += 2;
+                dst += 2;
             }
-        } while (d < de);
+        } while (dst < de);
         break;
     default:
         fn_80060568(lbl_802A02E0, 0, 0, 0);
