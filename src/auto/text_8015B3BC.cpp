@@ -47,7 +47,7 @@ static inline void stop(Q *q) {
 
 #define COL(c) (((u32)(c)[0] << 24) | ((u32)(c)[1] << 16) | ((u32)(c)[2] << 8) | ((u32)(c)[3] & 0xff))
 
-void fn_8015B3BC(A *a, B *b, void *arg, C *c, f32 *pos, f32 *uv, u8 *col) {
+void fn_8015B3BC(A *__restrict a, B *__restrict b, void *__restrict arg, C *__restrict c, f32 *__restrict pos, f32 *__restrict uv, u8 *__restrict col) {
     Fmt fmt;
     Lock lk;
     D *d;
