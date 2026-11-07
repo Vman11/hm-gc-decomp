@@ -1,3 +1,4 @@
+/* NonMatching (wMV): fn_80199910 reg-masked SDIFF 0, DIFF 22 = loop-temp FPR colouring only (target odd f1..f7). */
 /* Functions from 0x80199910 to 0x80199A98, found by decomp-toolkit. */
 #include "common.h"
 
@@ -9,10 +10,11 @@ typedef struct {
 s32 fn_80199910(void *arg0, f32 *arg1) {
     f32 *p = *(f32 **)((u8 *)arg0 + 0);
     f32 *end = p + *(s32 *)((u8 *)arg0 + 4) * 4;
-    f32 x = arg1[0];
-    f32 y = arg1[1];
-    f32 z = arg1[2];
-    f32 r = -arg1[3];
+    f32 x, y, z, r;
+    r = -arg1[3];
+    z = arg1[2];
+    x = arg1[0];
+    y = arg1[1];
     for (; p < end; p += 4) {
         f32 d = x * p[0] + y * p[1] + z * p[2] + p[3];
         if (d < r) {
