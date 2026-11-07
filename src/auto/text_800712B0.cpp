@@ -17,13 +17,17 @@ void fn_800712B0(S800712B0 *p) {
     p->b->v13(0, 0, &b, 0, 0);
     fn_80100F24(&a, &b);
     fn_80101820(&a);
-    *(volatile f32 *)&a.x = a.x * lbl_8035F340;
-    *(volatile f32 *)&a.y = a.y * lbl_8035F340;
-    *(volatile f32 *)&a.z = a.z * lbl_8035F340;
-    f32 k = lbl_8035F344;
-    a.x = k * b.x + a.x;
-    a.y = k * b.y + a.y;
-    a.z = k * b.z + a.z;
+    f32 k,z,y,x;
+    x = a.x * lbl_8035F340;
+    y = a.y * lbl_8035F340;
+    z = a.z * lbl_8035F340;
+    *(volatile f32 *)&a.x = x;
+    *(volatile f32 *)&a.y = y;
+    *(volatile f32 *)&a.z = z;
+    k = lbl_8035F344;
+    a.x = k * b.x + x;
+    a.y = k * b.y + y;
+    a.z = k * b.z + z;
     p->b->pos = a;
 }
 }
