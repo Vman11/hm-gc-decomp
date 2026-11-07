@@ -54,6 +54,7 @@ void fn_801AAB7C(u8 *, Obj *, u8 *);
 void fn_801AB928(void *, u8 *, char *, u32, u32, u32);
 void fn_801C0C80(Obj *);
 void fn_801C0CF8(Obj *);
+#define FREETBL(t, N) { tt = t; if (tt) { u32 n = (N); u32 c; char **q = tt; for (c = 0; c < n; q++, c++) { if (*q) delete[] *q; } delete[] tt; t = 0; } }
 static inline void freeTbl(char ***pt, u32 n) {
     char **t = *pt;
     if (t) {
@@ -81,6 +82,7 @@ void fn_801AB15C(Mgr *m, u32 a) {
 //P}
     int jj;
     u32 ii;
+    char **tt;
     if (m->f12) fn_8012ACAC(m->f12, F(m->ctx,16,u32), lbl_8035AF34, a, m->f108);
     if (m->n68 > 0) {
         for (i = 0; i < m->n68; i++) {
@@ -156,9 +158,9 @@ void fn_801AB15C(Mgr *m, u32 a) {
             delete lbl_8035AF34;
             lbl_8035AF34 = 0;
         }
-        freeTbl(&lbl_8035AF1C, m->n52);
-        freeTbl(&lbl_8035AF24, m->n54);
-        freeTbl(&lbl_8035AF20, m->n56);
+        FREETBL(lbl_8035AF1C, m->n52)
+        FREETBL(lbl_8035AF24, m->n54)
+        FREETBL(lbl_8035AF20, m->n56)
         if (lbl_8035AF28) {
             int r;
             for (r = 0; r < m->n68; r++) {
@@ -166,7 +168,7 @@ void fn_801AB15C(Mgr *m, u32 a) {
                 u32 n = m->n72;
                 u32 c;
                 char **q = row;
-                for (c = 0; c < n; c++, q++) {
+                for (c = 0; c < n; q++, c++) {
                     if (*q) delete[] *q;
                 }
                 delete[] row;
@@ -174,12 +176,12 @@ void fn_801AB15C(Mgr *m, u32 a) {
             delete[] lbl_8035AF28;
             lbl_8035AF28 = 0;
         }
-        freeTbl(&lbl_8035AF30, m->n60);
-        freeTbl(&lbl_8035AF2C, m->n62);
+        FREETBL(lbl_8035AF30, m->n60)
+        FREETBL(lbl_8035AF2C, m->n62)
         for (i = 0; i < m->n64; i++) {
             fn_801AB928(m->arr40[i], m->ctx, m->arr76[i], m->f48, a, m->f8);
         }
-        freeTbl(&m->arr76, m->n64);
+        FREETBL(m->arr76, m->n64)
         for (i = 0; i < m->n56; i++) fn_801C0C80(m->arr24[i]);
         for (i = 0; i < m->n56; i++) fn_801C0CF8(m->arr24[i]);
 #undef i
