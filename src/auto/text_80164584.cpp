@@ -47,7 +47,7 @@ void fn_80164584(T *t, u32 idx, S *s, V *pos, V *dir) {
     mode(t->f6456, t->f6568, t->f6572);
     fn_800D77F4(l, 3, lbl_8036469C * (lbl_803646A0 * s->f56));
     fn_800D77C8(l, s->f64, s->f68, s->f72);
-    f32 px = pos->x;
+    f32 px = *(volatile f32 *)&pos->x;
     f32 py = pos->y;
     f32 pz = pos->z;
     f32 dx = dir->x;
