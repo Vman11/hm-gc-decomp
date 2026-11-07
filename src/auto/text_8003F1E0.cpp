@@ -136,7 +136,7 @@ extern "C" void fn_8003F1E0(O *o, s32 idx) {
                 x->get(&b, 0, 0, 0, 0);
                 d.x = b.x - a.x; d.y = b.y - a.y; d.z = b.z - a.z;
                 fn_80101820(&d);
-                *(volatile f32 *)&d.x = d.x * *o->f376; *(volatile f32 *)&d.y = d.y * *o->f376; *(volatile f32 *)&d.z = d.z * *o->f376;
+                *(volatile f32 *)&d.x = d.x * *o->f376; d.y = d.y * *o->f376; d.z = d.z * *o->f376;
                 l = d.x * d.x + d.y * d.y + d.z * d.z;
                 { f32 k = *(volatile f32 *)&lbl_8035C2D0; if (l > k) l = Sq(l); }
                 { Cam *c = o->f224; c->f280.x = d.x; c->f280.y = d.y; c->f280.z = d.z; c->f340 = l; }
