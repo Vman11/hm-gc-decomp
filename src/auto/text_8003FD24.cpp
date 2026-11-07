@@ -21,6 +21,7 @@ struct VM {
     virtual void msg(char *, void *, s32, f32 *, s32);
 };
 extern u8 *lbl_8035B308;
+extern f32 lbl_8035C300;
 extern char lbl_8035C2F8[4];
 extern char lbl_8035C304[7];
 extern f32 lbl_8035C2FC;
@@ -67,7 +68,7 @@ void fn_8003FD24(u8 *p, s32 flag) {
             f32 sp = *(f32 *)(F(u8 *, 224) + 340);
             f32 mx = *pm;
             f32 r;
-            if (mx <= lbl_8035C2FC || sp >= mx) r = 1.0f;
+            if (mx <= lbl_8035C2FC || sp >= mx) r = lbl_8035C300;
             else if (sp < *F(f32 *, 316)) r = lbl_8035C2FC;
             else r = sp / mx;
             f32 dmg;
@@ -107,13 +108,9 @@ void fn_8003FD24(u8 *p, s32 flag) {
             if (*(u32 *)oa & 4) oa->v2();
             t = *(f32 *)((u8 *)oa + 36);
             if (*(u32 *)ob & 4) ob->v2();
-            {
-                f32 k = t + *(f32 *)((u8 *)ob + 36);
-                n.x *= k; n.y *= k; n.z *= k;
-            }
+{ f32 k = t + *(f32 *)((u8 *)ob + 36); n.x *= k; n.y *= k; n.z *= k; }
         }
-        t = n.x * vax + n.y * vay + n.z * vaz;
-        m.x = -n.x; m.y = -n.y; m.z = -n.z;
+m.x = -n.x; m.y = -n.y; m.z = -n.z; t = n.x * vax + n.y * vay + n.z * vaz;
         fn_80101820(&n);
         n.x *= t; n.y *= t; n.z *= t;
         t = m.x * vbx + m.y * vby + m.z * vbz;
