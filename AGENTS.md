@@ -922,3 +922,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wQW (2026-11-07): fn_800F8274 NonMatching DIFF 22->12 (SDIFF 0): local decl order `E *arr; u32 start; u32 n; u32 off; u32 idx;` (arr first) fixes start/arr; left n r26 vs off r29 swap (L1 order, off forms, Find() inline: no gain).
 - wRF (2026-11-07): fn_800F87F0 MATCHED: in the inlined grow fn, the rehash copy loop uses its own counter 'for (u32 j = 0; j < oldn; e++, j++)' + extab_padding=[0xB1, 0x02], instead of reusing the table-search 'i' (shared i was coloured lowest, shifting all saved GPRs by one).
 - wRC (2026-11-07): fn_80101B0C MATCHED: register-only diff fixed by o = p->r->getO() (member getter), decl order st/o/end(p->n0+p->n1)/i, and both loops using st.
+- wRF (2026-11-07): fn_80264F2C MATCHED: block locals 'u32 i, k;' declared right after 'first' (before ent/ob/o2) fixed k's saved reg; 'u32 n = gn(p);' (getter inline) put n above the sel*8 temp.

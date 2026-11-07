@@ -28,6 +28,7 @@ void fn_800FFF8C(Q4 *, V3 *);
 void fn_80101820(V3 *);
 void fn_800F806C(void *, Ob *, void *);
 
+static inline u32 gn(P *p) { return p->n; }
 static inline int Valid(Tb *t, u16 s) { return s < t->n; }
 
 int fn_80264F2C(P *p, void *a, void *b, void *c, V3 *pos, f32 *d, u32 *cnt, M **e,
@@ -36,7 +37,7 @@ int fn_80264F2C(P *p, void *a, void *b, void *c, V3 *pos, f32 *d, u32 *cnt, M **
     V3 va, vb, vc;
     Q4 r1;
     Q4 r2;
-    u32 n = p->n;
+    u32 n = gn(p);
     if (cnt) *cnt = n;
     if (flag) *flag = 0;
     if (n > 10) return 0;
@@ -44,10 +45,10 @@ int fn_80264F2C(P *p, void *a, void *b, void *c, V3 *pos, f32 *d, u32 *cnt, M **
         f32 best = lbl_80366B9C;
         s32 found = 0;
         s32 first = 1;
+        u32 i, k;
         Ent *ent = 0;
         Ob *ob = 0;
         Ob2 *o2;
-        u32 i, k;
         for (i = 0; i < n; i++) idx[i] = -1;
         for (k = 0; k < n && !found; k++) {
             u32 sel = -1;
