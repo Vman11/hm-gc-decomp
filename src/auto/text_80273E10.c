@@ -686,47 +686,49 @@ int fn_80274E0C(int a) { return a; }
 
 void fn_80274F8C(void);
 void fn_80275134(void);
+#define ADDR(r, s, o) { register u32 t; asm { lis t, s+o@ha; addi r, t, s+o@l } }
+#define ICBI(a) { register void *pa = (a); register int z = 0; asm { isync; icbi pa, z } }
 void fn_80274E10(void) {
+    register u32 *p;
     u32 saved;
-    u32 *p;
+    u32 d;
+    u32 e;
 
     saved = *(u32 *)0x80000300;
-    *(u32 *)0x80000300 = ((u32)fn_80274F8C - 0x80000300) | 0x48000000;
+    d = ((u32)fn_80274F8C - 0x80000300);
+    *(u32 *)0x80000300 = d | 0x48000000;
     DCFlushRangeNoSync((void *)0x80000300, 4);
     __sync();
-    __isync();
-    __icbi((void *)0x80000300, 0);
-    p = (u32 *)((u8 *)fn_80274F8C + 0xEC);
+    ICBI((void *)0x80000300);
+    ADDR(p, fn_80274F8C, 0xEC);
     *p = saved;
     DCFlushRangeNoSync(p, 4);
     __sync();
-    __isync();
-    __icbi(p, 0);
-    p = (u32 *)((u8 *)fn_80274F8C + 0xF0);
-    *p = ((0x80000304 - (u32)p) & 0x3FFFFFF) | 0x48000000;
+    ICBI(p);
+    ADDR(p, fn_80274F8C, 0xF0);
+    e = (u32)p - 0x80000304;
+    *p = (-e & 0x3FFFFFF) | 0x48000000;
     DCFlushRangeNoSync(p, 4);
     __sync();
-    __isync();
-    __icbi(p, 0);
+    ICBI(p);
 
     saved = *(u32 *)0x80000400;
-    *(u32 *)0x80000400 = ((u32)fn_80275134 - 0x80000400) | 0x48000000;
+    d = ((u32)fn_80275134 - 0x80000400);
+    *(u32 *)0x80000400 = d | 0x48000000;
     DCFlushRangeNoSync((void *)0x80000400, 4);
     __sync();
-    __isync();
-    __icbi((void *)0x80000400, 0);
-    p = (u32 *)((u8 *)fn_80275134 + 0xEC);
+    ICBI((void *)0x80000400);
+    ADDR(p, fn_80275134, 0xEC);
     *p = saved;
     DCFlushRangeNoSync(p, 4);
     __sync();
-    __isync();
-    __icbi(p, 0);
-    p = (u32 *)((u8 *)fn_80275134 + 0xF0);
-    *p = ((0x80000404 - (u32)p) & 0x3FFFFFF) | 0x48000000;
+    ICBI(p);
+    ADDR(p, fn_80275134, 0xF0);
+    e = (u32)p - 0x80000404;
+    *p = (-e & 0x3FFFFFF) | 0x48000000;
     DCFlushRangeNoSync(p, 4);
     __sync();
-    __isync();
-    __icbi(p, 0);
+    ICBI(p);
 }
 
 void OSClearContext(OSContext *);
