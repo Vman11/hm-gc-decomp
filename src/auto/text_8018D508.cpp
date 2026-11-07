@@ -4,7 +4,6 @@
 
 extern "C" {
 
-// fn_8018D508: NonMatching draft, registers only (SDIFF 0): ix/iy/iz FP coloring (f2/f3/f4 vs f4/f2/f1); see hm-work/wMI/STATUS.txt
 struct V { f32 x, y, z; };
 struct Seg { V a, b; };
 struct R { u32 f0; Seg s; V *pa; V *pb; Seg s2; V a60; V b72; };
@@ -49,10 +48,10 @@ void fn_8018D508(O *o, R *r, void *x) {
     Sc *sc = o->f120;
     if (sc) {
         f32 iz, iy, ix;
-        ix = sc->s.x;
+        f32 x = *(volatile f32 *)&sc->s.x;
+        ix = lbl_80364AA8 / x;
         iy = sc->s.y;
         iz = sc->s.z;
-        ix = lbl_80364AA8 / ix;
         iy = lbl_80364AA8 / iy;
         iz = lbl_80364AA8 / iz;
         r->a60.x *= ix; r->a60.y *= iy; r->a60.z *= iz;
