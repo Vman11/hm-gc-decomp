@@ -38,9 +38,10 @@ f32 fn_8019D110(A *__restrict a, O *__restrict o, S *__restrict s, void *__restr
         f32 wx = s->f28.x * m->m[0];
         f32 wy = s->f28.x * m->m[1];
         f32 wz = s->f28.x * m->m[2];
-        wx = wx + s->f28.y * m->m[3];
-        wy = wy + s->f28.y * m->m[4];
-        wz = wz + s->f28.y * m->m[5];
+        f32 sy = s->f28.y;
+        wx = wx + sy * m->m[3];
+        wy = wy + sy * m->m[4];
+        wz = wz + sy * m->m[5];
         wx = wx + s->f28.z * m->m[6];
         wy = wy + s->f28.z * m->m[7];
         wz = wz + s->f28.z * m->m[8];

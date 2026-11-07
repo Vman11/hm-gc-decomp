@@ -473,6 +473,7 @@ The library-unit agent works in this repo too and commits its own batches. Commi
 - wMU (2026-11-06): NonMatching progress: fn_801581F0 SDIFF 17->0 (AttrFmts(int v) + fn_8014C784(&l, &g->fmt); regs only, vf r30 vs r29); fn_80145114 SDIFF 18->8 (GC/2.6 + __restrict r fixed prologue; left entry mullw/srawi order); fn_800AA770 SDIFF 18->12 (volatile p0=a+f stores + volatile 0.05 read).
 - wNE (2026-11-06): matched fn_801644BC, fn_80164518 (GC/2.6 + __restrict on the FIRST param only; restrict on both ptrs breaks it).
 - wPK: matched fn_80228208 (Matching): volatile stores in V3::sub + compare against *(volatile f32 *)&lbl_80365CB0 pins the 0.0f load after the d.z store.
+- wPY (2026-11-07): fn_8019D110 MATCHED: FP accumulator colouring fixed by loading 'f32 sy = s->f28.y;' into a local right before the second (y) row of the 3x3 matrix-vector accumulation (only the middle multiplier as a local; all three as locals is worse).
 wFO (user-approved, collaborator units, 2026-11-04): matched fn_801FE454 on GC/1.2.5n (s64 extern, compiler-version sweep of older GC versions), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_80184A24 on GC/2.5 with `__restrict` on a pointer param (sweep of >25-diff drafts), Matching.
 wFN (user-approved, collaborator units, 2026-11-04): matched fn_801122C8 on GC/2.5 with `__restrict` on the pointer param (compiler-version sweep), Matching.
