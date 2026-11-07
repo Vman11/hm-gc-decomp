@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching (wLD/wMW): int word -> SDIFF 0, DIFF 142 register-only (params r27-29 vs r28-30; n/bad r31/r30 vs r26/r27).
+// NonMatching (wLD/wMW/wRH): SDIFF 0, DIFF 110 register-only. p/k as param copies (void *pv, int kv), case-0x20 checkAll hand-inlined; left: p r30/b r27 vs r28/r30, case-0x20 n/bad r28/r31 vs r26/r27.
 // (bool word gave DIFF 25 but adds clrlwi/cmplwi.)
 
 extern "C" {
@@ -32,16 +32,26 @@ static inline int checkAll(u8 *p, u32 k) {
     return bad;
 }
 
-int fn_801B0AE8(u8 *p, u32 k, s32 b) {
+int fn_801B0AE8(void *pv, int kv, s32 b) {
+    u32 pos;
+    u8 *p = (u8 *)pv;
+    u32 k = (u32)kv;
     switch (*(s32 *)(p + 324)) {
     case 0x10:
         fn_801D8E50(p, k, b);
         break;
     case 0x20: {
-        if (checkAll(p, k)) return 0;
+        {
+            Node *n;
+            int bad = 0;
+            for (n = *(Node **)(p + 136); n; n = n->next) {
+                if (n->flag && n->obj->Check(p, k) == 0) bad = 1;
+            }
+            if (bad) return 0;
+        }
         if (!(U32(108) & 2)) return 0;
         if (k & 0x30) {
-            u32 pos = U32(368);
+            pos = U32(368);
             int word = 1;
             if (pos == 0) {
                 pos = 0;
@@ -79,12 +89,18 @@ int fn_801B0AE8(u8 *p, u32 k, s32 b) {
         break;
     }
     default: {
-        if (checkAll(p, k)) return 0;
+        {
+            Node *n;
+            int bad = 0;
+            for (n = *(Node **)(p + 136); n; n = n->next) {
+                if (n->flag && n->obj->Check(p, k) == 0) bad = 1;
+            }
+            if (bad) return 0;
+        }
         if (b != 0 && *(VC **)(p + 112)) (*(VC **)(p + 112))->notify(8, *(void **)(p + 104));
         break;
     }
     }
     return 0;
 }
-
 } /* extern "C" */
