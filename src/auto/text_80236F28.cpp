@@ -98,6 +98,22 @@ inline f32 Sq(f32 x)
     return x;
 }
 
+inline f32 SqV(f32 x)
+{
+    if (x > *(volatile f32 *)&lbl_80365EFC) {
+        const f64 _half = lbl_80365F28;
+        const f64 _three = lbl_80365F30;
+        volatile f32 y;
+        f64 g = __frsqrte((f64)x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        y = x * g;
+        return y;
+    }
+    return x;
+}
+
 inline f32 Ang(V3 a, V3 b)
 {
     f32 s = b.x * a.y - b.y * a.x;
@@ -177,9 +193,11 @@ void fn_80236F28(Act *self, f32 maxd, f32 minv, Act *grp, s32 useDir, s32 unused
         grp->GetDir(&tp, 0, 0, 0, 0);
         d.x = tp.x - self->pos.x;
         d.y = tp.y - self->pos.y;
-        d.z = tp.z - self->pos.z;
-        d2 = d;
-        len = Sq(d.x * d.x + d.y * d.y + d.z * d.z);
+        *(volatile f32 *)&d.z = tp.z - self->pos.z;
+        d2.x = d.x;
+        d2.y = d.y;
+        *(volatile f32 *)&d2.z = d.z;
+        len = SqV(d.x * d.x + d.y * d.y + d.z * d.z);
         az = __fabs(d.z);
         if (!(len < maxd)) continue;
         if (useDir) {
