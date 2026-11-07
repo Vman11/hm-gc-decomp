@@ -52,7 +52,7 @@ static inline void SetPos(Ob *e, V3 *p) {
 }
 
 static inline Sub *GetSub(Ob *t) {
-    return t->f84 != 0 ? t->f84->f8 : 0;
+    return t->f84 == 0 ? 0 : t->f84->f8;
 }
 
 static inline void Reset(Sub *x) {
@@ -104,7 +104,7 @@ void fn_80231408(O *o, int flag, V3 *dir) {
     p.z = lbl_80365E30 * d.z + p.z;
     SetPos(o->f2c0, &p);
     {
-    f32 ax = d.x, ay = d.y, az = d.z;
+    f32 ax = VK(d.x), ay = VK(d.y), az = VK(d.z);
     VS(a.x) = ax; VS(a.y) = ay; VS(a.z) = az;
     f32 z = VK(lbl_80365DF8);
     VS(u.x) = z;
@@ -157,7 +157,7 @@ void fn_80231408(O *o, int flag, V3 *dir) {
             void *list = lbl_8035B334->f8;
             u32 i;
             u32 off;
-            for (i = 0, off = 0; i < o->f2b8; i++, off += 8) {
+            for (i = 0, off = 0; i < o->f2b8; off += 8, i++) {
                 Ob *e = fn_8022ECB4(list, o->f2b4 + off);
                 if (e != 0) {
                     T *t;
@@ -170,7 +170,7 @@ void fn_80231408(O *o, int flag, V3 *dir) {
                         fn_80190C98(e);
                     }
                     e->f9c = lbl_80365DF8;
-                    e->f98 &= ~4;
+                    e->f98 &= ~6;
                     e->fac = lbl_80365DF8;
                     fn_80196688(e);
                     e->f0 |= lbl_80365E24;
