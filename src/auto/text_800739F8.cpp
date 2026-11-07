@@ -1,4 +1,4 @@
-// NonMatching draft: 14 diff lines, register-only (SDIFF 0): r-branch (k+m)*p operand regs, x120 clamp f0/f2.
+// NonMatching draft: 10 diff lines, register-only (SDIFF 0): x120 clamp f0/f2 colouring.
 #include "common.h"
 
 struct Vec { f32 x, y, z; };
@@ -74,8 +74,8 @@ void fn_800739F8(X *a) {
         f32 p;
         f32 c = lbl_8035F4E0 * (v.z * v.z);
         p = *a->x52c;
-        if (v.z < lbl_8035F3EC) r = p * (k + m);
-        else r = p * (k + m) + c;
+        if (v.z < lbl_8035F3EC) { f32 q = k + m; r = q * p; }
+        else r = __fmadds(k + m, p, c);
     }
     s = Sq(lbl_8035F4F8 * r);
     w = a->x130;
