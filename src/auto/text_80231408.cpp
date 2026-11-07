@@ -155,8 +155,8 @@ void fn_80231408(O *o, int flag, V3 *dir) {
         o->f26c = 0;
         if (o->f2bc != 0 || flag == 0) {
             void *list = lbl_8035B334->f8;
-            u32 i;
             u32 off;
+            u32 i;
             for (i = 0, off = 0; i < o->f2b8; off += 8, i++) {
                 Ob *e = fn_8022ECB4(list, o->f2b4 + off);
                 if (e != 0) {
