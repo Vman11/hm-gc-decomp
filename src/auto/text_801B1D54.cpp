@@ -83,13 +83,14 @@ void fn_801B1D54(A *p, u32 pos) {
     if (F(F(p,0x7c,u8*),0x6c,u8*) && F(F(F(p,0x7c,u8*),0x6c,u8*),0x24,void*)) {
         f32 *q = (f32 *)(F(F(p,0x70,u8*),0xc,u8*) + F(p,0x178,u32) * 16);
         r128 = *(R *)((u8 *)p + 0x48);
-        r128.y1 += q[3];
-        r128.y0 += q[1];
-        r128.x1 += q[2];
-        r128.x0 += q[0];
-        v48.x = F(p,0x48,f32) + q[0];
-        v48.y = F(p,0x4c,f32) + q[1];
-        fn_8012D0A4(lbl_803596E0[0], lbl_8035AF50, lbl_8035AF54, F(F(F(p,0x7c,u8*),0x6c,u8*),0x24,void*), &r96, F(p,0x18c,Arr*), &v48, 0, 17);
+        *(volatile f32 *)&r128.y1 = r128.y1 + q[3];
+        *(volatile f32 *)&r128.y0 = r128.y0 + q[1];
+        *(volatile f32 *)&r128.x1 = r128.x1 + q[2];
+        *(volatile f32 *)&r128.x0 = r128.x0 + q[0];
+        *(volatile f32 *)&v48.x = F(p,0x48,f32) + q[0];
+        *(volatile f32 *)&v48.y = F(p,0x4c,f32) + q[1];
+        Arr *aa = *(Arr *volatile *)((u8 *)p + 0x18c);
+        fn_8012D0A4(lbl_803596E0[0], *(volatile f32 *)&lbl_8035AF50, *(volatile f32 *)&lbl_8035AF54, F(F(F(p,0x7c,u8*),0x6c,u8*),0x24,void*), &r96, aa, &v48, 0, 17);
         {
             u8 *s = F(F(p,0x70,u8*),4,u8*) + F(p,0x178,u32) * 28;
             fn_801A4F5C(F(p,0x188,void*), &r128, &r96, &r112, F(s,8,u32), F(s,4,u32));
