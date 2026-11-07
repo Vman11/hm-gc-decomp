@@ -159,8 +159,10 @@ u32 fn_8014EF58(const f32 (*m)[4], const f32 *v, f32 *out, f32 *ndc) {
     ndc[1] = out[1] * inv;
     ndc[2] = out[2] * inv;
 
-    neg = ((x >> 29) & 4) | ((y >> 27) & 0x10);
-    over = (((w - x) >> 28) & 8) | (((w - y) >> 26) & 0x20);
+    u32 ny = (y >> 27) & 0x10;
+    u32 oy = ((w - y) >> 26) & 0x20;
+    neg = ((x >> 29) & 4) | ny;
+    over = (((w - x) >> 28) & 8) | oy;
     neg |= z >> 31;
     over |= ((w - z) >> 30) & 2;
     return neg | (over & ~(neg << 1));
