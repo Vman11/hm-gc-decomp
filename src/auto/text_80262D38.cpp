@@ -23,8 +23,11 @@ void __dl__FPv(void *);
 static inline void Set_2E58(V3_2E58 *v, f32 a, f32 b, f32 c) { v->x = a; v->y = b; v->z = c; }
 static inline void Zero_2E58(V3_2E58 *v) { v->x = lbl_80366AE8; v->y = lbl_80366AE8; v->z = lbl_80366AE8; }
 static inline void Ident_2E58(V3_2E58 *a, V3_2E58 *b, V3_2E58 *c) {
-    Zero_2E58(a); Zero_2E58(b); Zero_2E58(c);
-    a->x = lbl_80366AEC; b->y = lbl_80366AEC; c->z = lbl_80366AEC;
+    f32 z = *(volatile f32 *)&lbl_80366AE8;
+    *(volatile f32 *)&a->x = z; *(volatile f32 *)&a->y = z; *(volatile f32 *)&a->z = z;
+    f32 o = *(volatile f32 *)&lbl_80366AEC;
+    *(volatile f32 *)&b->y = z; c->x = z; c->y = z; *(volatile f32 *)&c->z = z;
+    *(volatile f32 *)&a->x = o; *(volatile f32 *)&b->x = z; *(volatile f32 *)&b->z = z; *(volatile f32 *)&b->y = o; *(volatile f32 *)&c->z = o;
 }
 void fn_80262D38(P_2E58 *p) {
     void *g = *(void * volatile *)&lbl_8035B478;
@@ -32,11 +35,11 @@ void fn_80262D38(P_2E58 *p) {
     if (p->f12) delete p->f12;
     if (p->f8) delete p->f8;
     if (p->f16) delete p->f16;
-    p->f12 = 0;
-    p->f8 = 0;
-    p->f4 = 0;
-    p->f16 = 0;
-    p->f20 = 0;
+    *(volatile int *)&p->f12 = 0;
+    *(volatile int *)&p->f8 = 0;
+    *(volatile int *)&p->f4 = 0;
+    *(volatile int *)&p->f16 = 0;
+    *(volatile int *)&p->f20 = 0;
     Ident_2E58(&lbl_80357E78, &lbl_80357E84, &lbl_80357E90);
 }
 
