@@ -1,5 +1,5 @@
-// fn_801737D8: vertex cache lookup (sibling of fn_80173CE4). NonMatching draft SDIFF 343:
-// target terms k=3,5,6,7 are (0x100 - e) & k (literal here); n stays a register (loop IV?) in target.
+// fn_801737D8: vertex cache lookup (sibling of fn_80173CE4). NonMatching draft SDIFF 218 (wOA):
+// Eq(a, pos) operand order; Eq part reads pos via u32 *w; path1 uses s, paths 2/3 the global. Left: target keeps n=8 unfolded in path1 (slwi n,2).
 #include "common.h"
 
 extern "C" {
@@ -27,40 +27,41 @@ static inline u8 Eq(V *x, V *y) { return x == y; }
 
 void fn_801737D8(P *p, V *a, V *b, V *c) {
     CS *s = &lbl_8032F028;
+    u32 *w = (u32 *)s;
     u32 ia, ib, ic, n, i;
-    ia = Eq(s->pos[0], a) | (Eq(s->pos[1], a) << 1) | ((0x100 - Eq(s->pos[2], a)) & 3) | (Eq(s->pos[3], a) << 2) | ((0x100 - Eq(s->pos[4], a)) & 5);
-    ib = Eq(s->pos[0], b) | (Eq(s->pos[1], b) << 1) | ((0x100 - Eq(s->pos[2], b)) & 3) | (Eq(s->pos[3], b) << 2) | ((0x100 - Eq(s->pos[4], b)) & 5);
-    ic = Eq(s->pos[0], c) | (Eq(s->pos[1], c) << 1) | ((0x100 - Eq(s->pos[2], c)) & 3) | (Eq(s->pos[3], c) << 2) | ((0x100 - Eq(s->pos[4], c)) & 5);
-    ia |= ((0x100 - Eq(s->pos[5], a)) & 6) | ((0x100 - Eq(s->pos[6], a)) & 7) | (Eq(s->pos[7], a) << 3);
-    ib |= ((0x100 - Eq(s->pos[5], b)) & 6) | ((0x100 - Eq(s->pos[6], b)) & 7) | (Eq(s->pos[7], b) << 3);
-    ic |= ((0x100 - Eq(s->pos[5], c)) & 6) | ((0x100 - Eq(s->pos[6], c)) & 7) | (Eq(s->pos[7], c) << 3);
+    ia = Eq(a, (V *)w[132]) | (Eq(a, (V *)w[133]) << 1) | ((0x100 - Eq(a, (V *)w[134])) & 3) | (Eq(a, (V *)w[135]) << 2) | ((0x100 - Eq(a, (V *)w[136])) & 5);
+    ib = Eq(b, (V *)w[132]) | (Eq(b, (V *)w[133]) << 1) | ((0x100 - Eq(b, (V *)w[134])) & 3) | (Eq(b, (V *)w[135]) << 2) | ((0x100 - Eq(b, (V *)w[136])) & 5);
+    ic = Eq(c, (V *)w[132]) | (Eq(c, (V *)w[133]) << 1) | ((0x100 - Eq(c, (V *)w[134])) & 3) | (Eq(c, (V *)w[135]) << 2) | ((0x100 - Eq(c, (V *)w[136])) & 5);
+    ia |= ((0x100 - Eq(a, (V *)w[137])) & 6) | ((0x100 - Eq(a, (V *)w[138])) & 7) | (Eq(a, (V *)w[139]) << 3);
+    ib |= ((0x100 - Eq(b, (V *)w[137])) & 6) | ((0x100 - Eq(b, (V *)w[138])) & 7) | (Eq(b, (V *)w[139]) << 3);
+    ic |= ((0x100 - Eq(c, (V *)w[137])) & 6) | ((0x100 - Eq(c, (V *)w[138])) & 7) | (Eq(c, (V *)w[139]) << 3);
     n = 8;
     if (!ia) {
         ia = n;
-        lbl_8032F028.pos[n] = a;
+        s->pos[n] = a;
         lbl_8032F028.codes[n] = ((XF)lbl_8032C110[108])(p->fbc, a, &s->clip[n]);
         n++;
     } else ia--;
     if (!ib) {
         ib = n;
         lbl_8032F028.pos[n] = b;
-        lbl_8032F028.codes[n] = ((XF)lbl_8032C110[108])(p->fbc, b, &s->clip[n]);
+        lbl_8032F028.codes[n] = ((XF)lbl_8032C110[108])(p->fbc, b, &lbl_8032F028.clip[n]);
         n++;
     } else ib--;
     if (!ic) {
         ic = n;
         lbl_8032F028.pos[n] = c;
-        lbl_8032F028.codes[n] = ((XF)lbl_8032C110[108])(p->fbc, c, &s->clip[n]);
+        lbl_8032F028.codes[n] = ((XF)lbl_8032C110[108])(p->fbc, c, &lbl_8032F028.clip[n]);
         n++;
     } else ic--;
     fn_801718AC(p, ia, ib, ic);
     for (i = n; i > 8; i--) {
-        s->pos[s->f690] = s->pos[i - 1];
-        s->codes[s->f690] = s->codes[i - 1];
-        s->clip[s->f690].x = s->clip[i - 1].x;
-        s->clip[s->f690].y = s->clip[i - 1].y;
-        s->clip[s->f690].z = s->clip[i - 1].z;
-        s->f690 = (s->f690 + 1) & 7;
+        lbl_8032F028.pos[lbl_8032F028.f690] = lbl_8032F028.pos[i - 1];
+        lbl_8032F028.codes[lbl_8032F028.f690] = lbl_8032F028.codes[i - 1];
+        lbl_8032F028.clip[lbl_8032F028.f690].x = lbl_8032F028.clip[i - 1].x;
+        lbl_8032F028.clip[lbl_8032F028.f690].y = lbl_8032F028.clip[i - 1].y;
+        lbl_8032F028.clip[lbl_8032F028.f690].z = lbl_8032F028.clip[i - 1].z;
+        lbl_8032F028.f690 = (lbl_8032F028.f690 + 1) & 7;
     }
 }
 }
