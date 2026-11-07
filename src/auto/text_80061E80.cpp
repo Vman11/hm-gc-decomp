@@ -1,5 +1,5 @@
 // fn_80061E80: main menu/attract state loop (states 2 -> 1). NonMatching: all instructions match except
-// one 3-insn schedule swap (fn_8003C674 arg setup) + callee-saved register coloring (g/s/done order), see hm-work/wA_80061E80.
+// SDIFF 0 (register coloring only): volatile st init + volatile lbl_8035A0A4 read fixed the fn_8003C674 arg schedule (wNV). See hm-work/wA_80061E80.
 // A match also needs dtor_80031570/dtor_8003493C renamed to __dt__9C80031570Fv/__dt__9C8003493CFv (DESTROYLOCAL).
 #include "common.h"
 
@@ -369,8 +369,8 @@ extern "C" void fn_80061E80(P *p) {
             }
             p->f33f0 = 0;
             fn_800338E8(&b);
-            s32 *st = 0;
-            if (fn_8003C674(lbl_8035A0A4, s + 0x330, &st) == 0) {
+            s32 *st; *(s32 * volatile *)&st = 0;
+            if (fn_8003C674(*(void * volatile *)&lbl_8035A0A4, s + 0x330, &st) == 0) {
                 *st = 0;
             } else if (*st == 2) {
                 *st = 1;
