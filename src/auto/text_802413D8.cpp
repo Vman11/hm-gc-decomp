@@ -22,8 +22,8 @@ struct O {
 static inline void Find(O *o, char *tmp, char *key, f32 f, s32 b, s32 c, f32 *pf, s32 flag) {
     s32 off;
     s32 i;
-    for (i = 0, off = 0; i < F(o, s32, 124); i++, off += 12) {
-        strcpy(tmp, *(char **)(F(o, u8 *, 200) + off));
+    for (i = 0; i < F(o, s32, 124); i++) {
+        strcpy(tmp, *(char **)(F(o, u8 *, 200) + i * 12));
         if (stricmp(tmp, key) == 0) {
             F(o, s32, 220) = i;
             F(F(o, void *, 224), f32, 416) = lbl_8036613C;
