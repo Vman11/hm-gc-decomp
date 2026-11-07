@@ -892,3 +892,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wQH (2026-11-07): fn_8012A2E8 NonMatching: DIFF 86->68 SDIFF 0 (wA_free: explicit 'char **q = a' walker, 'q++, i++'); left: n/i regs in free loop, L11 e/path swap, L14 p/path regs
 - wQG (2026-11-07): fn_8005E354 MATCHED: dist() as 'f32 dz = p->z; f32 dy = p->y; f32 dx = p->x; dx -= p->px; ...' (in-place subtract + reverse decl order fixes FPR colouring); setB loop regs fixed by declaring 'M *m' at the top of the inline, before 'if (o)'.
 - wQH (2026-11-07): fn_80144CEC NonMatching: DIFF 86->64 SDIFF 0 (rect locals declared 'dx0, dx1, dy0, x0, dy1, x1, y0, y1'); left: dst/dpitch, src/e saved-reg swaps
+- wQL (2026-11-07): fn_8023B7DC MATCHED: last diff (vtable load base r3 vs r31 after call) was caused by #pragma peephole off; removing it matches.
