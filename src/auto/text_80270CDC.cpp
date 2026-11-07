@@ -1,6 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-/* QV=2.0p1 + -use_lmw_stmw on. NonMatching draft: structure matches, DIFF 267 / SDIFF 65 (regs + const-load scheduling). */
+/* QV=2.0p1 + -use_lmw_stmw on. NonMatching draft: structure matches, DIFF 289 / SDIFF 59 (regs + const-load scheduling). */
 #include "common.h"
 
 extern "C" {
@@ -119,10 +119,10 @@ void fn_80270CDC(Cam *c, f32 dt) {
     cp(&c->s1.up, &c->s0.up);
     cp(&c->s1.a, &c->s0.a);
     cp(&c->s1.vel, &c->s0.vel);
-    bb[0] = c->s0.pos.x;
-    bb[1] = c->s0.pos.y;
-    bb[2] = c->s0.pos.z;
-    bb[3] = lbl_80366E98;
+    *(volatile f32 *)&bb[0] = c->s0.pos.x;
+    *(volatile f32 *)&bb[1] = c->s0.pos.y;
+    *(volatile f32 *)&bb[2] = c->s0.pos.z;
+    bb[3] = *(volatile f32 *)&lbl_80366E98;
     dir.x = c->s0.fwd.x;
     dir.y = c->s0.fwd.y;
     dir.z = c->s0.fwd.z;
@@ -134,10 +134,10 @@ void fn_80270CDC(Cam *c, f32 dt) {
     cp(&start[i], &c->s0.pos);
     cp(&end[i], &c->s0.pos);
     end[i].z += dir.z;
+    start[i].z += lbl_80366EF4;
     end[i].x += dir.x;
     end[i].y += dir.y;
     end[i].z += lbl_80366EF4;
-    start[i].z += lbl_80366EF4;
     if (lbl_80366EF8 * (f32)(s32)(fn_800EB1B4() % 10000) != lbl_80366E9C) ang = lbl_80366EFC;
     else ang = lbl_80366F00;
     for (j = 1; j < 6; j++) {
