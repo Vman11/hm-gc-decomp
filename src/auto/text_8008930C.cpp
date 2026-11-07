@@ -42,6 +42,8 @@ void fn_8008930C(O *o, V3 *pos, int mode, f32 range) {
     C8023C7CC it;
     E *cand[255];
     E **pe;
+    E **end;
+    E **base;
     u32 n, i;
     fn_8023C720(&it, lbl_8035B308);
     if (mode) {
@@ -74,9 +76,9 @@ void fn_8008930C(O *o, V3 *pos, int mode, f32 range) {
         }
         fn_8023C3F4(&it);
     }
+    end = &cand[n];
+    base = cand;
     {
-        E **end = &cand[n];
-        E **base = cand;
         while (n != 0 && o->n < 6) {
             u32 k = Rnd(n);
             if (k >= n) k = n;
@@ -115,11 +117,11 @@ void fn_8008930C(O *o, V3 *pos, int mode, f32 range) {
             }
         }
     }
-    for (i = 0; i < o->n; i++) {
-        if (o->sel[i]->x156->h4 == 3) {
-            u32 m = o->sel[i]->x156->x168->n;
-            o->x1024[i] = Rnd(m);
-            o->sel[i]->play(lbl_80298F34, o, 0, 0, 0);
+    u32 q;
+    for (q = 0; q < o->n; q++) {
+        if (o->sel[q]->x156->h4 == 3) {
+            o->x1024[q] = Rnd(o->sel[q]->x156->x168->n);
+            o->sel[q]->play(lbl_80298F34, o, 0, 0, 0);
         }
     }
 }
