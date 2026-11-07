@@ -109,19 +109,21 @@ void fn_801B1D54(A *p, u32 pos) {
         pos56.y = e[1] + F(p,0x4c,f32);
         if (F(p,0x170,u32) < F(p,0x180,u32)) {
             F(p,0x180,u32) = F(p,0x170,u32);
-            F(p,0x184,u32) = hitIdx(p, e[2] + F(p,0x50,f32));
+            f32 xx = e[2]; xx += F(p,0x50,f32);
+            F(p,0x184,u32) = hitIdx(p, xx);
         } else if (F(p,0x170,u32) > F(p,0x184,u32) && F(p,0x184,u32) < F(p,0x18c,Arr*)->c - F(p,0x18c,Arr*)->b - 1) {
-            f32 right, left, d;
+            f32 left, cx, right, d;
             F(p,0x184,u32) = F(p,0x170,u32);
             if (F(p,0x184,u32) == F(p,0x18c,Arr*)->c - F(p,0x18c,Arr*)->b) F(p,0x184,u32) = F(p,0x184,u32) - 1;
             F(p,0x180,u32) = 0;
             fn_8012CD20(f, (f32 *)&c, F(p,0x18c,Arr*), F(p,0x184,u32), &pos56, 0, 17, lbl_803596E0[0], lbl_8035AF50, lbl_8035AF54);
-            right = e[2] + F(p,0x50,f32);
-            left = e[0] + F(p,0x48,f32);
-            if (c.x1 - right <= lbl_80364EE8) {
+            right = e[2]; right += F(p,0x50,f32);
+            cx = c.x1;
+            left = e[0]; left += F(p,0x48,f32);
+            if (cx - right <= lbl_80364EE8) {
                 F(p,0x180,u32) = 0;
             } else {
-                F(p,0x180,u32) = hitIdx(p, (left + c.x1) - right) + 1;
+                F(p,0x180,u32) = hitIdx(p, (left + cx) - right) + 1;
                 if (F(p,0x180,u32) > F(p,0x184,u32)) F(p,0x180,u32) = F(p,0x184,u32);
             }
         }
