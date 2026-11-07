@@ -96,13 +96,16 @@ void fn_8021E508(Plane *pl, Obj *o, void *ctx) {
             if (lbl_803659A0 == sum) return;
             t = a0 / sum;
             {
-            V3 *v1 = p->v[1];
-            ex = p->v[0]->x - v1->x;
-            fx = p->v[2]->x - v1->x;
-            fz = p->v[2]->z - v1->z;
-            ez = p->v[0]->z - v1->z;
-            fy = p->v[2]->y - v1->y;
-            ey = p->v[0]->y - v1->y;
+            V3 *v0, *v2, *v1;
+            v1 = p->v[1];
+            v0 = p->v[0];
+            v2 = p->v[2];
+            ex = v0->x - v1->x;
+            fx = v2->x - v1->x;
+            fz = v2->z - v1->z;
+            ez = v0->z - v1->z;
+            fy = v2->y - v1->y;
+            ey = v0->y - v1->y;
             }
             nx = ey * fz - ez * fy;
             ny = ez * fx - ex * fz;
