@@ -168,6 +168,7 @@ inline u32 primCount2(u32 t, u32 n) {
     }
 }
 
+static inline u32 cnt(u8 t) { return fn_80101A7C(t); }
 void fn_801699D8(Ctx *c, Shape *s, u32 nm, u8 *mi, u32 *types, u32 base, u32 nv) {
     Mtx m60;
     Mtx m20;
@@ -186,7 +187,7 @@ void fn_801699D8(Ctx *c, Shape *s, u32 nm, u8 *mi, u32 *types, u32 base, u32 nv)
         nrmLoad(c, &m60, c->mi);
     }
 
-    np = fn_80101A7C(s->t18);
+    np = cnt(s->t18);
     nc = fn_80101A7C(s->t1b);
     struct { u32 v; } fmt;
     fmt.v = 5;
