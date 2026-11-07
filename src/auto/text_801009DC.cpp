@@ -28,7 +28,7 @@ int fn_801009DC(const S_09DC *s, const V3_09DC *o, const V3_09DC *e, const f32 *
     if (dist2 < r2) return inside;
     proj = d->x * dx + d->y * dy + d->z * dz;
     disc = proj * proj + (r2 - dist2);
-    if (disc <= lbl_803637F4) return 0;
+    if (disc <= *(f32 *)&lbl_803637F4) return 0;
     tt = proj - Sq_09DC(disc);
     if (tt < lbl_803637F4 || tt > *len) return 0;
     *t = tt / *len;
