@@ -124,9 +124,10 @@ inline void wA_free(char **&g, u16 *np) {
     if (a != 0) {
         u32 n = *np;
         u32 i;
-        for (i = 0; i < n; i++) {
-            if (a[i] != 0) {
-                delete[] a[i];
+        char **q = a;
+        for (i = 0; i < n; q++, i++) {
+            if (*q != 0) {
+                delete[] *q;
             }
         }
         delete[] a;
