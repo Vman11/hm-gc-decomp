@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// fn_801988DC: portal polygon vs view-frustum clipper (NonMatching: reg colouring, final classify loop K/plane hoisting).
+// fn_801988DC: portal polygon vs view-frustum clipper (NonMatching, DIFF 796 / SDIFF 48: reg colouring, classify loop K hoisted with plane fields in mine).
 extern "C" {
 typedef struct V3 { f32 x, y, z; } V3;
 typedef struct Pl { f32 x, y, z, d; } Pl;
@@ -15,7 +15,8 @@ extern V3 lbl_803302C8[2][32];
 extern f32 lbl_803305C8[32];
 extern V3 lbl_80330648;
 extern Pl lbl_80330654;
-extern volatile f32 lbl_80364C68;
+extern f32 lbl_80364C68;
+#define VK (*(volatile f32 *)&lbl_80364C68)
 f32 fn_8010155C(V3 *, V3 *);
 void fn_8019998C(Fr *, Pl *, u32);
 void fn_80101820(V3 *);
@@ -48,6 +49,7 @@ static inline void mkpl(Pl *pp, V3 *prev, V3 *cur, V3 *eye) {
     pp->d = -(eye->x * c.x + eye->y * c.y + eye->z * c.z);
 }
 
+#pragma opt_loop_invariants off
 Fr *fn_801988DC(Portal *p, Out *o, Frus *f) {
     V3 *v;
     V3 *eye;
@@ -65,7 +67,7 @@ Fr *fn_801988DC(Portal *p, Out *o, Frus *f) {
     eye = &lbl_80330648;
     {
     V3 *v0 = p->v;
-    if ((v0->x - eye->x) * p->n.x + (v0->y - eye->y) * p->n.y + (v0->z - eye->z) * p->n.z > lbl_80364C68)
+    if ((v0->x - eye->x) * p->n.x + (v0->y - eye->y) * p->n.y + (v0->z - eye->z) * p->n.z > VK)
         return 0;
     v = v0;
     }
@@ -81,7 +83,7 @@ Fr *fn_801988DC(Portal *p, Out *o, Frus *f) {
         for (i = 0; i < n; i++) {
             volatile f32 *dd = lbl_803305C8;
             dd[i] = pl->d + (q->x * pl->x + q->y * pl->y + q->z * pl->z);
-            out |= (dd[i] >= lbl_80364C68) << i;
+            out |= (dd[i] >= VK) << i;
             q = (V3 *)((u8 *)q + stride);
         }
         if (out == 0) return 0;
