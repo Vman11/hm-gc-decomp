@@ -1,5 +1,5 @@
 #include "common.h"
-// NonMatching (wMO): SDIFF 0 / DIFF 22, register-only (permuter). const T* param keeps the n check above stmw; goto layout reproduces the LICM preheader after the b; (T *) casts stop CSE of the loop loads. QV=2.0p1
+// NonMatching (wMO, wQW): SDIFF 0 / DIFF 12 (decl order arr,start,n,off,idx), register-only (permuter). const T* param keeps the n check above stmw; goto layout reproduces the LICM preheader after the b; (T *) casts stop CSE of the loop loads. QV=2.0p1
 extern "C" {
 typedef struct { char name[8]; void *val; } E;
 typedef struct { E *arr; u32 n; } T;
@@ -18,9 +18,9 @@ static inline u32 hash(const char *s) {
     return h;
 }
 void *fn_800F8274(const T *t, const char *key) {
-    u32 n;
     E *arr;
     u32 start;
+    u32 n;
     u32 off;
     u32 idx;
     if (t->n == 0) return 0;
@@ -41,4 +41,5 @@ L2:
     if (fn_800F6CD0((E *)((u8 *)arr + off), key) == 0) goto L0;
     return t->arr[idx].val;
 }
+
 } /* extern "C" */

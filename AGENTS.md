@@ -919,3 +919,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wQY (2026-11-07): fn_8003FD24 MATCHED: bounce-block FP colouring fixed by computing the negation m = -n BEFORE the dot t = n.v (statement order), found by a 400-variant mc.sh sweep.
 - wQY (2026-11-07): fn_8005ADD0 MATCHED: nx/IV swap fixed by explicit `u32 off` IV (`for (i = 0, off = 0; ...; off += 20, i++)`, data + off) with decl order `X *nx; Nd *sc; X *sx; u32 off; ...` (mc.sh decl-position sweep, 2/99 hit).
 - wQW (2026-11-07): fn_8004AFF8 MATCHED: 1st xs loop moved into a nested inline Loop(Obj *o, V3 *v) called from Apply (fixes x/y colouring), loop `u32 i; u32 off; for (i = 0, off = 0; ...; off += 4, i++)` (fixes i/off).
+- wQW (2026-11-07): fn_800F8274 NonMatching DIFF 22->12 (SDIFF 0): local decl order `E *arr; u32 start; u32 n; u32 off; u32 idx;` (arr first) fixes start/arr; left n r26 vs off r29 swap (L1 order, off forms, Find() inline: no gain).
