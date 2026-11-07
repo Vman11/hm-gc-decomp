@@ -68,15 +68,14 @@ void fn_80127658(P *p, Q *q, RR *r) {
             }
             fn_80129040(cur, b, 0);
         }
-        { u32 sx = p->ents[i].sx, w, dx, dy;
+        { u32 sx = p->ents[i].sx, dx, dy;
         dst.x0 = sx;
-        w = p->ents[i].w;
-        dst.x1 = sx + w;
+        dst.x1 = sx + p->ents[i].w;
         dx = p->ents[i].dx;
         src.x0 = dx;
         dy = p->ents[i].dy;
         src.y0 = dy;
-        src.x1 = dx + w;
+        src.x1 = dx + p->ents[i].w;
         src.y1 = dy + p->h; }
         fn_80128F98(cur, &src, a12, a8, &dst);
     }
