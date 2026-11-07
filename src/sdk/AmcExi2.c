@@ -197,6 +197,8 @@ void EXI2Callback(s32 chan, OSContext *context) {
     }
 }
 
+#pragma push
+#pragma scheduling once
 void EXI2_Init(u8 **inputFlag, EXICallback callback) {
     int enabled;
     u32 b;
@@ -223,6 +225,7 @@ void EXI2_Init(u8 **inputFlag, EXICallback callback) {
     EXI2Sync();
     EXI2Deselect();
 }
+#pragma pop
 
 void EXI2_EnableInterrupts(void) {
     EXI2SetExiCallback(EXI2Callback);
