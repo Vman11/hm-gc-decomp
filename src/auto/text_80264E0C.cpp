@@ -11,7 +11,7 @@ struct G12 { u8 pad[12]; void *f12; };
 extern E lbl_8035784C;
 extern G20 *lbl_8035B754;
 extern G12 *lbl_8035B65C;
-extern void *lbl_8035B768;
+extern void * volatile lbl_8035B768;
 extern u32 lbl_80366B98;
 void fn_800FC408(E *, V3 *, V3 *);
 void fn_8019A6CC(void *);
@@ -21,7 +21,7 @@ u32 fn_80264E0C(V3 *a, V3 *b, V3 *p2, V3 *p3, u32 *p4, u32 *p5, u32 *p6, u32 *ou
                 V3 *s10, u32 *s11, u32 *s12, V3 *s13, u32 s14) {
     if (out) *out = lbl_8035B754->f20;
     lbl_8035B768 = lbl_8035B65C->f12;
-    lbl_8035784C.f0 |= lbl_80366B98;
+    *(volatile u32 *)&lbl_8035784C.f0 |= *(volatile u32 *)&lbl_80366B98;
     fn_800FC408(&lbl_8035784C, a, b);
     lbl_8035784C.f84 = 0;
     lbl_8035784C.f78 = 0;
