@@ -851,3 +851,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wML (2026-11-06): fn_80030318/fn_8003F18C matched: by-value PTMF struct with inline copy ctor using volatile stores (b,a then c) + volatile global load.
 - wMP (2026-11-06): fn_80129404 DIFF 6->4 NonMatching: pipelined temps (a0=v->y; a1=v->x; st a0; a2=v->z; st a1; ...) fix 2nd pair; only 1st pair ld x/ld y swap left (li r0 between). zz local / f64=0 placement / 2.0p1 no.
 - wMP (2026-11-06): MATCHED fn_8014C4B4 with GC/2.6 + __restrict on both params (leaf prologue stw interleave; 2.6 alone or restrict alone no).
+- wMP (2026-11-06): fn_801456A8 GC/2.6 + __restrict on Rc *r fixes the prologue scheduling (SDIFF 8->0, DIFF 14->8, NonMatching): only r0/r4 swap for r->x0 vs t->f8c before fn_80146610 left (permuter).

@@ -48,7 +48,7 @@ struct C801456A8 {
 extern "C" {
 void fn_80146610(C801456A8 *);
 
-void fn_801456A8(C801456A8 *t, u8 *dst, s32 dpitch, s32 dx, s32 dy, u8 *src, s32 spitch, Rc *r) {
+void fn_801456A8(C801456A8 *t, u8 *dst, s32 dpitch, s32 dx, s32 dy, u8 *src, s32 spitch, Rc *__restrict r) {
     s32 step;
     u8 *s, *e, *d;
     u8 *q;
