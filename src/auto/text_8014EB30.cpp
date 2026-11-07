@@ -142,24 +142,27 @@ u32 fn_8014EC90(const f32 (*m)[4], const f32 *v, f32 *out, f32 *ndc) {
 #pragma opt_propagation reset
 
 
-u32 fn_8014EF58(f32 (*__restrict m)[4], f32 *__restrict v, f32 *__restrict out, f32 *ndc) {
+// wMY: instructions match; left = GPR colouring (w in r10) + schedule.
+u32 fn_8014EF58(const f32 (*m)[4], const f32 *v, f32 *out, f32 *ndc) {
     extern f32 lbl_8036453C;
     u32 x, y, z, w;
     u32 neg, over;
     f32 inv;
 
-    MtxMultVec4(m, v, out);
-    x = ((u32 *)out)[0];
+    MtxMultVec4_8014EC90(m, v, out);
     y = ((u32 *)out)[1];
-    z = ((u32 *)out)[2];
     w = ((u32 *)out)[3];
+    x = ((u32 *)out)[0];
+    z = ((u32 *)out)[2];
     inv = lbl_8036453C / out[3];
     ndc[0] = out[0] * inv;
     ndc[1] = out[1] * inv;
     ndc[2] = out[2] * inv;
 
-    neg = ((y >> 27) & 0x10) | ((x >> 29) & 4) | (z >> 31);
-    over = (((w - y) >> 26) & 0x20) | (((w - x) >> 28) & 8) | (((w - z) >> 30) & 2);
+    neg = ((x >> 29) & 4) | ((y >> 27) & 0x10);
+    over = (((w - x) >> 28) & 8) | (((w - y) >> 26) & 0x20);
+    neg |= z >> 31;
+    over |= ((w - z) >> 30) & 2;
     return neg | (over & ~(neg << 1));
 }
 
