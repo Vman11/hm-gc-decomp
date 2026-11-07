@@ -1,6 +1,7 @@
 /* Functions from 0x8010F1B0 to 0x8010F3DC, found by decomp-toolkit. */
-/* fn_8010F1E0 (wMO): SDIFF 0 / DIFF 72 register-only (min clamp via local mn fixes load order; clamp regs left for permuter). */
 #include "common.h"
+void __dt__9C80111028Fv();
+void *__vt__9C80111028[3] = { 0, 0, (void *)__dt__9C80111028Fv };
 
 typedef struct {
     u8 pad0[0x10];
@@ -33,6 +34,19 @@ s32 fn_8010F1D8(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x14);
 }
 
+
+static inline UnkParamDesc *Desc(UnkParam *p) { return p->desc; }
+static inline u32 Count(UnkParamDesc *d) { return d->count; }
+static inline s32 MaxI(UnkParamDesc *d) { return d->max.i; }
+static inline s32 MinI(UnkParamDesc *d) { return d->min.i; }
+static inline f32 MaxF(UnkParamDesc *d) { return d->max.f; }
+static inline f32 MinF(UnkParamDesc *d) { return d->min.f; }
+static inline s32 ValI(UnkParam *p) { return p->val.i; }
+static inline f32 ValF(UnkParam *p) { return p->val.f; }
+static inline void SetI(UnkParam *p, s32 v) { p->val.i = v; }
+static inline void SetF(UnkParam *p, f32 v) { p->val.f = v; }
+static inline s32 *IntsP(UnkParam *p) { return p->val.ints; }
+static inline f32 *FltsP(UnkParam *p) { return p->val.floats; }
 void fn_8010F1E0(void *arg0, u32 type, UnkParam *p) {
     switch (type) {
     case 1:
@@ -40,12 +54,12 @@ void fn_8010F1E0(void *arg0, u32 type, UnkParam *p) {
         if (p->val.i < 0) p->val.i = 0;
         break;
     case 2:
-        if (p->val.i > p->desc->max.i) p->val.i = p->desc->max.i;
-        if (p->val.i < p->desc->min.i) p->val.i = p->desc->min.i;
+        if (ValI(p) > MaxI(Desc(p))) SetI(p, MaxI(Desc(p)));
+        if (ValI(p) < MinI(Desc(p))) SetI(p, MinI(Desc(p)));
         break;
     case 3:
-        if (p->val.f > p->desc->max.f) p->val.f = p->desc->max.f;
-        if (p->val.f < p->desc->min.f) p->val.f = p->desc->min.f;
+        if (ValF(p) > MaxF(Desc(p))) SetF(p, MaxF(Desc(p)));
+        if (ValF(p) < MinF(Desc(p))) SetF(p, MinF(Desc(p)));
         break;
     case 7: {
         u32 i;
@@ -64,17 +78,17 @@ void fn_8010F1E0(void *arg0, u32 type, UnkParam *p) {
     }
     case 8: {
         u32 i;
-        for (i = 0; i < p->desc->count; i++) {
-            if (p->val.ints[i] > p->desc->max.i) p->val.ints[i] = p->desc->max.i;
-            { s32 mn = p->desc->min.i; if (p->val.ints[i] < mn) p->val.ints[i] = mn; }
+        for (i = 0; i < Count(Desc(p)); i++) {
+            if (p->val.ints[i] > MaxI(Desc(p))) p->val.ints[i] = MaxI(Desc(p));
+            if (p->val.ints[i] < MinI(Desc(p))) p->val.ints[i] = MinI(Desc(p));
         }
         break;
     }
     case 9: {
         u32 i;
-        for (i = 0; i < p->desc->count; i++) {
-            if (p->val.floats[i] > p->desc->max.f) p->val.floats[i] = p->desc->max.f;
-            { f32 mn = p->desc->min.f; if (p->val.floats[i] < mn) p->val.floats[i] = mn; }
+        for (i = 0; i < Count(Desc(p)); i++) {
+            if (p->val.floats[i] > MaxF(Desc(p))) p->val.floats[i] = MaxF(Desc(p));
+            if (p->val.floats[i] < MinF(Desc(p))) p->val.floats[i] = MinF(Desc(p));
         }
         break;
     }
