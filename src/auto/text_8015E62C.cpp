@@ -32,7 +32,7 @@ void *fn_80164310(B *, E *);
 void fn_8015F4A0(E *, B *, void *);
 void fn_8016BC04(T *, B *);
 
-void fn_8015E62C(A *a, B *b0, u32 start, u32 count, Q *q) {
+void fn_8015E62C(A *a, B *__restrict b0, u32 start, u32 count, Q *q) {
     T *t;
     u32 id;
     u32 i;
