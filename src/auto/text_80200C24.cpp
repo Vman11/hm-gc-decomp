@@ -1,7 +1,8 @@
 #include "common.h"
 
-// NonMatching draft (wA_80200C24): SMF track parser. SDIFF 13: case 0xE0 dead VLQ length counter is DCEd
-// here but kept in the target; node d[] load order; one mr placement.
+// NonMatching draft (wA_80200C24, wPG): SMF track parser. SDIFF 0 / DIFF 68 = register colouring only.
+// wPG: VLQ reads c = p[(*len)++] (keeps the dead 0xE0 counter), s32 type = (u8)c with (s8) casts,
+// node b1/b2 from volatile d[] reads.
 
 extern "C" {
 
@@ -14,17 +15,14 @@ void fn_800F7EC0(Heap *);
 void fn_800F7E98(void);
 
 static inline s32 readVLQ(s8 *p, s32 *len) {
-    *len = 1;
     s32 v = *p;
+    *len = 1;
     if (v & 0x80) {
         v &= 0x7f;
-        p++;
         s8 c;
         do {
-            c = *p;
+            c = p[(*len)++];
             v = (v << 7) + (c & 0x7f);
-            (*len)++;
-            p++;
         } while (c & 0x80);
     }
     return v;
@@ -41,10 +39,10 @@ s32 fn_80200C24(Obj *o, s8 *__restrict data, u32 len) {
         time += readVLQ(data + pos, &n);
         pos += n;
         u8 b = data[pos];
-        s8 type = b;
         s8 c = b;
-        if ((u8)c != 0xff) type = c & 0xf0;
-        if (!(type & 0x100)) {
+        s32 type = (u8)c;
+        if ((u8)c != 0xff) type = (s8)(c & 0xf0);
+        if (!((s8)type & 0x100)) {
             status = running;
             pos--;
         } else {
@@ -128,8 +126,7 @@ s32 fn_80200C24(Obj *o, s8 *__restrict data, u32 len) {
             fn_800F7E98();
             if (!node) fn_800604C4(-4, 0, 0, 0);
             node->b0 = status;
-            node->b1 = d[0];
-            node->b2 = d[1];
+            { s8 x0 = *(volatile s8 *)&d[0], x1 = *(volatile s8 *)&d[1]; node->b1 = x0; node->b2 = x1; }
             node->v = time;
             Node *prev = 0;
             Node *cur = o->head;
