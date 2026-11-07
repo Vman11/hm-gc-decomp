@@ -1,5 +1,5 @@
-// NonMatching draft (wHY): SDIFF 0 / DIFF 32. Original likely had the recursive call inlined (2 levels, accessors
-// fn_8011217C/fn_80112168/fn_8010F1D8/fn_8010CA74 inline at levels 1-2); hand-inlined here. Left: levels 2/3 loop i/off regs swapped (target i r30, off r29).
+// NonMatching draft (wHY, wQZ): SDIFF 0 / DIFF 10. Original likely had the recursive call inlined (2 levels, accessors
+// fn_8011217C/fn_80112168/fn_8010F1D8/fn_8010CA74 inline at levels 1-2); hand-inlined here. Explicit shared 'off' counter in all 3 loops; left: loop-1 off r29 vs cs r30.
 #include "common.h"
 
 extern "C" {
@@ -26,13 +26,16 @@ BOOL fn_80112168(Tbl *);
 s32 fn_8010F1D8(Entry *);
 char *fn_8010CA74(Entry *);
 
+Entry *fn_80111EEC(Tbl *t, const char *name, int cs);
 Entry *fn_80111EEC(Tbl *t, const char *name, int cs) {
-    u32 i;
+    u32 off;
     Tbl *u;
+    u32 i;
+    Tbl *w;
     if (t->n == 0) return 0;
     if (t->f10 == 0) return 0;
-    for (i = 0; i < t->n; i++) {
-        Entry *e = &t->items[i];
+    for (i = 0, off = 0; i < t->n; off += 28, i++) {
+        Entry *e = (Entry *)((u8 *)t->items + off);
         if (e->f14 != 0 && e->name != 0 && *e->name != 0) {
             if (cs) {
                 if (strcmp(name, e->name) == 0) return &t->items[i];
@@ -45,23 +48,23 @@ Entry *fn_80111EEC(Tbl *t, const char *name, int cs) {
     if (u) {
         if (u->n == 0) return 0;
         if (u->f10 == 0) return 0;
-        for (i = 0; i < u->n; i++) {
-            Entry *e = &u->items[i];
+        for (i = 0, off = 0; i < u->n; off += 28, i++) {
+            Entry *e = (Entry *)((u8 *)u->items + off);
             if (e->f14 != 0 && e->name != 0 && *e->name != 0) {
                 if (stricmp(name, e->name) == 0) return &u->items[i];
             }
         }
-        u = u->next;
-        if (u) {
-            if (fn_8011217C(u) == 0) return 0;
-            if (fn_80112168(u) == 0) return 0;
-            for (i = 0; i < u->n; i++) {
-                if (fn_8010F1D8(&u->items[i]) != 0) {
-                    char *s = fn_8010CA74(&u->items[i]);
-                    if (s != 0 && *s != 0 && stricmp(name, fn_8010CA74(&u->items[i])) == 0) return &u->items[i];
+        w = u->next;
+        if (w) {
+            if (fn_8011217C(w) == 0) return 0;
+            if (fn_80112168(w) == 0) return 0;
+            for (i = 0, off = 0; i < w->n; off += 28, i++) {
+                if (fn_8010F1D8((Entry *)((u8 *)w->items + off)) != 0) {
+                    char *s = fn_8010CA74((Entry *)((u8 *)w->items + off));
+                    if (s != 0 && *s != 0 && stricmp(name, fn_8010CA74((Entry *)((u8 *)w->items + off))) == 0) return &w->items[i];
                 }
             }
-            if (u->next) return fn_80111EEC(u->next, name, 0);
+            if (w->next) return fn_80111EEC(w->next, name, 0);
             return 0;
         }
         return 0;
