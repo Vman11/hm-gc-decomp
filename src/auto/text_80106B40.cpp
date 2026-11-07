@@ -1,6 +1,5 @@
 #include "common.h"
 
-// NonMatching: DIFF 29 / SDIFF 9; only the angular-step block: target reloads s->c.x for the add (mine CSEs it).
 struct V3 { f32 x, y, z; };
 struct Body { u8 pad[0x10]; void *id; u8 pad14[0xC]; u32 flags; };
 struct Mot { V3 a; V3 b; V3 c; V3 d; };
@@ -37,6 +36,11 @@ static inline void rot(V3 *o, const V3 *w, const V3 *a) {
     o->z = a->z - w->y * a->x + w->x * a->y;
 }
 
+static inline void vadd2(V3 *o, const V3 *a) {
+    o->x += a->x;
+    o->y += a->y;
+    o->z += a->z;
+}
 void fn_80106B40(Mot *s, Body *b, f32 dt) {
     V3 A;
     V3 B;
@@ -61,7 +65,7 @@ void fn_80106B40(Mot *s, Body *b, f32 dt) {
         V3 e;
         vscale(&w, &s->c, dt);
         vscale(&e, &s->d, dt);
-        vadd(&s->c, &e);
+        vadd2(&s->c, &e);
         vscale(&e, &e, om);
         vadd(&w, &e);
         rot(&o1, &w, &A);
