@@ -35,13 +35,13 @@ void fn_80159284(S *s, u32 fmt, D *d, u32 n, void *x) {
         if (!q) fn_800604C4(-4, 0, 0, 0);
         u32 f;
         Pair *o;
-        o = s->list;
-        q->cur = 0;
-        s->list = q;
-        f = (*(volatile u32 *)&d->f0 & 0x3E) | 1;
+        o = *(Pair *volatile *)&s->list;
+        f = *(volatile u32 *)&d->f0;
         q->next = o;
+        s->list = q;
+        q->cur = 0;
         q->used = 0;
-        q->b[0].init(s->f4, 4096, fmt, f);
+        q->b[0].init(s->f4, 4096, fmt, (f & 0x3E) | 1);
         q->b[1].init(s->f4, 4096, fmt, (d->f0 & 0x3E) | 1);
         r = q;
     }
