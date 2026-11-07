@@ -4,6 +4,7 @@ extern "C" {
 
 struct Vec3 { f32 x, y, z; };
 struct V3 { u32 v[3]; };
+struct F { u32 a, b, c; F(const F &o) { u32 x = o.a, y = o.b, z = o.c; *(volatile u32 *)&a = x; *(volatile u32 *)&b = y; *(volatile u32 *)&c = z; } };
 struct R {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -72,7 +73,7 @@ void fn_80101820(Vec3 *);
 f32 fn_8023C1BC(void *, f32);
 void fn_80241DD0(P *, char *, int, int, int, int);
 void fn_80071E34(R *, Vec3 *);
-void fn_80053D9C(P *, Vec3 *, f32);
+void fn_80053D9C(P *, F, f32);
 double fn_800EFDA4(double);
 void fn_8023FE08(P *, f32);
 
@@ -81,6 +82,13 @@ static inline void Sub(Vec3 *o, const Vec3 *a, const Vec3 *b)
     o->x = a->x - b->x;
     o->y = a->y - b->y;
     o->z = a->z - b->z;
+}
+
+static inline void SubV(Vec3 *o, const Vec3 *a, const Vec3 *b)
+{
+    *(volatile f32 *)&o->x = a->x - b->x;
+    *(volatile f32 *)&o->y = a->y - b->y;
+    *(volatile f32 *)&o->z = a->z - b->z;
 }
 
 static inline int Has(s32 *q)
@@ -107,7 +115,6 @@ static inline void Fail(P *p, int st)
 void fn_80053430(P *p, f32 dt)
 {
     Vec3 a, b, d, e, g, h, k, q, s, r, w, x;
-    volatile V3 c;
     if (p->f120) {
         f32 len;
         if (p->f1C0 == 0 && p->f118->f4E0 == 1 && *p->f1A4 > (s32)((u32)rand() % 100)) {
@@ -132,7 +139,7 @@ void fn_80053430(P *p, f32 dt)
         if (Has(p->f194) && p->f168) {
             f32 l2, mx;
             p->f118->s13(&a, 0, 0, 0, 0);
-            Sub(&e, &a, &b);
+            SubV(&e, &a, &b);
             ((f32 *)&k)[11] = lbl_8035DF6C;
             l2 = fn_80101664(&e);
             mx = *p->f168;
@@ -175,7 +182,7 @@ void fn_80053430(P *p, f32 dt)
             f32 s;
             p->fE0->s13(&g, 0, 0, 0, 0);
             p->f118->s13(&h, 0, 0, 0, 0);
-            Sub(&k, &h, &g);
+            SubV(&k, &h, &g);
             ((f32 *)&q)[5] = lbl_8035DF6C;
             fn_80101820(&k);
             s = *p->f154 * dt;
@@ -198,8 +205,7 @@ void fn_80053430(P *p, f32 dt)
         if (t > l) {
             Fail(p, 11);
         } else {
-            u32 c0, c1, c2;
-            f32 l3;
+                        f32 l3;
             f32 cs;
             r.x *= t;
             r.y *= t;
@@ -207,9 +213,7 @@ void fn_80053430(P *p, f32 dt)
             s.x = q.x + r.x;
             s.y = q.y + r.y;
             s.z = q.z + r.z;
-            c0 = ((V3 *)&s)->v[0]; c1 = ((V3 *)&s)->v[1]; c2 = ((V3 *)&s)->v[2];
-            c.v[0] = c0; c.v[1] = c1; c.v[2] = c2;
-            fn_80053D9C(p, (Vec3 *)&c, lbl_8035DFEC);
+            fn_80053D9C(p, *(F *)&s, lbl_8035DFEC);
             if (fn_80264E0C(&q, &s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)) {
                 Fail(p, 11);
             } else {
