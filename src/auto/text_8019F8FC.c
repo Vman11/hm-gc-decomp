@@ -3,16 +3,16 @@
 extern f32 lbl_80364D78;
 extern f32 lbl_80364D7C;
 
-static inline void fn_8019F8FC_set(f32 *v, f32 x, f32 y, f32 z, f32 w) {
-    v[0] = x;
-    v[1] = y;
-    v[2] = z;
-    v[3] = w;
-}
+typedef struct Unk8019F8FC {
+    u8 pad0[0x14];
+    f32 unk14;
+} Unk8019F8FC;
 
-void fn_8019F8FC(void *arg0, f32 *arg1) {
-    f32 w = *(f32 *)((u8 *)arg0 + 0x14);
-    arg1[0] = lbl_80364D78;
+void fn_8019F8FC(Unk8019F8FC *arg0, f32 *arg1) {
+    f32 w, k;
+    k = *(volatile f32 *)&lbl_80364D78;
+    w = *(volatile f32 *)&arg0->unk14;
+    arg1[0] = k;
     arg1[1] = lbl_80364D7C;
     arg1[2] = lbl_80364D78;
     arg1[3] = -w;
