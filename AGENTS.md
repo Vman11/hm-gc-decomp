@@ -871,3 +871,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wOF (2026-11-07): text_80126A9C Matching (GC/2.6): unit owns .sdata2 0x80363E30-0x80363E38 (its int->float magic, no other user).
 - wOF (2026-11-07): text_80127940 Matching (GC/2.6, -str reuse,readonly): unit owns .rodata 0x8029DF70-0x8029E060 (its 4 strings, no other user).
 - wON (2026-11-07): fn_8021263C MATCHED (GC/2.0p1+lmw): body as static inline search() with 'return' in loops (gives bne;b shape + result coalesce), inline decl order lo,tbl,mid,n,step.
+- wOM (2026-11-07): fn_80129404 MATCHED: first two loads of the 4-float copy (y then x) read via *(volatile f32 *)& into fn-scope temps a0,a1 (wNJ two-load trick).

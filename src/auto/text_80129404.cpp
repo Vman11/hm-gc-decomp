@@ -12,9 +12,10 @@ static inline void Set2(f32 *d, f32 b, f32 a) { d[0] = a; d[1] = b; }
 void fn_80129404(P30 *p, V4 *v) {
     fn_80103C44(p, v);
     if (p->f64 == 0) {
-        f32 a0 = v->y; f32 a1 = v->x; p->f34 = a0;
-        f32 a2 = v->z; p->f38 = a1;
-        f32 a3 = v->w; p->f4c = a2; p->f50 = a3;
+        f32 a0, a1, a2, a3;
+        a0 = *(volatile f32 *)&v->y; a1 = *(volatile f32 *)&v->x; p->f34 = a0;
+        a2 = v->z; p->f38 = a1;
+        a3 = v->w; p->f4c = a2; p->f50 = a3;
         p->f64 = 0;
         f32 t = fn_800F03E4(lbl_80363E60 * p->f34);
         f32 b, a;
