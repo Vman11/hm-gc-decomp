@@ -15,7 +15,7 @@ void fn_801548F0(Tex *a, Tex *b) {
     u32 *t, *p, *ce, *d, *re, *de;
     switch (b->bpp) {
     case 4:
-        t = s; p = s; d = dst; re = s + (b->w >> 3); ce = s + sp * 8; de = dst + dp * a->h;
+        t = s; p = s; d = dst; ce = s + sp * 8; re = s + (b->w >> 3); de = dst + dp * a->h;
         do {
             *d = *p;
             p += sp;
