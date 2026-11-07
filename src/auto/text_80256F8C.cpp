@@ -62,6 +62,8 @@ inline void Damp(f32 &cur, f32 d, f32 r, f32 dt)
     if ((f32)__fabs(d) > lbl_803666B8) { f32 e = lbl_803666BC - (f32)fn_800F049C(-r * dt); cur = e * d + cur; }
 }
 
+#pragma push
+#pragma peephole off
 void fn_80256F8C(Cam *o, f32 dt)
 {
     Sub *s = o->sub;
@@ -99,4 +101,5 @@ void fn_80256F8C(Cam *o, f32 dt)
         SetRot(o->b, &q, &u);
     }
 }
+#pragma pop
 }

@@ -10,6 +10,8 @@ extern C800642B8 lbl_80302DDC;
 int fn_800629DC(void *, int, int);
 void fn_80061E80(void *);
 void fn_800619B8(void *);
+#pragma push
+#pragma scheduling once
 int main(int argc, char **argv) {
     lbl_8035A1D0 = argv;
     lbl_8035A1D4 = argc;
@@ -19,5 +21,6 @@ int main(int argc, char **argv) {
     fn_800619B8(&lbl_80302DDC);
     return 1;
 }
+#pragma pop
 
 } /* extern "C" */

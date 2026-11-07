@@ -29,7 +29,7 @@ static inline s32 readVLQ(s8 *p, s32 *len) {
     }
     return v;
 }
-s32 fn_80200C24(Obj *o, s8 *data, u32 len) {
+s32 fn_80200C24(Obj *o, s8 *__restrict data, u32 len) {
     u8 status;
     u32 pos = 0;
     u32 time = 0;

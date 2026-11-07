@@ -3,6 +3,8 @@ extern "C" {
 typedef struct { u8 d[0x1c]; } E;
 typedef struct { u8 pad[0x6c]; s32 n; E *a; } S;
 s32 fn_800F6CD0(E *e, void *key);
+#pragma push
+#pragma peephole off
 E *fn_8025EE5C(S *p, void *key) {
     E *a = p->a;
     s32 n = p->n;
@@ -12,4 +14,5 @@ E *fn_8025EE5C(S *p, void *key) {
     }
     return 0;
 }
+#pragma pop
 }

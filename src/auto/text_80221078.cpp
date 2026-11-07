@@ -15,7 +15,7 @@ extern Tbl lbl_803286D0;
 static f32 lbl_8035B278[2];
 static f32 lbl_8035B280[2];
 static f32 lbl_8035B288[2];
-void fn_80221078(void *self, Ctl *c, P *p, f32 *off, f32 s) {
+void fn_80221078(void *__restrict self, Ctl *__restrict c, P *__restrict p, f32 *__restrict off, f32 s) {
     
     void *m = c->get(0);
     Tbl *t = &lbl_803286D0;
