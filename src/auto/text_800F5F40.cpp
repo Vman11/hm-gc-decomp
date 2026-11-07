@@ -13,24 +13,24 @@ static void cpylow(char *s, char *d) {
     }
     *d = 0;
 }
-static u32 hash(char *s) {
-    u32 h = 0;
-    u32 sh = 0;
-    char *p;
-    for (p = s; *p; p++) {
-        h += (*p - '0') << (sh & 31);
-        sh += 6;
-    }
-    return h;
-}
 static void ins(T *t, Ent *e, char *buf) {
-    u32 i;
+    u32 h;
+    u32 sh;
     cpylow(e->name, buf);
-    i = hash(buf) % 331;
-    while (t->tab[i]) {
-        if (++i >= 331) i = 0;
+    {
+        char *p;
+        h = 0;
+        sh = 0;
+        for (p = buf; *p; p++) {
+            h += (*p - '0') << (sh & 31);
+            sh += 6;
+        }
     }
-    t->tab[i] = e;
+    h = h % 331;
+    while (t->tab[h]) {
+        if (++h >= 331) h = 0;
+    }
+    t->tab[h] = e;
 }
 void fn_800F5F40(T *t, Ent *arr, u32 n, T *o) {
     char buf[64];
