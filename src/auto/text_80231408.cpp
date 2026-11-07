@@ -42,8 +42,10 @@ static inline u8 Eq(const V3 &a, const V3 &b) {
     return r;
 }
 
-static inline void SetPos(Ob *e, V3 *p) {
-    T *t = e->f30;
+static inline void SetPos(void *ev, V3 *p) {
+    T *t;
+    Ob *e = (Ob *)ev;
+    t = e->f30;
     if (t != 0) {
         lbl_803286D0.f0c(t->f10, p);
         t->f20 |= lbl_80365E20;
@@ -51,6 +53,16 @@ static inline void SetPos(Ob *e, V3 *p) {
     }
 }
 
+static inline void SetRot(void *ev, V3 *s, V3 *a, V3 *u) {
+    T *t;
+    Ob *e = (Ob *)ev;
+    t = e->f30;
+    if (t != 0) {
+        lbl_803286D0.f1c(t->f10, s, a, u);
+        t->f20 |= lbl_80365E20;
+        fn_80190C98(e);
+    }
+}
 static inline Sub *GetSub(Ob *t) {
     return t->f84 == 0 ? 0 : t->f84->f8;
 }
@@ -104,18 +116,19 @@ void fn_80231408(O *o, int flag, V3 *dir) {
     p.z = lbl_80365E30 * d.z + p.z;
     SetPos(o->f2c0, &p);
     {
+    f32 w, z;
     f32 ax = VK(d.x), ay = VK(d.y), az = VK(d.z);
     VS(a.x) = ax; VS(a.y) = ay; VS(a.z) = az;
-    f32 z = VK(lbl_80365DF8);
+    z = VK(lbl_80365DF8);
     VS(u.x) = z;
     VS(u.y) = z;
-    f32 w = VK(lbl_80365DF4);
+    w = VK(lbl_80365DF4);
     VS(u.z) = w;
     u8 r = 0;
     if (ax == z && ay == z && az == w) r = 1;
     if (r) {
         VS(u.x) = VK(lbl_80365DF4);
-        f32 z = VK(lbl_80365DF8);
+        z = VK(lbl_80365DF8);
         VS(u.y) = z;
         VS(u.z) = z;
     }
@@ -127,13 +140,8 @@ void fn_80231408(O *o, int flag, V3 *dir) {
     a.x = -a.x; a.y = -a.y; a.z = -a.z;
     s.x = -s.x; s.y = -s.y; s.z = -s.z;
     {
-        Ob *e = o->f2c0;
-        T *t = e->f30;
-        if (t != 0) {
-            lbl_803286D0.f1c(t->f10, &s, &a, &u);
-            t->f20 |= lbl_80365E20;
-            fn_80190C98(e);
-        }
+        T *t;
+        SetRot(o->f2c0, &s, &a, &u);
     }
     if (o->f2c0->f4 == 3) {
         Ob *t;
@@ -156,9 +164,10 @@ void fn_80231408(O *o, int flag, V3 *dir) {
         if (o->f2bc != 0 || flag == 0) {
             void *list = lbl_8035B334->f8;
             u32 off;
+            Ob *e;
             u32 i;
             for (i = 0, off = 0; i < o->f2b8; off += 8, i++) {
-                Ob *e = fn_8022ECB4(list, o->f2b4 + off);
+                e = fn_8022ECB4(list, o->f2b4 + off);
                 if (e != 0) {
                     T *t;
                     o->o13(&w, 0, 0, 0, 0);
