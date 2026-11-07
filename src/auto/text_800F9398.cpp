@@ -6,7 +6,7 @@ extern "C" {
 
 typedef struct N { u8 p[8]; struct N *next; } N;
 void *fn_800F8274(N *, void *);
-void *fn_800F9398(N *t, void *k) {
+void *fn_800F9398(N *__restrict t, void *__restrict k) {
     N *n;
     for (n = t->next; n; n = n->next) {
         void *r = fn_800F8274(n, k);
