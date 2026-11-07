@@ -1,4 +1,4 @@
-/* NonMatching (wQN): SDIFF 0 / DIFF 14: only path walker d gets r25 (target r26). Key: local e for the filter ext, j for loop2+block3, decl order p,n1,d,e,n2,j,i. */
+/* Matched (wQU): path lookup loop moved into static inline FindA (late vregs give walker r26); loop2 list index uses n1 instead of n2. */
 #include "common.h"
 extern "C" {
 extern "C" {
@@ -34,6 +34,22 @@ static inline void upcase(char *s, u32 n) {
     for (i = 0; i < n; i++, s++) *s = toupper(*s);
 }
 
+static inline Nd *FindA(Arc *a, char *d) {
+    Nd *nd = &a->root;
+    char *p;
+    while (strlen(d)) {
+        s32 idx;
+        p = strchr(d, '\\');
+        if (p) *p = 0;
+        idx = fn_8021263C(a->tbl, d);
+        if (idx < 0) { nd = 0; break; }
+        nd = fn_80212998(nd, idx, a->cfg->v);
+        if (nd == 0) { nd = 0; break; }
+        if (p == 0) *d = 0;
+        else d = p + 1;
+    }
+    return nd;
+}
 void fn_80213B1C(Arc *a, char *dir, char *filter, L *list) {
     Ent ent;
     char name[16];
@@ -41,7 +57,6 @@ void fn_80213B1C(Arc *a, char *dir, char *filter, L *list) {
     Nd *nd;
     char *p;
     u32 n1;
-    char *d;
     char *e;
     u32 n2;
     u32 j;
@@ -51,19 +66,7 @@ void fn_80213B1C(Arc *a, char *dir, char *filter, L *list) {
     } else {
         strcpy(path, dir);
         upcase(path, strlen(dir));
-        d = path;
-        nd = &a->root;
-        while (strlen(d)) {
-            s32 idx;
-            p = strchr(d, '\\');
-            if (p) *p = 0;
-            idx = fn_8021263C(a->tbl, d);
-            if (idx < 0) { nd = 0; break; }
-            nd = fn_80212998(nd, idx, a->cfg->v);
-            if (nd == 0) { nd = 0; break; }
-            if (p == 0) *d = 0;
-            else d = p + 1;
-        }
+        nd = FindA(a, path);
     }
     if (nd == 0) {
         fn_8020EFE4(list, 0, 0);
@@ -93,13 +96,13 @@ void fn_80213B1C(Arc *a, char *dir, char *filter, L *list) {
         fn_8020EFE4(list, n2, n1);
     }
     {
-        n2 = 0;
-        for (i = n2; i < nd->nx; i++) {
+        n1 = 0;
+        for (i = n1; i < nd->nx; i++) {
             X *x = fn_80212968(nd, i);
             if (fn_8021272C(a->tbl, x->id, 0, &ent) && fn_802121C4(a, &ent, name, e)) {
-                fn_8020EBB0(list, n2, 3);
-                fn_8020EA90(list, n2, &ent);
-                n2++;
+                fn_8020EBB0(list, n1, 3);
+                fn_8020EA90(list, n1, &ent);
+                n1++;
             }
         }
     }
