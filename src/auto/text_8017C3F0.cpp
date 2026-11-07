@@ -23,7 +23,7 @@ void fn_80060568(char *, s32, s32, s32);
 void fn_80101820(V3 *v);
 }
 inline f32 Sq(f32 x) {
-    if (x > lbl_80364840) {
+    if (x > *(volatile const f32 *)&lbl_80364840) {
         const f64 _half = lbl_80364848;
         const f64 _three = lbl_80364850;
         volatile f32 y;
@@ -39,16 +39,12 @@ inline f32 Sq(f32 x) {
 extern "C" {
 
 static inline void cp(V3 *s, V3 *d) { d->x = s->x; d->y = s->y; d->z = s->z; }
-static inline void sub(V3 *a, V3 *b, V3 *o) { o->x = a->x - b->x; o->y = a->y - b->y; o->z = a->z - b->z; }
+static inline void sub(V3 *a, V3 *b, V3 *o) { *(volatile f32 *)&o->x = a->x - b->x; *(volatile f32 *)&o->y = a->y - b->y; *(volatile f32 *)&o->z = a->z - b->z; }
 static inline f32 mag(V3 *v) {
-    f32 xx = v->x * v->x;
-    f32 yy = v->y * v->y;
-    f32 l = xx + yy;
-    f32 zz = v->z * v->z;
-    l = zz + l;
-    return Sq(l);
+    return Sq(v->z * v->z + (v->x * v->x + v->y * v->y));
 }
-static inline void madd(V3 *a, V3 *d, f32 k, V3 *o) { o->x = k * d->x + a->x; o->y = k * d->y + a->y; o->z = k * d->z + a->z; }
+#define VR(e) (*(volatile f32 *)&(e))
+static inline void madd(V3 *a, V3 *d, f32 k, V3 *o) { o->x = k * VR(d->x) + VR(a->x); o->y = k * VR(d->y) + VR(a->y); o->z = k * VR(d->z) + VR(a->z); }
 void fn_8017C3F0(Nd *n) {
     if (lbl_8035AD94 != n->idx) {
         if (n->idx == 0) {
@@ -70,8 +66,8 @@ void fn_8017C3F0(Nd *n) {
             fn_80103F08(m, &lbl_8035AD98->p1, &lbl_80330204);
         }
         sub(&lbl_80330204, &lbl_803301F8, &lbl_80330210);
-        lbl_8035AD9C = lbl_80364858 * mag(&lbl_80330210);
-        madd(&lbl_803301F8, &lbl_80330210, lbl_80364858, &lbl_8033021C);
+        *(volatile f32 *)&lbl_8035AD9C = lbl_80364858 * mag(&lbl_80330210);
+        madd(&lbl_803301F8, &lbl_80330210, *(volatile f32 *)&lbl_80364858, &lbl_8033021C);
         fn_80101820(&lbl_80330210);
         lbl_8035AD94 = n->idx;
     }
@@ -79,7 +75,8 @@ void fn_8017C3F0(Nd *n) {
         if (!n->kid) n->leaf();
         else {
             Nd *k;
-            for (k = n->kid; k; k = k->next) fn_8017C3F0(k);
+            k = n->kid;
+            do { fn_8017C3F0(k); k = k->next; } while (k);
         }
     }
 }
