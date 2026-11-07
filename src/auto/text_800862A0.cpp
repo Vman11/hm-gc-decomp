@@ -1,3 +1,4 @@
+// Matched (wQU): f2ec position update moved into static inline UpdA(Obj*) with block-local g/m (late vregs fix loop walker/item colouring).
 #include "common.h"
 
 extern "C" {
@@ -102,15 +103,24 @@ inline void Upd(Grp *g, V3 *v) {
 
 inline TA *GetTA(TH *h) { TA *a = h->f6c; if (!a) a = &h->f90->a; return a; }
 
+static inline void UpdA(Obj *o) {
+    Grp *g = o->f2ec;
+    if (g && lbl_8035A1A8 == o) {
+        M30 *m = g->f30;
+        if (m) {
+            lbl_803286D0.fc(m->f10, &o->f44);
+            m->f20 |= lbl_8035FDF0;
+            fn_80190C98(g);
+        }
+    }
+}
 void fn_800862A0(Obj *o, f32 dt) {
     V3 pos;
     V3 b;
     V3 hp;
     V3 hn;
     V3 v;
-    M30 *m;
     Grp *g2;
-    Grp *g;
     M30 *m2;
     if (o->on != 0) {
         if (o->f2c4 != 0) {
@@ -140,15 +150,7 @@ void fn_800862A0(Obj *o, f32 dt) {
             *(volatile f32 *)&b.x = px; *(volatile f32 *)&b.y = py; *(volatile f32 *)&b.z = pz;
             b.z = pz - *(volatile f32 *)&lbl_8035FDFC;
             s32 hit = fn_80264E0C(&pos, &b, &hp, &hn, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
-            g = o->f2ec;
-            if (g && lbl_8035A1A8 == o) {
-                m = g->f30;
-                if (m) {
-                    lbl_803286D0.fc(m->f10, &o->f44);
-                    m->f20 |= lbl_8035FDF0;
-                    fn_80190C98(g);
-                }
-            }
+            UpdA(o);
             if (hit) {
                 o->msg(lbl_80298E24, 0, 0, 0, 0);
                 o->kill(0, 0, 0);
