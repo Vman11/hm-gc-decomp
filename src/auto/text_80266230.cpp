@@ -1,6 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-// NonMatching: instructions identical, 74 diff lines = FPR colouring only (dt f28 vs f30, tz f30 vs f28, Sqrt f7/f8).
+// NonMatching: instructions identical, 40 diff lines = FPR colouring only (tx f27 vs f31, Sqrt f7/f8).
 #include "common.h"
 
 extern "C" {
@@ -175,13 +175,7 @@ void fn_80266230(Cam *p, f32 dt) {
     }
     {
         f32 rate = p->rate2 ? *p->rate2 : *p->rate;
-        tx -= p->cur.a.x;
-        ty -= p->cur.a.y;
-        tz -= p->cur.a.z;
-        f32 k = lbl_80366C28 - (f32)fn_800F049C(-rate * dt);
-        p->cur.a.x = k * tx + p->cur.a.x;
-        p->cur.a.y = k * ty + p->cur.a.y;
-        p->cur.a.z = k * tz + p->cur.a.z;
+        Approach(&p->cur.a, tx, ty, tz, -rate * dt);
     }
     Tail(p, dt);
     fn_80266AD0(p, dt);
