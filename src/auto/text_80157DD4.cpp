@@ -51,8 +51,8 @@ u32 fn_80157DD4(Ctx *c, Fmt *f, int x, int y, Buf *b) {
     u32 tot;
     u32 stride;
     u32 off;
-    u32 n;
     u32 a;
+    u32 n;
     u32 i;
     fn_800D58D4();
     stride = b->stride;
