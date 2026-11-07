@@ -1,5 +1,5 @@
 #include "common.h"
-// NonMatching: prologue param-copy scheduling + cmplwi placement before loop2 init (DIFF 10)
+// NonMatching: SDIFF 1 - loop1 entry lacks the i copy (mr r23,r7); rest is register colouring
 extern "C" {
 struct V { f32 x, y, z; };
 struct Q { f32 x, y, z, w; };
@@ -38,6 +38,20 @@ static inline void b4(A *a, u32 i, void *clip, V *v, f32 t, void *out, void *w, 
 static inline void L3(A *a, u32 j, u32 n, void *clip, V *v, f32 t, void *out, void *w, f32 wt, V *sc) {
     for (; j < n; j++) b3(a, j, clip, v, t, out, w, wt, sc);
 }
+static inline void L1(A *a, u32 j, u32 n, void *clip, Q *q, f32 t, void *out, void *w, f32 wt) {
+    for (; j < n; j++) b1(a, j, clip, q, t, out, w, wt);
+}
+static inline void L2(A *a, u32 j, u32 n, void *clip, V *v, f32 t, void *out, void *w, f32 wt, V *sc) {
+    if (!sc) {
+        for (; j < n; j++) {
+            E *e = &a->f0->f32[j];
+            fn_8021BD48(clip, e, a->f54, v, t);
+            fn_80102CD0(out, e->f10, v, w, wt);
+        }
+    } else {
+        L3(a, j, n, clip, v, t, out, w, wt, sc);
+    }
+}
 void fn_80101C20(A *a, void *out, void *w, V *sc, f32 t, f32 wt) {
     Q q;
     V v;
@@ -48,20 +62,9 @@ void fn_80101C20(A *a, void *out, void *w, V *sc, f32 t, f32 wt) {
     u32 end;
 
     clip = a->f0->f24;
-    for (i = a->f32, end = a->f32 + a->f34; i < end; i++) {
-        b1(a, i, clip, &q, t, out, w, wt);
-    }
-    end = a->f36;
-    i = end + a->f38;
-    if (!sc) {
-        for (; end < i; end++) {
-            E *e = &a->f0->f32[end];
-            fn_8021BD48(clip, e, a->f54, &v, t);
-            fn_80102CD0(out, e->f10, &v, w, wt);
-        }
-    } else {
-        L3(a, end, i, clip, &v, t, out, w, wt, sc);
-    }
-    for (end = a->f40, i = a->f40 + a->f42; end < i; end++) b4(a, end, clip, &v3, t, out, w, wt);
+    L1(a, a->f32, a->f32 + a->f34, clip, &q, t, out, w, wt);
+    L2(a, a->f36, a->f36 + a->f38, clip, &v, t, out, w, wt, sc);
+    i = a->f40;
+    for (end = i + a->f42; i < end; i++) b4(a, i, clip, &v3, t, out, w, wt);
 }
 }
