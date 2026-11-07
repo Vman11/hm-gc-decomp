@@ -17,6 +17,9 @@ void *memset(void *, int, u32);
 #define U32(o) (*(u32 *)(p + (o)))
 int fn_8014E464(u8 *p, u32 a) {
     u32 *tbl;
+    u8 * e3;
+    u32 i3;
+    u8 * q3;
     u32 m2;
     u8 *q;
     u8 *e;
@@ -66,15 +69,15 @@ int fn_8014E464(u8 *p, u32 a) {
             }
         }
     }
-    for (i = 0, q = p, e = p; i < 4; i++, q += 764, e += 12) {
-        X *x = ((E *)(q + 96))->x;
+    for (i3 = 0, q3 = p, e3 = p; i3 < 4; i3++, q3 += 764, e3 += 12) {
+        X *x = ((E *)(q3 + 96))->x;
         if (x->f188 != 0) {
-            El *el = (El *)(e + 48);
+            El *el = (El *)(e3 + 48);
             if (el->f10 == 0) {
                 if (el->f6 > 250) el->f0 |= 64;
                 if (el->f7 > 250) el->f0 |= 32;
             }
-            ((E *)(q + 96))->x->v8(a);
+            ((E *)(q3 + 96))->x->v8(a);
         }
     }
     return 0;
