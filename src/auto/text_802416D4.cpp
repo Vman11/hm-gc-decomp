@@ -68,6 +68,7 @@ void fn_802416D4(P *p, Arg *a) {
     char *str = lbl_802A8D48;
     void *x, *y;
     u8 *db;
+    u32 off, off4;
     void *g;
     void *ld;
     void *found;
@@ -82,26 +83,28 @@ void fn_802416D4(P *p, Arg *a) {
     fn_800F7E98();
     if (!p->d0) fn_800604C4(-4, 0, 0, 0);
     if (y && x) found = fn_8010FEDC(x, y, str + 0x124, 1);
-    for (i = 0; i < p->n7c; i++) {
+    off = 0;
+    off4 = off;
+    for (i = 0; i < p->n7c; off += 12, off4 += 4, i++) {
         db = lbl_8035B460->f8->f4;
         R *r = 0;
-        if (found) r = fn_8010FFFC(x, found, p->c8[i].f0, 1);
+        if (found) r = fn_8010FFFC(x, found, ((E *)((u8 *)p->c8 + off))->f0, 1);
         if (r) {
             fn_800F6E88(b20, r->name);
             fn_800F6E88(b28, r->name + 8);
         } else {
-            fn_800F6FBC(p->c8[i].f8, b28);
-            fn_800F6FBC(p->c8[i].f4, b20);
+            fn_800F6FBC(((E *)((u8 *)p->c8 + off))->f8, b28);
+            fn_800F6FBC(((E *)((u8 *)p->c8 + off))->f4, b20);
         }
         if (!b20[0]) fn_800F6E88(b20, p->e0->name);
         void *s = fn_800F9398(db + 0x2dc, b20);
-        p->d0[i] = 0;
+        *(void **)((u8 *)p->d0 + off4) = 0;
         if (!s) {
             fn_800F6E40(t54, b20);
             fn_800E8F6C(m1, str + 0x130, t54);
         } else {
-            p->d0[i] = fn_800F8274(s, b28);
-            if (!p->d0[i]) {
+            *(void **)((u8 *)p->d0 + off4) = fn_800F8274(s, b28);
+            if (!*(void **)((u8 *)p->d0 + off4)) {
                 fn_800F6E40(t48, b28);
                 fn_800F6E40(t3c, b20);
                 fn_800E8F6C(m2, str + 0x170, t48, t3c);
