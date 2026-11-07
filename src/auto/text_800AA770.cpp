@@ -1,4 +1,4 @@
-// NonMatching draft (see AGENTS.md wJW note)
+// NonMatching draft (wMU: volatile p0=a+f stores + volatile 0.05 read, SDIFF 18->12)
 #include "common.h"
 
 struct K8 { u32 a, b; };
@@ -88,11 +88,11 @@ void fn_800AA770(O *o, s32 idx) {
             lbl_803286D0.f328(lbl_8035B65C->f40->f16, &u);
             u.x = -u.x; u.y = -u.y; u.z = -u.z;
             fn_80101820(&f);
-            s = 0.4f;
-            f.x *= s; f.y *= s; f.z *= s;
-            p0.x = a.x + f.x; p0.y = a.y + f.y; p0.z = a.z + f.z;
+            s = lbl_80362234;
+            *(volatile f32 *)&f.x = f.x * s; *(volatile f32 *)&f.y = f.y * s; *(volatile f32 *)&f.z = f.z * s;
+            *(volatile f32 *)&p0.x = a.x + f.x; *(volatile f32 *)&p0.y = a.y + f.y; *(volatile f32 *)&p0.z = a.z + f.z;
             p1.x = -f.x; p1.y = -f.y; p1.z = -f.z;
-            m = 0.05f;
+            m = *(volatile f32 *)&lbl_80362238;
             p0.x = m * u.x + p0.x; p0.y = m * u.y + p0.y; p0.z = m * u.z + p0.z;
             fn_80101820(&p1);
             p2 = u;

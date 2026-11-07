@@ -1,3 +1,4 @@
+// NonMatching draft (wMU: AttrFmts(int v) + fn_8014C784(&l, &g->fmt): SDIFF 0, regs only: vf r30 vs r29)
 #include "common.h"
 extern "C" {
 typedef struct Fl {
@@ -31,7 +32,7 @@ void fn_800D590C(u32, u32, u32, u32, u8);
 int fn_8014C4B4(Slot *, Fmt *);
 void fn_8014C734(Slot *);
 void fn_8014C784(void *, Fmt *);
-static inline void AttrFmts(u32 v, Fmt *f) {
+static inline void AttrFmts(int v, Fmt *f) {
     u8 c8 = f->b8;
     u32 c11 = f->b11;
     u32 i;
@@ -67,7 +68,7 @@ u32 fn_801581F0(Ctx *c, Geo *g, u32 mode, int x, int y, Buf *b) {
     stride = b->stride;
     off = stride * (x - y);
     tot = 0;
-    fn_8014C784(&l, f);
+    fn_8014C784(&l, &g->fmt);
     fn_800D5488(9, 3);
     if (f->fl & 0x40) {
         if ((mode & 3) == 1) {

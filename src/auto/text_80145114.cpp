@@ -1,3 +1,4 @@
+// NonMatching draft (wMU: GC/2.6 + __restrict r fixes prologue, SDIFF 18->8; left: entry mullw/srawi schedule)
 #include "common.h"
 
 extern "C" {
@@ -57,7 +58,7 @@ struct C80145114 {
 extern "C" {
 void fn_80146610(C80145114 *);
 
-void fn_80145114(C80145114 *t, u8 *dst, s32 dpitch, s32 dx, s32 dy, u8 *src, s32 spitch, Rc *r) {
+void fn_80145114(C80145114 *t, u8 *dst, s32 dpitch, s32 dx, s32 dy, u8 *src, s32 spitch, Rc *__restrict r) {
     s32 step;
     u8 *e;
     u8 *sv, *nx;
