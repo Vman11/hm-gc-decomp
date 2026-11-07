@@ -42,11 +42,14 @@ void fn_80261F38(Cam *p, f32 dt)
     f32 spd;
     fn_802610A0(p);
     on = 0;
-    up.x = 0.0f;
-    up.y = 0.0f;
-    spd = 1.0f;
-    up.z = spd;
-    pad = fn_800F8274(lbl_8035B5E4, "camera");
+    {
+    f32 z0 = 0.0f;
+    *(volatile f32 *)&up.x = z0;
+    *(volatile f32 *)&up.y = z0;
+    }
+    *(volatile f32 *)&up.z = 1.0f;
+    spd = up.z;
+    pad = fn_800F8274(*(void *volatile *)&lbl_8035B5E4, "camera");
     if (pad && pad->on) {
         on = 1;
         if (!((f32)fn_80253664(pad, 63) >= -5e-6f && (f32)fn_80253664(pad, 63) <= 5e-6f))
