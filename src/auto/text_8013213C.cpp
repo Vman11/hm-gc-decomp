@@ -1,4 +1,5 @@
 #include "common.h"
+#pragma inline_max_size(30000)
 
 extern "C" {
 
@@ -42,7 +43,6 @@ void fn_8021F4A4(E16 *);
 u32 fn_800F9398(void *, void *);
 u32 fn_800F9788(void *, void *, void *);
 void fn_8013213C(T *t, u8 *c, u32 a, R *r, u32 b) {
-    u32 k;
     u32 a1, a2, a3, a4;
     u32 tok;
     u32 i;
@@ -107,6 +107,7 @@ void fn_8013213C(T *t, u8 *c, u32 a, R *r, u32 b) {
             t->e16 = new E16[t->n12];
             fn_800F7E98();
             if (!t->e16) fn_800604C4(-4, 0, 0, 0);
+            u32 k;
             for (k = 0; k < t->n12; k++) {
                 id = fn_800FB33C(r);
                 if (t->n0) {
