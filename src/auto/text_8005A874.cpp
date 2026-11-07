@@ -62,10 +62,10 @@ void fn_8005A874(P_A874 *p) {
     for (i = 0, off = 0; i < n; i++, off += 20) {
         char *name;
         s32 *cnt;
-        void *mgr;
         void *set;
         char *grp;
         s32 j;
+        void *mgr;
         if (q) fn_800FA474(q->f10 + off, b28, 16);
         else strcpy(b28, b38);
         strcpy(b48, str + 0x70);
