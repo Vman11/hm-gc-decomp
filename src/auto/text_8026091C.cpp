@@ -42,6 +42,7 @@ f32 fn_80101590(V3 *, V3 *);
 s32 fn_80264E0C(V3 *a, V3 *b, V3 *c, V3 *d, s32 *e, s32 *f, s32 *g, s32 h, s32 i, s32 j, s32 k, s32 l, s32 m, s32 n, s32 o);
 void fn_80264AC0(s32 n, V3 *a, V3 *b, Sph *c, s32 *d, V3 *e, V3 *f, s32 *g, s32 *h, s32 *i, void **j, s32 k, s32 l, s32 m, s32 n2, s32 o, s32 q, s32 r);
 
+static inline f32 dist(O *o) { if (o->flags & 4) o->v2(); return o->dist; }
 static inline void madd(V3 *d, f32 s, V3 *v) { d->x += s * v->x; d->y += s * v->y; d->z += s * v->z; }
 static inline void cp(V3 *d, V3 *s) { d->x = s->x; d->y = s->y; d->z = s->z; }
 
@@ -56,7 +57,6 @@ void fn_8026091C(Cam *p, V3 *a, V3 *b) {
     s32 x4c[6];
     Sph s;
     V3 c;
-    O *o;
     f32 d;
     u32 i;
     int moved;
@@ -81,9 +81,7 @@ void fn_8026091C(Cam *p, V3 *a, V3 *b) {
     cp(&p->right, &p->right0);
     cp(&p->vel, &p->vel0);
     p->spd = p->spd0;
-    o = p->h->o;
-    if (o->flags & 4) o->v2();
-    d = o->dist;
+    d = dist(p->h->o);
     {
         f32 s0 = lbl_802F2A7C[0].x * d;
         f32 s2 = lbl_802F2A7C[0].z * d;
@@ -97,10 +95,10 @@ void fn_8026091C(Cam *p, V3 *a, V3 *b) {
         for (i = 0; i < 6; i++) {
             f32 k0, k1, k2;
             from[i] = c;
+            cp(&to[i], &p->pos);
             k0 = d * lbl_802F2A7C[i + 1].x;
             k1 = d * lbl_802F2A7C[i + 1].y;
             k2 = d * lbl_802F2A7C[i + 1].z;
-            cp(&to[i], &p->pos);
             madd(&to[i], k0, &p->fwd);
             madd(&to[i], k1, &p->up);
             madd(&to[i], k2, &p->right);
