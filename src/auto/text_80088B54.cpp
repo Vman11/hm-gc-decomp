@@ -1,6 +1,8 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
+// fn_80088B54 NonMatching draft: SDIFF 15 (volatile stores/loads pin constant-load order).
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
+#define VS(v) (*(volatile f32 *)&(v))
+#define VK(v) (*(volatile f32 *)&(v))
 
 extern "C" {
 
@@ -125,8 +127,9 @@ void fn_80088B54(P *p, f32 dt) {
     p->st892 = 3;
     if (p->t430 <= lbl_8035FEB8) {
         p->t430 = *p->p434;
-        t = p->base;
-        t.z -= lbl_8035FEC8;
+        f32 z;
+        VS(t.x) = p->base.x; VS(t.y) = p->base.y; z = p->base.z; VS(t.z) = z;
+        t.z = z - VK(lbl_8035FEC8);
         fn_8008930C(p, &t, 0, *p->p440);
     }
     p->t430 -= dt;
@@ -146,7 +149,7 @@ void fn_80088B54(P *p, f32 dt) {
             d.y = p->tgt.y - c.y;
             d.z = p->tgt.z - c.z;
             fn_80101820(&d);
-            up.x = lbl_8035FEB8; up.y = lbl_8035FEB8; up.z = lbl_8035FED4;
+            { f32 z0 = lbl_8035FEB8; VS(up.x) = z0; VS(up.y) = z0; VS(up.z) = VK(lbl_8035FED4); }
             Cross(&side, &d, &up);
             fn_80101820(&side);
             Cross(&up, &d, &side);
@@ -163,8 +166,8 @@ void fn_80088B54(P *p, f32 dt) {
                 b = lbl_8035FEF4 * (f32)r;
                 b = lbl_8035FF18 + b;
             }
-            sc.x = b; sc.y = a; sc.z = dist;
-            f32 k = lbl_8035FF28 * dist;
+            VS(sc.x) = b; sc.y = a; sc.z = dist;
+            f32 k = VK(lbl_8035FF28) * dist;
             t.x = k * d.x + p->tgt.x;
             t.y = k * d.y + p->tgt.y;
             t.z = k * d.z + p->tgt.z;
