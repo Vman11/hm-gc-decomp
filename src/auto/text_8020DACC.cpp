@@ -4,7 +4,7 @@
 
 extern "C" {
 
-// fn_8020DACC: NonMatching draft (SDIFF 2, DIFF 36: total init a268+(a276+96) operand order + loop regs; size temp copy into r29), see hm-work/wA_8014D8D8/STATUS.txt.
+// fn_8020DACC: NonMatching draft (SDIFF 0, DIFF 32: register-only; s32 roundup temp fixed the size copy into r29; left total init operand order + loop regs), see hm-work/wPH/STATUS.txt.
 struct Ent { void *p; u32 size; u32 pad8; u32 x; u32 pad16; };
 struct S {
     u32 base;
@@ -87,8 +87,7 @@ s32 fn_8020DACC(M *m, S *s) {
     u32 size;
     if (m->s14()) {
         fn_800FA474(s->name, name, 31);
-        size = fileSize(s);
-        if (size % m->blk) size = m->blk * (size / m->blk + 1);
+        { s32 v = fileSize(s); if (v % m->blk) v = m->blk * (v / m->blk + 1); size = v; }
         r = create(m, name, size, &fi);
         if (r) return fn_8020B114(r);
         m->fileNo = fi.fileNo;
