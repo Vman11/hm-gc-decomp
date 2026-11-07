@@ -105,8 +105,10 @@ void fn_80196B9C(T *t, s32 j, f32 f) {
         } else if (d->fl & 4) {
             s32 r = rnd(i);
             fn_80101624(&pa, &d->p10, &d->p1c, (f32)r / 2047.0f);
-            r = rnd(i);
-            fn_80101624(&pb, &t->d->p28, &t->d->p34, (f32)r / 2047.0f);
+            {
+                f32 u = (f32)(s32)rnd(i) / 2047.0f;
+                fn_80101624(&pb, &t->d->p28, &t->d->p34, u);
+            }
             r = rnd(i);
             fn_80101624(&org, &pa, &pb, (f32)r / 2047.0f);
         } else {
@@ -119,13 +121,14 @@ void fn_80196B9C(T *t, s32 j, f32 f) {
             p24 = org;
             p48 = dir;
         }
-        p48.x += t->pb0.x;
-        p48.y += t->pb0.y;
-        p48.z += t->pb0.z;
-        sz = t->d->f1b0;
-        if (0.0f != t->d->f1b4) {
+        *(volatile f32 *)&p48.x = p48.x + t->pb0.x;
+        *(volatile f32 *)&p48.y = p48.y + t->pb0.y;
+        *(volatile f32 *)&p48.z = p48.z + t->pb0.z;
+        *(volatile f32 *)&sz = t->d->f1b0;
+        D *e2 = *(D *volatile *)&t->d;
+        if (*(volatile f32 *)&lbl_80364C1C != e2->f1b4) {
             s32 r = rnd(i);
-            sz += (2.0f * ((f32)r / 2047.0f) - 1.0f) * t->d->f1b4;
+            sz += (2.0f * ((f32)r / 2047.0f) - 1.0f) * e2->f1b4;
         }
         if (t->cb) t->cb->call(t->d, &p24, &p48, &pos, &sz);
         {
