@@ -26,7 +26,7 @@ void fn_800F7EC0(Heap *);
 void fn_800F7E98(void);
 
 static inline u16 sw16(u16 x) { return ((x >> 8) & 0xFF) + (x & 0xFF); }
-static inline u32 sw32(u32 x) { u8 a = x >> 8; u8 b = x >> 16; u8 c = x; u32 d = x >> 24; return d + (b + a + c); }
+static inline u32 sw32(u32 x) { u8 a = x >> 8; u8 b = x >> 16; u8 c = x; u32 d = x >> 24; return d + b + a + c; }
 
 s32 fn_802010A0(Obj *o, char *path) {
     Ent *ents;
