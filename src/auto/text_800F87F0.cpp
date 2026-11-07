@@ -2,8 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching draft (wA_80127F34): opcodes match except the 4 prologue loads scheduled after the param copies;
-// saved-GPR colouring of start/idx/oldn/new[]/loop vars differs. DIFF 122 / SDIFF 18.
+// NonMatching draft (wA_80127F34, wPE): const char *k fixed the prologue load hoist; SDIFF 0, register-only.
+// saved-GPR colouring of start/idx/oldn/new[]/loop vars differs. DIFF 94 / SDIFF 0.
 
 extern "C" {
 class C800F930C { public: char key[8]; void *v; C800F930C(); };
@@ -19,9 +19,9 @@ char *strcat(char *, const char *);
 extern void *lbl_8035A9F8;
 extern u32 lbl_8029CA70[];
 extern char lbl_8029CAB8[];
-void fn_800F87F0(H8F *h, char *k, void *v);
+void fn_800F87F0(H8F *h, const char *k, void *v);
 
-inline u32 fn_800F8CD8(H8F *h, char *k) {
+inline u32 fn_800F8CD8(H8F *h, const char *k) {
     u32 value = k[0];
     u32 shift = 7;
     int i;
@@ -57,15 +57,15 @@ inline void fn_800F8FF4(H8F *h) {
     delete[] old;
 }
 
-void fn_800F87F0(H8F *h, char *k, void *v) {
+void fn_800F87F0(H8F *h, const char *k, void *v) {
     u32 start;
     u32 idx;
     start = fn_800F8CD8(h, k);
     idx = start;
     while (h->arr[idx].v) {
-        if (fn_800F6CD0(&h->arr[idx], k)) {
+        if (fn_800F6CD0(&h->arr[idx], (void *)k)) {
             char buf[0x28];
-            fn_800F6E40(buf, k);
+            fn_800F6E40(buf, (void *)k);
             buf[8] = 0;
             strcat(buf, lbl_8029CAB8);
             fn_80060568(buf, 0, 0, 0);
@@ -78,7 +78,7 @@ void fn_800F87F0(H8F *h, char *k, void *v) {
             return;
         }
     }
-    fn_800F6E88(&h->arr[idx], k);
+    fn_800F6E88(&h->arr[idx], (void *)k);
     h->arr[idx].v = v;
 }
 }
