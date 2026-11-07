@@ -1,3 +1,4 @@
+/* NonMatching (wQN): SDIFF 0 / DIFF 88: loop as for(i) with E *e = &b->ent[i] fixes self/b/fsize regs; left: a/off/asz/i/ptr/type saved-reg rotation + case h36 r0/r3. */
 // fn_8020CFE4: save-file writer (header/data blocks via stream vtable at +0x88c). NonMatching draft:
 // instructions identical (SDIFF 0), only callee-saved GPR coloring differs (self r29/b r30 vs target r30/r28). Notes: hm-work/wA_8020CFE4/STATUS.txt, hm-work/wOB/STATUS.txt
 #include "common.h"
@@ -101,16 +102,16 @@ static inline s32 WriteBlk_8020CFE4(Stream_8020CFE4 *s, u32 off, u32 buf, u32 si
 s32 fn_8020CFE4(Self_8020CFE4 *self, B_8020CFE4 *b, O_8020CFE4 *o) {
     u32 buf[8];
     struct { u8 h1[0x20]; u8 h2[0x20]; } hdr;
-    u32 c;
     u32 i;
-    s32 r;
-    u32 fsize;
-    u32 off;
-    u32 a;
-    u32 csz;
-    u32 asz;
-    u32 first;
     u32 n;
+    s32 r;
+    u32 c;
+    u32 off;
+    u32 first;
+    u32 fsize;
+    u32 a;
+    u32 asz;
+    u32 csz;
 
     memset(buf, 0, 0x20);
     fn_8020CDB0(&self->s, self, 0);
@@ -159,13 +160,14 @@ s32 fn_8020CFE4(Self_8020CFE4 *self, B_8020CFE4 *b, O_8020CFE4 *o) {
         o->f2e = (o->f2e & ~4) | 4;
     }
     first = 0;
-    for (i = 0; i < n; b = (B_8020CFE4 *)((u8 *)b + sizeof(E_8020CFE4)), i++) {
+    for (i = 0; i < n; i++) {
+        E_8020CFE4 *e = &b->ent[i];
         u32 sh = i * 2;
-        u32 ptr = b->ent[0].ptr;
-        s32 type = b->ent[0].type;
-        u32 ea = b->ent[0].a;
-        u32 esz = b->ent[0].size;
-        u32 psz = b->ent[0].psize;
+        u32 ptr = e->ptr;
+        s32 type = e->type;
+        u32 ea = e->a;
+        u32 esz = e->size;
+        u32 psz = e->psize;
         
         if (ptr != 0 && first == 0) {
             first = ptr;
