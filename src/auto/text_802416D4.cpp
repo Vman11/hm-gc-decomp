@@ -66,10 +66,11 @@ void fn_802416D4(P *p, Arg *a) {
     char b10[8];
     char b8[8];
     char *str = lbl_802A8D48;
-    void *found;
     void *x, *y;
+    u8 *db;
     void *g;
     void *ld;
+    void *found;
     s32 i;
     fn_80249AC4(p, a);
     p->e0 = (E0 *)a;
@@ -82,7 +83,7 @@ void fn_802416D4(P *p, Arg *a) {
     if (!p->d0) fn_800604C4(-4, 0, 0, 0);
     if (y && x) found = fn_8010FEDC(x, y, str + 0x124, 1);
     for (i = 0; i < p->n7c; i++) {
-        u8 *db = lbl_8035B460->f8->f4;
+        db = lbl_8035B460->f8->f4;
         R *r = 0;
         if (found) r = fn_8010FFFC(x, found, p->c8[i].f0, 1);
         if (r) {
