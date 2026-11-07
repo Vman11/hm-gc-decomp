@@ -148,6 +148,7 @@ static inline void End(P *p, V3 *en, u32 i) {
     }
 }
 static inline f32 Min(f32 a, f32 b) { return a < b ? a : b; }
+static inline int Lt(f32 m, f32 v) { return v < m; }
 static inline int Bef(u32 a, u32 b) { return a >= b; }
 static inline f32 Look(s32 **pp, f32 **tbl) {
     if (*pp != 0 && tbl != 0) {
@@ -198,22 +199,28 @@ void fn_80066F30(P *p, f32 dt) {
     vz0 = p->vel.z;
     if (p->ctl->p20c->type != 14) p->vel.z -= dt * *p->f184;
     {
-        f32 lim = Min(*p->f180, p->f1a4);
-        if (p->vel.z < lim) p->vel.z = Min(*p->f180, p->f1a4);
+        if (Lt(Min(*p->f180, p->f1a4), p->vel.z)) p->vel.z = Min(*p->f180, p->f1a4);
     }
-    a = lbl_80357B10;
-    b = lbl_80357AF8;
-    a.z = lbl_8035E758;
-    b.z = lbl_8035E758;
+    {
+        f32 bz, by, bx, az, ay, ax;
+        ax = *(volatile f32 *)&lbl_80357B10.x; ay = *(volatile f32 *)&lbl_80357B10.y; az = *(volatile f32 *)&lbl_80357B10.z;
+        bx = *(volatile f32 *)&lbl_80357AF8.x; by = *(volatile f32 *)&lbl_80357AF8.y; bz = *(volatile f32 *)&lbl_80357AF8.z;
+        f32 k;
+        *(volatile f32 *)&a.x = ax; *(volatile f32 *)&a.y = ay; *(volatile f32 *)&a.z = az;
+        *(volatile f32 *)&b.x = bx; *(volatile f32 *)&b.y = by; *(volatile f32 *)&b.z = bz;
+        k = *(volatile f32 *)&lbl_8035E758;
+        a.z = k;
+        b.z = k;
+    }
     fn_80101820(&a);
     fn_80101820(&b);
-    a.x *= p->f158; a.y *= p->f158; a.z *= p->f158;
+    { f32 k = p->f158; a.x *= k; a.y *= k; a.z *= k; }
     {
         f32 k = -p->f15c;
-        b.x *= k; b.y *= k; b.z *= k;
+        *(volatile f32 *)&b.x = b.x * k; *(volatile f32 *)&b.y = b.y * k; *(volatile f32 *)&b.z = b.z * k;
     }
+    g = *(u8 *volatile *)&lbl_8035B65C + 0x770;
     d1 = lbl_80357B10;
-    g = lbl_8035B65C + 0x770;
     d2 = lbl_80357AF8;
     fn_80100F24(&d1, lbl_803065D0);
     fn_80100F24(&d2, lbl_803065D0);
