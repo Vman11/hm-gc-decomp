@@ -20,17 +20,24 @@ void fn_8021BC84(void *, CH *, u16, V3 *, f32);
 void fn_8021BBC0(void *, CH *, u16, V4 *, f32);
 void fn_80107F3C(S52 *, V3 *);
 
+static inline void vmul(V3 *p, V3 *s) { p->x *= s->x; p->y *= s->y; p->z *= s->z; }
+static inline void *getData(AN *a) { return a->clip->data; }
+static inline u32 pEnd(AN *a) { return a->p0 + a->pn; }
+static inline u32 pBeg(AN *a) { return a->p0; }
+static inline T *getT() { return &lbl_803286D0; }
+static inline u32 rEnd(AN *a) { return a->r0 + a->rn; }
 void fn_80101F5C(AN *a, TG *tg, V3 *scale, f32 t) {
     V4 q;
     V3 p, s;
     V4 o;
+    CH *ch;
     void *data;
+    u32 i;
     ND *n;
     u32 end;
-    u32 i;
-    CH *ch;
+    CH *ch2;
     end = a->r0 + a->rn;
-    data = a->clip->data;
+    data = getData(a);
     for (i = a->r0; i < end; i++) {
         ch = &a->clip->rot[i];
         fn_8021BE0C(data, ch, a->frame, &q, t);
@@ -39,9 +46,8 @@ void fn_80101F5C(AN *a, TG *tg, V3 *scale, f32 t) {
         n->fl |= lbl_80363850;
     }
     end = a->p0 + a->pn;
-    i = a->p0;
     if (!scale) {
-        for (; i < end; i++) {
+        for (i = a->p0; i < end; i++) {
             ch = &a->clip->pos[i];
             fn_8021BD48(data, ch, a->frame, &p, t);
             n = &tg->nodes[ch->node];
@@ -49,7 +55,7 @@ void fn_80101F5C(AN *a, TG *tg, V3 *scale, f32 t) {
             n->fl |= lbl_80363850;
         }
     } else {
-        for (; i < end; i++) {
+        for (i = a->p0; i < end; i++) {
             ch = &a->clip->pos[i];
             fn_8021BD48(data, ch, a->frame, &p, t);
             p.x *= scale->x;
@@ -61,14 +67,14 @@ void fn_80101F5C(AN *a, TG *tg, V3 *scale, f32 t) {
         }
     }
     for (i = a->s0, end = a->s0 + a->sn; i < end; i++) {
-        ch = &a->clip->scl[i];
-        fn_8021BC84(data, ch, a->frame, &s, t);
-        fn_80107F3C(&tg->s40[ch->node], &s);
+        ch2 = &a->clip->scl[i];
+        fn_8021BC84(data, ch2, a->frame, &s, t);
+        fn_80107F3C(&tg->s40[ch2->node], &s);
     }
     for (i = a->o0, end = a->o0 + a->on; i < end; i++) {
-        ch = &a->clip->oth[i];
-        fn_8021BBC0(data, ch, a->frame, &o, t);
-        tg->nodes[ch->node].s7(&o);
+        ch2 = &a->clip->oth[i];
+        fn_8021BBC0(data, ch2, a->frame, &o, t);
+        tg->nodes[ch2->node].s7(&o);
     }
 }
 }
