@@ -52,6 +52,7 @@ static inline u8 IsBusy(Gx *gx) {
     return r;
 }
 static inline u8 Skip(Gm *g) { u8 s = 0; if (IsBusy(g->gx) && !(g->flags & 0x10)) s = 1; return s; }
+/* wQG: sb reused for lbl_80359F50 scale (FP colouring), __fmadds operand order. DIFF 48 SDIFF 0, left: skip/busy r3/r5, e ptr r3/r4 */
 void fn_8002BDD4(Obj *o, f32 dt)
 {
     f32 sa = 0.0f;
@@ -72,13 +73,13 @@ void fn_8002BDD4(Obj *o, f32 dt)
         if (!skip) {
             f32 d = tgt - lbl_80359F50;
             if ((f32)__fabs(d) > 0.0f)
-                lbl_80359F50 += (lbl_8035B9D8 - (f32)fn_800F049C(lbl_8035B9E0 * dt)) * d;
+                lbl_80359F50 = __fmadds(lbl_8035B9D8 - (f32)fn_800F049C(lbl_8035B9E0 * dt), d, lbl_80359F50);
         }
         p = o->pl;
-        { f32 s = lbl_80359F50;
-        sa = p->h * s;
+        sb = lbl_80359F50;
+        sa = p->h * sb;
         ra = p->h / p->w;
-        sb = p->w * s; }
+        sb = p->w * sb;
         sc = sb / (p->sc ? *p->sc : 0.0f);
     }
     if (o->t0 > 0.0f) { *o->o0 = o->v0; o->t0 -= dt; }
