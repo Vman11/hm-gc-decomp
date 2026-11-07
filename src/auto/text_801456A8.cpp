@@ -68,10 +68,9 @@ void fn_801456A8(C801456A8 *t, u8 *dst, s32 dpitch, s32 dx, s32 dy, u8 *src, s32
         s = s + y0 * spitch;
     }
     t->fb0 = s;
-    s32 x = r->x0;
     t->fb4 = d;
     t->f94 = t->f8c;
-    t->f90 = x;
+    t->f90 = (r->x0);
     t->f98 = dx;
     fn_80146610(t);
     t->f184 = t->bb8;
