@@ -1,3 +1,4 @@
+// NonMatching draft (wRA): more2() direct-return form for loop/0xDD/0xFE sites fixes loop regs (DIFF 38->32, SDIFF 0). Left: 0xC4 ok r29 vs r30, prec r4 vs r5.
 #include "common.h"
 
 extern "C" {
@@ -30,9 +31,12 @@ static inline bool more(D *d) {
     if (d->r->s->cur < d->r->s->end || d->r->s->v3() == 0) ok = true;
     return ok;
 }
+static inline bool more2(D *d) {
+    return d->r->s->cur < d->r->s->end || d->r->s->v3() == 0;
+}
 
 s32 fn_8013CFCC(D *d) {
-    while (more(d)) {
+    while (more2(d)) {
         switch (fn_801F36D8(d->r->s)) {
         case 0xD8:
             return 1;
@@ -95,7 +99,7 @@ s32 fn_8013CFCC(D *d) {
         case 0xDD:
             fn_801F359C(d->r->s);
             d->ri = fn_801F359C(d->r->s);
-            return more(d) != 0;
+            return more2(d) != 0;
         case 0xD9:
             return 0;
         case 0xE0: case 0xE1: case 0xE2: case 0xE3: case 0xE4: case 0xE5: case 0xE6: case 0xE7:
@@ -105,7 +109,7 @@ s32 fn_8013CFCC(D *d) {
             u16 len = fn_801F359C(d->r->s);
             fn_801F5948(d, len - 2);
             }
-            return more(d) != 0;
+            return more2(d) != 0;
         case 0xFF:
             break;
         default:
