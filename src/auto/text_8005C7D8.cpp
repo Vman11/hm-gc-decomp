@@ -57,7 +57,7 @@ static inline void *find(u8 *m, char *s, char *name) {
 
 #pragma opt_loop_invariants off
 static inline void L3(P *p) {
-    V3 s;
+    volatile V3 s;
     s32 k;
     for (k = 0; k < p->count; k++) {
         if (p->nodes[k]) {
@@ -70,9 +70,9 @@ static inline void L3(P *p) {
                 s.x = x * f;
                 s.y = y * f;
                 s.z = z * f;
-                p->f780 = lbl_8035E438;
+                p->f780 = *(volatile f32 *)&lbl_8035E438;
             }
-            if (p->nodes[k]->m120) fn_80107F3C(p->nodes[k]->m120, &s);
+            if (p->nodes[k]->m120) fn_80107F3C(p->nodes[k]->m120, (V3 *)&s);
         }
     }
 }
@@ -84,9 +84,9 @@ void fn_8005C7D8(P *p, int a, int b, char *name) {
     s32 k;
     fn_80231AD8(p, a, b, name);
     fn_800F6E88(p->name, name);
-    for (i = 0; i < p->count; i++) {
+    for (i = 0, k = 0; i < p->count; i++, k += 8) {
         void *o;
-        fn_800F6E88(buf, p->t660->names + i * 8);
+        fn_800F6E88(buf, p->t660->names + k);
         o = find(*(u8 **)(*lbl_8035B684 + 11340), buf, name);
         if (p->nodes[i]) {
             if (o) p->nodes[i]->o108 = o;
