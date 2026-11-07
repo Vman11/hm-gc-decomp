@@ -29,6 +29,15 @@ void fn_8019B6B8(void *, Nd *);
 void fn_8003C674(void *, void *, u32 **);
 void __ct__9C80253F24Fiiii(void *, void *, int, int, int);
 static inline u32 Last(u8 *o) { u32 n = fn_8007239C(F(o, 0x118, void *)) - 1; return ((u32 *)F(o, 0x20c, Tb *)->xc)[n]; }
+static inline u32 FindK(u8 *o, Tb *t1, K8 *a, K8 *b) {
+    u32 k = 0, i;
+    for (i = 0; i < t1->l->n; i++) {
+        k = i / *F(o, 0x280, u32 *);
+        fn_800F6E88(b, t1->xc + i * 8);
+        if (fn_800F6CD0(a, b)) i = t1->l->n;
+    }
+    return k;
+}
 void fn_8006F808(u8 *o) {
     char *s = lbl_80297908;
     void *cmd = F(o, 0xec, void *);
@@ -72,11 +81,7 @@ void fn_8006F808(u8 *o) {
             fn_800F6E88(&a, (u8 *)F(o, 0xe4, V *) + 0x8c);
             t1 = fn_8023F4A0(o, lbl_8035ED68, lbl_8035ED68, s + 0x468, 1);
             t2 = fn_8023F4A0(o, lbl_8035ED68, lbl_8035ED68, s + 0x47c, 1);
-            for (k = i = 0; i < t1->l->n; i++) {
-                k = i / *F(o, 0x280, u32 *);
-                fn_800F6E88(&b, t1->xc + i * 8);
-                if (fn_800F6CD0(&a, &b)) i = t1->l->n;
-            }
+            k = FindK(o, t1, &a, &b);
             ok = 1;
             for (j = k * *F(o, 0x280, u32 *); j < (k + 1) * *F(o, 0x280, u32 *); j++) {
                 fn_800F6E88(&c, t1->xc + j * 8);
