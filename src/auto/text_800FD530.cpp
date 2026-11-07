@@ -41,10 +41,10 @@ f32 fn_800FD530(Box_800FD530 *a, Sph_800FD530 *__restrict p, V3_800FD530 *out, f
     ax = FA(p->c.x);
     ay = FA(p->c.y);
     az = FA(p->c.z);
-    d.x = ax - a->e.x;
-    d.y = ay - a->e.y;
-    d.z = az - a->e.z;
-    *o1 = *o2 = lbl_80363740;
+    *(volatile f32 *)&d.x = ax - a->e.x;
+    *(volatile f32 *)&d.y = ay - a->e.y;
+    *(volatile f32 *)&d.z = az - a->e.z;
+    *o1 = *o2 = *(volatile f32 *)&lbl_80363740;
     if (d.x <= lbl_80363740 && d.y <= lbl_80363740 && d.z <= lbl_80363740) {
         d.x = -d.x;
         d.y = -d.y;
@@ -77,7 +77,7 @@ f32 fn_800FD530(Box_800FD530 *a, Sph_800FD530 *__restrict p, V3_800FD530 *out, f
             }
         }
     } else {
-        if (d.x <= lbl_80363740) {
+        if (d.x <= *(volatile f32 *)&lbl_80363740) {
             if (d.y <= lbl_80363740) {
                 s = d.z - p->r;
                 out->x = lbl_80363740;
