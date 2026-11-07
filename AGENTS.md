@@ -875,3 +875,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wOM (2026-11-07): fn_80129404 MATCHED: first two loads of the 4-float copy (y then x) read via *(volatile f32 *)& into fn-scope temps a0,a1 (wNJ two-load trick).
 - wOZ (2026-11-07): fn_8017C3F0 MATCHED: sub stores volatile + volatile Sq 0.0 compare const (pins K after stores); AD9C store volatile + volatile reload of lbl_80364858 and volatile madd reads; kid loop as do-while; mag as one expression Sq(z*z + (x*x + y*y)).
 - wPG (2026-11-07): fn_8015012C MATCHED: a*(b*a^T) - first product written with direct array reads (no locals), second caches only a's 9 floats in locals and reads t[][] directly (scripted 196-variant locals/order sweep).
+- wPR (2026-11-07): fn_80101E38 MATCHED: explicit u32 off IV (off = a->f32*12; 'off += 12, i++'), off declared right after data -> data/off/i/end callee-saved order fixed.
