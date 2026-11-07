@@ -71,8 +71,8 @@ void fn_8003FD24(u8 *p, s32 flag) {
             else if (sp < *F(f32 *, 316)) r = lbl_8035C2FC;
             else r = sp / mx;
             f32 dmg;
-            dmg = *F(f32 *, 312) * r;
-            if (dmg > lbl_8035C2FC) {
+            *(volatile f32 *)&dmg = *F(f32 *, 312) * r;
+            if (dmg > *(volatile f32 *)&lbl_8035C2FC) {
                 VM *m = *(VM **)(lbl_8035B308 + 72);
                 if (fn_80237BB0(F(void *, 224), m, 1, 0, 0) != 0) {
                     chk(p, F(void *, 288));
