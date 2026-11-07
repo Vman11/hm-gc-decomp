@@ -373,34 +373,50 @@ extern "C" void fn_80061E80(P *p) {
             if (fn_8003C674(*(void * volatile *)&lbl_8035A0A4, s + 0x330, &st) == 0) {
                 *st = 0;
             } else if (*st == 2) {
+                V1c *e2;
+                u32 i1;
+                void *opt;
+                V1c *e1;
+                s32 mode;
+                void *g2;
+                V50 *w1;
+                char name[8];
+                u32 i;
+                void *found;
+                V50 *w2;
+                bool on;
+                u32 i2;
+                Node *n;
+                bool quit;
+                void *bank;
+                f32 vol;
                 *st = 1;
-                s32 mode = fn_8003C8E4(lbl_8035A0A4);
+                mode = fn_8003C8E4(lbl_8035A0A4);
                 fn_8003D130(lbl_8035A0A4, 0);
                 fn_8003AD38(p->f3530, s + 0x33c, 1, 0, 1);
-                void *g2 = lbl_8035B5E4;
+                g2 = lbl_8035B5E4;
                 fn_80251428(g2, lbl_8035E5D0);
                 fn_80251428(g2, lbl_8035E670);
                 fn_80039988(lbl_8035A01C);
-                void *bank = lbl_8035B7BC->f14->v28(0);
-                f32 vol = fn_80268A70(lbl_8035B79C);
+                bank = lbl_8035B7BC->f14->v28(0);
+                vol = fn_80268A70(lbl_8035B79C);
                 p->f3710 = (VSnd *)fn_800F8274(bank, lbl_8035E678);
-                V1c *e1 = fn_8026D254(lbl_8035B7BC, lbl_8035E680);
+                e1 = fn_8026D254(lbl_8035B7BC, lbl_8035E680);
                 e1->v24(0);
-                u32 i1 = p->f3710->f4->f0->v34();
+                i1 = p->f3710->f4->f0->v34();
                 p->f3710->v60(0, vol);
                 p->f3710->v68(lbl_8035E688);
                 p->f3714 = (VSnd *)fn_800F8274(bank, s + 0x348);
-                V1c *e2 = fn_8026D254(lbl_8035B7BC, lbl_8035E68C);
+                e2 = fn_8026D254(lbl_8035B7BC, lbl_8035E68C);
                 e2->v24(0);
-                u32 i2 = p->f3714->f4->f0->v34();
+                i2 = p->f3714->f4->f0->v34();
                 p->f3714->v60(0, vol);
                 p->f3714->v68(lbl_8035E694);
                 fn_801FEC18(p->f3710, e1, i1, i2, 0);
                 fn_801FEC18(p->f3714, e2, i2, i1, 0);
                 p->f3410.v1c();
-                void *opt = fn_800F8274(lbl_8035B5E4, lbl_8035E5C8);
-                bool quit;
-                bool on = fn_80253664(opt, 0x4c) == 1;
+                opt = fn_800F8274(lbl_8035B5E4, lbl_8035E5C8);
+                on = fn_80253664(opt, 0x4c) == 1;
                 quit = 0;
                 while (lbl_8035A01C->f1c == 0 && !quit) {
                     fn_8023EA4C(lbl_8035B488);
@@ -420,16 +436,14 @@ extern "C" void fn_80061E80(P *p) {
                 p->f3714->v5c(0);
                 p->f3714->f4->f0->v38(i2);
                 p->f3714 = 0;
-                char name[8];
                 switch (mode) {
                 case 1: fn_800F6E88(name, s + 0x354); break;
                 case 2: fn_800F6E88(name, s + 0x360); break;
                 case 0:
                 default: fn_800F6E88(name, s + 0x36c); break;
                 }
-                Node *n = p->f370c;
-                void *found = 0;
-                u32 i;
+                n = p->f370c;
+                found = 0;
                 for (i = 0; i < n->f40; i++) {
                     for (u32 j = 0; j < fn_801AAF74(n, i)->f48 && !found; j++) {
                         u32 k = *lbl_8035B418;
@@ -441,8 +455,8 @@ extern "C" void fn_80061E80(P *p) {
                     for (i = 0; i < n->f48 && !found; i++)
                         found = fn_800F8274(fn_801AAF94(n, i, *lbl_8035B418), name);
                 }
-                V50 *w1 = fn_800F9398(lbl_8035B460->f8 + 0x18, s + 0x378);
-                V50 *w2 = fn_800F9398(lbl_8035B460->f8 + 0x54, lbl_8035E698);
+                w1 = fn_800F9398(lbl_8035B460->f8 + 0x18, s + 0x378);
+                w2 = fn_800F9398(lbl_8035B460->f8 + 0x54, lbl_8035E698);
                 *(void **)((u8 *)w2 + 0x58) = found;
                 fn_8003E5F4(lbl_8035A0A4);
                 if (fn_80253664(opt, 0x4c) == 1) {
