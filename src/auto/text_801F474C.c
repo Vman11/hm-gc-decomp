@@ -10,7 +10,7 @@ static inline u8 Clamp(s32 v) {
     return v;
 }
 
-void fn_801F474C(Out *out, s16 *in, D *d) {
+void fn_801F474C(Out *__restrict out, s16 *__restrict in, D *__restrict d) {
     s32 ws[64];
     s32 *w;
     int i;

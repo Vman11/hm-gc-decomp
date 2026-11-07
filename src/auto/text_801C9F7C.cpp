@@ -16,6 +16,8 @@ E *fn_8010D0BC(void *, void *);
 void fn_8012D0A4(void *, Rc *, void *, P8 *, void *, int, f32, f32, f32);
 void fn_8012CF08(void *, Rc *, char *, P8 *, void *, int, f32, f32, f32);
 void fn_800E8F6C(char *, const char *, ...);
+#pragma push
+#pragma peephole off
 f32 fn_801C9F7C(T *t, void *lang) {
     A *a = 0;
     u32 b = 0;
@@ -56,4 +58,5 @@ f32 fn_801C9F7C(T *t, void *lang) {
     }
     return mx;
 }
+#pragma pop
 }

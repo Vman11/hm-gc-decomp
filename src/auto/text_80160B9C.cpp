@@ -10,6 +10,8 @@ static inline u8 eq80160B9C(C80160B9C *a, u8 r, u8 g, u8 b) {
     if (a->r == r && a->g == g && a->b == b) res = 1;
     return res;
 }
+#pragma push
+#pragma scheduling once
 s32 fn_80160B9C(S80160B9C *p, C80160B9C *c, u32 *out) {
     u32 n;
     u8 b;
@@ -33,5 +35,6 @@ s32 fn_80160B9C(S80160B9C *p, C80160B9C *c, u32 *out) {
     }
     return 0;
 }
+#pragma pop
 
 } /* extern "C" */

@@ -66,6 +66,8 @@ static inline void freeTbl(char ***pt, u32 n) {
         *pt = 0;
     }
 }
+#pragma push
+#pragma peephole off
 void fn_801AB15C(Mgr *m, u32 a) {
     u8 bb[8];
     char buf16[8];
@@ -183,4 +185,5 @@ void fn_801AB15C(Mgr *m, u32 a) {
 #undef i
     }
 }
+#pragma pop
 }
