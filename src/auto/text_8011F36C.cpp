@@ -13,30 +13,29 @@ struct P11F {
 };
 void fn_8011F634(P11F *);
 
-static inline void remAll(P11F *p, void *d, u32 j) { for (; j < p->f40; j++) p->f38[j]->rem(p, d); }
+static inline void drain1(P11F *p, u32 i) {
+    N11F *n; void *d; u32 j; L11F *a;
+    a = p->f94;
+    d = (i < p->fa8) ? p->f4c[i].d : 0;
+    for (j = 0; j < p->f40; j++) p->f38[j]->rem(p, d);
+    n = a[i].head; while (n) { n->f18->rem(p, d); n = a[i].head; }
+}
+static inline void drain2(P11F *p, u32 i) {
+    N11F *n; void *d; L11F *a; u32 j;
+    d = p->f50[i].d;
+    a = p->f98;
+    for (j = 0; j < p->f40; j++) p->f38[j]->rem(p, d);
+    n = a[i].head; while (n) { n->f18->rem(p, d); n = a[i].head; }
+}
 s32 fn_8011F36C(P11F *p) {
-    L11F *a;
-    u32 j;
     u32 i;
-    u32 j2;
-    void *d;
     if (p->fbc == 0) return 0;
     if (p->f94) {
-        for (i = 0; i < p->fa8; i++) {
-            a = p->f94;
-            d = (i < p->fa8) ? p->f4c[i].d : 0;
-            remAll(p, d, 0);
-            N11F *n = a[i].head; while (n) { n->f18->rem(p, d); n = a[i].head; }
-        }
+        for (i = 0; i < p->fa8; i++) drain1(p, i);
         delete[] p->f94;
     }
     if (p->f98) {
-        for (i = 0; i < p->fac; i++) {
-            d = p->f50[i].d;
-            a = p->f98;
-            remAll(p, d, 0);
-            N11F *n = a[i].head; while (n) { n->f18->rem(p, d); n = a[i].head; }
-        }
+        for (i = 0; i < p->fac; i++) drain2(p, i);
         delete[] p->f98;
     }
     if (p->f48) delete[] p->f48;
