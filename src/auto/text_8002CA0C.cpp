@@ -100,7 +100,7 @@ void fn_8002CA0C(O *o, f32 dt) {
         static volatile f32 ph;
         if (!phI) { ph = lbl_8035B99C; phI = 1; }
         ph = lbl_8035B960 * dt + ph;
-        if (ph > lbl_8035B9F4) ph = ph - lbl_8035B9F0;
+        { f32 p = ph; if (p > *(volatile f32 *)&lbl_8035B9F4) ph = p - lbl_8035B9F0; }
         s = lbl_8035BA18 * (f32)fn_800EFDA4(ph);
     }
     t = o->f310;
