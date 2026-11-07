@@ -1,5 +1,5 @@
 #include "common.h"
-/* NonMatching draft (wNC): DIFF 22 / SDIFF 0, FP regs only left (sub results f2/f1/f4 vs target f5/f4). Recipe: volatile v stores + s0 volatile + volatile K reads pins sdata2 loads. */
+
 extern "C" {
 struct Vec { f32 x, y, z; };
 struct Y { u8 pad[16]; void *f16; u8 pad20[12]; u32 f32; };
@@ -24,13 +24,14 @@ void fn_8002C150(E *ep) {
         if (!e->f12) continue;
         if (e->f28) {
             Vec v;
-            f32 inv;
+            f32 s0, ns, k, inv;
+            f32 dx, dz, dy;
             if (e->f12->f48) ft->getPos(e->f12->f48->f16, &v);
             else { v.x = lbl_8035B99C; v.y = lbl_8035B99C; v.z = lbl_8035B99C; }
-            *(volatile f32 *)&v.x = v.x - e->c.x; *(volatile f32 *)&v.y = v.y - e->c.y; *(volatile f32 *)&v.z = v.z - e->c.z;
-            f32 s0 = *(volatile f32 *)&e->sc, ns = s0 - dt, k = *(volatile f32 *)&lbl_8035B9D8;
+            *(volatile f32 *)&v.x = dx = v.x - e->c.x; *(volatile f32 *)&v.y = dy = v.y - e->c.y; *(volatile f32 *)&v.z = dz = v.z - e->c.z;
+            s0 = *(volatile f32 *)&e->sc; ns = s0 - dt; k = *(volatile f32 *)&lbl_8035B9D8;
             inv = k / s0;
-            v.x *= inv; v.y *= inv; v.z *= inv;
+            v.x = dx * inv; v.y = dy * inv; v.z = dz * inv;
             e->sc = ns;
             f32 s1 = e->sc;
             *(volatile f32 *)&v.x = v.x * s1; *(volatile f32 *)&v.y = v.y * s1; *(volatile f32 *)&v.z = v.z * s1;

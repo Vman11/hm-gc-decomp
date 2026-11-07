@@ -878,3 +878,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wPR (2026-11-07): fn_80101E38 MATCHED: explicit u32 off IV (off = a->f32*12; 'off += 12, i++'), off declared right after data -> data/off/i/end callee-saved order fixed.
 - wPR (2026-11-07): fn_801365BC MATCHED (unit text_80136560 now Matching): inner-loop body as 'static inline void chk(IdList*, Entry10 *e)' called with p->groups[i].entries + j fixed the leaf volatile-reg swap (groups r8 / e r5).
 - wPR (2026-11-07): fn_80238CF4 MATCHED: inner2 loop with explicit byte offset IV 'u32 off = j * 60; ... off += 60, j++' (increment off before j) fixed j/off r5/r6 swap. Same trick matched fn_80101E38.
+- wPV (2026-11-07): fn_8002C150 MATCHED: FPR colouring fixed by explicit diff locals 'store = dx = v.x - c.x' then 'v.x = dx * inv' (instead of store-then-*=), locals declared s0,ns,k,inv then dx,dz,dy.
