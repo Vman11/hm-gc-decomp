@@ -1,3 +1,4 @@
+// fn_801397FC NonMatching (wOX): SDIFF 0 / DIFF 24 register-only. Volatile float reads/stores (decl w,z,y,x) + volatile ts-then-tb reads via off temp. Left: r0/r3 swap in d address calc.
 #include "common.h"
 
 struct F_97FC { u32 f0; u32 m[4]; };
@@ -11,6 +12,7 @@ struct O_97FC { u8 pad_[12];
     virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
     virtual void v16(); virtual void v17(); virtual void v18(u32); virtual void v19(); virtual void v20(); virtual void v21(); virtual void lock(B_97FC *, int); virtual void unlock(F_97FC *);
     u32 f10; u8 pad14[8]; u32 f1c; };
+#define VR(a) (*(volatile f32 *)&(a))
 extern "C" {
 void fn_80148310(F_97FC *);
 void fn_80139604(O_97FC *, u32, S_97FC *, B_97FC *);
@@ -37,14 +39,14 @@ void fn_801397FC(O_97FC *o, u32 idx, S_97FC *s) {
         u32 i;
         for (i = 0; i < n; i++) {
             if (o->f10 & (0x1000000 << i)) {
-                f32 *d = (f32 *)(b.tb[i] + idx * b.ts[i]);
-                f32 w = s->t[i][3], z = s->t[i][2], y = s->t[i][1], x = s->t[i][0]; d[3] = w; d[2] = z; d[1] = y; d[0] = x;
+                u32 off = idx * *(volatile u32 *)&b.ts[i]; f32 *d = (f32 *)(*(u8 *volatile *)&b.tb[i] + off);
+                f32 w, z, y, x; x = VR(s->t[i][0]); y = VR(s->t[i][1]); z = VR(s->t[i][2]); w = VR(s->t[i][3]); VR(d[0]) = x; VR(d[1]) = y; VR(d[2]) = z; VR(d[3]) = w; 
             } else if (o->f10 & (0x10000 << i)) {
-                f32 *d = (f32 *)(b.tb[i] + idx * b.ts[i]);
-                f32 z = s->t[i][2], y = s->t[i][1], x = s->t[i][0]; d[2] = z; d[1] = y; d[0] = x;
+                u32 off = idx * *(volatile u32 *)&b.ts[i]; f32 *d = (f32 *)(*(u8 *volatile *)&b.tb[i] + off);
+                f32 z, y, x; x = VR(s->t[i][0]); y = VR(s->t[i][1]); z = VR(s->t[i][2]); VR(d[0]) = x; VR(d[1]) = y; VR(d[2]) = z; 
             } else {
-                f32 *d = (f32 *)(b.tb[i] + idx * b.ts[i]);
-                f32 y = s->t[i][1], x = s->t[i][0]; d[1] = y; d[0] = x;
+                u32 off = idx * *(volatile u32 *)&b.ts[i]; f32 *d = (f32 *)(*(u8 *volatile *)&b.tb[i] + off);
+                f32 y, x; x = VR(s->t[i][0]); y = VR(s->t[i][1]); VR(d[0]) = x; VR(d[1]) = y; 
             }
         }
     }
