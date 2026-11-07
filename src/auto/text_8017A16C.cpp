@@ -21,6 +21,22 @@ inline int HasRot(E60 *e) { return !e->clip ? 0 : e->clip->f56 & 1; }
 
 inline void GetP(E60 *e, V3 *o) { Clip *k = e->clip; f32 w = e->w; o->x = k->pos.x * w; o->y = k->pos.y * w; o->z = k->pos.z * w; }
 inline void GetS(E60 *e, V3 *o) { Clip *k = e->clip; f32 w = e->w; o->x = k->scl.x * w; o->y = k->scl.y * w; o->z = k->scl.z * w; }
+static inline void AccP(E60 *e, V3 *pos, f32 *s0) {
+    Clip *k = e->clip;
+    f32 b, w, x, y, z;
+    w = e->w;
+    x = k->pos.x * w; y = k->pos.y * w; z = k->pos.z * w; b = e->b;
+    pos->x += b * x; pos->y += b * y; pos->z += b * z;
+    *s0 += e->b;
+}
+static inline void AccS(E60 *e, V3 *scl, f32 *s1) {
+    Clip *k = e->clip;
+    f32 b, w, x, y, z;
+    w = e->w;
+    x = k->scl.x * w; y = k->scl.y * w; z = k->scl.z * w; b = e->b;
+    scl->x += b * x; scl->y += b * y; scl->z += b * z;
+    *s1 += e->b;
+}
 extern "C" u32 fn_8017A16C(Ch *c, Q4 *q, V3 *pos, V3 *scl, f32 t) {
     u32 r;
     if (c->n == 0) return 0;
@@ -45,7 +61,7 @@ extern "C" u32 fn_8017A16C(Ch *c, Q4 *q, V3 *pos, V3 *scl, f32 t) {
     } else {
         E60 *e = c->arr;
         E60 *end = e + c->n;
-        f32 s1, s0;
+        f32 s0, s1;
         r = 0;
         q->x = lbl_80364800; q->y = lbl_80364800; q->z = lbl_80364800; q->w = lbl_80364800;
         for (; e < end; e++) {
@@ -61,36 +77,23 @@ extern "C" u32 fn_8017A16C(Ch *c, Q4 *q, V3 *pos, V3 *scl, f32 t) {
         e = c->arr;
         pos->x = lbl_80364800; pos->y = lbl_80364800; pos->z = lbl_80364800;
         scl->x = lbl_80364800; scl->y = lbl_80364800; scl->z = lbl_80364800;
-        s0 = s1 = lbl_80364800;
+        s0 = lbl_80364800;
+        s1 = lbl_80364800;
         for (; e < end; e++) {
             if (e->f48 & 1) {
-                if ((e->f48 & 3) == 3) {
-                    Clip *k = e->clip;
-                    f32 w, x, y, z, b;
-                    w = e->w;
-                    x = k->pos.x * w; y = k->pos.y * w; z = k->pos.z * w; b = e->b;
-                    pos->x += b * x; pos->y += b * y; pos->z += b * z;
-                    s0 += e->b;
-                    r |= lbl_803647F8;
-                }
-                if ((e->f48 & 5) == 5) {
-                    Clip *k = e->clip;
-                    f32 w, x, y, z, b;
-                    w = e->w;
-                    x = k->scl.x * w; y = k->scl.y * w; z = k->scl.z * w; b = e->b;
-                    scl->x += b * x; scl->y += b * y; scl->z += b * z;
-                    s1 += e->b;
-                    r |= lbl_803647FC;
-                }
+                if ((e->f48 & 3) == 3) { AccP(e, pos, &s0); r |= lbl_803647F8; }
+                if ((e->f48 & 5) == 5) { AccS(e, scl, &s1); r |= lbl_803647FC; }
             }
         }
         if (r & 2) {
+            f32 x = *(volatile f32 *)&pos->x;
             f32 m = lbl_80364804 / s0;
-            pos->x *= m; pos->y *= m; pos->z *= m;
+            pos->x = x * m; pos->y *= m; pos->z *= m;
         }
         if (r & 4) {
+            f32 x = *(volatile f32 *)&scl->x;
             f32 m = lbl_80364804 / s1;
-            scl->x *= m; scl->y *= m; scl->z *= m;
+            scl->x = x * m; scl->y *= m; scl->z *= m;
         }
         return r;
     }
