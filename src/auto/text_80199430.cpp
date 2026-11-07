@@ -1,5 +1,5 @@
 // fn_80199430: portal parser (token switch) + centroid/normal of its vertex ring.
-// NonMatching: SDIFF 0, DIFF 128: unrolled sum loop v/count r3/r5 swap, final cross-product a/c ptr + wx/ux FP colouring.
+// NonMatching: SDIFF 0, DIFF 112: unrolled sum loop v/count r3/r5 swap, final cross-product a/c ptr + wx/ux FP colouring.
 #include "common.h"
 extern "C" {
 struct R194 { u8 pad[0x124]; virtual void p0(); virtual void p1(); virtual void setup(void *, s32, s32); virtual void p3(); virtual void err(s32); virtual u32 next(); };
@@ -104,11 +104,11 @@ void fn_80199430(P194 *p, void *q, R194 *r) {
             f32 uz;
             f32 wy;
             f32 ux;
-            uy = b[1] - a[1];
-            wz = c[2] - a[2];
-            uz = b[2] - a[2];
             wx = c[0] - a[0];
             wy = c[1] - a[1];
+            wz = c[2] - a[2];
+            uy = b[1] - a[1];
+            uz = b[2] - a[2];
             ux = b[0] - a[0];
             p->f18 = __fmsubs(wy, uz, wz * uy);
             p->f1c = __fmsubs(wz, ux, wx * uz);
