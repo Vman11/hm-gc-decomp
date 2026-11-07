@@ -98,7 +98,7 @@ void fn_8022CF14(O *o, f32 dt) {
             if (o->fC8) {
                 o->timer -= dt;
                 if (o->timer <= lbl_80365D28) {
-                    o->timer = lbl_80365D28;
+                    o->timer = *(f32 *)&lbl_80365D28;
                     o->fC8 = 0;
                     o->active = 0;
                     if (t->f48 & 1) t->f0 &= ~2;
