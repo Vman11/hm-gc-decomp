@@ -21,7 +21,7 @@ extern char lbl_8035B8A0[4], lbl_8035B8A8[4], lbl_8035B8B0[4], lbl_8035B8B8[4], 
 }
 struct V3 { f32 x, y, z; };
 struct Q4 { f32 a, b, c, d; };
-struct PM { u32 a, b, c; };
+struct PM { u32 a, b, c; PM() {} PM(const PM &o) { a = o.a; *(volatile u32*)&b = o.b; *(volatile u32*)&c = o.c; } };
 struct C801829F8 { u8 pad[0x78]; C801829F8(); };
 struct C8026F260 { u8 pad[0x1c]; C8026F260(); };
 struct Z { u8 pad[0x10]; void *f10; };
@@ -81,7 +81,7 @@ V20 **fn_8010FEDC(void *, void *, char *, int);
 s32 fn_8003CC3C(void *);
 s32 fn_8003CDA4(void *);
 s32 fn_8003C930(void *);
-void fn_80253B24(void *, void *, PM *, char *);
+void fn_80253B24(void *, void *, PM, char *);
 }
 #define HNEW(lv, T) \
     if (!lbl_80359F28) fn_800604C4(-2, 0, 0, 0); \
@@ -447,16 +447,10 @@ void fn_8002D080(VT *t, u8 *a, void *c) {
         lbl_80359F30 = 1;
     }
     {
-        volatile PM *q = &lbl_802AF7B8;
-        volatile PM v;
-        { s32 z, x0, y; x0 = q->a; y = q->b; z = q->c; v.a = x0; v.b = y; v.c = z; }
-        fn_80253B24(*(u8 *volatile *)&lbl_8035B65C, t, (PM *)&v, lbl_8035BBE8);
+        fn_80253B24(*(u8 *volatile *)&lbl_8035B65C, t, lbl_802AF7B8, lbl_8035BBE8);
     }
     {
-        volatile PM *q = &lbl_802AF7C4;
-        volatile PM v;
-        { s32 z, x0, y; x0 = q->a; y = q->b; z = q->c; v.a = x0; v.b = y; v.c = z; }
-        fn_80253B24(*(u8 *volatile *)&lbl_8035B65C, t, (PM *)&v, lbl_8035BBF0);
+        fn_80253B24(*(u8 *volatile *)&lbl_8035B65C, t, lbl_802AF7C4, lbl_8035BBF0);
     }
 
     {
