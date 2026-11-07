@@ -1,3 +1,4 @@
+// NonMatching (wRE): SDIFF 0 / DIFF 60 register-only (B1 inline fixed first loop i; left: Expire loop i r26 vs r22, tick k/ls/cnt colour).
 #include "common.h"
 extern "C" {
 struct Ev { u8 *p; u32 f4; u32 f8; u32 f12; s32 f16; u32 f20; u32 f24; };
@@ -24,6 +25,23 @@ static inline void fire(u8 *p, Ev *ev, u32 cnt, u32 j) {
         VL *l = (*(VL ***)(p + 56))[j];
         if (ev->f16) l->On(ev);
         else l->Off(ev);
+    }
+}
+static inline void B1(u8 *p) {
+    u32 i;
+    if (*(s32 *)(p + 24) == 1) {
+        for (i = 0; i < U32(4); i++) {
+            if (i >= U32(172)) continue;
+            if (i < U32(4)) {
+                fn_80118988(VPP->Get(i), lbl_80363DB0);
+            } else {
+                u32 j = i - U32(4);
+                if (j < U32(8)) {
+                    (*(f32 **)(p + 164))[j] = (*(f32 **)(p + 160))[j];
+                    (*(f32 **)(p + 160))[j] = lbl_80363DB0;
+                }
+            }
+        }
     }
 }
 static inline void tick(u8 *p, u32 k) {
@@ -64,20 +82,7 @@ int fn_8011EA70(u8 *p, u32 dt) {
     u32 i;
     int r;
     U32(176) += dt;
-    if (*(s32 *)(p + 24) == 1) {
-        for (i = 0; i < U32(4); i++) {
-            if (i >= U32(172)) continue;
-            if (i < U32(4)) {
-                fn_80118988(VPP->Get(i), lbl_80363DB0);
-            } else {
-                u32 j = i - U32(4);
-                if (j < U32(8)) {
-                    (*(f32 **)(p + 164))[j] = (*(f32 **)(p + 160))[j];
-                    (*(f32 **)(p + 160))[j] = lbl_80363DB0;
-                }
-            }
-        }
-    }
+    B1(p);
     if ((r = VPP->Busy()) != 0) return r;
     if ((r = VPP->Busy2()) != 0) return r;
     {
