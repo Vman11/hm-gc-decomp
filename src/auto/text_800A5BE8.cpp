@@ -104,13 +104,12 @@ void fn_800A5BE8(int p, int st) {
     tC = (s32 *)(base + 0x348);
     switch (*(s32 *)((u8 *)tC + idx)) {
     case 0: {
-        u8 *g;
         fn_80241628(p, 0, 0);
-        g = lbl_803575DC;
-        if (*(int *)(g + 0x14) != 0) {
-            if (fn_800F6CD0(PV(0x118), lbl_80361E48) == 0) I(0x130) = fn_80247AE4(g, PV(0x118));
+        base = lbl_803575DC;
+        if (*(int *)(base + 0x14) != 0) {
+            if (fn_800F6CD0(PV(0x118), lbl_80361E48) == 0) I(0x130) = fn_80247AE4(base, PV(0x118));
             else I(0x130) = fn_80240004(p, 0);
-            if (fn_800F6CD0(PV(0x11c), lbl_80361E48) == 0) I(0x134) = fn_80247AE4(g, PV(0x11c));
+            if (fn_800F6CD0(PV(0x11c), lbl_80361E48) == 0) I(0x134) = fn_80247AE4(base, PV(0x11c));
             else I(0x134) = fn_80240004(p, 1);
         }
         break;
