@@ -63,18 +63,18 @@ Loc *fn_800F9398(void *, char *);
 void fn_80241DD0(Sc *, char *, s32, s32, s32, s32);
 
 #pragma opt_propagation off
-void fn_802245C0(void *ss) {
-    Cam *self = (Cam *)ss;
-    char *str = lbl_802A8228;
-    W3 *t = lbl_802F06C0;
+void fn_802245C0(void * ss_in) {
     Loc *l;
     V3 p;
+    Cam *self = (Cam *)(ss_in);
+    W3 *t = lbl_802F06C0;
+    char *str = lbl_802A8228;
     V3 a;
     V3 b;
     V3 q;
     fn_80238CF4(self);
     volatile W3 v1; { s32 z, y, x; x = ((volatile W3 *)t)[70].a; y = ((volatile W3 *)t)[70].b; z = ((volatile W3 *)t)[70].c; v1.a = x; v1.b = y; v1.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v1, str + 0x7c);
-    volatile W3 v2; { s32 z, y, x; x = ((volatile W3 *)t)[71].a; y = ((volatile W3 *)t)[71].b; z = ((volatile W3 *)t)[71].c; v2.a = x; v2.b = y; v2.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v2, str + 0x88);
+    volatile W3 v2; { s32 z, y, x; x = ((volatile W3 *)t)[71].a; y = ((volatile W3 *)t)[71].b; z = ((volatile W3 *)t)[71].c; v2.a = x; v2.b = y; v2.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v2, 0x88 + str);
     volatile W3 v3; { s32 z, y, x; x = ((volatile W3 *)t)[72].a; y = ((volatile W3 *)t)[72].b; z = ((volatile W3 *)t)[72].c; v3.a = x; v3.b = y; v3.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v3, lbl_80365B14);
     volatile W3 v4; { s32 z, y, x; x = ((volatile W3 *)t)[73].a; y = ((volatile W3 *)t)[73].b; z = ((volatile W3 *)t)[73].c; v4.a = x; v4.b = y; v4.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v4, lbl_80365B1C);
     volatile W3 v5; { s32 z, y, x; x = ((volatile W3 *)t)[74].a; y = ((volatile W3 *)t)[74].b; z = ((volatile W3 *)t)[74].c; v5.a = x; v5.b = y; v5.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v5, str + 0x94);
@@ -85,10 +85,10 @@ void fn_802245C0(void *ss) {
     volatile W3 v10; { s32 z, y, x; x = ((volatile W3 *)t)[79].a; y = ((volatile W3 *)t)[79].b; z = ((volatile W3 *)t)[79].c; v10.a = x; v10.b = y; v10.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v10, str + 0x70);
     volatile W3 v11; { s32 z, y, x; x = ((volatile W3 *)t)[80].a; y = ((volatile W3 *)t)[80].b; z = ((volatile W3 *)t)[80].c; v11.a = x; v11.b = y; v11.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v11, lbl_80365B24);
     volatile W3 v12; { s32 z, y, x; x = ((volatile W3 *)t)[81].a; y = ((volatile W3 *)t)[81].b; z = ((volatile W3 *)t)[81].c; v12.a = x; v12.b = y; v12.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v12, str + 0xa0);
-    volatile W3 v13; { s32 z, y, x; x = ((volatile W3 *)t)[82].a; y = ((volatile W3 *)t)[82].b; z = ((volatile W3 *)t)[82].c; v13.a = x; v13.b = y; v13.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v13, str + 0xac);
+    volatile W3 v13; { s32 z, y, x; x = ((volatile W3 *)t)[82].a; y = ((volatile W3 *)t)[82].b; z = ((volatile W3 *)t)[82].c; v13.a = x; v13.b = y; v13.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v13, 0xac + str);
     volatile W3 v14; { s32 z, y, x; x = ((volatile W3 *)t)[83].a; y = ((volatile W3 *)t)[83].b; z = ((volatile W3 *)t)[83].c; v14.a = x; v14.b = y; v14.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v14, str + 0xb8);
     volatile W3 v15; { s32 z, y, x; x = ((volatile W3 *)t)[84].a; y = ((volatile W3 *)t)[84].b; z = ((volatile W3 *)t)[84].c; v15.a = x; v15.b = y; v15.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v15, lbl_80365B2C);
-    volatile W3 v16; { s32 z, y, x; x = ((volatile W3 *)t)[85].a; y = ((volatile W3 *)t)[85].b; z = ((volatile W3 *)t)[85].c; v16.a = x; v16.b = y; v16.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v16, str + 0xc4);
+    volatile W3 v16; { s32 z, y, x; x = ((volatile W3 *)t)[85].a; y = ((volatile W3 *)t)[85].b; z = ((volatile W3 *)t)[85].c; v16.a = x; v16.b = y; v16.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v16, 0xc4 + str);
     volatile W3 v17; { s32 z, y, x; x = ((volatile W3 *)t)[86].a; y = ((volatile W3 *)t)[86].b; z = ((volatile W3 *)t)[86].c; v17.a = x; v17.b = y; v17.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v17, lbl_80365B34);
     volatile W3 v18; { s32 z, y, x; x = ((volatile W3 *)t)[87].a; y = ((volatile W3 *)t)[87].b; z = ((volatile W3 *)t)[87].c; v18.a = x; v18.b = y; v18.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v18, lbl_80365B3C);
     volatile W3 v19; { s32 z, y, x; x = ((volatile W3 *)t)[88].a; y = ((volatile W3 *)t)[88].b; z = ((volatile W3 *)t)[88].c; v19.a = x; v19.b = y; v19.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v19, lbl_80365B44);
@@ -115,13 +115,17 @@ void fn_802245C0(void *ss) {
     volatile W3 v40; { s32 z, y, x; x = ((volatile W3 *)t)[109].a; y = ((volatile W3 *)t)[109].b; z = ((volatile W3 *)t)[109].c; v40.a = x; v40.b = y; v40.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v40, lbl_80365BEC);
     volatile W3 v41; { s32 z, y, x; x = ((volatile W3 *)t)[110].a; y = ((volatile W3 *)t)[110].b; z = ((volatile W3 *)t)[110].c; v41.a = x; v41.b = y; v41.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v41, lbl_80365BF4);
     volatile W3 v42; { s32 z, y, x; x = ((volatile W3 *)t)[111].a; y = ((volatile W3 *)t)[111].b; z = ((volatile W3 *)t)[111].c; v42.a = x; v42.b = y; v42.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v42, lbl_80365BFC);
-    volatile W3 v43; { s32 z, y, x; x = ((volatile W3 *)t)[112].a; y = ((volatile W3 *)t)[112].b; z = ((volatile W3 *)t)[112].c; v43.a = x; v43.b = y; v43.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v43, str + 0xd0);
+    volatile W3 v43; { s32 z, y, x; x = ((volatile W3 *)t)[112].a; y = ((volatile W3 *)t)[112].b; z = ((volatile W3 *)t)[112].c; v43.a = x; v43.b = y; v43.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v43, 0xd0 + str);
     volatile W3 v44; { s32 z, y, x; x = ((volatile W3 *)t)[113].a; y = ((volatile W3 *)t)[113].b; z = ((volatile W3 *)t)[113].c; v44.a = x; v44.b = y; v44.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v44, str + 0xdc);
     volatile W3 v45; { s32 z, y, x; x = ((volatile W3 *)t)[114].a; y = ((volatile W3 *)t)[114].b; z = ((volatile W3 *)t)[114].c; v45.a = x; v45.b = y; v45.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v45, str + 0xe8);
     volatile W3 v46; { s32 z, y, x; x = ((volatile W3 *)t)[115].a; y = ((volatile W3 *)t)[115].b; z = ((volatile W3 *)t)[115].c; v46.a = x; v46.b = y; v46.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v46, str + 0xf4);
     volatile W3 v47; { s32 z, y, x; x = ((volatile W3 *)t)[116].a; y = ((volatile W3 *)t)[116].b; z = ((volatile W3 *)t)[116].c; v47.a = x; v47.b = y; v47.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v47, str + 0x100);
     volatile W3 v48; { s32 z, y, x; x = ((volatile W3 *)t)[117].a; y = ((volatile W3 *)t)[117].b; z = ((volatile W3 *)t)[117].c; v48.a = x; v48.b = y; v48.c = z; } fn_80253B24(lbl_8035B65C, self->f20c, (V3 *)&v48, str + 0x10c);
-    l = fn_800F9398(*(u8 **)(lbl_8035B460 + 8) + 0x90, str + 0x118);
+    Loc * pm463 = ((fn_800F9398(*(u8 **)(lbl_8035B460 + 8) + 0x90, str + 0x118)));
+    Loc * pm894 = pm463;
+    Loc * pm326 = pm894;
+    Loc * pm264 = pm326;
+    l = pm264;
     if (l) {
         a.x = lbl_80365A70; a.y = lbl_80365A70; a.z = lbl_80365A70;
         b.x = lbl_80365A70; b.y = lbl_80365A70; b.z = lbl_80365A70;
