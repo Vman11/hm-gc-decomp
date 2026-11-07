@@ -133,9 +133,10 @@ void fn_800885A0(Obj *o, f32 dt) {
     fn_80238618(o, dt);
     o->f268 -= dt;
     o->getXf(&pos, 0, 0, 0, 0);
-    f32 x = *(volatile f32 *)&pos.x, y = *(volatile f32 *)&pos.y, z = *(volatile f32 *)&pos.z;
+    f32 pz, z, y, x;
+    x = *(volatile f32 *)&pos.x; y = *(volatile f32 *)&pos.y; z = *(volatile f32 *)&pos.z;
     *(volatile f32 *)&b.x = x;
-    f32 pz = *(volatile f32 *)&pos.z;
+    pz = *(volatile f32 *)&pos.z;
     *(volatile f32 *)&b.y = y; *(volatile f32 *)&b.z = z;
     f32 k = *(volatile f32 *)&lbl_8035FF18;
     b.z = z - k;
