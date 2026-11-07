@@ -151,9 +151,10 @@ void fn_802611B8(Obj *o) {
         f32 ax = pos.x, ay = pos.y, az = pos.z;
         for (i = 0; i < 5; i++) {
             if (hit[i]) {
-                ax += sC[i].x - sB[i].x;
-                ay += sC[i].y - sB[i].y;
-                az += sC[i].z - sB[i].z;
+                V3 *c = &sC[i], *b = &sB[i];
+                ax += c->x - b->x;
+                ay += c->y - b->y;
+                az += c->z - b->z;
             }
         }
         lbl_80357B68[7] = pos;
