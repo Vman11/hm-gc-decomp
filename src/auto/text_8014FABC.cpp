@@ -41,8 +41,8 @@ void fn_8014FABC(f32 m[3][4], Quat *q) {
             f32 d1 = m[2][0] - m[0][2];
             f32 d2;
             q->w = lbl_80364558 * s;
-            d2 = m[0][1] - m[1][0];
-            s = lbl_80364558 / s;
+            d2 = *(volatile f32 *)&m[0][1] - m[1][0];
+            s = *(volatile f32 *)&lbl_80364558 / s;
             q->x = s * d0;
             q->y = s * d1;
             q->z = s * d2;
@@ -61,8 +61,8 @@ void fn_8014FABC(f32 m[3][4], Quat *q) {
             f32 d1 = m[0][1] + m[1][0];
             f32 d2;
             q->x = lbl_80364558 * s;
-            d2 = m[0][2] + m[2][0];
-            s = lbl_80364558 / s;
+            d2 = *(volatile f32 *)&m[0][2] + m[2][0];
+            s = *(volatile f32 *)&lbl_80364558 / s;
             q->w = s * d0;
             q->y = s * d1;
             q->z = s * d2;
@@ -76,8 +76,8 @@ void fn_8014FABC(f32 m[3][4], Quat *q) {
             f32 d1 = m[1][2] + m[2][1];
             f32 d2;
             q->y = lbl_80364558 * s;
-            d2 = m[1][0] + m[0][1];
-            s = lbl_80364558 / s;
+            d2 = *(volatile f32 *)&m[1][0] + m[0][1];
+            s = *(volatile f32 *)&lbl_80364558 / s;
             q->w = s * d0;
             q->z = s * d1;
             q->x = s * d2;
@@ -91,8 +91,8 @@ void fn_8014FABC(f32 m[3][4], Quat *q) {
             f32 d1 = m[2][0] + m[0][2];
             f32 d2;
             q->z = lbl_80364558 * s;
-            d2 = m[2][1] + m[1][2];
-            s = lbl_80364558 / s;
+            d2 = *(volatile f32 *)&m[2][1] + m[1][2];
+            s = *(volatile f32 *)&lbl_80364558 / s;
             q->w = s * d0;
             q->x = s * d1;
             q->y = s * d2;
