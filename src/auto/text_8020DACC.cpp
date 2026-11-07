@@ -4,7 +4,7 @@
 
 extern "C" {
 
-// fn_8020DACC: NonMatching draft (SDIFF 0, DIFF 32: register-only; s32 roundup temp fixed the size copy into r29; left total init operand order + loop regs), see hm-work/wPH/STATUS.txt.
+// fn_8020DACC: matched (wPH s32 roundup temp; wQZ: v = s->base; v += dataSize(s), decl order total/last/i, single-expression total init).
 struct Ent { void *p; u32 size; u32 pad8; u32 x; u32 pad16; };
 struct S {
     u32 base;
@@ -61,11 +61,10 @@ static inline s32 create(M *m, char *n, u32 sz, FI *fi) { s32 r; do r = fn_800D2
 static inline s32 close(FI *fi) { s32 r; do r = fn_800D240C(fi); while (r == -1); return r; }
 #pragma opt_loop_invariants off
 static inline u32 dataSize(S *s) {
-    u32 i;
     u32 total;
     u32 last;
-    total = s->a276 + 96;
-    total += s->a268;
+    u32 i;
+    total = s->a268 + s->a276 + 96;
     last = 0;
     for (i = 0; i < count(s); i++) {
         u32 x;
@@ -76,8 +75,6 @@ static inline u32 dataSize(S *s) {
     total += last;
     return total;
 }
-static inline u32 fileSize(S *s) { u32 b = s->base; return b + dataSize(s); }
-static inline u32 roundup(u32 v, u32 b) { if (v % b) v = b * (v / b + 1); return v; }
 s32 fn_8020DACC(M *m, S *s) {
     ST st;
     TM tm;
@@ -87,7 +84,7 @@ s32 fn_8020DACC(M *m, S *s) {
     u32 size;
     if (m->s14()) {
         fn_800FA474(s->name, name, 31);
-        { s32 v = fileSize(s); if (v % m->blk) v = m->blk * (v / m->blk + 1); size = v; }
+        { s32 v = s->base; v += dataSize(s); if (v % m->blk) v = m->blk * (v / m->blk + 1); size = v; }
         r = create(m, name, size, &fi);
         if (r) return fn_8020B114(r);
         m->fileNo = fi.fileNo;
