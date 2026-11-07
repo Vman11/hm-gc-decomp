@@ -1,3 +1,4 @@
+// NonMatching (DIFF 6, SDIFF 0): procA copy of inList uses explicit off counter + volatile l load inside; left: k gets r28 instead of r29.
 #include "common.h"
 extern "C" {
 extern "C" {
@@ -46,15 +47,27 @@ static inline BOOL inList(O *o, L *l, u32 idx) {
     return FALSE;
 }
 
+static inline BOOL inList2(O *o, u32 idx) {
+    L *l = *(L *volatile *)&o->l320;
+    char name[8];
+    u32 off;
+    u32 j;
+    if (fn_8024548C(fn_80240004(o, 0), idx, -1, 1, name, 0, 0) == 0) fn_800F6E88(name, o->def);
+    for (j = 0, off = 0; j < l->h->n; off += 8, j++) {
+        char tmp[8];
+        fn_800F6E88(tmp, (char *)l->names + off);
+        if (fn_800F6CD0(name, tmp)) return TRUE;
+    }
+    return FALSE;
+}
+
 static inline void procA(O *o, u32 i) {
         o->f236 = fn_80245F8C(fn_80240004(o, 0), i);
         {
             s32 k = fn_80245F48(fn_80240004(o, 0), o->f236);
-            L *l;
             if (!(*o->p400 & (o->m404 & (1 << k)))) {
                 *o->p400 |= 1 << k;
-                l = *(L *volatile *)&o->l320;
-                if (inList(o, l, k)) {
+                if (inList2(o, k)) {
                     char b40[8];
                     char b48[8];
                     fn_8003CAD8(lbl_8035A0A4, 1);
