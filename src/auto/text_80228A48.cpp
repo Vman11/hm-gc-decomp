@@ -42,6 +42,7 @@ static inline void tick2(O *o, f32 dt, f32 k) {
     if (lbl_80365CD8 == s) o->s12(k);
     else if (lbl_80365CB0 != s) o->s12(dt * s);
 }
+#pragma scheduling once
 void fn_80228A48(P *p, f32 dt) {
     C8023C7CC *it = *(C8023C7CC *volatile *)&p->it;
     f32 k = *(f32 *)(lbl_8035B488 + 20);
