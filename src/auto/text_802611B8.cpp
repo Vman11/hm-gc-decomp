@@ -171,9 +171,12 @@ void fn_802611B8(Obj *o) {
         }
     }
     if (moved) {
-        f32 k = lbl_802F2A28.k;
-        o->p50 = pos;
+        f32 px = *(volatile f32 *)&pos.x;
+        f32 k = *(volatile f32 *)&lbl_802F2A28.k;
+        *(volatile f32 *)&o->p50.x = px;
         f32 m = k * r;
+        o->p50.y = pos.y;
+        o->p50.z = pos.z;
         o->p50.x -= m * o->ax.x;
         o->p50.y -= m * o->ax.y;
         o->p50.z -= m * o->ax.z;
