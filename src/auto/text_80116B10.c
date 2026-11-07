@@ -7,7 +7,7 @@ s32 fn_80116B10(u8* arg0, s32 arg1, u8** arg2) {
     if ((arg1 >= *(s32*)(arg0 + 0x14) && arg1 < *(s32*)(arg0 + 0x18)) || arg1 >= *(s32*)(arg0 + 0x1C)) {
         return 5;
     }
-    *arg2 = (base + arg1) + *(s32*)(base + 0x10);
+    { u8 *p = base + arg1; p += *(s32*)(base + 0x10); *arg2 = p; }
     return 0;
 }
 
