@@ -173,9 +173,12 @@ void fn_80085E44(O *p, void *a)
         d = fn_80101590(&t, &s);
         {
             G *g = p->f396;
-            f32 ex = g->v304.x - p->v280.x;
-            f32 ey = g->v304.y - p->v280.y;
-            f32 ez = g->v304.z - p->v280.z;
+            f32 ex = g->v304.x;
+            f32 ey = g->v304.y;
+            f32 ez = g->v304.z;
+            ex -= p->v280.x;
+            ey -= p->v280.y;
+            ez -= p->v280.z;
             Vec3 w;
             w.x = s.x + ex;
             w.y = s.y + ey;
