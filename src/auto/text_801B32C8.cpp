@@ -20,11 +20,15 @@ void fn_801B32C8(P_32C8 *p, int a, R_32C8 *src, int u, R_32C8 *src2) {
             fn_801A5128(p, &r2);
         }
         t = p->f36;
-        pos[0] = r.x;
-        pos[1] = r.y;
-        s32 tw = t->w; s32 th = t->h;
-        sc[0] = (r.z - r.x) / (f32)tw;
-        sc[1] = (r.w - r.y) / (f32)th;
+        f32 x = *(volatile f32 *)&r.x;
+        s32 tw = *(volatile u16 *)&t->w; s32 th = *(volatile u16 *)&t->h;
+        f32 y = *(volatile f32 *)&r.y;
+        *(volatile f32 *)&pos[0] = x;
+        f32 z = *(volatile f32 *)&r.z;
+        *(volatile f32 *)&pos[1] = y;
+        f32 ww = *(volatile f32 *)&r.w;
+        sc[0] = (z - x) / (f32)tw;
+        sc[1] = (ww - y) / (f32)th;
         if (src2) fn_8012DD1C(t, a, pos, sc, p->f20, &r2);
         else fn_8012DD1C(t, a, pos, sc, p->f20, &r);
     }
