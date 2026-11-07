@@ -1,3 +1,4 @@
+// fn_80095770 NonMatching draft (wMY): DIFF 48 / SDIFF 4. Volatile copy/neg stores + volatile K reads pin the sda loads (recipe from TIPS wDJ). Left: start.z store slot, one fneg slot, cross-product FP regs.
 #include "common.h"
 extern "C" {
 typedef struct { float x, y, z; } V3;
@@ -21,6 +22,7 @@ struct VS { virtual void p0(); virtual void p1(); virtual void p2(); virtual voi
  virtual void p20(); virtual void p21(); virtual void p22(); virtual void p23(); virtual void p24(); virtual void p25(); virtual void p26(); virtual void p27(); virtual void p28(); virtual void p29();
  virtual void p30(); virtual void p31(); virtual void p32(); virtual void m(const char *, int, int, float *, int); };
 static inline void Cp(V3 *d, const V3 *s) { d->x = s->x; d->y = s->y; d->z = s->z; }
+static inline void CpV(V3 *d, const V3 *s) { *(volatile float *)&d->x = s->x; *(volatile float *)&d->y = s->y; *(volatile float *)&d->z = s->z; }
 static inline void Madd(V3 *d, const V3 *s, float k) { d->x = k * s->x + d->x; d->y = k * s->y + d->y; d->z = k * s->z + d->z; }
 static inline void Cross(V3 *o, const V3 *a, const V3 *b) { float x = a->y * b->z - a->z * b->y; float y = a->z * b->x - a->x * b->z; float z = a->x * b->y - a->y * b->x; o->x = x; o->y = y; o->z = z; }
 static inline float Sq(float x) {
@@ -40,9 +42,10 @@ static inline float Sq(float x) {
 struct E { u32 flags; u8 pad[0x2c]; void *f30; u8 pad2[0x44]; void *f78; u8 pad3[0x2c]; };
 void fn_80095770(char *self, V3 a, V3 b, int n, char *obj) {
     V3 p, start, end, hit, nrm, c, u, e;
-    Cp(&p, &a);
-    Cp(&start, &p);
-    Cp(&end, &p);
+    float pz, py, px;
+    px = a.x; py = a.y; pz = a.z;
+    *(volatile float *)&start.x = px; *(volatile float *)&start.y = py; *(volatile float *)&start.z = pz;
+    *(volatile float *)&end.x = px; *(volatile float *)&end.y = py; *(volatile float *)&end.z = pz;
     Madd(&end, &b, *(volatile float *)&lbl_80361008);
     u8 name[8];
     int o38, o34;
@@ -57,10 +60,10 @@ void fn_80095770(char *self, V3 a, V3 b, int n, char *obj) {
     Cross(&e, &c, &u);
     fn_80101820(&e);
     fn_80101820(&c);
-    u.x = -u.x; u.y = -u.y; u.z = -u.z;
-    c.x = -c.x; c.y = -c.y; c.z = -c.z;
+    *(volatile float *)&u.x = -u.x; *(volatile float *)&u.y = -u.y; *(volatile float *)&u.z = -u.z;
+    *(volatile float *)&c.x = -c.x; *(volatile float *)&c.y = -c.y; *(volatile float *)&c.z = -c.z;
     V3 s;
-    s.x = s.y = s.z = lbl_8036100C;
+    s.x = s.y = s.z = *(volatile float *)&lbl_8036100C;
     float x, y, z;
     if (r) { x = hit.x - start.x; y = hit.y - start.y; z = hit.z - start.z; }
     else { x = end.x - start.x; y = end.y - start.y; z = end.z - start.z; }
