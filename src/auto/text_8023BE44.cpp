@@ -1,5 +1,5 @@
 #include "common.h"
-// NonMatching draft (wNA): SDIFF 0 / DIFF 58, register-only (FP coloring). tgt loaded into locals before a = *cur, const V3 *tgt, c.y before cz.
+// NonMatching draft (wNA, wQE): SDIFF 0 / DIFF 12. dot3 inline + unshared *(f32 *)&lbl_80366024 in isz fixed FP colouring; left: entry bz/a.y f0/f2 swap.
 
 extern "C" {
 
@@ -22,8 +22,9 @@ static inline long fpcls(f32 x) {
     return 4;
 }
 static inline bool isz(f32 x, f32 y, f32 z) {
-    return x >= lbl_80366024 && x <= lbl_80366028 && y >= lbl_80366024 && y <= lbl_80366028 && z >= lbl_80366024 && z <= lbl_80366028;
+    return x >= *(f32 *)&lbl_80366024 && x <= lbl_80366028 && y >= lbl_80366024 && y <= lbl_80366028 && z >= lbl_80366024 && z <= lbl_80366028;
 }
+static inline f32 dot3(const V3 *p, const V3 *q) { return p->x * q->x + p->y * q->y + p->z * q->z; }
 void fn_8023BE44(V3 *cur, const V3 *tgt, V3 *up, f32 rate, f32 minAng, f32 dt) {
     V3 a, b;
     f32 cx, cz, dot, ang;
@@ -39,7 +40,7 @@ void fn_8023BE44(V3 *cur, const V3 *tgt, V3 *up, f32 rate, f32 minAng, f32 dt) {
     c.y = b.z * a.x - b.x * a.z;
     cz = b.x * a.y - b.y * a.x;
     if (isz(cx, c.y, cz)) return;
-    dot = b.x * a.x + b.y * a.y + b.z * a.z;
+    dot = dot3(&b, &a);
     {
     f32 t = (f32)fn_800F045C(dot);
     ang = t;
