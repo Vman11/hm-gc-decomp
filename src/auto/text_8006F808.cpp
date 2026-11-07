@@ -75,16 +75,18 @@ void fn_8006F808(u8 *o) {
             K8 a, d, c, b;
             u32 *r;
             Tb *t1, *t2;
-            int ok;
-            u32 j;
             u32 k, i;
+            int ok;
+            u32 off;
+            u32 j;
             fn_800F6E88(&a, (u8 *)F(o, 0xe4, V *) + 0x8c);
             t1 = fn_8023F4A0(o, lbl_8035ED68, lbl_8035ED68, s + 0x468, 1);
             t2 = fn_8023F4A0(o, lbl_8035ED68, lbl_8035ED68, s + 0x47c, 1);
             k = FindK(o, t1, &a, &b);
             ok = 1;
-            for (j = k * *F(o, 0x280, u32 *); j < (k + 1) * *F(o, 0x280, u32 *); j++) {
-                fn_800F6E88(&c, t1->xc + j * 8);
+            j = k * *F(o, 0x280, u32 *);
+            for (off = j * 8; j < (k + 1) * *F(o, 0x280, u32 *); off += 8, j++) {
+                fn_800F6E88(&c, t1->xc + off);
                 if (!fn_800F6CD0(&c, lbl_8035ED68)) {
                     *(u32 *volatile *)&r = 0;
                     fn_8003C674(lbl_8035A0A4, &c, &r);
@@ -100,8 +102,9 @@ void fn_8006F808(u8 *o) {
             fn_8007225C(F(o, 0x118, void *), F(F(o, 0xe0, u8 *), 0x1a8, f32) * lbl_8035F1C8);
         } else if (fn_800F6CD0(cmd, lbl_8035F300)) {
             u8 *q = F(o, 0x118, u8 *);
-            f32 mx = *(volatile f32 *)(q + 0x1a8);
-            f32 cu = *(volatile f32 *)(q + 0x1ac);
+            f32 cu, mx;
+            mx = *(volatile f32 *)(q + 0x1a8);
+            cu = *(volatile f32 *)(q + 0x1ac);
             if (cu < mx)
                 fn_8007225C(q, F(F(o, 0xe0, u8 *), 0x1a8, f32) * *F(o, 0xec, f32 *));
             else
