@@ -111,18 +111,8 @@ static inline f32 Dist(const Vec3 *a, const Vec3 *b)
     f32 dx = b->x - a->x;
     f32 dy = b->y - a->y;
     f32 dz = b->z - a->z;
-    f32 d = dx * dx + dy * dy + dz * dz;
-    volatile f32 y;
-    f64 guess;
-    if (d > lbl_8035FDF8) {
-        guess = __frsqrte((f64)d);
-        guess = lbl_8035FE18 * guess * (lbl_8035FE20 - guess * guess * d);
-        guess = lbl_8035FE18 * guess * (lbl_8035FE20 - guess * guess * d);
-        guess = lbl_8035FE18 * guess * (lbl_8035FE20 - guess * guess * d);
-        y = (f32)(d * guess);
-        return y;
-    }
-    return d;
+    dx = dx * dx + dy * dy + dz * dz;
+    return Sqrt(dx);
 }
 
 static inline f32 Max(O *p) { return p->f628 ? *p->f628 : lbl_8035FE28; }
