@@ -39,6 +39,20 @@ static inline f32 Sqrtf(f32 x) {
     }
     return x;
 }
+static inline f32 Sqrtf2(f32 x) {
+    if (x > *(volatile f32 *)&lbl_8035F3EC) {
+        const f64 _half = lbl_8035F4D0;
+        const f64 _three = lbl_8035F4D8;
+        volatile f32 y;
+        f64 g = __frsqrte((f64)x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        g = _half * g * (_three - g * g * x);
+        y = x * g;
+        return y;
+    }
+    return x;
+}
 static inline void Cross(V3 *o, V3 *a, V3 *b) {
     f32 x = a->y * b->z - a->z * b->y;
     f32 y = a->z * b->x - a->x * b->z;
@@ -56,7 +70,7 @@ static inline void Norm2(V3 *v) {
     f32 zz = v->z * v->z;
     f32 len = Sqrtf(xx + yy + zz);
     if (lbl_8035F3EC == len) {
-        v->x = lbl_8035F490; v->y = lbl_8035F3EC; v->z = lbl_8035F3EC;
+        *(volatile f32 *)&v->x = lbl_8035F490; *(volatile f32 *)&v->y = lbl_8035F3EC; *(volatile f32 *)&v->z = lbl_8035F3EC;
     } else {
         f32 inv = lbl_8035F490 / len;
         v->x *= inv; v->y *= inv; v->z *= inv;
