@@ -3,11 +3,16 @@
 
 typedef struct { u8 r, g, b, a; } GXColor;
 
-static inline void CopyColor(GXColor *__restrict d, const GXColor *__restrict s) {
-    d->r = s->r;
-    d->g = s->g;
-    d->b = s->b;
-    d->a = s->a;
+static inline void CopyColor(GXColor *d, const GXColor *s) {
+    u8 x, y;
+    x = s->r;
+    y = s->g;
+    d->r = x;
+    x = s->b;
+    d->g = y;
+    y = s->a;
+    d->b = x;
+    d->a = y;
 }
 
 extern u16 lbl_80364188;
@@ -24,15 +29,7 @@ void fn_80137A4C(u8 *arg0) {
 }
 
 void fn_80137A5C(GXColor *arg0, GXColor *arg1) {
-    u8 t0, t1;
-    t0 = arg1->r;
-    t1 = arg1->g;
-    arg0->r = t0;
-    t0 = arg1->b;
-    arg0->g = t1;
-    t1 = arg1->a;
-    arg0->a = t1;
-    arg0->b = t0;
+    CopyColor(arg0, arg1);
     *(u16 *)((u8 *)arg0 + 0xC) |= lbl_80364188;
 }
 
