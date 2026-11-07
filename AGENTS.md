@@ -873,3 +873,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wON (2026-11-07): fn_8021263C MATCHED (GC/2.0p1+lmw): body as static inline search() with 'return' in loops (gives bne;b shape + result coalesce), inline decl order lo,tbl,mid,n,step.
 - wOM (2026-11-07): fn_80129404 MATCHED: first two loads of the 4-float copy (y then x) read via *(volatile f32 *)& into fn-scope temps a0,a1 (wNJ two-load trick).
 - wOZ (2026-11-07): fn_8017C3F0 MATCHED: sub stores volatile + volatile Sq 0.0 compare const (pins K after stores); AD9C store volatile + volatile reload of lbl_80364858 and volatile madd reads; kid loop as do-while; mag as one expression Sq(z*z + (x*x + y*y)).
+- wPG (2026-11-07): fn_8015012C MATCHED: a*(b*a^T) - first product written with direct array reads (no locals), second caches only a's 9 floats in locals and reads t[][] directly (scripted 196-variant locals/order sweep).
