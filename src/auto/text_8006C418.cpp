@@ -34,6 +34,7 @@ void fn_8006C418(T *t) {
     f32 mq[4];
     V3 mp;
     Res *key = (Res *)t->f236;
+    X *x;
     Res *r;
     O *o;
     { f32 k = lbl_8035F0C0; *(volatile f32 *)&v.x = k; *(volatile f32 *)&v.y = k; *(volatile f32 *)&v.z = k; }
@@ -63,7 +64,7 @@ void fn_8006C418(T *t) {
     lbl_8035B6E8 = 1;
     if (t->f216 == 1) {
         {
-        X *x = (X *)t->f280;
+        x = (X *)t->f280;
         x->f1456 = 0;
         if (x->f1456) {
             mq[3] = mq[2] = mq[1] = mq[0] = mp.z = mp.y = mp.x = lbl_8035F0C0;
