@@ -28,6 +28,7 @@ void fn_800FAEA0(R *);
 u32 fn_800FADA8(R *);
 void fn_800FB000(R *, s32);
 u32 fn_800FB33C(R *);
+static inline u32 rd(R *r) { return fn_800FB33C(r); }
 void fn_800FB064(R *, void *);
 void fn_8013E904(void *, u8 *, R *, u32);
 void fn_8013EA54(void *, u8 *, R *);
@@ -115,10 +116,10 @@ void fn_8013213C(T *t, u8 *c, u32 a, R *r, u32 b) {
                     z = t->own->get(id);
                 }
                 if (!(F(z,0,u32) & 0xc)) r->err(35);
-                a1 = fn_800FB33C(r);
-                a2 = fn_800FB33C(r);
-                a3 = fn_800FB33C(r);
-                a4 = fn_800FB33C(r);
+                a1 = rd(r);
+                a2 = rd(r);
+                a3 = rd(r);
+                a4 = rd(r);
                 t->e16[k].b14 = id;
                 t->e16[k].h12 = a4;
                 if (!(F(z,4,u32) & 0x20)) {
