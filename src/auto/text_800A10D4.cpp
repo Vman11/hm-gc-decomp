@@ -62,18 +62,17 @@ static inline void rel(T *self) {
             fn_80240DBC(self, lbl_80361BCC);
         }
 }
-void fn_800A10D4(T *self, f32 dt) {
-//P{
-    u32 vA;
-    u32 vB;
-    u32 vC;
-//P}
+void fn_800A10D4(void *sv, f32 dtv) {
+f32 dt = dtv;
+Q *q;
+T *self = (T *)sv;
+u32 n;
+u32 i;
+u32 pick;
+u32 vA;
 #define o ((O *)vA)
 #define off vA
-#define q ((Q *)vB)
-#define pick vB
-#define n vC
-#define i vC
+
     if (self->f440 == 0 && fn_8022C558(self->f224)) {
         self->f224->v24();
         rel(self);
@@ -86,7 +85,7 @@ void fn_800A10D4(T *self, f32 dt) {
             a.z += *self->f328;
             {
                 vA = (u32)self->f520;
-                vB = (u32)o->f48;
+                q = o->f48;
                 if (q) {
                     lbl_803286D0.f12(q->f16, &a);
                     q->f32_ |= lbl_80361BC8;
@@ -95,7 +94,7 @@ void fn_800A10D4(T *self, f32 dt) {
             }
             {
                 vA = (u32)self->f520;
-                vB = (u32)o->f48;
+                q = o->f48;
                 if (q) {
                     lbl_803286D0.f28(q->f16, &b, &c, &d);
                     q->f32_ |= lbl_80361BC8;
@@ -112,7 +111,7 @@ void fn_800A10D4(T *self, f32 dt) {
     }
     if (self->f440 != 0) {
         self->f524 -= dt;
-        if (self->f524 < lbl_80361BD0) {
+        if (self->f524 < *(f32 *)&lbl_80361BD0) {
             self->f524 = lbl_80361BD0;
             if (self->f400 != 0 && *self->f368 != 0) {
                 pick = 0;
@@ -141,4 +140,6 @@ void fn_800A10D4(T *self, f32 dt) {
     }
     fn_8023FE08(self, dt);
 }
+#undef o
+#undef off
 }
