@@ -88,14 +88,11 @@ void fn_800AA770(O *o, s32 idx) {
             lbl_803286D0.f328(lbl_8035B65C->f40->f16, &u);
             u.x = -u.x; u.y = -u.y; u.z = -u.z;
             fn_80101820(&f);
-            { f32 fx = *(volatile f32 *)&f.x;
-            s = *(volatile f32 *)&lbl_80362234;
-            *(volatile f32 *)&f.x = fx * s; } *(volatile f32 *)&f.y = f.y * s; *(volatile f32 *)&f.z = f.z * s;
+            { f32 fx = *(volatile f32 *)&f.x; s = *(volatile f32 *)&lbl_80362234; *(volatile f32 *)&f.x = fx * s; }
+            *(volatile f32 *)&f.y = f.y * s; *(volatile f32 *)&f.z = f.z * s;
             *(volatile f32 *)&p0.x = a.x + f.x; *(volatile f32 *)&p0.y = a.y + f.y; *(volatile f32 *)&p0.z = a.z + f.z;
-            m = *(volatile f32 *)&lbl_80362238;
-            *(volatile f32 *)&p1.x = -f.x; *(volatile f32 *)&p1.y = -f.y;
-            *(volatile f32 *)&p0.x = m * u.x + p0.x; *(volatile f32 *)&p0.y = m * u.y + p0.y; *(volatile f32 *)&p0.z = m * u.z + p0.z;
-            *(volatile f32 *)&p1.z = -f.z;
+            m = *(volatile f32 *)&lbl_80362238; p0.x = m * u.x + p0.x; p0.y = m * u.y + p0.y; p0.z = m * u.z + p0.z;
+            *(volatile f32 *)&p1.x = -f.x; *(volatile f32 *)&p1.y = -f.y; *(volatile f32 *)&p1.z = -f.z;
             fn_80101820(&p1);
             p2 = u;
             fn_80101820(&p2);
