@@ -61,6 +61,12 @@ static inline void destroy(T *t) {
         }
     }
 }
+static inline void *Look(char *a, char *b) {
+    H *h = lbl_8035B460->f8;
+    if (b == 0 || *b == 0) return fn_800F9398(h->f144, a);
+    return fn_800F9788(h->f168, b, a);
+}
+
 void fn_80233604(T *t, R *r) {
     char s112[10][8];
     char sb[10][8];
@@ -94,7 +100,6 @@ void fn_80233604(T *t, R *r) {
     ALLOC(lbl_8035B370, t->f4, new D *[t->n12])
     ALLOC(lbl_8035B370, t->f8, new u32[t->n12])
     for (i = 0; i < t->n12; i++) {
-        H *h;
         void *d;
         fn_800FB064(r, a);
         fn_800FB064(r, b);
@@ -107,9 +112,7 @@ void fn_80233604(T *t, R *r) {
         }
         flag = 0;
         if (fn_800FB33C(r) == 1) flag = 1;
-        h = lbl_8035B460->f8;
-        if (b == 0 || *b == 0) d = fn_800F9398(h->f144, a);
-        else d = fn_800F9788(h->f168, b, a);
+        d = Look(a, b);
         if (d) {
             if (((D *)d)->type == 2) {
                 D *q = (D *)d;
