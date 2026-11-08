@@ -102,10 +102,12 @@ void fn_80134C30(Obj *obj, Sph *s, void *arg, u32 rings, u32 segs, u8 flag) {
     k -= segs;
     {
         V3 *v = (V3 *)lk.ptr;
-        f32 ex = s->x, ez = s->z, er = s->r;
+        f32 ex = *(volatile f32 *)&s->x;
+        f32 ez = s->z, er = s->r;
+        f32 d = ez - er;
         v->x = ex;
         v->y = s->y;
-        v->z = ez - er;
+        v->z = d;
     }
     lk.ptr += lk.stride;
     {
