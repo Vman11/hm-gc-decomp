@@ -1,9 +1,9 @@
 #include "common.h"
 extern "C" {
 typedef struct D_709C { u8 f0; u8 f1; u16 f2; u8 *f4; } D_709C;
-void fn_80217224(D_709C *, int, int, u32);
+void fn_80217224(const D_709C *, int, int, u32);
 void fn_800D6B8C(u8, u8, u16);
-void fn_8021709C(D_709C *d, int mode, int fmt, u32 n) {
+void fn_8021709C(const D_709C *d, int mode, int fmt, u32 n) {
     u32 cnt;
     int hasb;
     u32 stride;
