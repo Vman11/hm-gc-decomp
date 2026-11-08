@@ -8,6 +8,8 @@ struct It { Set *s; Grp *g; Grp *cur; u32 idx; int filt; Key k; };
 void fn_8023BD14(Key *, void *);
 int fn_8023C9FC(Set *, Key *);
 Ob *fn_8023A490(Grp *, u32);
+static inline int ngOf(Set *s){return s->ng;}
+static inline u32 nOf(Grp *g){return g->n;}
 static inline Ob *get(It *it) { return it->cur ? fn_8023A490(it->cur, it->idx) : 0; }
 void fn_8023C528(It *it, void *key) {
     it->idx = 0;
@@ -28,7 +30,7 @@ void fn_8023C528(It *it, void *key) {
     if (!it->cur) return;
     do {
         it->idx++;
-        if (it->idx >= it->cur->n) {
+        if (it->idx >= nOf(it->cur)) {
             if (it->cur->next) {
                 it->cur = it->cur->next;
                 it->idx = 0;
@@ -36,7 +38,7 @@ void fn_8023C528(It *it, void *key) {
                 if (!it->g) { it->cur = 0; return; }
                 it->cur = it->g + 1;
                 it->g = it->cur;
-                if (it->filt || it->cur - it->s->g >= it->s->ng) { it->cur = 0; return; }
+                if (it->filt || it->cur - it->s->g >= ngOf(it->s)) { it->cur = 0; return; }
                 it->idx = 0;
             }
         }
