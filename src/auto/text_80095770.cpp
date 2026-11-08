@@ -1,4 +1,4 @@
-// fn_80095770 NonMatching draft (wMY): DIFF 48 / SDIFF 4. Volatile copy/neg stores + volatile K reads pin the sda loads (recipe from TIPS wDJ). Left: start.z store slot, one fneg slot, cross-product FP regs.
+// fn_80095770 NonMatching draft (wMY): DIFF 34 / SDIFF 4 (wRW: el via GE getter inline). Volatile copy/neg stores + volatile K reads pin the sda loads (recipe from TIPS wDJ). Left: start.z store slot, one fneg slot, cross-product FP regs.
 #include "common.h"
 extern "C" {
 typedef struct { float x, y, z; } V3;
@@ -40,6 +40,7 @@ static inline float Sq(float x) {
     return x;
 }
 struct E { u32 flags; u8 pad[0x2c]; void *f30; u8 pad2[0x44]; void *f78; u8 pad3[0x2c]; };
+static inline E *GE(char *self, int i) { return &(*(E **)(self + 0x130))[i]; }
 void fn_80095770(char *self, V3 a, V3 b, int n, char *obj) {
     V3 p, start, end, hit, nrm, c, u, e;
     float pz, py, px;
@@ -71,7 +72,7 @@ void fn_80095770(char *self, V3 a, V3 b, int n, char *obj) {
     s.y = l;
     int i = n - 1;
     if ((*(E **)(self + 0x130))[i].f78) fn_80107F3C((*(E **)(self + 0x130))[i].f78, &s);
-    E *el = &(*(E **)(self + 0x130))[i];
+    E *el = GE(self, i);
     if (el->f30) {
         fn_801078CC(el->f30, &c, &u, &e, &start, 0);
         fn_80190C98(el);
