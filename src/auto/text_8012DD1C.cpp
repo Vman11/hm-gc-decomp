@@ -58,7 +58,7 @@ void fn_8012DD1C(T *t, G *g, V2 *__restrict pos, V2 *scale, K *col, Q4 *clip) {
         rc.y1 = (f32)g->r.y1;
     }
     if (!col && (t->f8 & 2)) col = &t->f1c;
-    cl = g->f124 ? g->f124 : t->clr();
+    if (g->f124) cl = g->f124; else cl = t->clr();
     if (!col) {
         if (cl) c4 = cl->c; else fn_80121658(&c4);
         fn_80121DC8(&k, &c4);
