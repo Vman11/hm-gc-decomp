@@ -58,7 +58,7 @@ int fn_80100B10(Sph_80100B10 *s, Seg_80100B10 *o) {
     proj = o->dir.x * dx + o->dir.y * dy + o->dir.z * dz;
     d2 = r2 - d2;
     disc = proj * proj + d2;
-    if (disc <= lbl_803637F4) {
+    if (disc <= *(f32 *)&lbl_803637F4) {
         return 0;
     }
     if (disc > lbl_803637F4) {
