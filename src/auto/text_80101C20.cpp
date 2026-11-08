@@ -1,5 +1,4 @@
 #include "common.h"
-// NonMatching: SDIFF 1 - loop1 entry lacks the i copy (mr r23,r7); rest is register colouring
 extern "C" {
 struct V { f32 x, y, z; };
 struct Q { f32 x, y, z, w; };
@@ -38,9 +37,6 @@ static inline void b4(A *a, u32 i, void *clip, V *v, f32 t, void *out, void *w, 
 static inline void L3(A *a, u32 j, u32 n, void *clip, V *v, f32 t, void *out, void *w, f32 wt, V *sc) {
     for (; j < n; j++) b3(a, j, clip, v, t, out, w, wt, sc);
 }
-static inline void L1(A *a, u32 j, u32 n, void *clip, Q *q, f32 t, void *out, void *w, f32 wt) {
-    for (; j < n; j++) b1(a, j, clip, q, t, out, w, wt);
-}
 static inline void L2(A *a, u32 j, u32 n, void *clip, V *v, f32 t, void *out, void *w, f32 wt, V *sc) {
     if (!sc) {
         for (; j < n; j++) {
@@ -62,8 +58,11 @@ void fn_80101C20(A *a, void *out, void *w, V *sc, f32 t, f32 wt) {
     u32 end;
 
     clip = a->f0->f24;
-    L1(a, a->f32, a->f32 + a->f34, clip, &q, t, out, w, wt);
-    L2(a, a->f36, a->f36 + a->f38, clip, &v, t, out, w, wt, sc);
+    end = a->f32 + a->f34;
+    for (i = a->f32; i < end; i++) b1(a, i, clip, &q, t, out, w, wt);
+    i = a->f36;
+    end = i + a->f38;
+    L2(a, i, end, clip, &v, t, out, w, wt, sc);
     i = a->f40;
     for (end = i + a->f42; i < end; i++) b4(a, i, clip, &v3, t, out, w, wt);
 }
