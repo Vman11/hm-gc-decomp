@@ -63,6 +63,23 @@ static inline void VSet(V *v, f32 x, f32 y, f32 z) {
     v->z = z;
 }
 
+static inline void Fin(T *t) {
+    O *o;
+    u32 i;
+    for (i = 0; i < 2; i++) {
+        if (t->f752[i]) {
+            t->f752[i]->f0 |= lbl_8035E4A0;
+            o = t->f752[i];
+            o->f156 = lbl_8035E4A8;
+            o->f152 &= ~6;
+            o->f172 = lbl_8035E4A8;
+            fn_80196688(o);
+            t->f752[i]->f152 |= lbl_8035E4A4;
+            t->f752[i]->f152 &= ~8;
+        }
+    }
+}
+
 void fn_8005D9EC(T *t, void *a, int b, V *c, char *d, L *nl) {
     V p0, p1, p2, p3, sv;
     A *ap;
@@ -160,18 +177,7 @@ void fn_8005D9EC(T *t, void *a, int b, V *c, char *d, L *nl) {
         if (t->f740) t->f740->f0 |= lbl_8035E4A0;
         if (t->f744) t->f744->f0 |= lbl_8035E4A0;
     }
-    for (i = 0; i < 2; i++) {
-        if (t->f752[i]) {
-            t->f752[i]->f0 |= lbl_8035E4A0;
-            o = t->f752[i];
-            o->f156 = lbl_8035E4A8;
-            o->f152 &= ~6;
-            o->f172 = lbl_8035E4A8;
-            fn_80196688(o);
-            t->f752[i]->f152 |= lbl_8035E4A4;
-            t->f752[i]->f152 &= ~8;
-        }
-    }
+    Fin(t);
     *((u8 *)t + 0x374) &= ~1;
 }
 
