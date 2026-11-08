@@ -19,40 +19,39 @@ struct O {
     virtual bool vf(s32);
 };
 
-static inline void Find(O *o, char *tmp, char *key, f32 f, s32 b, s32 c, f32 *pf, s32 flag) {
-    s32 off;
-    s32 i;
-    for (i = 0; i < F(o, s32, 124); i++) {
-        strcpy(tmp, *(char **)(F(o, u8 *, 200) + i * 12));
-        if (stricmp(tmp, key) == 0) {
-            F(o, s32, 220) = i;
-            F(F(o, void *, 224), f32, 416) = lbl_8036613C;
-            if (pf && !flag) {
-                void *e = F(o, void **, 208)[i];
-                fn_8022CC44(F(o, void *, 224), e, 1, f, o->vf(i), b, c, *pf);
-            } else {
-                void *e = F(o, void **, 208)[i];
-                fn_8022CC44(F(o, void *, 224), e, 1, f, o->vf(i), b, c, lbl_8036613C);
-            }
-            if (flag) {
-                u16 h = F(F(o, void **, 208)[i], u16, 52);
-                void *z = fn_8022D694(F(o, void *, 224));
-                F(z, f32, 4) = (f32)(h - 1);
-            }
-            return;
-        }
+static inline s32 GetFlag() { return F(F(F(lbl_8035B308, void *, 72), void *, 600), s32, 768); }
+static inline void Hit(O *o, s32 i, f32 f, s32 b, s32 c, f32 *pf, s32 flag) {
+    F(o, s32, 220) = i;
+    F(F(o, void *, 224), f32, 416) = lbl_8036613C;
+    if (pf && !flag) {
+        void *e = F(o, void **, 208)[i];
+        fn_8022CC44(F(o, void *, 224), e, 1, f, o->vf(i), b, c, *pf);
+    } else {
+        void *e = F(o, void **, 208)[i];
+        fn_8022CC44(F(o, void *, 224), e, 1, f, o->vf(i), b, c, lbl_8036613C);
+    }
+    if (flag) {
+        u16 h = F(F(o, void **, 208)[i], u16, 52);
+        void *z = fn_8022D694(F(o, void *, 224));
+        F(z, f32, 4) = (f32)(h - 1);
     }
 }
-
 extern "C" void fn_802413D8(O *o, char *name, f32 f, s32 b, s32 c, f32 *pf) {
     char key[12];
     char tmp[12];
     s32 flag;
-    flag = F(F(F(lbl_8035B308, void *, 72), void *, 600), s32, 768);
+    s32 i;
+    flag = GetFlag();
     if (flag) {
         b = 1;
         f = lbl_8036613C;
     }
     fn_800F6E40(key, name);
-    Find(o, tmp, key, f, b, c, pf, flag);
+    for (i = 0; i < F(o, s32, 124); i++) {
+        strcpy(tmp, *(char **)(F(o, u8 *, 200) + i * 12));
+        if (stricmp(tmp, key) == 0) {
+            Hit(o, i, f, b, c, pf, flag);
+            return;
+        }
+    }
 }
