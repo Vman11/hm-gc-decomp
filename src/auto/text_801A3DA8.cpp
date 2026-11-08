@@ -28,13 +28,16 @@ static inline void xf2(B *b, V3 *v, V3 *o) {
 }
 
 #pragma opt_strength_reduction off
-void fn_801A3DA8(S *s, B *b, Q *q) {
+void fn_801A3DA8(void *sv, void *bv, void *qv) {
     V3 a, c;
-    E *arr;
-    H *h;
-    u32 off;
-    u32 i;
-    u32 n;
+E *arr;
+H *h;
+u32 off;
+u32 i;
+Q *q = (Q *)qv;
+B *b = (B *)bv;
+u32 n;
+S *s = (S *)sv;
     xf(b, q->p0, &a);
     xf(b, q->p1, &c);
     arr = s->arr;
