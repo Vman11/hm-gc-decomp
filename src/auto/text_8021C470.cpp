@@ -1,6 +1,6 @@
 #include "common.h"
 
-// Keyframe bracket search. NonMatching (DIFF 30, SDIFF 0): only arr(r6)/first(r5) volatile regs swapped.
+// Keyframe bracket search. NonMatching (DIFF 28, SDIFF 0): only arr(r6)/first(r5) volatile regs swapped.
 extern "C" {
 f64 fn_800EFE78(f64 x);
 typedef struct { u8 pad[0x14]; u16 *f14; } T_8021C470;
@@ -23,7 +23,7 @@ void fn_8021C470(T_8021C470 *t, s32 start, s32 n, s32 base, s32 *i0, s32 *i1, f3
     if (k < first) {
         d = base - *last;
         num = x + (f32)d;
-        den = d + first;
+        den = first + d;
         *i0 = n - 1;
         *i1 = 0;
     } else if (k >= *last) {
