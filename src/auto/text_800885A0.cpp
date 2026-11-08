@@ -113,6 +113,7 @@ inline void GetPos(Node2 *n, V3 *v) {
 }
 inline Fl *GetFl(TH *h) { FH *q = h->f84; if (q == 0) return 0; return q->f8; }
 
+static inline Grp *GG(Obj *o, u32 i) { return o->f2f8[i]; }
 void fn_800885A0(Obj *o, f32 dt) {
     V3 pos;
     V3 b;
@@ -121,7 +122,7 @@ void fn_800885A0(Obj *o, f32 dt) {
     V3 v;
     V3 s;
     V3 c;
-    Grp *g0; M30 *m0; Grp *g1; M30 *m1; Grp *g2; M30 *m2; TH *h; u32 i; Grp *g3; M30 *m3;
+    Grp *g0; M30 *m0; Grp *g1; M30 *m1; Grp *g2; M30 *m2; u32 i; TH *h; Grp *g3; M30 *m3;
     o->o17();
     o->f378->tick(dt);
     o->o18();
@@ -151,7 +152,7 @@ void fn_800885A0(Obj *o, f32 dt) {
         o->f39c = hp;
         o->kill(1, 0, 0);
         for (i = 0; i < 5; i++) {
-            g1 = o->f2f8[i];
+            g1 = GG(o, i);
             if (g1) {
                 f32 z = lbl_8035FEB8; *(volatile f32 *)&v.x = z; *(volatile f32 *)&v.y = *(volatile f32 *)&lbl_8035FED4; *(volatile f32 *)&v.z = z;
                 m1 = g1->f30;
