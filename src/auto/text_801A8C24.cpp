@@ -1,4 +1,4 @@
-// fn_801A8C24: UI list key handler (jump to item by first letter). NonMatching: instructions identical, callee-saved register colouring differs (target p/a/b=r26-28, kl/i/cnt=r31-29).
+// fn_801A8C24: UI list key handler (jump to item by first letter). NonMatching: instructions identical, callee-saved register colouring differs (DIFF 114 SDIFF 0; p/a now r30/r29 vs target r26/r27, key/kl swapped).
 #include "common.h"
 
 extern "C" {
@@ -141,9 +141,12 @@ inline s32 IsFoc(It *o) {
     return 0;
 }
 
-s32 fn_801A8C24(P *p, s32 a, s32 b) {
-    N *n;
-    s32 r = 0;
+s32 fn_801A8C24(void *pv, u32 av, u32 bv) {
+P *p = (P *)pv;
+s32 a = av;
+s32 b = bv;
+N *n;
+s32 r = 0;
     for (n = p->f88; n != NULL; n = n->next) {
         if (n->on != 0 && n->obj->hit(p, a, b) == 0) r = 1;
     }
