@@ -1,5 +1,5 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
-// fn_8007AC1C NonMatching draft (wMY, wOX): DIFF 28 / SDIFF 2. Volatile ax-neg stores + volatile K read pin the K load; volatile ay.x/ay.y/ay.z/c.z stores in target order (wOX). Left: one fmuls vs ay.x store + FPR colouring.
+// fn_8007AC1C NonMatching draft (wMY, wOX): DIFF 16 / SDIFF 2. Volatile ax-neg stores + volatile K read pin the K load; volatile ay.x/ay.y/ay.z/c.z stores in target order (wOX). wRR: k,nz,ny,nx declared then assigned (nx,ny,nz) before the k read fixed FPR colouring (DIFF 16). Left: ay.x stfs scheduled before first fmuls, f1/f2 temp swap.
 #include "common.h"
 
 extern "C" {
@@ -168,9 +168,10 @@ void fn_8007AC1C(Obj *o, f32 dt) {
                     *(volatile f32 *)&ax.x = -ax.x;
                     *(volatile f32 *)&ax.y = -ax.y;
                     *(volatile f32 *)&ax.z = -ax.z;
-                    f32 nx = ax.x, ny = ax.y, nz = ax.z;
+                    f32 k, nz, ny, nx;
+                    nx = ax.x; ny = ax.y; nz = ax.z;
                     {
-                        f32 k = *(volatile f32 *)&lbl_8035F76C;
+                        k = *(volatile f32 *)&lbl_8035F76C;
                         VS(ay.x) = k;
                         VS(((f32 *)&c)[4]) = k;
                         f32 cz = nx * k - ny * k;
