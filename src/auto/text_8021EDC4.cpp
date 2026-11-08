@@ -23,15 +23,19 @@ typedef struct Seg_8021EDC4 {
 void fn_80101624(V3_8021EDC4 *, V3_8021EDC4 *, V3_8021EDC4 *, f32);
 void fn_8021E508(Node_8021EDC4 *, Seg_8021EDC4 *, V3_8021EDC4 *);
 
+static inline f32 Dot(Node_8021EDC4 *n, V3_8021EDC4 *a) {
+    return n->d + (a->x * n->nx + a->y * n->ny + a->z * n->nz);
+}
+
 void fn_8021EDC4(Node_8021EDC4 *n, Seg_8021EDC4 *s) {
     V3_8021EDC4 hit;
     V3_8021EDC4 *save;
     V3_8021EDC4 *a = s->pa;
     V3_8021EDC4 *b = s->pb;
-    f32 da = n->d + (a->x * n->nx + a->y * n->ny + a->z * n->nz);
-    f32 db = n->d + (b->x * n->nx + b->y * n->ny + b->z * n->nz);
+    f32 da = Dot(n, a);
+    f32 db = Dot(n, b);
 
-    if (da >= lbl_803659A0) {
+    if (da >= *(f32 *)&lbl_803659A0) {
         if (db < lbl_803659A0) {
             fn_80101624(&hit, a, b, da / (da - db));
             if (n->front != NULL) {
