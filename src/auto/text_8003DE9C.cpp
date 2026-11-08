@@ -47,25 +47,26 @@ inline void SetI(char *n, s32 v) { *(s32 *)fn_80207198(lbl_8035A1DC + 992, n, 0)
 inline Var *Get(char *n) { return fn_80207198(lbl_8035B65C->f36 + 992, n, 0); }
 
 const char *wG_strpool_8003DE9C[] = { "DIFFCLTY", "LvSprFnd", "LvSprTtl", "DETHCERT", "SOUNDVOL", "MUSICVOL", "mGemFlag", "NUMCARDS", "ZEKERSHP", "ZEKELIVE" };
+static inline void ClrC(u8 *p, u8 *q, u32 s) {
+    u32 i;
+    for (i = s; i < 31; i++) {
+        memset(*(void **)(p + 1360), 0, 200);
+        memset(((En *)q)->f740, 0, ((En *)q)->f744 * 12);
+        *(u32 *)(p + 1484) = s;
+        p += 4;
+        q += 20;
+    }
+}
 extern "C" s32 fn_8003DE9C(u8 *o, Buf3DE9C *b, void *x) {
     s32 pos;
     u32 i;
-    s32 k;
     s32 type;
     u8 *p;
     u8 *q;
     fn_800F6E88(x, lbl_8035C224);
     if (b->f0[0] != 3) return 0;
     pos = 1;
-    p = o;
-    q = o;
-    for (i = 0; i < 31; i++) {
-        memset(*(void **)(p + 1360), 0, 200);
-        memset(((En *)q)->f740, 0, ((En *)q)->f744 * 12);
-        *(u32 *)(p + 1484) = 0;
-        p += 4;
-        q += 20;
-    }
+    ClrC(o, o, 0);
     fn_8024D7E4(lbl_8035B594);
     SetI((char *)"DETHCERT", 0);
     SetI((char *)"mGemFlag", 1);
@@ -90,6 +91,7 @@ extern "C" s32 fn_8003DE9C(u8 *o, Buf3DE9C *b, void *x) {
                 u32 val;
                 s32 c;
                 En *e;
+                s32 k;
                 u32 *slot;
                 c = b->f0[pos];
                 memcpy(&key, &b->f0[pos + 1], 8);
@@ -141,3 +143,4 @@ extern "C" s32 fn_8003DE9C(u8 *o, Buf3DE9C *b, void *x) {
     } while (type != 2);
     return 1;
 }
+
