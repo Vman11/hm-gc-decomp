@@ -23,6 +23,7 @@ static inline void AttrFmts(VFmt v, Fmt *f) {
     n = f->n;
     for (i = 0; i < n; i++) Fmt1(v, i + 13, 1, f->tc[i]);
 }
+static inline Slot *Sel(Slot *c, u32 vf) { return &c[(vf >> 1) & 1]; }
 u32 fn_801578A4(Slot *c, Fmt *l, int on) {
     Slot *sl;
     u32 vf;
@@ -30,7 +31,7 @@ u32 fn_801578A4(Slot *c, Fmt *l, int on) {
     vf = (((fl >> 7) & 1) ^ 1) | (((fl >> 12) & 1) ? 2 : 0);
     if (on) {
         vf |= 4;
-        sl = &c[(vf >> 1) & 1];
+        sl = Sel(c, vf);
         if (!fn_8014C4B4(sl, l)) {
             AttrFmts((VFmt)vf, l);
             fn_8014C734(sl);
