@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching draft: string pool is .rodata lbl_80294E10, shared with 8003C8E4/8003D130/8003D518 (needs TU merge).
+// fn_8003DE9C code matches 100%; unit stays NonMatching: string pool is .rodata lbl_80294E10, shared with 8003C8E4/8003D130/8003D518 (needs TU merge).
 
 class Var { public: u8 p[8]; virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void *ptr(int); void *f12; };
 struct Mgr3DE9C {
@@ -47,7 +47,8 @@ inline void SetI(char *n, s32 v) { *(s32 *)fn_80207198(lbl_8035A1DC + 992, n, 0)
 inline Var *Get(char *n) { return fn_80207198(lbl_8035B65C->f36 + 992, n, 0); }
 
 const char *wG_strpool_8003DE9C[] = { "DIFFCLTY", "LvSprFnd", "LvSprTtl", "DETHCERT", "SOUNDVOL", "MUSICVOL", "mGemFlag", "NUMCARDS", "ZEKERSHP", "ZEKELIVE" };
-static inline void ClrC(u8 *p, u8 *q, u32 s) {
+static inline void ClrC(u8 *o, u32 s) {
+    u8 *q; u8 *p; p = o; q = o;
     u32 i;
     for (i = s; i < 31; i++) {
         memset(*(void **)(p + 1360), 0, 200);
@@ -66,7 +67,7 @@ extern "C" s32 fn_8003DE9C(u8 *o, Buf3DE9C *b, void *x) {
     fn_800F6E88(x, lbl_8035C224);
     if (b->f0[0] != 3) return 0;
     pos = 1;
-    ClrC(o, o, 0);
+    ClrC(o, 0);
     fn_8024D7E4(lbl_8035B594);
     SetI((char *)"DETHCERT", 0);
     SetI((char *)"mGemFlag", 1);
