@@ -9,7 +9,7 @@ void DCFlushRange(void *p, u32 n);
 void fn_802079CC();
 void fn_800C6D6C(S27 *s, s32 idx, s32 a, s32 b, void *buf, void *p, u32 n, void (*cb)());
 static inline void Wait() { while (lbl_8035B19C != 0) fn_800C4EBC(); }
-void fn_80207510(void *p, void *buf, u32 n) {
+void fn_80207510(u8 *p, u8 *buf, s32 n) {
     S27 *s;
     s32 idx;
     Wait();
