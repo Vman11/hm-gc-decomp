@@ -19,7 +19,7 @@ extern f32 lbl_803640E8;
 extern f32 lbl_803640EC;
 extern f32 lbl_803640F0;
 
-void fn_80134C30(Obj *obj, Sph *s, void *arg, u32 rings, u32 segs, u8 flag) {
+void fn_80134C30(Obj *obj, const Sph *s, void *arg, u32 rings, u32 segs, u8 flag) {
     Fmt fmt;
     Lock lk;
     u16 *idx;
