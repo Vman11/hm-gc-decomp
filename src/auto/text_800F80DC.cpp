@@ -6,7 +6,7 @@ typedef struct E_80DC { u32 a; u32 b; u32 v; } E_80DC;
 typedef struct TH_80DC { u32 a, b; E_80DC it[1]; } TH_80DC;
 typedef struct H_80DC { E_80DC *tab; u32 n; } H_80DC;
 int fn_800F6CD0(E_80DC *, s8 *);
-u32 fn_800F80DC(H_80DC *h, s8 *key, u32 *out) {
+u32 fn_800F80DC( const H_80DC *h, s8 *key, u32 *out) {
     int sh;
     u32 hash;
     int i;
