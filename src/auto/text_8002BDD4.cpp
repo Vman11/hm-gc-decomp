@@ -46,13 +46,9 @@ extern f32 lbl_8035B99C;
 #define lbl_8035B9E8 5.0f
 #define lbl_8035B9EC 6.0f
 
-static inline u8 IsBusy(Gx *gx) {
-    u8 r = 0;
-    if (gx->busy || gx->t != lbl_8035B99C) r = 1;
-    return r;
-}
-static inline u8 Skip(Gm *g) { Gx *gx = g->gx; u8 s = 0; if (IsBusy(gx) && !(g->flags & 0x10)) s = 1; return s; }
-/* wQG: sb reused for lbl_80359F50 scale (FP colouring), __fmadds operand order. wRB: gx local first in Skip, e via if/else: DIFF 32 SDIFF 0, left: skip/busy r3/r5 swap, e r5 vs r4 */
+static inline u8 Skip(Gm *g) { u8 a; Gx *gx; u8 b; a = 0; b = a; gx = g->gx; if (gx->busy || gx->t != lbl_8035B99C) b = 1; if (b && !(g->flags & 0x10)) a = 1; return a; }
+static inline El *At(Lst *l, s32 i) { return l->ok[i] ? l->e + i : 0; }
+/* wQG: sb reused for lbl_80359F50 scale (FP colouring), __fmadds operand order. wSF: Skip with locals declared a, gx, b (a = 0; b = a); second element via Lst local + At() inline */
 void fn_8002BDD4(Obj *o, f32 dt)
 {
     f32 sa = 0.0f;
@@ -94,7 +90,8 @@ void fn_8002BDD4(Obj *o, f32 dt)
     e->v = sc * (o->r0->x1 - o->r0->x0);
     {
         f32 v = e->v;
-        El *e2 = o->lst->ok[1] ? o->lst->e + 1 : 0;
+        Lst *l = o->lst;
+        El *e2 = At(l, 1);
         e2->v = q * v;
         v = v + o->r0->x0;
         o->r1->x0 = v;
