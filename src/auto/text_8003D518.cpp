@@ -28,6 +28,8 @@ void *fn_80207198(void *, const char *, int);
 static inline void SumA(T *t, u32 *s) { u32 k; *s = 0; for (k = 0; k < 31; k++) *s += t->a1484[k]; }
 static inline u32 *SumB(T *t, u32 *s) { u32 k; for (k = 0; k < 31; k++) *s += t->a1484[k]; return s; }
 static inline void Put(u8 **b, s32 *p, u8 v) { (*b)[*p] = v; (*p)++; }
+#pragma push
+#pragma opt_lifetimes off
 void fn_8003D518(T *t, u8 **pbuf, s32 *pos) {
     u32 sum;
     u32 v8;
@@ -101,5 +103,7 @@ void fn_8003D518(T *t, u8 **pbuf, s32 *pos) {
     *pos += 4;
     (*pbuf)[(*pos)++] = 2;
 }
+#pragma pop
+
 
 } /* extern "C" */

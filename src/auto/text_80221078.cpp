@@ -15,6 +15,8 @@ extern Tbl lbl_803286D0;
 static f32 lbl_8035B278[2];
 static f32 lbl_8035B280[2];
 static f32 lbl_8035B288[2];
+#pragma push
+#pragma opt_propagation off
 void fn_80221078(void *__restrict self, Ctl *__restrict c, P *__restrict p, f32 *__restrict off, f32 s) {
     
     void *m = c->get(0);
@@ -48,5 +50,7 @@ void fn_80221078(void *__restrict self, Ctl *__restrict c, P *__restrict p, f32 
     lbl_8035B280[0] = p->v17c[0]; lbl_8035B280[1] = p->v17c[1];
     lbl_8035B288[0] = p->v184[0]; lbl_8035B288[1] = p->v184[1];
 }
+#pragma pop
+
 
 } /* extern "C" */
