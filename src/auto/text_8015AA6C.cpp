@@ -48,8 +48,7 @@ static inline s32 rd(C80215414 *f, void *buf, u32 n, Rq *&rq) {
     return e;
 }
 extern "C" {
-void fn_8015AA6C(Res *res, void *xp, char *path) {
-    X *x = (X *)xp;
+void fn_8015AA6C(Res *res, X *x, char *path) {
     Rq *rq;
     u8 *op;
     u8 *dp;

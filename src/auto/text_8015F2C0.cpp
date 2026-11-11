@@ -14,9 +14,8 @@ void fn_801742D8(Q_F2C0 *, u16, u16, u8 *);
 void fn_801743B8(Q_F2C0 *, u16, u16, u8 *);
 void fn_80174158(Q_F2C0 *, u16, u16, u8 *);
 void fn_80174238(Q_F2C0 *, u16, u16, u8 *);
-void fn_8015F2C0(P_F2C0 *p, void *vq, int mode) {
+void fn_8015F2C0(P_F2C0 *p, Q_F2C0 *q, int mode) {
     void *t = p->f0;
-    Q_F2C0 *q = (Q_F2C0 *)vq;
     if (!t) return;
     if (p->f42 == 0) {
         fn_80138D8C(q);
