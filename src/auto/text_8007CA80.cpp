@@ -1,4 +1,4 @@
-// NonMatching (DIFF 6, SDIFF 0): procA copy of inList uses explicit off counter + volatile l load inside; left: k gets r28 instead of r29.
+// fn_8007CA80: first inList copy hand-written in the loop (scan() start-index inline), natural procA, third copy = inList3 (void* param, l declared after j).
 #include "common.h"
 extern "C" {
 extern "C" {
@@ -61,13 +61,28 @@ static inline BOOL inList2(O *o, u32 idx) {
     return FALSE;
 }
 
+static inline BOOL inList3(O *o, void *lv, u32 idx) {
+    char name[8];
+    u32 j;
+    L *l = (L *)lv;
+    if (fn_8024548C(fn_80240004(o, 0), idx, -1, 1, name, 0, 0) == 0) fn_800F6E88(name, o->def);
+    for (j = 0; j < l->h->n; j++) {
+        char tmp[8];
+        fn_800F6E88(tmp, l->names[j].s);
+        if (fn_800F6CD0(name, tmp)) return TRUE;
+    }
+    return FALSE;
+}
+static inline BOOL scan(L *l, char *name, char *tmp, u32 j) {
+ for (; j < l->h->n; j++) { fn_800F6E88(tmp, l->names[j].s); if (fn_800F6CD0(name, tmp)) return TRUE; }
+ return FALSE; }
 static inline void procA(O *o, u32 i) {
         o->f236 = fn_80245F8C(fn_80240004(o, 0), i);
         {
             s32 k = fn_80245F48(fn_80240004(o, 0), o->f236);
             if (!(*o->p400 & (o->m404 & (1 << k)))) {
                 *o->p400 |= 1 << k;
-                if (inList2(o, k)) {
+                if (inList(o, o->l320, k)) {
                     char b40[8];
                     char b48[8];
                     fn_8003CAD8(lbl_8035A0A4, 1);
@@ -98,9 +113,12 @@ void fn_8007CA80(O *o) {
     u32 i;
     for (i = 0; i < fn_80240004(o, 0)->n; i++) {
         if (*o->p400 & (o->m404 & (1 << i))) continue;
-        if (!inList(o, o->l320, i)) continue;
+{ char tmp[8]; char name[8]; L *l1;
+ l1 = o->l320;
+ if (fn_8024548C(fn_80240004(o, 0), i, -1, 1, name, 0, 0) == 0) fn_800F6E88(name, o->def);
+ if (!scan(l1, name, tmp, 0)) continue; }
         procA(o, i);
-        if (inList(o, o->l332, i)) {
+        if (inList3(o, o->l332, i)) {
             char b72[16];
             V2 *x;
             fn_800F6E88(b72, o->l332->names[0].s);

@@ -46,8 +46,9 @@ void fn_8007D140(T *t, int a, int b) {
     u32 n;
     int found;
     u32 i;
-    s = fn_802288FC(lbl_8035B308, t->f11c);
+    void *sv = fn_802288FC(lbl_8035B308, t->f11c);
     Y *y = t->fe0->f9c;
+    s = (S *)sv;
     if (y->f30) fn_80107244(y->f30, &v);
     else { v.x = lbl_8035F910; v.y = lbl_8035F910; v.z = lbl_8035F910; }
     u = a ? b + 1 : 0;
