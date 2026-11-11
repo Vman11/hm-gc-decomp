@@ -309,8 +309,8 @@ void wEQ_C408(u32 x, u32 y, u32 a2, u32 pitch, u8 *mk, u32 a5, u8 *a6, s32 a7, u
     u32 madv;
     s32 dh16, yadv, uvadv, dadv;
     u32 pt, st0, h0, a120, bpp;
-    s32 lastrow, lastcol, row;
-    u32 off, bpb, n, r, t;
+    s32 lastrow, lastcol, row, nrow;
+    u32 off, bpb, n, r, t, hm;
     s32 k;
     s32 d16, d32, dh8, col, ncol, step;
     u8 *m, *nm;
@@ -347,28 +347,29 @@ void wEQ_C408(u32 x, u32 y, u32 a2, u32 pitch, u8 *mk, u32 a5, u8 *a6, s32 a7, u
         bpp = 1;
     }
     bpb = (fmt->f0 * bpp) << 4;
+    dh8 = (st >> 1) - 8;
     d16 = st - 16;
     dh16 = (st >> 1) - 16;
     d32 = st - 32;
+    lbl_80300860[1] = lbl_80300860[0] + p;
     lbl_80300860[2] = a6 + a7 + a8 * st;
     lbl_80300860[6] = a14 + a7 + a8 * st;
     lbl_80300860[3] = lbl_80300860[2] + st;
     lbl_80300860[7] = lbl_80300860[6] + st;
     p16 = st - w;
     yadv = p16 + (w & 15) + st * 14;
-    uvadv = (st >> 1) - (w >> 1) + ((w & 15) >> 1) + (st >> 1) * 7;
+    uvadv = (st >> 1) - (w >> 1) + ((w & 15) >> 1);
     dadv = p - w * (bpb >> 4) + (w & 15) * (bpb >> 4) + p * 14;
+    uvadv += (st >> 1) * 7;
     if (flags & 0x10000) { lbl_80300860[4] = a6 + st * a12; lbl_80300860[5] = lbl_80300860[4] + (st >> 1) * (a12 >> 1); } else { lbl_80300860[5] = a6 + st * a12; lbl_80300860[4] = lbl_80300860[5] + (st >> 1) * (a12 >> 1); }
-    dh8 = (st >> 1) - 8;
-    lbl_80300860[4] = lbl_80300860[4] + (a7 >> 1) + (a8 >> 1) * (st >> 1);
-    lbl_80300860[5] = lbl_80300860[5] + (a7 >> 1) + (a8 >> 1) * (st >> 1);
+    lbl_80300860[4] = lbl_80300860[4] + ((u32)a7 >> 1) + (a8 >> 1) * (st >> 1);
+    lbl_80300860[5] = lbl_80300860[5] + ((u32)a7 >> 1) + (a8 >> 1) * (st >> 1);
     lastrow = h + a8 - 1;
     lastcol = w + a7 - 1;
     m = mk + a5 * (a8 >> 4) + a7 / 16;
-    lbl_80300860[1] = lbl_80300860[0] + p;
     row = a8;
     while (row + 15 <= lastrow) {
-        row += 16;
+        nrow = row + 16;
         col = a7;
         while (col + 31 <= lastcol) {
             k = (m[1] ? 2 : 0) + (m[0] != 0);
@@ -457,12 +458,13 @@ void wEQ_C408(u32 x, u32 y, u32 a2, u32 pitch, u8 *mk, u32 a5, u8 *a6, s32 a7, u
             m = nm;
         }
         if (col + 15 <= lastcol) {
-            k = m[0];
-            if (off != 0) k |= m[off];
+            u32 k2, n2;
+            k2 = m[0];
+            if (off != 0) k2 |= m[off];
             m++;
-            if (k != 0) {
+            if (k2 != 0) {
                 save = *(ExpSave *)lbl_80300860;
-                for (n = 8; n != 0; n--) {
+                for (n2 = 8; n2 != 0; n2--) {
                     lbl_803590C4(4);
                     lbl_80300860[2] = lbl_80300860[3] + d16;
                     lbl_80300860[6] = lbl_80300860[7] + d16;
@@ -493,15 +495,16 @@ void wEQ_C408(u32 x, u32 y, u32 a2, u32 pitch, u8 *mk, u32 a5, u8 *a6, s32 a7, u
         lbl_80300860[5] += uvadv;
         lbl_80300860[1] = lbl_80300860[0] + p;
         m += madv;
+        row = nrow;
     }
     if (w & 15) {
         t = w & ~15;
         wEM_BFB8(x, t * bpp + y, a2, pt, a6, t, a8, w - t, h0, st0, a120, flags, a14, fmt);
     }
     if (h & 15) {
-        n = h0 - 1;
+        hm = h0 - 1;
         r = fn_802752DC(h & ~15, h0, h);
-        wEM_BFB8(x, y, fn_802752DC(r, p * st0, pt * st) + a2, pt, a6, a7, r, w, n - r + 1, st0, a120, flags, a14, fmt);
+        wEM_BFB8(x, y, fn_802752DC(r, p * st0, pt * st) + a2, pt, a6, a7, r, w, hm - r + 1, st0, a120, flags, a14, fmt);
     }
 }
 
