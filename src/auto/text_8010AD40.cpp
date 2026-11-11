@@ -92,7 +92,7 @@ void fn_8010AD40(T *t, u32 a, char *b, u32 c, u32 d) {
             delete[] t->f8;
         }
         if (t->f12) {
-            k3(t);
+            k2(t, j);
             delete[] t->f12;
         }
         t->f0 = 0;
