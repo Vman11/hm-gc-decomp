@@ -76,6 +76,20 @@ inline void SetAxes(Node *n, V3 *a, V3 *b, V3 *c) {
         fn_80190C98(n);
     }
 }
+inline void SetPos3(G *g, Node *n, V3 *v) {
+    if (g) {
+        lbl_803286D0.fc(g->h, v);
+        g->fl |= lbl_8035FEA4;
+        fn_80190C98(n);
+    }
+}
+inline void SetAxes3(G *g, Node *n, V3 *a, V3 *b, V3 *c) {
+    if (g) {
+        lbl_803286D0.f1c(g->h, a, b, c);
+        g->fl |= lbl_8035FEA4;
+        fn_80190C98(n);
+    }
+}
 inline f32 Rnd(u32 n) {
     s32 r = rand() % n;
     return lbl_8035FEF4 * (f32)r;
@@ -116,7 +130,7 @@ void fn_80088B54(P *p, f32 dt) {
         v.x = b + p->base.x;
         v.y = a + p->base.y;
         v.z = z + p->base.z;
-        SetPos(p->n704, &v);
+        SetPos3(p->n704->g, p->n704, &v);
     }
     {
         s32 r = rand() % 30000u;
@@ -135,9 +149,9 @@ void fn_80088B54(P *p, f32 dt) {
     p->t430 -= dt;
     u32 i;
     for (i = 0; i < p->cnt; i++) {
-        Node *n = p->n[i];
-        if (n) {
+        if (p->n[i]) {
             Node *y = p->x[i]->n;
+            Node *n = (Node *)(void *)p->n[i];
             if (y->type == 3) {
                 fn_80107244(&y->za8->e[p->idx[i]], &c);
             } else {
