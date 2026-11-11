@@ -119,11 +119,12 @@ static inline char *Alloc(u32 n) {
     return p;
 }
 
-inline void wA_free(char **&g, u16 *np) {
+inline void wA_free(T *self, u32 &i) {
+    char **&g = self->f9c;
+    u16 *np = &self->n9a;
     char **a = g;
     if (a != 0) {
         u32 n = *np;
-        u32 i;
         char **q = a;
         for (i = 0; i < n; q++, i++) {
             if (*q != 0) {
@@ -156,13 +157,15 @@ static inline void L10(T *self, void *b, u32 i, char *buf) {
     fn_800F87F0(&self->m50, buf, e);
 }
 
+static inline void *G11(T *self, u32 i) { return self->f10[i]; }
 static inline void L11(T *self, A *a, void *b, u32 i, char *buf) {
-    void *e = self->f10[i];
+    void *e = G11(self, i);
     fn_8021F6EC(e, a->f38, lbl_8035ABA0[i], b);
     baseName(buf, lbl_8035ABA0[i]);
     fn_800F87F0(&self->m64, buf, e);
 }
 
+static inline char *G14(u32 i) { return lbl_8035ABB4[i]; }
 static inline void L14(T *self, A *a, void *b, char *prefix, u32 plen, u32 i) {
     if (prefix) {
         char *path;
@@ -173,7 +176,7 @@ static inline void L14(T *self, A *a, void *b, char *prefix, u32 plen, u32 i) {
         { u32 l = strlen(lbl_8035ABB4[i]) + 1; p = new char[plen + l]; }
         fn_800F7E98();
         if (p == 0) fn_800604C4(-4, 0, 0, 0);
-        path = lbl_8035ABB4[i];
+        path = G14(i);
         s = strrchr(path, '\\');
         if (s == 0) {
             strcpy(p, prefix);
@@ -217,7 +220,7 @@ void fn_8012A2E8(T *self, A *a, void *b, char *prefix) {
     for (i = 0; i < self->n8e; i++) fn_80140794(&self->f1c[i], a, lbl_8035ABAC[i], b);
     fn_80129E00(self);
     for (i = 0; i < self->n9a; i++) fn_8012ACAC(self->g60(i), a, self->f9c[i], b, 0);
-    wA_free(self->f9c, &self->n9a);
+    wA_free(self, i);
 }
 
 }
