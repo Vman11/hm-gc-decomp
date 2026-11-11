@@ -41,60 +41,46 @@ static inline void fa(char **a, u32 n) {
     for (i = 0; i < n; i++) if (a[i]) delete[] a[i];
     delete[] a;
 }
-static inline void k1(T *t) {
-    u32 i;
-    for (i = 0; i < t->f16; i++) {
-        if (t->f8[i]) {
-            if (t->f8[i]->f488) fn_80110E5C(t->f8[i]);
-            delete t->f8[i];
-            t->f8[i] = 0;
-        }
-    }
-}
 static inline void a57(T *t) {
     u32 i;
     for (i = 0; i < t->f16; i++) {
         ALLOC(lbl_8035AAA8, t->f8[i], new C80111028)
     }
 }
-static inline void k2(T *t, u32 &j) {
-            for (j = 0; j < t->f18; j++) {
-                if (t->f12[j]) {
-                    if (t->f12[j]->f72) t->f12[j]->v1();
-                    delete t->f12[j];
-                    t->f12[j] = 0;
-                }
+static inline void kAB(T *t) {
+    u32 i;
+    if (t->f8) {
+        for (i = 0; i < t->f16; i++) {
+            if (t->f8[i]) {
+                if (t->f8[i]->f488) fn_80110E5C(t->f8[i]);
+                delete t->f8[i];
+                t->f8[i] = 0;
             }
-}
-static inline void k3(T *t) {
-    u32 j;
-            for (j = 0; j < t->f18; j++) {
-                if (t->f12[j]) {
-                    if (t->f12[j]->f72) t->f12[j]->v1();
-                    delete t->f12[j];
-                    t->f12[j] = 0;
-                }
+        }
+        delete[] t->f8;
+    }
+    if (t->f12) {
+        for (i = 0; i < t->f18; i++) {
+            if (t->f12[i]) {
+                if (t->f12[i]->f72) t->f12[i]->v1();
+                delete t->f12[i];
+                t->f12[i] = 0;
             }
+        }
+        delete[] t->f12;
+    }
 }
 void fn_8010AD40(T *t, u32 a, char *b, u32 c, u32 d) {
     C80215F50 ld;
     u8 flag[8];
     u32 i;
-    u32 j;
     void *g;
     R *r;
     char *buf;
     u32 tok;
     int e;
     if (t->f0) {
-        if (t->f8) {
-            k1(t);
-            delete[] t->f8;
-        }
-        if (t->f12) {
-            k2(t, j);
-            delete[] t->f12;
-        }
+        kAB(t);
         t->f0 = 0;
         t->f8 = 0;
         t->f12 = 0;
@@ -158,11 +144,11 @@ void fn_8010AD40(T *t, u32 a, char *b, u32 c, u32 d) {
     delete[] buf;
     for (i = 0; i < t->f16; i++) {
         flag[0] = 0;
-        fn_8010FD54(t->f8[i], t->f4, lbl_8035AAA4[i], c, flag, d);
+        fn_8010FD54((*(C80111028 **volatile *)&t->f8)[i], t->f4, (*(char **volatile *)&lbl_8035AAA4)[i], c, flag, d);
     }
     for (i = 0; i < t->f18; i++) {
         flag[0] = 0;
-        fn_8010BF74(t->f12[i], t->f4, lbl_8035AAA0[i], c, flag, 0, 1);
+        fn_8010BF74((*(C8010C29C **volatile *)&t->f12)[i], t->f4, (*(char **volatile *)&lbl_8035AAA0)[i], c, flag, 0, 1);
     }
     if (lbl_8035AAA4) { fa(lbl_8035AAA4, t->f16); lbl_8035AAA4 = 0; }
     if (lbl_8035AAA0) { fa(lbl_8035AAA0, t->f18); lbl_8035AAA0 = 0; }
