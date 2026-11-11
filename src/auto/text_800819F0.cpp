@@ -17,14 +17,16 @@ R4 *fn_8022D694(void *);
 f64 fn_800F04FC(f64, f64);
 P *fn_80242144(P *, int);
 void fn_80242BC0(P *, void *, void *, int, f32 *, int);
-static inline u32 idx(P *p) {
-    u32 v = (s32)(*p->f440 & p->f456) >> 27;
-    return v == 3 ? 1 : v;
-}
-static inline void set(P *p, f32 r) {
+static inline u32 bits(P *p) { return (s32)(*p->f440 & p->f456) >> 27; }
+static inline u32 idx(P *p) { u32 v = bits(p); return v == 3 ? 1 : v; }
+static inline void set(P *p, f32 v) {
     f32 s;
     u32 k;
-    fn_8022D694(p->f224)->f4 = r;
+    u32 w = *p->f440;
+    E **a = p->f208;
+    w = (s32)(w & p->f456) >> 27;
+    f32 c = (f32)a[w == 3 ? 1 : w]->f52;
+    fn_8022D694(p->f224)->f4 = c * v;
     *p->f440 &= ~p->f460;
     s = lbl_8035FC28;
     k = idx(p);
@@ -40,7 +42,7 @@ void fn_800819F0(P *p, void *str) {
     } else {
         p->f428 = p->f228;
         tmp = *p->f236;
-        set(p, (f32)p->f208[idx(p)]->f52 * tmp);
+        set(p, tmp);
     }
     fn_80242BC0(fn_80242144(p, 1), str, p->f224, 0, p->f236, 0);
 }
