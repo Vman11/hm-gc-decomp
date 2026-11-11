@@ -496,7 +496,7 @@ void fn_80066F30(P *p, f32 dt) {
             }
             fn_800FFA4C(&q220, &u, &up, &w);
             f = lbl_8035E7BC * lbl_80306630[0];
-            if (lbl_8035E758 == f) f = lbl_8035E75C;
+            if ((*(f32 *)&lbl_8035E758) == f) f = lbl_8035E75C;
             else f = dt / f;
             if (f > lbl_8035E75C) f = lbl_8035E75C;
             else if (f < lbl_8035E758) f = lbl_8035E758;
@@ -525,5 +525,6 @@ void fn_80066F30(P *p, f32 dt) {
         if (p->pos.z < (h != 0 ? *h : lbl_8035E758)) p->ctl->play(lbl_8035E7D0, 0, 0, 0, 0);
     }
 }
+
 
 }
