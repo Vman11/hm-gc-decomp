@@ -22,8 +22,10 @@ static inline u32 idx(P *p) { u32 v = bits(p); return v == 3 ? 1 : v; }
 static inline void set(P *p, f32 v) {
     f32 s;
     u32 k;
+    u32 w = *p->f440;
     E **a = p->f208;
-    f32 c = (f32)a[idx(p)]->f52;
+    w = (s32)(w & p->f456) >> 27;
+    f32 c = (f32)a[w == 3 ? 1 : w]->f52;
     fn_8022D694(p->f224)->f4 = c * v;
     *p->f440 &= ~p->f460;
     s = lbl_8035FC28;
