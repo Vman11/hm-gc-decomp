@@ -3,40 +3,6 @@
 
 
 
-extern const double lbl_8029BF20[];
-asm unsigned __cvt_fp2unsigned(double d) {
-    nofralloc
-    stwu r1, -16(r1)
-    lis r4, lbl_8029BF20@h
-    ori r4, r4, lbl_8029BF20@l
-    li r3, 0
-    lfd f0, 0(r4)
-    lfd f3, 8(r4)
-    lfd f4, 16(r4)
-    fcmpu cr0, f1, f0
-    fcmpu cr6, f1, f3
-    blt cr0, L_end
-    addi r3, r3, -1
-    bge cr6, L_end
-    fcmpu cr7, f1, f4
-    fmr f2, f1
-    blt cr7, L_cv
-    fsub f2, f1, f4
-L_cv:
-    fctiwz f2, f2
-    stfd f2, 8(r1)
-    lwz r3, 12(r1)
-    blt cr7, L_end
-    addis r3, r3, -32768
-L_end:
-    addi r1, r1, 16
-    blr
-}
-
-int GetR2__Fv_800E2C60(int r2) {
-    return r2;
-}
-
 asm s32 fn_800E24F0(void *p) {
     nofralloc
     lwz r5, 0(r3)
@@ -85,4 +51,34 @@ asm void __ptmf_scall(void) {
 loc_0x20:
     mtctr r12
     bctr
+}
+
+extern const double lbl_8029BF20[];
+asm unsigned __cvt_fp2unsigned(double d) {
+    nofralloc
+    stwu r1, -16(r1)
+    lis r4, lbl_8029BF20@h
+    ori r4, r4, lbl_8029BF20@l
+    li r3, 0
+    lfd f0, 0(r4)
+    lfd f3, 8(r4)
+    lfd f4, 16(r4)
+    fcmpu cr0, f1, f0
+    fcmpu cr6, f1, f3
+    blt cr0, L_end
+    addi r3, r3, -1
+    bge cr6, L_end
+    fcmpu cr7, f1, f4
+    fmr f2, f1
+    blt cr7, L_cv
+    fsub f2, f1, f4
+L_cv:
+    fctiwz f2, f2
+    stfd f2, 8(r1)
+    lwz r3, 12(r1)
+    blt cr7, L_end
+    addis r3, r3, -32768
+L_end:
+    addi r1, r1, 16
+    blr
 }

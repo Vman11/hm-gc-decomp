@@ -1746,7 +1746,7 @@ config.libs = [
             Object(Matching, "auto/text_800E2480.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_800E24A8.cpp", extra_cflags=["-Cpp_exceptions on"]),
             Object(Matching, "auto/text_800E24D0.cpp", extra_cflags=["-Cpp_exceptions on"]),
-            Object(NonMatching, "auto/text_800E24F0.c"),
+            Object(Matching, "auto/text_800E24F0.c"),
             Object(Matching, "runtime/arith.c", mw_version="GC/1.2.5n"),
             Object(Matching, "runtime/__init_cpp_exceptions.cpp"),
             Object(Matching, "runtime/Gecko_ExceptionPPC.cp", extra_cflags=["-Cpp_exceptions on", "-use_lmw_stmw on", "-RTTI on", "-str reuse,readonly"], extab_padding=[0x02, 0x55]),
