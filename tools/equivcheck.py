@@ -7,7 +7,8 @@ config/<version>/regequiv.txt and this script is the safety net that replaces th
 plain sha1 check:
 
   a) both DOLs have the same size and section table, and every byte outside .text
-     is identical;
+     is identical, except register-number fields of C++ exception actions in the
+     extab entries of listed functions (rule e);
   b) every differing .text word lies inside a function listed in regequiv.txt;
   c) in each such function every instruction pair has the same opcode and the same
      non-register fields (immediates, displacements, branch targets, condition bits);
@@ -51,6 +52,16 @@ plain sha1 check:
      registers the callee can return unchanged). Functions with an unresolved bctr,
      a call into the middle of another function, or unreachable code that differs
      are rejected, as is anything the decoder does not know.
+  e) extab (since 2026-11-11, wUM): an exception action that destroys / deletes an object
+     held in a register names that register (flag 0x80 on the first u16 operand, 0x40 on the
+     second). The extab entry of a listed function may differ from the original ONLY in the
+     u16 register operand of a DELETEPOINTER (0x0A) or DELETEPOINTERCOND (0x0B) action
+     (decoded from the entry's PC ranges and action chains; an entry that is not fully
+     understood must be byte-identical), and only if at every call inside the PC ranges that
+     use the action the register in ours holds exactly the definitions (same(...) of rule d)
+     the original's register holds there. The same equality is required for every other
+     register operand of the function's actions even when it is unchanged. Everything else
+     in extab and all of extabindex stays byte-identical.
   --strict uses the first version of rule d) instead: ONE renaming for the whole
      function (a bijection orig -> ours, separately for GPRs, FPRs and CR fields)
      that is the identity on every register visible across an ABI boundary:
@@ -997,28 +1008,32 @@ class Program:
                     inw.add(t)
         return IN
 
-    def check(self, fn, ours):
-        """Compare the function with our words. Returns (ok, text)."""
+    def check(self, fn, ours, xpairs=None):
+        """Compare the function with our words. xpairs: extab register operands, see
+        extab_pairs. Returns (ok, text)."""
         if self.strict:
+            if xpairs and any(a != b for v in xpairs.values() for a, b in v):
+                return False, 'extab register operands differ (not supported with --strict)'
             return self.check_strict(fn, ours)
-        return self.check_webs(fn, ours)
+        return self.check_webs(fn, ours, xpairs)
 
-    def check_webs(self, fn, ours):
+    def check_webs(self, fn, ours, xpairs=None):
         """Per-live-range equivalence (see the module docstring). A function that fails is
         tried once more with copy forwarding (see _fwdflow)."""
-        ok, text = self._check_webs(fn, ours, False)
-        if not ok and ('different value' in text or 'implicit use' in text):
-            ok2, text2 = self._check_webs(fn, ours, True)
+        ok, text = self._check_webs(fn, ours, False, xpairs)
+        if not ok and ('different value' in text or 'implicit use' in text or 'extab' in text):
+            ok2, text2 = self._check_webs(fn, ours, True, xpairs)
             if ok2:
                 return ok2, text2
         return ok, text
 
-    def _check_webs(self, fn, ours, fwd):
+    def _check_webs(self, fn, ours, fwd, xpairs=None):
         orig = fn.words
         n = fn.n
         if len(ours) != n:
             return False, 'length differs'
-        if ours == orig:
+        xdiff = bool(xpairs) and any(a != b for v in xpairs.values() for a, b in v)
+        if ours == orig and not xdiff:
             return True, 'exact'
         why = self.unsupported(fn)
         if why:
@@ -1096,6 +1111,11 @@ class Program:
                 wo = orig[i]
                 ops = dec(wo)[0]
                 ro, ru = RO[i], RU[i]
+                if xpairs and i in xpairs:
+                    for a, c in xpairs[i]:
+                        if not same(a, c):
+                            return False, 'extab names %s for the object the original keeps in %s at the call at %s' % (
+                                rname2(c), rname2(a), at)
                 rd = [k for k, o in enumerate(ops) if o[3] & (RD | SAVE)]
                 bad = [k for k in rd if not same(ro[k], ru[k])]
                 if bad:
@@ -1146,6 +1166,8 @@ class Program:
         txt = ' '.join('%s->%s(%d)' % (rname2(o), rname2(u), c) for (o, u), c in sorted(moved.items()))
         if swaps:
             txt += ' +%d commutative swap(s)' % swaps
+        if xdiff:
+            txt += ' +extab operands renamed'
         return True, 'regequiv ' + (txt.strip() or 'reads renamed only')
 
     def check_strict(self, fn, ours):
@@ -1245,6 +1267,85 @@ def rname(base, n):
     return {GP: 'r', FP: 'f', CRF: 'cr'}[base] + str(n)
 
 
+# ---- extab (C++ exception tables) ------------------------------------------
+# Entry: u16 flags, u16 0, then ranges {u32 start (bytes from the function), u16 size (WORDS),
+# u16 action offset (from the entry start)} ended by a u32 0, then the actions. An action starts
+# with a byte (bit 0x80 = last of its chain, low 7 bits = type) and a flags byte (0x80: the first
+# u16 operand is a register number, 0x40: the second one). Sizes in bytes of the types seen in
+# the original (6209 of 6413 entries tile exactly with them); register operands: (offset, flag bit).
+EXSZ = {2: 8, 6: 12, 7: 12, 8: 16, 10: 8, 11: 12}
+EXREG = {2: ((2, 0x80),), 6: ((2, 0x80),), 7: ((2, 0x80),), 8: ((2, 0x80), (4, 0x40)),
+         10: ((2, 0x80),), 11: ((2, 0x80), (4, 0x40))}
+EXVARY = (10, 11)      # only these may differ between original and ours
+
+
+def extab_fields(ent):
+    """Register operands of one extab entry (bytes). None when the entry is not fully understood
+    (no operand may then differ), else {offset: (mayvary, [(pc_start, pc_end)])}."""
+    n = len(ent)
+    if n < 8:
+        return {}
+    p, rngs = 4, []
+    while True:
+        if p + 4 > n:
+            return None
+        if ent[p:p + 4] == b'\0\0\0\0':
+            break
+        if p + 8 > n:
+            return None
+        st, sz, ao = struct.unpack('>IHH', ent[p:p + 8])
+        rngs.append((st, st + 4 * sz, ao))
+        p += 8
+    out = {}
+    for st, en, ao in rngs:
+        q = ao
+        while True:
+            if q + 2 > n:
+                return None
+            a, fl = ent[q], ent[q + 1]
+            t = a & 0x7F
+            if t not in EXSZ or q + EXSZ[t] > n:
+                return None
+            for off, bit in EXREG.get(t, ()):
+                if fl & bit:
+                    v = out.setdefault(q + off, (t in EXVARY, []))
+                    v[1].append((st, en))
+            q += EXSZ[t]
+            if a & 0x80:
+                break
+    return out
+
+
+def extab_pairs(fn, ent_o, ent_u):
+    """Compare the extab entries of fn. Returns (pairs, why): pairs maps an instruction index
+    to [(orig reg, our reg)] that must hold the same definitions there; why is not None when the
+    entries differ in more than the register operands that may vary."""
+    if len(ent_o) != len(ent_u):
+        return None, 'extab entry size differs'
+    diff = [i for i in range(len(ent_o)) if ent_o[i] != ent_u[i]]
+    fields = extab_fields(ent_o)
+    if fields is None:
+        return {}, ('extab entry of %s is not understood but differs' % fn.name) if diff else None
+    covered = set()
+    pairs = {}
+    for off, (vary, rngs) in fields.items():
+        ro, ru = struct.unpack('>HH', ent_o[off:off + 2] + ent_u[off:off + 2])
+        if ro >= 32:
+            return None, 'extab register operand %d at +%#x' % (ro, off)
+        if ro != ru:
+            if not vary or ru >= 32:
+                return None, 'extab operand at +%#x differs (r%d vs %d)' % (off, ro, ru)
+            covered.update((off, off + 1))
+        for st, en in rngs:
+            for i in range(st // 4, (en + 3) // 4):
+                if i in fn.call:
+                    pairs.setdefault(i, set()).add((ro, ru))
+    for i in diff:
+        if i not in covered:
+            return None, 'extab byte +%#x differs outside the register operands that may vary' % i
+    return {i: sorted(v) for i, v in pairs.items()}, None
+
+
 class Dol:
     def __init__(self, path):
         self.data = d = open(path, 'rb').read()
@@ -1286,6 +1387,46 @@ def load_allow(path):
     return [l.split('#')[0].strip() for l in open(path) if l.split('#')[0].strip()]
 
 
+def extab_ranges(P):
+    """(extab start, end, extabindex start, end) from the splits of the unit list."""
+    lo, hi = {}, {}
+    for line in open(P['splits']):
+        m = re.match(r'\s+(extab|extabindex)\s+start:0x([0-9A-Fa-f]+) end:0x([0-9A-Fa-f]+)', line)
+        if m:
+            k = m.group(1)
+            lo[k] = min(lo.get(k, 1 << 40), int(m.group(2), 16))
+            hi[k] = max(hi.get(k, 0), int(m.group(3), 16))
+    return lo['extab'], hi['extab'], lo['extabindex'], hi['extabindex']
+
+
+class Extab:
+    """The extab entries of the ORIGINAL and of ours, per function (see extab_pairs)."""
+
+    def __init__(self, orig, ours, P):
+        self.orig, self.ours = orig, ours
+        self.a0, self.a1, ia, ib = extab_ranges(P)
+        self.fn_x = {}              # function address -> extab entry address
+        xs = set()
+        for a in range(ia, ib, 12):
+            f, _sz, x = struct.unpack('>3I', orig.data[orig.find(a):orig.find(a) + 12])
+            if self.a0 <= x < self.a1:
+                self.fn_x.setdefault(f, x)
+                xs.add(x)
+        self.xs = sorted(xs) + [self.a1]
+        self.x_fns = {}
+        for f, x in self.fn_x.items():
+            self.x_fns.setdefault(x, []).append(f)
+
+    def entry_of(self, a):
+        k = bisect.bisect_right(self.xs, a) - 1
+        return self.xs[k] if 0 <= k < len(self.xs) - 1 else None
+
+    def bytes_of(self, dol, x):
+        n = self.xs[bisect.bisect_right(self.xs, x)] - x
+        off = dol.find(x)
+        return dol.data[off:off + n]
+
+
 def check_dol(args, P):
     orig = Dol(P['orig'])
     if not os.path.exists(P['dol']):
@@ -1298,14 +1439,23 @@ def check_dol(args, P):
     text = max((s for s in orig.secs if s[3]), key=lambda s: s[2])
     toff, taddr, tsize, _ = text
     bad = 0
+    exd = {}        # extab entry address -> True, for entries with differing bytes
     if orig.data[:toff] != ours.data[:toff] or orig.data[toff + tsize:] != ours.data[toff + tsize:]:
+        ex = Extab(orig, ours, P)
+        exoff = orig.find(ex.a0)
         for i in range(0, len(orig.data), 4):
             if not toff <= i < toff + tsize and orig.data[i:i + 4] != ours.data[i:i + 4]:
+                if exoff is not None and exoff <= i < exoff + ex.a1 - ex.a0 and ex.entry_of(ex.a0 + i - exoff):
+                    exd[ex.entry_of(ex.a0 + i - exoff)] = True
+                    continue
                 print('FAIL: byte difference outside .text at file offset 0x%x' % i)
                 bad += 1
                 if bad >= 10:
                     break
-        return 1
+        if bad:
+            return 1
+    else:
+        ex = None
     if orig.data == ours.data:
         print('OK: main.dol is byte-identical to the original')
         return 0
@@ -1328,13 +1478,30 @@ def check_dol(args, P):
     prog = Program(orig, syms)
     prog.strict = args.strict
     npass = 0
+    for x in sorted(exd):               # functions whose extab entry differs must be listed, and are checked
+        for f in ex.x_fns.get(x, ()):
+            fn = prog.fns.get(f)
+            if fn is None or fn.name not in allow:
+                print('FAIL extab entry %08x differs, function %s is not listed in %s' % (
+                    x, fn.name if fn else '%08x' % f, os.path.relpath(P['allow'], ROOT)))
+                bad += 1
+            else:
+                touched.setdefault(fn.name, 0)
     for name, cnt in sorted(touched.items()):
         fn = prog.byname[name]
         if name not in allow:
             print('FAIL %s: %d differing words, not listed in %s' % (name, cnt, os.path.relpath(P['allow'], ROOT)))
             bad += 1
             continue
-        ok, text_ = prog.check(fn, ours.words(fn.addr, 4 * fn.n))
+        xpairs = None
+        if ex is not None and fn.addr in ex.fn_x:
+            x = ex.fn_x[fn.addr]
+            xpairs, why = extab_pairs(fn, ex.bytes_of(orig, x), ex.bytes_of(ours, x))
+            if why:
+                print('FAIL %s: %s' % (name, why))
+                bad += 1
+                continue
+        ok, text_ = prog.check(fn, ours.words(fn.addr, 4 * fn.n), xpairs)
         print('%s %s: %s' % ('PASS' if ok else 'FAIL', name, text_))
         if ok:
             npass += 1
@@ -1645,9 +1812,55 @@ class _Fake:
         return self.mem.get(addr)
 
 
+def extab_synth():
+    """Hand-made extab cases (wUM): returns the number of problems."""
+    def li(d, i): return 14 << 26 | d << 21 | i
+    def mr(d, sr): return 31 << 26 | sr << 21 | d << 16 | sr << 11 | 444 << 1
+    def add(d, a, b): return 31 << 26 | d << 21 | a << 16 | b << 11 | 266 << 1
+    def bl(at): return 18 << 26 | ((0x1000 - at) & 0x3FFFFFC) | 1
+    blr = 0x4E800020
+    A = 0x2000
+    orig = [bl(A), mr(30, 3), li(31, 1), bl(A + 12), add(3, 30, 31), li(30, 0), li(31, 0), blr]
+    swap = [bl(A), mr(31, 3), li(30, 1), bl(A + 12), add(3, 31, 30), li(30, 0), li(31, 0), blr]
+
+    def entry(typ=0x8B, flags=0x40, cond=8, reg=30, pad=b'\xb1\x02'):
+        # one range: words 1..3 (the call at word 3), then the action chain
+        h = struct.pack('>HHIHH', 0x5008, 0, 4, 3, 0x10) + b'\0\0\0\0'
+        if typ & 0x7F == 11:
+            return h + struct.pack('>BBHH', typ, flags, cond, reg) + pad + b'\0\0\0\0'
+        return h + struct.pack('>BBH', typ, flags, reg) + b'\0\0\0\0'
+    prog = Program(_Fake({0x1000: blr, **{A + 4 * k: w for k, w in enumerate(orig)}}),
+                   [('g', 0x1000, 4), ('f', A, 4 * len(orig))])
+    prog.strict = False
+    fn = prog.byname['f']
+    cases = [
+        # (name, our code, original entry, our entry, must pass)
+        ('extab rename, consistent', swap, entry(), entry(reg=31), True),
+        ('extab rename, wrong register', swap, entry(), entry(reg=30), False),
+        ('extab rename, register of the other object', orig, entry(), entry(reg=31), False),
+        ('extab rename, unchanged and consistent', orig, entry(), entry(), True),
+        ('extab unchanged but object moved', swap, entry(), entry(), False),
+        ('extab rename, flags byte changed', swap, entry(), entry(reg=31, flags=0x60), False),
+        ('extab rename, cond operand changed', swap, entry(), entry(reg=31, cond=12), False),
+        ('extab rename, padding changed', swap, entry(), entry(reg=31, pad=b'\x06\x6c'), False),
+        ('extab rename, action type changed', swap, entry(), entry(typ=0x8A, reg=31), False),
+        ('extab rename, register out of range', swap, entry(), entry(reg=0x1f1f), False),
+        ('extab rename, DESTROYLOCAL operand', swap, entry(0x82, 0x80), entry(0x82, 0x80, reg=31), False),
+        ('extab rename, DELETEPOINTER operand', swap, entry(0x8A, 0x80), entry(0x8A, 0x80, reg=31), True),
+    ]
+    bad = 0
+    for name, ours, eo, eu, want in cases:
+        pairs, why = extab_pairs(fn, eo, eu)
+        ok, text_ = (False, why) if why else prog.check(fn, ours, pairs)
+        print('%s synthetic %s: %s' % ('ok  ' if ok == want else 'FAIL', name, text_))
+        if ok != want:
+            bad += 1
+    return bad
+
+
 def synth_run():
     """Run the hand-made cases; returns the number of problems."""
-    bad = 0
+    bad = extab_synth()
     for name, tgt, ours, want in synth_tests():
         mem = {0x1000: 0x4E800020}
         for k, w in enumerate(tgt):

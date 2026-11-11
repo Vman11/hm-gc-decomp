@@ -40,7 +40,7 @@ register-equivalent function later becomes exact, remove it from the list.
 
 - `config/GHYE6S/regequiv.txt` is the allowlist: one function name per line (`fn_80228D7C`), `#` comments.
 - `python3 tools/equivcheck.py` compares `build/GHYE6S/main.dol` with `orig/GHYE6S/sys/main.dol` and exits nonzero
-  unless: the size, the section table and every byte outside `.text` are identical; every differing `.text` word is
+  unless: the size, the section table and every byte outside `.text` are identical (exception: extab, next bullet); every differing `.text` word is
   inside a listed function; in those functions every instruction has the same opcode and the same immediates,
   displacements, branch targets and condition bits; and the register fields are a renaming of **live ranges**
   (since 2026-11-11, second version): every operand that is read must be reached by the same definitions (same
@@ -59,6 +59,15 @@ register-equivalent function later becomes exact, remove it from the list.
   functions of a unit WOULD pass, by comparing `build/GHYE6S/src/<unit>.o` with `build/GHYE6S/obj/<unit>.o`. A unit
   reported `QUALIFIES` has only exact and register-equivalent functions. The link can still fail the real check for
   data or extab reasons.
+- **extab register operands** (2026-11-11, wUM): C++ exception actions that destroy/delete an object held in a register name
+  that register (DELETEPOINTER 0x0A / DELETEPOINTERCOND 0x0B: u16 operand, flag 0x80 first / 0x40 second operand), so a
+  register rename shows up in `extab`. `equivcheck.py` accepts differing extab bytes only in that u16 of a DELETEPOINTER/
+  DELETEPOINTERCOND action of a function listed in `regequiv.txt` (decoded via extabindex -> PC ranges -> action chain;
+  entries it cannot decode must be identical) and only if, at every call inside the action's PC range, the register named
+  in ours holds exactly the definitions the original register holds (the same rule d) test); the unchanged register
+  operands of listed functions are checked the same way. Padding, flags, cond/stack operands, extabindex stay identical
+  (use `extab_padding`). `--selftest` covers consistent / wrong-register / changed-byte cases. Linked this way:
+  text_801E26B0, text_80212DA4.
 - To link such a unit: set it `Matching`, add its register-equivalent functions to `regequiv.txt`, `ninja
   build/GHYE6S/main.dol`, `python3 tools/equivcheck.py`, then `sha1sum build/GHYE6S/main.dol >
   config/GHYE6S/build.sha1` and commit `build.sha1` in the same commit. Never update `build.sha1` without a passing
