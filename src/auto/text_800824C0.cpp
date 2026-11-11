@@ -1,6 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-// NonMatching draft (wGJ): 16 lines off, only r4/r5 swapped in the two Go() else branches (flag word vs fd0 table).
+// Matched (w43/w2, from the wGJ draft): Pos() reads the flag word into a local `w` BEFORE loading the fd0 table
+// pointer, and `#pragma opt_propagation off` around fn_800824C0 keeps `w` from being substituted back, so the
+// fd0 vreg is created between the two flag-word loads (fixes the r4/r5 swap in both Go() else branches).
+// Its int->float magic consts (lbl_8035FC30/FC38) are shared with text_800819F0/80081C1C/80082D44 (.sdata2).
 #include "common.h"
 
 extern "C" {
@@ -56,8 +59,11 @@ inline void Upd(Ob *o) {
     }
     *o->f1b8 |= (u32)(sp * (f32)fn_800F04FC(lbl_8035FC20, o->f1b4));
 }
-inline f32 Pos(Ob *o, Cl **tb, f32 x) {
-    u32 m = Mode(o);
+inline f32 Pos(Ob *o, f32 x) {
+    u32 w = *o->f1b8;
+    Cl **tb = o->fd0;
+    u32 v = (s32)(w & o->f1c8) >> 27;
+    u32 m = v == 3 ? 1 : v;
     f32 n = tb[m]->f52;
     return n * x;
 }
@@ -71,12 +77,14 @@ inline void Go(Ob *o, char *s) {
         o->f1ac = o->fe4;
         f32 x = *o->fec;
         v = x;
-        fn_8022D694(o->fe0)->f4 = Pos(o, o->fd0, x);
+        fn_8022D694(o->fe0)->f4 = Pos(o, x);
         Upd(o);
     }
     fn_80242BC0(fn_80242144(o, 1), s, o->fe0, 0, o->fec, 0);
 }
 
+#pragma push
+#pragma opt_propagation off
 void fn_800824C0(Ob *o, f32 dt) {
     char *str = lbl_80298A60;
     if ((*o->f1b8 & o->f1bc) == 0 && fn_8022C558(o->fe0)) {
@@ -123,5 +131,6 @@ void fn_800824C0(Ob *o, f32 dt) {
     }
     fn_8023FE08(o, dt);
 }
+#pragma pop
 
 } /* extern "C" */
