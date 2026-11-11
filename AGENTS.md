@@ -19,7 +19,7 @@ This is the matching decompilation of The Haunted Mansion (GameCube, GHYE6S). Re
 
 ## Hard rules
 
-1. `build/GHYE6S/main.dol` must stay **byte-identical**: `sha1sum -c config/GHYE6S/build.sha1` must say OK before every commit.
+1. `build/GHYE6S/main.dol` must stay **byte-identical or register-equivalent** to the original: `python3 tools/equivcheck.py` must say OK before every commit (see "Register-equivalent matches" below), and `config/GHYE6S/build.sha1` must hold the hash of the DOL you built, so plain `ninja` passes.
 2. Commit in batches. End commit messages with the project's standard trailer (see existing commits).
 3. On the machine set up by decomp.wtf (toolchains under `~/.local/share/decompnet`), never run bare `python3 configure.py`: it would switch `build.ninja` to downloaded tools under `build/`. ninja re-runs configure automatically when `configure.py` changes. If you must regenerate by hand:
    ```
@@ -30,6 +30,34 @@ This is the matching decompilation of The Haunted Mansion (GameCube, GHYE6S). Re
    On any other machine, plain `python3 configure.py` (as in README.md) downloads the tools into `build/` and is correct; `ninja build/binutils` fetches objdump for the scripts.
 4. Apply a candidate exactly once. Applying, then `git checkout`, then re-applying leaves untracked `.cpp` files and creates duplicate definitions. To roll back use `git checkout -- . && git clean -fdq -e 'zz_q*' src/`.
 5. The judge writes temp files `src/auto/zz_*`. They are gitignored; never commit them.
+
+## Register-equivalent matches (policy since 2026-11-11)
+
+A function whose **only** difference from the original is which registers hold the values counts as matched: its
+unit is set to `Matching` in `configure.py` and its C is linked. `main.dol` is then no longer byte-identical to the
+retail DOL, so the sha1 check alone is not the safety net any more. Exact matches are still preferred; when a
+register-equivalent function later becomes exact, remove it from the list.
+
+- `config/GHYE6S/regequiv.txt` is the allowlist: one function name per line (`fn_80228D7C`), `#` comments.
+- `python3 tools/equivcheck.py` compares `build/GHYE6S/main.dol` with `orig/GHYE6S/sys/main.dol` and exits nonzero
+  unless: the size, the section table and every byte outside `.text` are identical; every differing `.text` word is
+  inside a listed function; in those functions every instruction has the same opcode and the same immediates,
+  displacements, branch targets and condition bits; and **one renaming for the whole function** (a bijection, separate
+  for GPRs, FPRs and CR fields) explains all register fields. The renaming must leave alone r0/r1/r2/r13, parameters
+  (registers live at entry), anything a callee may read at a call, results read after a call, r3/f1 (and r4) when the
+  function writes them, and implicitly used registers; it cannot move a value between a volatile and a callee-saved
+  register. The exact rules are in the docstring. It prints one `PASS`/`FAIL` line per differing function.
+- `python3 tools/equivcheck.py --list auto/text_8019A7D0 [unit:fn | fn ...]` tells, without linking, whether the
+  functions of a unit WOULD pass, by comparing `build/GHYE6S/src/<unit>.o` with `build/GHYE6S/obj/<unit>.o`. A unit
+  reported `QUALIFIES` has only exact and register-equivalent functions. The link can still fail the real check for
+  data or extab reasons.
+- To link such a unit: set it `Matching`, add its register-equivalent functions to `regequiv.txt`, `ninja
+  build/GHYE6S/main.dol`, `python3 tools/equivcheck.py`, then `sha1sum build/GHYE6S/main.dol >
+  config/GHYE6S/build.sha1` and commit `build.sha1` in the same commit. Never update `build.sha1` without a passing
+  equivcheck.
+- Most register differences are NOT accepted: the usual case, where only some live ranges moved (r4 here, r0 there)
+  or a commutative operand order changed, has no whole-function renaming and stays `NonMatching`.
+- `report.json` / objdiff still show a linked register-equivalent function below 100%.
 
 ## Tools (tools/decomp_agent/)
 
