@@ -28420,6 +28420,7 @@ auto/text_80212DA4.cpp:
 	extab       start:0x800142A8 end:0x800142D8
 	extabindex  start:0x80026F9C end:0x80026FA8
 	.text       start:0x80212DA4 end:0x8021324C
+	.rodata     start:0x802A72F8 end:0x802A7428
 
 auto/text_8021324C.c:
 	.text       start:0x8021324C end:0x80213268
