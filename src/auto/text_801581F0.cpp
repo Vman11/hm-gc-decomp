@@ -32,17 +32,19 @@ void fn_800D590C(u32, u32, u32, u32, u8);
 int fn_8014C4B4(Slot *, Fmt *);
 void fn_8014C734(Slot *);
 void fn_8014C784(void *, Fmt *);
-static inline void AttrFmts(int v, Fmt *f) {
+static inline void TcLoop(int v, Fmt *f) {
+    u32 i;
+    for (i = 0; i < f->n; i++) fn_800D590C(v, i + 13, 1, lbl_802E6AA0[f->tc[i]], lbl_802E6B24[f->tc[i]]);
+}
+static inline void AttrFmts(u32 v, Fmt *f) {
     u8 c8 = f->b8;
     u32 c11 = f->b11;
-    u32 i;
     fn_800D590C(v, 9, 1, lbl_802E6AA0[c8], lbl_802E6B24[c8]);
     fn_800D590C(v, 10, 0, lbl_802E6AA0[c11], lbl_802E6B24[c11]);
     if (f->fl & 0x1000) fn_800D590C(v, 25, 1, lbl_802E6AA0[c11], lbl_802E6B24[c11]);
-    for (i = 0; i < f->n; i++) fn_800D590C(v, i + 13, 1, lbl_802E6AA0[f->tc[i]], lbl_802E6B24[f->tc[i]]);
+    TcLoop(v, f);
 }
-static inline u32 Tail(Ctx *c, Geo *g, Fmt *l) {
-    u32 vf;
+static inline u32 Tail(Ctx *c, Geo *g, Fmt *l, u32 &vf) {
     Slot *sl;
     u32 h = (g->fl >> 5) & 1;
     u32 fl = l->fl;
@@ -61,7 +63,12 @@ static inline u32 Tail(Ctx *c, Geo *g, Fmt *l) {
 u32 fn_801581F0(Ctx *c, Geo *g, u32 mode, int x, int y, Buf *b) {
     Fmt l;
     Fmt *f;
-    u32 n8, stride, n11, off, tot;
+    u32 n8;
+    u32 stride;
+    u32 vf;
+    u32 n11;
+    u32 off;
+    u32 tot;
     fn_8014CA08(&l);
     f = &g->fmt;
     fn_800D58D4();
@@ -134,6 +141,6 @@ u32 fn_801581F0(Ctx *c, Geo *g, u32 mode, int x, int y, Buf *b) {
     }
     if (f->x4 == 1 || (f->fl & 0x400 && f->x4 == 0)) fn_800D5488(0, 1);
     if ((mode & 0xC) == 0xC) l.fl = (l.fl & ~0x800) | 0x1000;
-    return Tail(c, g, &l);
+    return Tail(c, g, &l, vf);
 }
 }

@@ -35,7 +35,7 @@ extern FT lbl_803286D0;
 void fn_80241628(void *, s32, s32);
 void fn_800F6E88(K8 *, u8 *);
 int fn_8003C674(void *, K8 *, R0 **);
-void fn_8019B7E8(void *);
+void fn_8019B7E8(void *, H2 *);
 void __ct__9C80253F24Fiiii(G *, char *, int, int, int);
 void fn_802491DC(O *, int);
 void fn_80101820(V3 *);
@@ -66,7 +66,7 @@ void fn_800AA770(O *o, s32 idx) {
         fn_800F6E88(&k, o->f224->f140);
         if (fn_8003C674(lbl_8035A0A4, &k, &r) && r && r->f0) {
             o->f224->p19();
-            if (!o->f224->f156->f72) fn_8019B7E8(lbl_8035B65C->f12);
+            { H2 *h = o->f224->f156; if (!h->f72) fn_8019B7E8(lbl_8035B65C->f12, h); }
             __ct__9C80253F24Fiiii(lbl_8035B65C, lbl_80362228, 0, 0, 0);
             o->f280 = 1;
             fn_802491DC(o, 0);

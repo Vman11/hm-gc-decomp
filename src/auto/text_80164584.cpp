@@ -28,17 +28,18 @@ static inline void mode(X *x, int a, int b) {
         fn_800D7CA4(0, x->f1132, 0, x->f1144, x->f1148, x->f1152, x->f1156);
     }
 }
-void fn_80164584(T *t, u32 idx, S *s, V *pos, V *dir) {
+void fn_80164584(T *__restrict t, u32 idx, S *s, V *__restrict pos, V *__restrict dir) {
     if (idx >= 8) return;
     Pool *p = t->f6452;
     L *l;
     if (p->n >= 512) l = 0;
     else l = &p->arr[p->n++];
     if (!l) return;
-    t->f6808[idx] = l;
-    t->f6772[idx] = 2;
-    f32 r = s->c[0], g = s->c[1], b = s->c[2], a = s->c[3];
-    f32 K = lbl_80364698;
+    *(L *volatile *)&t->f6808[idx] = l;
+    *(volatile int *)&t->f6772[idx] = 2;
+    f32 K, r, g, b, a;
+    r = *(volatile f32 *)&s->c[0]; g = s->c[1]; b = s->c[2]; a = s->c[3];
+    K = *(volatile f32 *)&lbl_80364698;
     r *= K; g *= K; b *= K; a *= K;
     C4 c((int)r, (int)g, (int)b, (int)a);
     fn_800D79F4(l, c);
@@ -47,18 +48,12 @@ void fn_80164584(T *t, u32 idx, S *s, V *pos, V *dir) {
     mode(t->f6456, t->f6568, t->f6572);
     fn_800D77F4(l, 3, lbl_8036469C * (lbl_803646A0 * s->f56));
     fn_800D77C8(l, s->f64, s->f68, s->f72);
-    f32 px = *(volatile f32 *)&pos->x;
-    f32 py = pos->y;
-    f32 pz = pos->z;
-    f32 dx = dir->x;
-    t->f6580[idx].x = px;
-    f32 dy = dir->y;
-    t->f6580[idx].y = py;
-    f32 dz = dir->z;
-    t->f6580[idx].z = pz;
-    t->f6676[idx].x = dx;
-    t->f6676[idx].y = dy;
-    t->f6676[idx].z = dz;
+    t->f6580[idx].x = pos->x;
+    t->f6580[idx].y = pos->y;
+    t->f6580[idx].z = pos->z;
+    t->f6676[idx].x = dir->x;
+    t->f6676[idx].y = dir->y;
+    t->f6676[idx].z = dir->z;
     if (t->f12 & 2) {
         V o;
         lbl_803286D0.f404(t->f6452->f10888, dir, &o);
@@ -67,7 +62,7 @@ void fn_80164584(T *t, u32 idx, S *s, V *pos, V *dir) {
         fn_800D7984(l, o.x, o.y, o.z);
         fn_800D7A0C(l, 1 << idx);
     } else {
-        fn_800D79B0(l, dx, dy, dz);
+        fn_800D79B0(l, dir->x, dir->y, dir->z);
         fn_800D7984(l, pos->x, pos->y, pos->z);
     }
 }

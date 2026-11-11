@@ -1,7 +1,6 @@
 # Functions linked from C although they differ from the original in register numbers only.
 # One function name per line. Checked by tools/equivcheck.py (see AGENTS.md, "Register-equivalent matches").
 fn_8019A7D0
-fn_800F8274
 fn_801683BC
 fn_8016B254
 fn_80170798
@@ -20,5 +19,9 @@ fn_80189BA4
 fn_80199430
 fn_801C6674
 fn_8021C470
+fn_8013213C
+fn_8015F2C0
+fn_8015AA6C
+fn_801578A4
 fn_80266230
 fn_801886C4

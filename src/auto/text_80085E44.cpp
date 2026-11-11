@@ -145,9 +145,13 @@ void fn_80085E44(O *p, void *a)
     }
     fn_80101744(&v, &p->v280);
     {
-    f32 nx = v.y * lbl_8035FE10 - v.z * lbl_8035FDF8;
-    f32 ny = v.z * lbl_8035FDF8 - v.x * lbl_8035FE10;
-    f32 nz = v.x * lbl_8035FDF8 - v.y * lbl_8035FDF8;
+    f32 vx = v.x;
+    f32 vy = v.y;
+    f32 vz = v.z;
+    f32 ny, nx, nz;
+    nx = vy * lbl_8035FE10 - vz * lbl_8035FDF8;
+    ny = -(vx * lbl_8035FE10 - vz * lbl_8035FDF8);
+    nz = vx * *(f32 *)&lbl_8035FDF8 - vy * *(f32 *)&lbl_8035FDF8;
     *(volatile f32 *)&n.z = nz;
     *(volatile f32 *)&n.x = nx;
     *(volatile f32 *)&n.y = ny;
@@ -204,8 +208,8 @@ void fn_80085E44(O *p, void *a)
         p->v280.x *= r;
         p->v280.y *= r;
         p->v280.z *= r;
-        p->v316 = p->v280;
     }
+    p->v316 = p->v280;
     p->f888->s13();
     p->s14(lbl_8035FE34);
 }

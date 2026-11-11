@@ -1,33 +1,41 @@
 /* Functions from 0x80151710 to 0x80151958, found by decomp-toolkit. */
 #include "common.h"
 
-void fn_80151710(f32 *m, f32 *p) {
-    extern f32 lbl_8036453C, lbl_80364540, lbl_80364544;
-    f32 a, b, c, x, y, z, d;
-    a = p[0]; y = p[1]; z = p[2];
-    b = y; c = z;
-    x = a * lbl_80364540;
-    y *= lbl_80364540;
-    z *= lbl_80364540;
-    d = -p[3];
-    m[0] = -(x * a - lbl_8036453C);
-    m[4] = -(x * b);
-    m[8] = -(x * c);
-    m[12] = lbl_80364544;
-    m[1] = -(y * a);
-    m[5] = -(y * b - lbl_8036453C);
-    m[9] = -(y * c);
-    m[13] = lbl_80364544;
-    m[2] = -(z * a);
-    m[6] = -(z * b);
-    m[10] = -(z * c - lbl_8036453C);
-    m[14] = lbl_80364544;
-    m[3] = x * d;
-    m[7] = y * d;
-    m[11] = z * d;
-    m[15] = lbl_8036453C;
-}
+extern "C" {
+extern f32 lbl_80364540;
+extern f32 lbl_8036453C;
+extern f32 lbl_80364544;
 
+
+/* QV=2.0p1 */
+void fn_80151710(f32 m[4][4], const f32 *p) {
+    f32 x2;
+    f32 y2 = p[1];
+    f32 z2 = p[2];
+    f32 x = p[0];
+    x2 = x * lbl_80364540;
+    y2 *= lbl_80364540;
+    z2 *= lbl_80364540;
+    m[0][0] = lbl_8036453C - x2 * x;
+    m[1][0] = -(x2 * p[1]);
+    m[2][0] = -(x2 * p[2]);
+    m[3][0] = lbl_80364544;
+    m[0][1] = -(y2 * x);
+    m[1][1] = lbl_8036453C - y2 * p[1];
+    m[2][1] = -(y2 * p[2]);
+    m[3][1] = lbl_80364544;
+    m[0][2] = -(z2 * x);
+    m[1][2] = -(z2 * p[1]);
+    m[2][2] = lbl_8036453C - z2 * p[2];
+    m[3][2] = lbl_80364544;
+    x2 *= -p[3];
+    y2 *= -p[3];
+    z2 *= -p[3];
+    m[0][3] = x2;
+    m[1][3] = y2;
+    m[2][3] = z2;
+    m[3][3] = lbl_8036453C;
+}
 void fn_801517E4(void *arg0, f32 farg0, f32 farg1) {
     extern f32 lbl_8036453C;
     extern f32 lbl_80364544;
@@ -91,3 +99,4 @@ void fn_801518DC(void *arg0, f32 farg0, f32 farg1) {
     M2C_FIELD(arg0, f32 *, 0x3C) = (f32) lbl_8036453C;
 }
 
+} /* extern "C" */

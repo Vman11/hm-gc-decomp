@@ -72,10 +72,10 @@ void fn_8004B388(P *p) {
     *(volatile f32 *)&f.z = VK(lbl_8035D364);
     fn_80101820(&f);
     u.x = lbl_8035D364;
-    u.y = u.z = lbl_8035D34C;
-    r.z = f.x * u.y - f.y * u.x;
+    u.y = u.z = *(f32 *)&lbl_8035D34C;
     r.x = f.y * u.z - f.z * u.y;
     r.y = f.z * u.x - f.x * u.z;
+    r.z = f.x * u.y - f.y * u.x;
     fn_80101820(&r);
     u.x = r.y * f.z - r.z * f.y;
     u.y = r.z * f.x - r.x * f.z;

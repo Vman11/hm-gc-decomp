@@ -60,12 +60,12 @@ void fn_8002F3C8(O *o) {
         Look(*(void **)(lbl_8035A1DC + 13232), lbl_8035B950, pool + 24, o->x164);
     }
     {
-        volatile T12 t; { s32 z, y, x; T12 *s = &lbl_802AF7A0; x = s->v[0]; y = s->v[1]; z = s->v[2]; t.v[0] = x; t.v[1] = y; t.v[2] = z; }
-        fn_80253AD8(lbl_8035B65C, o, &t, lbl_8035BBE8);
+        T12 t; { s32 z, y, x; T12 *s = &lbl_802AF7A0; x = s->v[0]; y = s->v[1]; z = s->v[2]; t.v[1] = y; t.v[0] = x; *(volatile u32 *)&t.v[2] = z; }
+        fn_80253AD8(lbl_8035B65C, o, (volatile T12 *)&t, lbl_8035BBE8);
     }
     {
-        volatile T12 t; { s32 z, y, x; T12 *s = &lbl_802AF7AC; x = s->v[0]; y = s->v[1]; z = s->v[2]; t.v[0] = x; t.v[1] = y; t.v[2] = z; }
-        fn_80253AD8(lbl_8035B65C, o, &t, lbl_8035BBF0);
+        T12 t; { s32 z, y, x; T12 *s = &lbl_802AF7AC; x = s->v[0]; y = s->v[1]; z = s->v[2]; t.v[1] = y; t.v[0] = x; *(volatile u32 *)&t.v[2] = z; }
+        fn_80253AD8(lbl_8035B65C, o, (volatile T12 *)&t, lbl_8035BBF0);
     }
     if (o->arr) {
         int i;

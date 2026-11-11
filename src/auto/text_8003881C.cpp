@@ -23,7 +23,7 @@ extern char lbl_8035BFEC[4];
 extern char lbl_8035BFF0[7];
 extern char lbl_8035BFF8[6];
 extern char lbl_8035C000[5];
-void fn_800303A8(char *);
+void fn_800303A8(char *, T *);
 void fn_800F6E88(char *, char *);
 XV *fn_801AA960(void *, char *, char *);
 void fn_801C30E8(T *, Ev *);
@@ -57,7 +57,7 @@ void fn_8003881C(W *w, Msg *m) {
     XV *x;
     if (w->t60 == 0) t = lbl_8035B7E4->t;
     else t = w->t60;
-    if (lbl_8035B65C) fn_800303A8(name);
+    if (lbl_8035B65C) fn_800303A8(name, w->t60);
     else fn_800F6E88(name, lbl_8035BFEC);
     x = 0;
     if (name != 0 && w->f32 != 0) x = fn_801AA960(lbl_8035A1DC->db, lbl_8035BFF0, name);

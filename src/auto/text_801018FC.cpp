@@ -1,6 +1,8 @@
 /* Functions from 0x801018FC to 0x80101A90, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 typedef struct {
     u32 unk0;
     u32 unk4;
@@ -62,18 +64,36 @@ void fn_801019A4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2, u8 arg3, u8 arg4,
     arg0->unkB = arg6;
 }
 
-static inline void setB(UnkStruct_801018FC *s, u8 a) { u32 v; s->unk8 = a; v = 0; if (s->unk0 & 0x800) v = a; s->unkB = v; }
-void fn_801019E4(UnkStruct_801018FC *arg0, u32 arg1, u32 arg2) {
-    u32 v;
-    if (arg2 < 1) { arg1 &= ~0x200; arg0->unk9 = 0; }
-    else { arg0->unk9 = 0x1F; if (arg2 > 4) arg2 = 4; arg1 |= lbl_80363848; }
-    arg0->unk0 = arg1;
-    arg0->unk4 = arg2;
-    setB(arg0, 0x1F);
-    v = 0;
-    if (arg0->unk0 & 0x400) v = 8;
-    arg0->unkA = v;
+typedef struct { u32 flags; u32 n; u8 f8; u8 f9; u8 f10; u8 f11; } S801019E4;
+
+#pragma opt_propagation off
+#pragma optimization_level 1
+void fn_801019E4(S801019E4 *s, u32 flags, u32 n) {
+    u8 t;
+    u8 v;
+    if (n < 1) {
+        flags &= ~0x200;
+        s->f9 = 0;
+    } else {
+        s->f9 = 31;
+        if (n > 4) n = 4;
+        flags |= lbl_80363848;
+    }
+    s->flags = flags;
+    v = 31;
+    s->n = n;
+    s->f8 = v;
+    t = 0;
+    if (s->flags & 0x800) t = v;
+    s->f11 = t;
+    t = 0;
+    if (s->flags & 0x400) t = 8;
+    s->f10 = t;
 }
+#pragma optimization_level reset
+#pragma opt_propagation reset
+
+
 
 void fn_80101A5C(UnkStruct_801018FC *arg0) {
     arg0->unk0 = 0;
@@ -89,3 +109,4 @@ u32 fn_80101A7C(s32 arg0) {
     return lbl_802E22B8[arg0];
 }
 
+} /* extern "C" */

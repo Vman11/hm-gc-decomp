@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching (DIFF 10, SDIFF 0): f1c product fixed via temp; left: f3/f4 swap (K33C vs dir.z) in the dot.
+// Matching: the dot-product zero constant read once plainly and once as *(const f32 *)&lbl_8035F33C (fixes the K33C/dir.z FPR colouring).
 
 extern "C" {
 
@@ -81,8 +81,8 @@ void fn_8007148C(T_7148C *t) {
             }
             char *s = ent[i]->f64;
             if (*s) {
-                V_7148C up; up.x = lbl_8035F33C; up.y = lbl_8035F33C; up.z = lbl_8035F354;
-                                if ((f32)__fabs(lbl_8035F354 - dot2_7148C(up, dir[i])) < lbl_8035F358) {
+                V_7148C up; up.x = lbl_8035F33C; up.y = *(const f32 *)&lbl_8035F33C; up.z = lbl_8035F354;
+                if ((f32)__fabs(lbl_8035F354 - dot2_7148C(up, dir[i])) < lbl_8035F358) {
                     snd_7148C(t, s, pos[i]);
                 }
             }

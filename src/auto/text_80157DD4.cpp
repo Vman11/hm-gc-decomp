@@ -30,9 +30,8 @@ static inline void AttrFmts(int v, Fmt *f) {
     fn_800D590C(v, 9, 1, lbl_802E6AA0[c8], lbl_802E6B24[c8]);
     fn_800D590C(v, 10, 0, lbl_802E6AA0[c11], lbl_802E6B24[c11]);
     if (f->fl & 0x1000) fn_800D590C(v, 25, 1, lbl_802E6AA0[c11], lbl_802E6B24[c11]);
-    u32 *t1 = lbl_802E6B24; u32 *t0 = lbl_802E6AA0;
     n = f->n;
-    for (i = 0; i < n; i++) fn_800D590C(v, i + 13, 1, t0[f->tc[i]], t1[f->tc[i]]);
+    for (i = 0; i < n; i++) fn_800D590C(v, i + 13, 1, lbl_802E6AA0[f->tc[i]], lbl_802E6B24[f->tc[i]]);
 }
 static inline u32 Tail(Ctx *c, Fmt *f) {
     u32 vf;

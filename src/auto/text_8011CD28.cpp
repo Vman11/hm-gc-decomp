@@ -1,45 +1,65 @@
 #include "common.h"
+// fn_8011CD28: NonMatching draft (DIFF 2: the final self->head store is scheduled after it->prev = 0;
+// writing the two stores in target order swaps the self/it callee-saved registers instead).
+
 extern "C" {
-struct S;
-struct N { N *next; N *prev; s32 a8; s32 c12; u32 b16; void *q20; S *s24; };
-struct S {
-    u8 pad0[0x20];
-    N *free32;
-    N *tail36;
-    u8 pad28[0x10];
-    N **list56;
-    u8 pad3c[4];
-    u32 n64;
-};
-s32 fn_8011DDE0(void *, N *);
-void fn_80118FC4(N ***, N *);
-static inline N *find(S *p, void *q, s32 a, u32 b) {
+typedef struct Item8011 {
+    struct Item8011 *next;
+    struct Item8011 *prev;
+    s32 f8;
+    u32 fC;
+    u32 f10;
+    u32 f14;
+    void *f18;
+} Item8011;
+
+typedef struct Self8011 {
+    u8 pad0[32];
+    Item8011 *head;
+    Item8011 *tail;
+    u8 pad28[16];
+    Item8011 **items;
+    u32 f3C;
+    u32 count;
+} Self8011;
+
+s32 fn_8011DDE0(u32 a, Item8011 *it);
+void fn_80118FC4(void *vec, Item8011 *it);
+
+static inline Item8011 *find8011(Self8011 *self, u32 a, s32 b, u32 c) {
     u32 i;
-    for (i = 0; i < p->n64; i++) {
-        N *e = p->list56[i];
-        if (e->q20 == q && e->a8 == a && e->b16 == b) return e;
+    for (i = 0; i < self->count; i++) {
+        Item8011 *it = self->items[i];
+        if (it->f14 == a && it->f8 == b && it->f10 == c) return it;
     }
     return 0;
 }
-void fn_8011CD28(S *p, void *q, s32 a, s32 c, u32 b) {
-    if (!find(p, q, a, b)) {
-        N *n = p->free32;
-        if (n) {
-            if ((p->free32 = n->next) != 0) p->free32->prev = 0;
-            else p->tail36 = 0;
-        }
-        n->q20 = q;
-        n->a8 = a;
-        n->b16 = b;
-        n->s24 = p;
-        if (fn_8011DDE0(q, n)) {
-            fn_80118FC4(&p->list56, n);
-        } else {
-            if ((n->next = p->free32) != 0) p->free32->prev = n;
-            else p->tail36 = n;
-            p->free32 = n;
-            n->prev = 0;
-        }
+
+static inline Item8011 *pop8011(Self8011 *self) {
+    Item8011 *it = self->head;
+    if (it != 0) {
+        if ((self->head = it->next) != 0) self->head->prev = 0;
+        else self->tail = 0;
+    }
+    return it;
+}
+
+void fn_8011CD28(Self8011 *__restrict self, u32 a, s32 b, s32 d, u32 c) {
+    Item8011 *__restrict it;
+    if (find8011(self, a, b, c) != 0) return;
+    it = pop8011(self);
+    it->f14 = a;
+    it->f8 = b;
+    it->f10 = c;
+    it->f18 = self;
+    if (fn_8011DDE0(a, it) != 0) {
+        fn_80118FC4(&self->items, it);
+    } else {
+        if ((it->next = self->head) != 0) self->head->prev = it;
+        else self->tail = it;
+        it->prev = 0;
+        self->head = it;
     }
 }
-}
+
+} /* extern "C" */

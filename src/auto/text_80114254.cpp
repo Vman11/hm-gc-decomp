@@ -3,9 +3,20 @@
 #include "common.h"
 
 extern "C" {
-struct H { u8 p[0x10]; u32 n; };
+
+/* QV=2.0p1 */
 void *memmove(void *, const void *, u32);
-struct O { H *h; u32 f4; virtual void v0(); virtual void v1(); virtual void v2(); virtual void setN(u32); u8 *buf; };
-static inline void del(u8 *p, u32 n) { u8 *d = p++; memmove(d, p, n); }
-void fn_80114254(O *o, u32 i) { u32 j = i + 1; if (j < o->h->n) del(o->buf + i, o->h->n - j); o->setN(o->h->n - 1); }
+} /* extern "C" */
+struct H80114254 { u8 pad[16]; u32 len; };
+struct B80114254 { H80114254 *h; u32 f4; virtual void p0(); virtual void p1(); virtual void p2(); virtual void m(int); };
+struct S80114254 : B80114254 { u8 *data; };
+extern "C" {
+void fn_80114254(S80114254 *s, s32 idx) {
+    u32 n = idx + 1;
+    if (n < s->h->len) {
+        memmove(s->data + idx, &s->data[idx + 1], s->h->len - (idx + 1));
+    }
+    s->m(s->h->len - 1);
 }
+
+} /* extern "C" */
