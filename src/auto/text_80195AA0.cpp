@@ -33,7 +33,8 @@ extern "C" void fn_80195AA0(O_80195AA0 *o, void *a, L_80195AA0 *l, void *b, void
         u32 idx;
         f32 s;
         nm1 = l->n - 1;
-        s = (f32)(s32)l->n / (o->p->a + o->p->b);
+        f32 fb = *(volatile f32 *)&o->p->b;
+        s = (f32)(s32)l->n / (o->p->a + fb);
         cur = o->buf + o->head;
         end = o->buf + o->tail;
         o->r->begin(a, o->p, o->m);
