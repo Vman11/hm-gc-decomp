@@ -57,6 +57,9 @@ static inline void Base181(char *path, K181 *k) {
     len = !d ? strlen(s) : d - s;
     if (len >= 8) { memcpy(k, s, 8); } else { memcpy(k, s, len); k->d[len] = 0; }
 }
+static inline EF0_181 *At1(P181 *p, u32 i) { return &p->f4[i]; }
+static inline E60_181 *At2(P181 *p, u32 i) { return &p->f14[i]; }
+
 void fn_80181088(P181 *p, A181 *a, void *b) {
     EF0_181 *e1; E60_181 *e2; u32 i; K181 k;
     for (i = 0; i < p->f66; i++) fn_80215534(&p->f20[i], a->fc, lbl_8035AE00[i], b);
@@ -67,14 +70,14 @@ void fn_80181088(P181 *p, A181 *a, void *b) {
     for (i = 0; i < p->f5c; i++) fn_80184D9C(&p->fc[i], a, lbl_8035ADEC[i], b);
     for (i = 0; i < p->f5e; i++) fn_8018AB8C(&p->f10[i], a, lbl_8035ADF0[i], b);
     for (i = 0; i < p->f58; i++) {
-        e1 = &p->f4[i];
+        e1 = At1(p, i);
         fn_80193E60(e1, a, lbl_8035ADE4[i], b);
         Base181(lbl_8035ADE4[i], &k);
         fn_800F87F0(p->f30, &k, e1);
     }
     for (i = 0; i < p->f60; i++) fn_8017EA48(&p->f1c[i], a, lbl_8035ADF4[i], b);
     for (i = 0; i < p->f62; i++) {
-        e2 = &p->f14[i];
+        e2 = At2(p, i);
         fn_8019BE80(e2, a, lbl_8035ADF8[i], b);
         Base181(lbl_8035ADF8[i], &k);
         fn_800F87F0(p->f44, &k, e2);
