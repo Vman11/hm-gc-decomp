@@ -115,6 +115,8 @@ After applying: `ninja`, then remove the touched units from `tools/rea/c2cpp_rej
 
 ## Matching cookbook (GC/1.3.2)
 
+- **Allocate-then-construct without the extra `mr r0,r3`** (found 2026-11-11 on `fn_8003BC2C`, collaborator range): write it as `q = (C *)nw(n); if (q) ctor(q); p->f = q;` with a `void` ctor. That gives the target's `mr. r31,r3; beq; bl ctor; stw r31,...`. Minimal repro: `/home/mi/Decomp/hm-work/wVB/repro/EXTRA_MR_2*` (Claude workers' scratch dir; ask if you can't see it).
+
 - **Virtual calls**: vtable slot = (disp − 8) / 4. If the vptr is at offset N, model the class as `struct V { u8 pad[N]; virtual …; }`.
 - **Register order**: the first-declared local tends to get r31, and parameter registers follow first use. Try permutations (`perm.py`). Reusing a parameter (`p = p->next`) reproduces register reuse. Declare all locals at the top for sequential loops.
 - **Branches**: `beq x; b y` comes from a ternary or a single-case `switch`. Two compares on the same cr come from an inline helper with its own check.
