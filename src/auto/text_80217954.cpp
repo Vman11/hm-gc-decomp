@@ -23,6 +23,8 @@ u32 fn_801578A4(u8 *, u32 *, u32);
 void fn_800D51E0(void *);
 void DCInvalidateRange(void *, u32);
 void fn_800D52E8(void);
+#pragma push
+#pragma opt_lifetimes off
 void fn_80217954(Dl *d, u8 *base, Mat *m, u8 prim, u16 *idx, u16 cnt, int off) {
     u8 vf;
     u16 *p;
@@ -98,5 +100,7 @@ void fn_80217954(Dl *d, u8 *base, Mat *m, u8 prim, u16 *idx, u16 cnt, int off) {
     }
     fn_800D52E8();
 }
+#pragma pop
+
 
 } /* extern "C" */
