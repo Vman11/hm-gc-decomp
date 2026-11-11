@@ -11,10 +11,43 @@ plain sha1 check:
   b) every differing .text word lies inside a function listed in regequiv.txt;
   c) in each such function every instruction pair has the same opcode and the same
      non-register fields (immediates, displacements, branch targets, condition bits);
-  d) one consistent register renaming (a bijection orig -> ours, separately for
-     GPRs, FPRs and CR fields) explains all register fields of the function, and
-     the renaming is the identity on every register that is visible across an ABI
-     boundary:
+  d) the register fields are explained by a renaming of LIVE RANGES. Both versions
+     are analysed over the control-flow graph of the original (branches, and bctr
+     through the original's jump tables): for every register the set of definitions
+     that can reach each instruction is computed, where a definition is an
+     (instruction, operand) position, the value a register has at function entry,
+     or the write a call / an implicit result (cr0 of a record form, lmw, ...)
+     makes. The function passes when
+       - every register operand that is read is reached by exactly the same set of
+         definition positions in both versions, and by the same register number
+         when one of them is an entry value, a call result or an implicit write.
+         So a value may sit in r29 in one region and in r30 in another, and two
+         values that are live at the same time can never share a register in ours
+         (the clobbered one would be reached by a different definition);
+       - the two source operands of add, addc, adde, and, or, xor, nand, nor, eqv,
+         mullw, mulhw(u), fadd(s), fmul(s) and the multiplicands of f(n)madd/f(n)msub
+         may be exchanged (for the float ones this ignores which NaN payload is
+         propagated when both operands are NaN);
+       - at every call: r1, r2, r13, every argument register (r3-r10, f1-f8) written
+         in the same basic block before the call, and every volatile register the
+         callee may read (its live-in set over the whole original program;
+         r3-r10, f1-f8, cr1 for indirect or undecodable callees) hold the same
+         definitions in the same register number;
+       - at every return: r3, r4, f1, every callee-saved register, r1, r2, r13 and
+         any volatile register that some caller reads after the call do;
+       - implicitly used registers (CR logic, mfcr, stmw/lmw ranges) do.
+     A value that is live across a call therefore has to be in a callee-saved
+     register in ours as well, and results are read from the ABI registers.
+     Assumptions: a callee does not interpret the caller's callee-saved registers
+     (it only saves and restores them); a volatile register other than r3/r4/f1
+     that a call leaves behind matters only when the caller reads it with its own
+     instructions (for those, and for r3/r4/f1, a call is transparent for the
+     registers the callee can return unchanged). Functions with an unresolved bctr,
+     a call into the middle of another function, or unreachable code that differs
+     are rejected, as is anything the decoder does not know.
+  --strict uses the first version of rule d) instead: ONE renaming for the whole
+     function (a bijection orig -> ours, separately for GPRs, FPRs and CR fields)
+     that is the identity on every register visible across an ABI boundary:
        - r0, r1, r2, r13;
        - registers live at function entry (parameters; saving a callee-saved
          register to the stack frame is not counted as a read);
@@ -35,6 +68,8 @@ plain sha1 check:
 
 Usage:
   python3 tools/equivcheck.py                 check build/<v>/main.dol (exit 1 on violation)
+  python3 tools/equivcheck.py --strict ...    same, with the whole-function renaming rule
+  python3 tools/equivcheck.py --selftest      the listed functions must pass, corrupted copies must fail
   python3 tools/equivcheck.py --list U ...    would these pass? U is a unit (auto/text_8002BDD4),
                                               unit:fn or a function name; compares
                                               build/<v>/src/<unit>.o with build/<v>/obj/<unit>.o
@@ -85,6 +120,12 @@ FSTOREX = {663, 727, 983}
 FSTOREUX = {695, 759}
 CACHE = {86, 54, 278, 246, 1014, 470, 982}
 CRLOG = {257, 449, 193, 225, 33, 289, 129, 417}
+
+COMM_DAB = {266, 10, 138, 235, 75, 11}       # add addc adde mullw mulhw mulhwu
+COMM_ASB = {28, 444, 316, 476, 124, 284}     # and or xor nand nor eqv
+RETREGS = R3 | R4 | F1
+VOLLIST = [b for b in range(96) if VOL >> b & 1]
+KEEP = bits(GP, [1, 2, 13])
 
 _memo = {}
 
@@ -389,6 +430,34 @@ def _dec(w):
     return (tuple(ops), use, defs, pin, kind, rel, cond, regmask, closed)
 
 
+def comm(w):
+    """Indexes (into dec(w).ops) of two source operands that may be exchanged, else None."""
+    op = w >> 26
+    if op == 31:
+        xo = (w >> 1) & 1023
+        x9 = xo & 511
+        if xo in COMM_ASB or (x9 in COMM_DAB and not (xo >= 512 and x9 in (75, 11))):
+            return (1, 2)
+    elif op in (59, 63):
+        x5 = (w >> 1) & 31
+        if x5 in (21, 25):          # fadd A,B / fmul A,C
+            return (1, 2)
+        if x5 in (28, 29, 30, 31):  # fmsub fmadd fnmsub fnmadd: A*C
+            return (1, 3)
+    return None
+
+
+def regbits(mask):
+    out = []
+    b = 0
+    while mask:
+        if mask & 1:
+            out.append(b)
+        mask >>= 1
+        b += 1
+    return out
+
+
 class Fn:
     """Control flow and register use of one function of the ORIGINAL program."""
 
@@ -411,6 +480,8 @@ class Fn:
         self.leader = set([0])
         self.livein = ARGS_ALL
         self.live = None
+        self.web = None
+        self.rd = None
         end = addr + 4 * n
         for i, w in enumerate(words):
             d = dec(w)
@@ -562,6 +633,65 @@ class Fn:
             self.calluse = cu
         return live
 
+    def passthru(self, thru_of):
+        """Volatile registers that may still hold their entry value at a return."""
+        n = self.n
+        succ, call = self.succ, self.call
+        kill = self.defs[:]
+        for i, t in call.items():
+            kill[i] = VOL & ~thru_of(t)
+        unt = [0] * n
+        unt[0] = VOL
+        changed = True
+        while changed:
+            changed = False
+            for i in range(n):
+                m = unt[i]
+                if m:
+                    out = m & ~kill[i]
+                    for s in succ[i]:
+                        if out & ~unt[s]:
+                            unt[s] |= out
+                            if s <= i:
+                                changed = True
+        res = 0
+        for i in self.rets:
+            res |= (unt[i] & thru_of(call[i])) if i in call else unt[i]
+        return res
+
+    def xlive(self, retuse, thru_of):
+        """Liveness for reads by this function's own instructions (and by its callers
+        after the return: retuse), where a call only redefines what the callee cannot
+        pass through."""
+        n = self.n
+        succ, use = self.succ, self.xuse[:]
+        for i, w in enumerate(self.words):
+            # crclr/crset (crxor/creqv b,b,b): the old CR field is not really an input
+            if w >> 26 == 19 and (w >> 1) & 1023 in (193, 289) and \
+                    (w >> 21) & 31 == (w >> 16) & 31 == (w >> 11) & 31:
+                use[i] &= ~ALLCR
+            elif w >> 26 == 31 and (w >> 1) & 1023 == 144:   # mtcrf does not read the CR
+                use[i] &= ~ALLCR
+        kill = self.defs[:]
+        for i, t in self.call.items():
+            kill[i] = VOL & ~thru_of(t)
+        isret = [False] * n
+        for i in self.rets:
+            isret[i] = True
+        live = [0] * n
+        changed = True
+        while changed:
+            changed = False
+            for i in range(n - 1, -1, -1):
+                out = retuse if isret[i] else 0
+                for s in succ[i]:
+                    out |= live[s]
+                new = use[i] | (out & ~kill[i])
+                if new != live[i]:
+                    live[i] = new
+                    changed = True
+        return live
+
     def liveout(self, i, live=None):
         live = live or self.live
         out = 0
@@ -586,7 +716,22 @@ class Program:
             self.byname[name] = fn
         self.r4ret = set()
         self.indirect_r4 = False
+        self.strict = False
+        self.thru = None
+        self.xin = {}
+        self.starts = None
         self._solve()
+
+    def containing(self, t):
+        """Start address of the function that contains address t, else None."""
+        if t is None:
+            return None
+        if self.starts is None:
+            self.starts = sorted(self.fns)
+        k = bisect.bisect_right(self.starts, t) - 1
+        if k >= 0 and t < self.starts[k] + 4 * self.fns[self.starts[k]].n:
+            return self.starts[k]
+        return None
 
     def livein_of(self, t):
         fn = self.fns.get(t)
@@ -628,8 +773,294 @@ class Program:
                             if t in fns and not fns[t].opaque:
                                 dirty.add(t)
 
+    # ---- per-live-range check ------------------------------------------------
+
+    def thru_of(self, t):
+        return self.thru.get(t, VOL) if t is not None else VOL
+
+    def _solve_webs(self):
+        """Whole-program facts for check_webs: thru[f] = volatile registers f may
+        return with their entry value; retx[f] = volatile registers some caller
+        reads with its own instructions after calling f."""
+        if self.thru is not None:
+            return
+        fns = self.fns
+        thru = self.thru = {}
+        callers = {}
+        for a, fn in fns.items():
+            thru[a] = VOL if fn.opaque else 0
+            if not fn.opaque:
+                for t in fn.call.values():
+                    if t is not None:
+                        callers.setdefault(t, set()).add(a)
+        live_fns = set(a for a, fn in fns.items() if not fn.opaque)
+        dirty = set(live_fns)
+        while dirty:
+            todo = sorted(dirty)
+            dirty = set()
+            for a in todo:
+                m = fns[a].passthru(self.thru_of)
+                if m != thru[a]:
+                    thru[a] = m
+                    dirty |= callers.get(a, set()) & live_fns
+        retx = self.retx = dict.fromkeys(fns, 0)
+        self.ind_retx = 0
+        dirty = set(live_fns)
+        while dirty:
+            todo = sorted(dirty)
+            dirty = set()
+            ind0 = self.ind_retx
+            for a in todo:
+                fn = fns[a]
+                if not fn.call:
+                    continue
+                ru = retx[a] | self.ind_retx
+                live = fn.xlive(ru, self.thru_of)
+                for i, t in fn.call.items():
+                    m = (ru if i in fn.rets else fn.liveout(i, live)) & VOL
+                    if not m:
+                        continue
+                    if t not in fns:
+                        t = self.containing(t)    # entry in the middle of a function (_savegpr_NN)
+                    if t is None:
+                        self.ind_retx |= m
+                    elif m & ~retx[t]:
+                        retx[t] |= m
+                        if t in live_fns:
+                            dirty.add(t)
+            if self.ind_retx != ind0:
+                dirty = set(live_fns)
+
+    def unsupported(self, fn):
+        """Why the per-live-range check cannot analyse this function, else None."""
+        if fn.opaque:
+            return fn.opaque
+        if fn.bctr:
+            return 'indirect jump without a recognised jump table at %08x' % (fn.addr + 4 * min(fn.bctr))
+        for i, t in sorted(fn.call.items()):
+            if t is not None and t not in self.fns:
+                return 'call or branch to an address that is not a function start at %08x' % (fn.addr + 4 * i)
+        return None
+
+    def inputs_of(self, t):
+        """Registers a callee may read: its live-in set (a call inside it redefines the
+        volatile registers) plus what its own instructions read of the registers that
+        its callees can pass through."""
+        if t not in self.fns or self.fns[t].opaque:
+            return ARGS_ALL
+        m = self.xin.get(t)
+        if m is None:
+            m = self.xin[t] = self.fns[t].xlive(0, self.thru_of)[0] & VOL
+        return self.fns[t].livein | m
+
+    def _webinfo(self, fn):
+        """Position-only data of the original function, cached."""
+        if fn.web is not None:
+            return fn.web
+        n = fn.n
+        starts = sorted(l for l in fn.leader if l < n)
+        blocks = [(s, e) for s, e in zip(starts, starts[1:] + [n])]
+        bidx = {s: k for k, s in enumerate(starts)}
+        bsucc = [[bidx[t] for t in fn.succ[e - 1]] for _s, e in blocks]
+        iuse = [0] * n
+        idef = [0] * n
+        for i, w in enumerate(fn.words):
+            d = dec(w)
+            u, df = d[1], d[2]
+            if w >> 26 == 47:                                  # stmw reads its range
+                u |= bits(GP, range(d[8], 32))
+            if w >> 26 == 19 and (w >> 1) & 1023 in CRLOG:     # CR logic rewrites the field of BT
+                df |= 1 << (CRF + ((w >> 21) & 31) // 4)
+            if w >> 26 == 31 and (w >> 1) & 1023 == 144:       # mtcrf writes the selected fields
+                u &= ~ALLCR
+                df |= bits(CRF, [k for k in range(8) if w & (1 << (19 - k))])
+            iuse[i], idef[i] = u, df
+        fn.web = (blocks, bsucc, iuse, idef)
+        return fn.web
+
+    def _effects(self, fn, words, idef):
+        """Per instruction: [(state index, def-site bit, kills)]. State index r is the
+        register in the pass-through model, r+96 in the model where a call redefines
+        every volatile register."""
+        eff = []
+        for i, w in enumerate(words):
+            e = []
+            for k, (base, sh, wd, role) in enumerate(dec(w)[0]):
+                if role & WR:
+                    r = base + ((w >> sh) & ((1 << wd) - 1))
+                    b = 1 << (1 + 8 * i + k)
+                    e.append((r, b, True))
+                    e.append((r + 96, b, True))
+            ib = 1 << (8 * i + 8)
+            for r in regbits(idef[i]):
+                e.append((r, ib, True))
+                e.append((r + 96, ib, True))
+            if i in fn.call and i not in fn.rets:
+                th = self.thru_of(fn.call[i])
+                for r in VOLLIST:
+                    e.append((r, ib, not (th >> r) & 1))
+                    e.append((r + 96, ib, True))
+            eff.append(e)
+        return eff
+
+    @staticmethod
+    def _rdflow(eff, blocks, bsucc):
+        """Reaching definitions at the start of every basic block."""
+        summ = []
+        for s, e in blocks:
+            d = {}
+            for i in range(s, e):
+                for idx, bit, kill in eff[i]:
+                    if kill:
+                        d[idx] = (bit, True)
+                    else:
+                        g = d.get(idx)
+                        d[idx] = (g[0] | bit, g[1]) if g else (bit, False)
+            summ.append(d)
+        IN = [None] * len(blocks)
+        IN[0] = [1] * 192          # bit 0: the value the register has at entry
+        work = [0]
+        inw = {0}
+        while work:
+            b = work.pop()
+            inw.discard(b)
+            out = IN[b][:]
+            for idx, (g, k) in summ[b].items():
+                out[idx] = g if k else out[idx] | g
+            for t in bsucc[b]:
+                cur = IN[t]
+                ch = False
+                if cur is None:
+                    IN[t] = out[:]
+                    ch = True
+                else:
+                    for idx in range(192):
+                        v = out[idx]
+                        if v & ~cur[idx]:
+                            cur[idx] |= v
+                            ch = True
+                if ch and t not in inw:
+                    work.append(t)
+                    inw.add(t)
+        return IN
+
     def check(self, fn, ours):
         """Compare the function with our words. Returns (ok, text)."""
+        if self.strict:
+            return self.check_strict(fn, ours)
+        return self.check_webs(fn, ours)
+
+    def check_webs(self, fn, ours):
+        """Per-live-range equivalence (see the module docstring)."""
+        orig = fn.words
+        n = fn.n
+        if len(ours) != n:
+            return False, 'length differs'
+        if ours == orig:
+            return True, 'exact'
+        why = self.unsupported(fn)
+        if why:
+            return False, why
+        self._solve_webs()
+        RO, RU = [], []
+        for i, (wo, wu) in enumerate(zip(orig, ours)):
+            do, du = dec(wo), dec(wu)
+            at = '%08x' % (fn.addr + 4 * i)
+            if du is None or (wo ^ wu) & ~do[7] & 0xFFFFFFFF:
+                return False, 'non-register field differs at %s (%08x vs %08x)' % (at, wo, wu)
+            if [(b, sh, bool(r & WR), bool(r & (RD | SAVE))) for b, sh, _w, r in do[0]] != \
+               [(b, sh, bool(r & WR), bool(r & (RD | SAVE))) for b, sh, _w, r in du[0]]:
+                return False, 'operand form differs at %s (r0 as base)' % at
+            ro = [b + ((wo >> sh) & ((1 << wd) - 1)) for b, sh, wd, _r in do[0]]
+            ru = [b + ((wu >> sh) & ((1 << wd) - 1)) for b, sh, wd, _r in do[0]]
+            for regs, w in ((ro, wo), (ru, wu)):
+                wr = [r for r, o in zip(regs, do[0]) if o[3] & WR]
+                if len(wr) != len(set(wr)):
+                    return False, 'instruction writes one register twice at %s' % at
+            if wo >> 26 in (56, 57) and ro[0] != ru[0]:
+                # psq_l writes both halves of the register; the model only follows one value
+                return False, 'psq_l into a different register at %s' % at
+            RO.append(ro)
+            RU.append(ru)
+        blocks, bsucc, iuse, idef = self._webinfo(fn)
+        if fn.rd is None:
+            eo = self._effects(fn, orig, idef)
+            fn.rd = self._rdflow(eo, blocks, bsucc), eo
+        INO, EO = fn.rd
+        EU = self._effects(fn, ours, idef)
+        INU = self._rdflow(EU, blocks, bsucc)
+        idmask = ((1 << (8 * (n + 1))) - 1) // 255     # entry + every implicit/call def site
+        retv = RETREGS | self.retx[fn.addr] | self.ind_retx
+        moved = {}
+        swaps = 0
+        for b, (s, e) in enumerate(blocks):
+            if INO[b] is None:
+                if orig[s:e] != ours[s:e]:
+                    return False, 'differs in unreachable code at %08x' % (fn.addr + 4 * s)
+                continue
+            so, su = INO[b][:], INU[b][:]
+
+            def same(a, c, off=0):
+                x = so[a + off]
+                return x == su[c + off] and (a == c or not x & idmask)
+
+            written = 0
+            for i in range(s, e):
+                at = '%08x' % (fn.addr + 4 * i)
+                wo = orig[i]
+                ops = dec(wo)[0]
+                ro, ru = RO[i], RU[i]
+                rd = [k for k, o in enumerate(ops) if o[3] & (RD | SAVE)]
+                bad = [k for k in rd if not same(ro[k], ru[k])]
+                if bad:
+                    cp = comm(wo)
+                    sw = {cp[0]: cp[1], cp[1]: cp[0]} if cp else {}
+                    if cp and all(same(ro[k], ru[sw.get(k, k)]) for k in rd):
+                        swaps += 1
+                    else:
+                        k = bad[0]
+                        return False, 'operand reads a different value at %s (%s vs %s)' % (
+                            at, rname2(ro[k]), rname2(ru[k]))
+                for r in regbits(iuse[i]):
+                    if not same(r, r):
+                        return False, 'implicit use of %s differs at %s' % (rname2(r), at)
+                hard = soft = 0
+                if i in fn.call:
+                    cu = self.inputs_of(fn.call[i])
+                    hard = (cu & RETREGS) | written | KEEP
+                    soft = cu & ~hard & ~NONVOL
+                    written = 0
+                    if i in fn.rets:
+                        hard |= NONVOL | (retv & self.thru_of(fn.call[i]))
+                    what = 'call'
+                elif i in fn.rets:
+                    hard = retv | NONVOL | KEEP
+                    what = 'return'
+                else:
+                    for k, o in enumerate(ops):
+                        if o[3] & WR:
+                            written |= (1 << ro[k] | 1 << ru[k]) & ARGREGS
+                for r in regbits(hard):
+                    if not same(r, r):
+                        return False, '%s holds a different value at the %s at %s' % (rname2(r), what, at)
+                for r in regbits(soft):
+                    if not same(r, r, 96):
+                        return False, '%s (callee input) holds a different value at the call at %s' % (rname2(r), at)
+                for k, o in enumerate(ops):
+                    if o[3] & WR and ro[k] != ru[k]:
+                        key = (ro[k], ru[k])
+                        moved[key] = moved.get(key, 0) + 1
+                for idx, bit, kill in EO[i]:
+                    so[idx] = bit if kill else so[idx] | bit
+                for idx, bit, kill in EU[i]:
+                    su[idx] = bit if kill else su[idx] | bit
+        txt = ' '.join('%s->%s(%d)' % (rname2(o), rname2(u), c) for (o, u), c in sorted(moved.items()))
+        if swaps:
+            txt += ' +%d commutative swap(s)' % swaps
+        return True, 'regequiv ' + (txt.strip() or 'reads renamed only')
+
+    def check_strict(self, fn, ours):
+        """Whole-function renaming (the 2026-11-11 rule). Returns (ok, text)."""
         orig = fn.words
         if len(ours) != len(orig):
             return False, 'length differs'
@@ -717,6 +1148,10 @@ class Program:
         return True, 'regequiv ' + ' '.join(moved)
 
 
+def rname2(r):
+    return rname(r & ~31 if r < CRF else CRF, r & 31 if r < CRF else r - CRF)
+
+
 def rname(base, n):
     return {GP: 'r', FP: 'f', CRF: 'cr'}[base] + str(n)
 
@@ -802,6 +1237,7 @@ def check_dol(args, P):
             else:
                 touched[syms[k][0]] = touched.get(syms[k][0], 0) + 1
     prog = Program(orig, syms)
+    prog.strict = args.strict
     npass = 0
     for name, cnt in sorted(touched.items()):
         fn = prog.byname[name]
@@ -868,15 +1304,7 @@ class Obj:
         return words, rels
 
 
-def list_mode(args, P):
-    orig = Dol(P['orig'])
-    syms = load_syms(P['syms'])
-    prog = Program(orig, syms)
-    prog.symaddr = {}
-    for line in open(P['syms']):
-        m = re.match(r'^(\S+) = [^:]+:0x([0-9A-Fa-f]+);', line)
-        if m:
-            prog.symaddr.setdefault(m.group(1), set()).add(int(m.group(2), 16))
+def load_units(P):
     units = []  # (unit, start, end)
     cur = None
     for line in open(P['splits']):
@@ -885,6 +1313,23 @@ def list_mode(args, P):
         m = re.match(r'\s+\.text\s+start:0x([0-9A-Fa-f]+) end:0x([0-9A-Fa-f]+)', line)
         if m and cur:
             units.append((cur, int(m.group(1), 16), int(m.group(2), 16)))
+    return units
+
+
+def load_program(args, P):
+    prog = Program(Dol(P['orig']), load_syms(P['syms']))
+    prog.strict = args.strict
+    prog.symaddr = {}
+    for line in open(P['syms']):
+        m = re.match(r'^(\S+) = [^:]+:0x([0-9A-Fa-f]+);', line)
+        if m:
+            prog.symaddr.setdefault(m.group(1), set()).add(int(m.group(2), 16))
+    return prog
+
+
+def list_mode(args, P):
+    prog = load_program(args, P)
+    units = load_units(P)
     rc = 0
     for arg in args.list:
         unit, _, only = arg.partition(':')
@@ -925,42 +1370,206 @@ def list_mode(args, P):
 
 
 def list_one(prog, name, mine, tgt):
+    ours, text_, loose = obj_words(prog, name, mine, tgt)
+    if ours is None:
+        return False, text_
+    ok, text_ = prog.check(prog.byname[name], ours)
+    if ok and loose:
+        text_ += ' [%d local relocation target(s) not compared by name]' % loose
+    return ok, text_
+
+
+def obj_words(prog, name, mine, tgt):
+    """Our words of the function with the relocated fields taken from the original:
+    (words, None, loose) or (None, reason, 0)."""
     fn = prog.byname.get(name)
     if fn is None:
-        return False, 'not a function in symbols.txt'
+        return None, 'not a function in symbols.txt', 0
     m = mine.func(name)
     t = tgt.func(name)
     if m is None:
-        return False, 'missing in our object'
+        return None, 'missing in our object', 0
     mw, mr = m
     tw, tr = t
     if len(mw) != fn.n or len(tw) != fn.n:
-        return False, 'size differs (%d vs %d bytes)' % (4 * len(mw), 4 * fn.n)
+        return None, 'size differs (%d vs %d bytes)' % (4 * len(mw), 4 * fn.n), 0
     if sorted(mr) != sorted(tr):
-        return False, 'relocations at different places'
+        return None, 'relocations at different places', 0
     loose = 0
     ours = list(mw)
     for i in mr:
         a, b = mr[i], tr[i]
         if [(x[0], x[3]) for x in a] != [(x[0], x[3]) for x in b]:
-            return False, 'relocation type/addend differs at +0x%x' % (4 * i)
+            return None, 'relocation type/addend differs at +0x%x' % (4 * i), 0
         mask = 0
         for (ty, na, ba, _ad), (_ty, nb, bb, _ad2) in zip(a, b):
             if ty not in RELMASK:
-                return False, 'unsupported relocation type %d' % ty
+                return None, 'unsupported relocation type %d' % ty, 0
             mask |= RELMASK[ty]
             if na != nb:
                 aa, ab = prog.symaddr.get(na, ()), prog.symaddr.get(nb, ())
                 if ba != 0 and len(aa) == 1 and len(ab) == 1:
                     if aa != ab:
-                        return False, 'relocation target differs at +0x%x (%s vs %s)' % (4 * i, na, nb)
+                        return None, 'relocation target differs at +0x%x (%s vs %s)' % (4 * i, na, nb), 0
                 else:
                     loose += 1
         ours[i] = (ours[i] & ~mask) | (fn.words[i] & mask)
-    ok, text_ = prog.check(fn, ours)
-    if ok and loose:
-        text_ += ' [%d local relocation target(s) not compared by name]' % loose
-    return ok, text_
+    return ours, None, loose
+
+
+# ---- --selftest -----------------------------------------------------------
+
+# passed the whole-function rule on 2026-11-11; must keep passing
+SELFTEST = ['fn_8019A7D0', 'fn_800F8274', 'fn_8013213C', 'fn_801E26B0', 'fn_8020FAA8', 'fn_8026E4C4']
+
+
+def swap_class(w):
+    """Name of a non-commutative two-source instruction, else None."""
+    op = w >> 26
+    xo = (w >> 1) & 1023
+    if op == 31:
+        if xo in (0, 32):
+            return 'cmpw'
+        if xo & 511 in (40, 8, 136):
+            return 'subf'
+        if xo & 511 in (491, 459):
+            return 'divw'
+        if xo in (60, 412, 24, 536, 792):
+            return 'andc/orc/shift'
+    elif op in (59, 63):
+        if (w >> 1) & 31 == 18:
+            return 'fdiv'
+        if (w >> 1) & 31 == 20:
+            return 'fsub'
+        if op == 63 and xo in (0, 32):
+            return 'fcmp'
+    return None
+
+
+def setfield(w, sh, wd, v):
+    m = ((1 << wd) - 1) << sh
+    return (w & ~m) | (v << sh)
+
+
+def mutations(fn, ours):
+    """Corrupted copies of `ours`: yields (kind, index, word). Every kind except
+    'commutative' changes the meaning of the function."""
+    seen = set()
+    todo = [0]
+    while todo:                                   # reachable instructions
+        i = todo.pop()
+        if i not in seen:
+            seen.add(i)
+            todo.extend(fn.succ[i])
+    for i in sorted(seen):
+        w = ours[i]
+        ops = dec(fn.words[i])[0]
+        reg = [(w >> sh) & ((1 << wd) - 1) for _b, sh, wd, _r in ops]
+        rd = [k for k, o in enumerate(ops) if o[3] & (RD | SAVE)]
+        for k in rd:                              # read a different register
+            _b, sh, wd, _r = ops[k]
+            r = reg[k]
+            yield 'operand', i, setfield(w, sh, wd, r + 1 if r + 1 < 1 << wd else r - 1)
+        pure = [k for k in rd if not ops[k][3] & WR]
+        cls = swap_class(fn.words[i])
+        cp = comm(fn.words[i])
+        pair = cp if cp else (pure[0], pure[1]) if cls and len(pure) == 2 else None
+        if pair and reg[pair[0]] != reg[pair[1]]:
+            a, b = pair
+            x = setfield(setfield(w, ops[a][1], ops[a][2], reg[b]), ops[b][1], ops[b][2], reg[a])
+            yield ('commutative' if cp else 'swap ' + cls), i, x
+    leaders = fn.leader
+    for i in sorted(fn.call):                     # move an argument to another register
+        if i in fn.rets or i not in seen:
+            continue
+        j = i - 1
+        while j >= 0 and j not in fn.call:
+            wo = fn.words[j]
+            hit = [(k, o) for k, o in enumerate(dec(wo)[0]) if o[3] & WR and
+                   (1 << (o[0] + ((wo >> o[1]) & 31))) & ARGREGS]
+            if hit:
+                k, (_b, sh, wd, _r) = hit[0]
+                r = (ours[j] >> sh) & 31
+                yield 'call argument', j, setfield(ours[j], sh, wd, r + 1 if r < 8 else r - 1)
+                break
+            if j in leaders:
+                break
+            j -= 1
+
+
+def selftest(args, P):
+    prog = load_program(args, P)
+    prog.strict = False
+    units = load_units(P)
+    names = list(dict.fromkeys(SELFTEST + load_allow(P['allow']) + args.selftest))
+    bad = 0
+    bases = []
+    npos = 0
+    for name in names:                            # (a) known-good pairs
+        fn = prog.byname.get(name)
+        unit = next((u for u, s, e in units if fn and s <= fn.addr < e), None)
+        try:
+            mine = Obj(os.path.join(P['build'], 'src', unit + '.o'))
+            tgt = Obj(os.path.join(P['build'], 'obj', unit + '.o'))
+        except (OSError, TypeError) as e:
+            print('skip %s: no objects (%s)' % (name, e))
+            continue
+        ours, why, _loose = obj_words(prog, name, mine, tgt)
+        ok, text_ = prog.check(fn, ours) if ours is not None else (False, why)
+        print('%s %s: %s' % ('PASS' if ok else 'FAIL', name, text_))
+        if not ok:
+            bad += 1
+        elif text_ != 'exact':
+            npos += 1
+            bases.append((fn, ours, 15))
+    print('selftest: %d register-equivalent function(s) pass' % npos)
+    # originals as their own (exact) counterpart: plenty of every instruction kind
+    want = {'swap subf': 30, 'swap fdiv': 30, 'swap cmpw': 30, 'call argument': 30, 'commutative': 30, 'operand': 30}
+    for a in sorted(prog.fns)[::7]:
+        fn = prog.fns[a]
+        if 8 <= fn.n <= 600 and not prog.unsupported(fn):
+            bases.append((fn, fn.words, 2))
+    tot, rej, reasons = {}, {}, {}
+    for fn, ours, cap in bases:
+        if cap == 2 and all(tot.get(k, 0) >= n for k, n in want.items()):
+            break
+        by = {}
+        for kind, i, x in mutations(fn, ours):
+            if x != ours[i] and (cap != 2 or tot.get(kind, 0) < 2 * want.get(kind, 30)):
+                by.setdefault(kind, []).append((i, x))
+        picked = [(kind, i, x) for kind, lst in sorted(by.items())
+                  for i, x in lst[::max(1, len(lst) // cap)][:cap]]
+        for kind, i, x in picked:
+            mut = list(ours)
+            mut[i] = x
+            ok, text_ = prog.check(fn, mut)
+            tot[kind] = tot.get(kind, 0) + 1
+            if kind == 'commutative':
+                if ok:
+                    rej[kind] = rej.get(kind, 0) + 1
+                else:
+                    bad += 1
+                    print('FAIL selftest: commutative swap rejected in %s at %08x: %s' % (fn.name, fn.addr + 4 * i, text_))
+            elif not ok:
+                rej[kind] = rej.get(kind, 0) + 1
+                key = re.sub(r'\b(at|vs) [0-9a-f]{8}|\b[rf]\d+\b|\bcr\d\b|\(.*\)', '', text_).strip()
+                reasons[key] = reasons.get(key, 0) + 1
+            else:
+                bad += 1
+                print('FAIL selftest: %s corruption accepted in %s at %08x (%08x -> %08x): %s' % (
+                    kind, fn.name, fn.addr + 4 * i, ours[i], x, text_))
+    for kind in sorted(set(tot) | set(want)):
+        n = tot.get(kind, 0)
+        print('selftest %-16s %5d of %5d %s' % (kind + ':', rej.get(kind, 0), n,
+                                              'accepted' if kind == 'commutative' else 'rejected'))
+        if n < min(want.get(kind, 1), 5):
+            bad += 1
+            print('FAIL selftest: too few %s cases' % kind)
+    if args.verbose:
+        for key, n in sorted(reasons.items(), key=lambda kv: -kv[1]):
+            print('  %5d  %s' % (n, key))
+    print('selftest: %s' % ('FAILED (%d problem(s))' % bad if bad else 'OK'))
+    return 1 if bad else 0
 
 
 def main():
@@ -968,6 +1577,8 @@ def main():
     ap.add_argument('--version', default='GHYE6S')
     ap.add_argument('--dol', help='built DOL (default build/<version>/main.dol)')
     ap.add_argument('--list', nargs='+', metavar='UNIT', help='report whether units/functions would pass')
+    ap.add_argument('--strict', action='store_true', help='whole-function renaming only (the first version of the rule)')
+    ap.add_argument('--selftest', nargs='*', metavar='FN', help='self-test (extra functions that must pass)')
     ap.add_argument('-v', '--verbose', action='store_true', help='--list: also print exact functions')
     args = ap.parse_args()
     v = args.version
@@ -979,6 +1590,8 @@ def main():
         'splits': os.path.join(ROOT, 'config', v, 'splits.txt'),
         'allow': os.path.join(ROOT, 'config', v, 'regequiv.txt'),
     }
+    if args.selftest is not None:
+        sys.exit(selftest(args, P))
     sys.exit(list_mode(args, P) if args.list else check_dol(args, P))
 
 
