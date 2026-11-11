@@ -13394,22 +13394,10 @@ auto/text_801409B0.c:
 	.text       start:0x801409B0 end:0x80142990
 
 auto/text_80142990.cpp:
-	extab       start:0x8000C584 end:0x8000C58C
-	extabindex  start:0x8001EC74 end:0x8001EC80
-	.text       start:0x80142990 end:0x80142C7C
-
-auto/text_80142C7C.c:
-	.text       start:0x80142C7C end:0x80144B64
-
-auto/text_80144B64.cpp:
-	extab       start:0x8000C58C end:0x8000C594
-	extabindex  start:0x8001EC80 end:0x8001EC8C
-	.text       start:0x80144B64 end:0x80144CEC
-
-auto/text_80144CEC.cpp:
-	extab       start:0x8000C594 end:0x8000C5B0
-	extabindex  start:0x8001EC8C end:0x8001EC98
-	.text       start:0x80144CEC end:0x80145114
+	extab       start:0x8000C584 end:0x8000C5B0
+	extabindex  start:0x8001EC74 end:0x8001EC98
+	.text       start:0x80142990 end:0x80145114
+	.sdata2     start:0x80364380 end:0x80364394
 
 auto/text_80145114.cpp:
 	extab       start:0x8000C5B0 end:0x8000C5C8
