@@ -42,12 +42,9 @@ void __ct__9C801063F0Fv(Unk801063F0* arg0) {
 extern f32 lbl_803638A8;
 extern f32 lbl_803638AC;
 extern f32 lbl_803638C0;
-void fn_80106474(f32* arg0, f32* arg1) {
+void fn_80106474(f32* __restrict arg0, const f32* __restrict arg1) {
     f32 d = lbl_803638C0 * (arg0[5] * arg1[0] + arg0[6] * arg1[1] + arg0[7] * arg1[2]);
-    f32 x = arg1[0];
-    f32 y = arg1[1];
-    f32 z = arg1[2];
-    arg0[11] = x - d * arg0[5];
-    arg0[12] = y - d * arg0[6];
-    arg0[13] = z - d * arg0[7];
+    arg0[11] = arg1[0] - d * arg0[5];
+    arg0[12] = arg1[1] - d * arg0[6];
+    arg0[13] = arg1[2] - d * arg0[7];
 }
