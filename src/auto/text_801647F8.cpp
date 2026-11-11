@@ -31,14 +31,15 @@ static inline void mode(X *x, int b, int c) {
         fn_800D7CA4(0, x->f1132, 0, x->f1144, x->f1148, x->f1152, x->f1156);
     }
 }
-void fn_801647F8(T *t, u32 n, Src *s, V *pos) {
+void fn_801647F8(T *__restrict t, u32 n, Src *s, V *__restrict pos) {
     if (n >= 8) return;
     L *l = Alloc(t->f6452);
     if (!l) return;
-    t->f6808[n] = l;
-    t->f6772[n] = 1;
-    f32 r = s->r, g = s->g, b = s->b, a = s->a;
-    f32 K = lbl_80364698;
+    *(L *volatile *)&t->f6808[n] = l;
+    *(volatile int *)&t->f6772[n] = 1;
+    f32 K, r, g, b, a;
+    r = *(volatile f32 *)&s->r; g = s->g; b = s->b; a = s->a;
+    K = *(volatile f32 *)&lbl_80364698;
     r *= K; g *= K; b *= K; a *= K;
     C4 c((int)r, (int)g, (int)b, (int)a);
     fn_800D79F4(l, c);
@@ -46,21 +47,19 @@ void fn_801647F8(T *t, u32 n, Src *s, V *pos) {
     t->f6572 = 1;
     mode(t->f6456, t->f6568, t->f6572);
     fn_800D77AC(l, lbl_80364680, lbl_80364684, lbl_80364684, lbl_80364680, lbl_80364684, lbl_80364684);
-    f32 k = *(volatile f32 *)&lbl_80364684;
-    f32 x = pos->x, y = pos->y, z = pos->z;
-    t->f6580[n].x = k;
-    t->f6580[n].y = lbl_80364684;
-    t->f6580[n].z = lbl_80364684;
-    t->f6676[n].x = x;
-    t->f6676[n].y = y;
-    t->f6676[n].z = z;
+    *(volatile f32 *)&t->f6580[n].x = *(volatile f32 *)&lbl_80364684;
+    *(volatile f32 *)&t->f6580[n].y = *(volatile f32 *)&lbl_80364684;
+    *(volatile f32 *)&t->f6580[n].z = *(volatile f32 *)&lbl_80364684;
+    t->f6676[n].x = pos->x;
+    t->f6676[n].y = pos->y;
+    t->f6676[n].z = pos->z;
     if (t->f12 & 2) {
         V o;
         lbl_803286D0.f404(t->f6452->f10888, pos, &o);
         fn_800D7984(l, lbl_803646A4 * -o.x, lbl_803646A4 * -o.y, lbl_803646A4 * -o.z);
         fn_800D7A0C(l, 1 << n);
     } else {
-        fn_800D7984(l, lbl_803646A4 * -x, lbl_803646A4 * -y, lbl_803646A4 * -z);
+        fn_800D7984(l, lbl_803646A4 * -pos->x, lbl_803646A4 * -pos->y, lbl_803646A4 * -pos->z);
     }
 }
 
