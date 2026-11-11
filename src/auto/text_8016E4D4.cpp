@@ -1,6 +1,6 @@
 #include "common.h"
 
-// NonMatching: instructions identical (SDIFF 0); register allocation differs (target j in r31 above params).
+// NonMatching: DIFF 30 SDIFF 4 (j=0 at top gives r31 but li r31/r25 hoisted to entry; pp/p/i colouring 3-cycle).
 struct C80175748 {
     C80175748();
     ~C80175748();
@@ -39,7 +39,7 @@ static inline void *pick(void *p, void **arr, u32 &j, u32 cnt) {
 
 void fn_8016E4D4(Self *self, void *unused, Src *src, s32 x, void **arr, u32 cnt) {
     u32 i;
-    u32 j;
+    u32 j = 0;
     C80175748 *t;
     if (x == 0) x = src->x;
     lbl_8035AD34 = 0;
@@ -55,7 +55,6 @@ void fn_8016E4D4(Self *self, void *unused, Src *src, s32 x, void **arr, u32 cnt)
         self->h18 = lbl_8032ED08.c;
     }
     t = lbl_8032ED28;
-    j = 0;
     for (i = 0; i < src->n; t++, i++) {
         void **pp = &src->e[i].p;
         void *p = pick(*pp, arr, j, cnt);
