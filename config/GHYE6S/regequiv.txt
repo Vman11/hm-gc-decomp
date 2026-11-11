@@ -2,3 +2,6 @@
 # One function name per line. Checked by tools/equivcheck.py (see AGENTS.md, "Register-equivalent matches").
 fn_8019A7D0
 fn_800F8274
+fn_801683BC
+fn_8016B254
+fn_80170798
