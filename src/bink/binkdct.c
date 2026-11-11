@@ -170,8 +170,8 @@ void wBA_FDB4(u8 *out, s32 pitch, s16 *in_, s32 *q_) {
             d5 = (in[40] * q[40]) >> 11;
             d6 = (in[48] * q[48]) >> 11;
             d7 = (in[56] * q[56]) >> 11;
-            in++;
             q++;
+            in++;
 
             tmp10 = d0 + d4;
             tmp11 = d0 - d4;
@@ -187,9 +187,9 @@ void wBA_FDB4(u8 *out, s32 pitch, s16 *in_, s32 *q_) {
             z11 = d1 + d7;
             z12 = d1 - d7;
             tmp[7] = z11 + z13;
-            tmp11 = ((z11 - z13) * 2896) >> 11;
             z5 = ((z10 + z12) * 3784) >> 11;
             tmp10 = ((z12 * 2217) >> 11) - z5;
+            tmp11 = ((z11 - z13) * 2896) >> 11;
             tmp12 = ((z10 * -5352) >> 11) + z5;
             tmp[6] = tmp12 - tmp[7];
             tmp[5] = tmp11 - tmp[6];
@@ -218,8 +218,8 @@ void wBA_FDB4(u8 *out, s32 pitch, s16 *in_, s32 *q_) {
         tmp[1] = tmp11 + tmp12;
         tmp[2] = tmp11 - tmp12;
 
-        z13 = p[5] + p[3];
         z10 = p[5] - p[3];
+        z13 = p[5] + p[3];
         z11 = p[1] + p[7];
         z12 = p[1] - p[7];
         tmp[7] = z11 + z13;
@@ -234,23 +234,23 @@ void wBA_FDB4(u8 *out, s32 pitch, s16 *in_, s32 *q_) {
         {
             u32 a, b, c, d;
             s32 v0, v1, v2, v3, v4, v5, v6, v7;
+            v5 = (tmp[2] - tmp[5] + 127) >> 8;
             v0 = (tmp[0] + tmp[7] + 127) >> 8;
             v7 = (tmp[0] - tmp[7] + 127) >> 8;
             v1 = (tmp[1] + tmp[6] + 127) >> 8;
             v6 = (tmp[1] - tmp[6] + 127) >> 8;
             v2 = (tmp[2] + tmp[5] + 127) >> 8;
-            v5 = (tmp[2] - tmp[5] + 127) >> 8;
             v4 = (tmp[3] + tmp[4] + 127) >> 8;
             v3 = (tmp[3] - tmp[4] + 127) >> 8;
-            a = ((v0 & 0xFF) << 16) | (v1 & 0xFF);
             b = ((v2 & 0xFF) << 16) | (v3 & 0xFF);
             c = ((v4 & 0xFF) << 16) | (v5 & 0xFF);
             d = ((v6 & 0xFF) << 16) | (v7 & 0xFF);
-            a |= a << 8;
-            b |= b << 8;
+            a = ((v0 & 0xFF) << 16) | (v1 & 0xFF);
             c |= c << 8;
+            a |= a << 8;
             d |= d << 8;
             o0[0] = a; o0[1] = b; o0[2] = c; o0[3] = d;
+            b |= b << 8;
             o1[0] = a; o1[1] = b; o1[2] = c; o1[3] = d;
         }
         p += 8;

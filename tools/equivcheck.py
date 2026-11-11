@@ -36,6 +36,12 @@ plain sha1 check:
        - at every return: r3, r4, f1, every callee-saved register, r1, r2, r13 and
          any volatile register that some caller reads after the call do;
        - implicitly used registers (CR logic, mfcr, stmw/lmw ranges) do.
+     Copy forwarding (second try, only for a function that failed without it): a plain
+     copy (mr / ori rA,rS,0 / fmr) is not a definition site, the copy holds the sites of
+     its source. So `addi r3,..; mr r31,r3` and `addi r31,..; mr r3,r31` are the same
+     (the value reaches r3 and r31 from the addi in both). When a site executes again,
+     every register still holding its earlier value is marked stale and is never
+     accepted this way; entry values and call results are not forwarded either.
      A value that is live across a call therefore has to be in a callee-saved
      register in ours as well, and results are read from the ABI registers.
      Assumptions: a callee does not interpret the caller's callee-saved registers
@@ -944,6 +950,53 @@ class Program:
                     inw.add(t)
         return IN
 
+    @staticmethod
+    def _fwdstep(F, eff_i, cp, i, W):
+        """One instruction of the copy-forwarding model. F[r] holds the definition sites a
+        register's value comes from, but a plain copy (mr rD,rS) hands on the sites of rS
+        instead of being a site itself. When a site executes again, every register that
+        holds its earlier value gets the extra 'stale' bit (site shifted up by W)."""
+        grp = 0xFF << (8 * i + 1)
+        for r in range(96):
+            v = F[r]
+            if v & grp:
+                F[r] = v | ((v & grp) << W)
+        val = F[cp[1]] if cp else 0
+        for idx, bit, kill in eff_i:
+            if idx < 96:
+                if cp and idx == cp[0]:
+                    F[idx] = val
+                else:
+                    F[idx] = bit if kill else F[idx] | bit
+
+    def _fwdflow(self, eff, cps, blocks, bsucc, W):
+        """Copy-forwarded definition sets at the start of every basic block."""
+        IN = [None] * len(blocks)
+        IN[0] = [1] * 96
+        work = [0]
+        inw = {0}
+        while work:
+            b = work.pop()
+            inw.discard(b)
+            out = IN[b][:]
+            for i in range(*blocks[b]):
+                self._fwdstep(out, eff[i], cps[i], i, W)
+            for t in bsucc[b]:
+                cur = IN[t]
+                if cur is None:
+                    IN[t] = out[:]
+                    ch = True
+                else:
+                    ch = False
+                    for r in range(96):
+                        if out[r] & ~cur[r]:
+                            cur[r] |= out[r]
+                            ch = True
+                if ch and t not in inw:
+                    work.append(t)
+                    inw.add(t)
+        return IN
+
     def check(self, fn, ours):
         """Compare the function with our words. Returns (ok, text)."""
         if self.strict:
@@ -951,7 +1004,16 @@ class Program:
         return self.check_webs(fn, ours)
 
     def check_webs(self, fn, ours):
-        """Per-live-range equivalence (see the module docstring)."""
+        """Per-live-range equivalence (see the module docstring). A function that fails is
+        tried once more with copy forwarding (see _fwdflow)."""
+        ok, text = self._check_webs(fn, ours, False)
+        if not ok and ('different value' in text or 'implicit use' in text):
+            ok2, text2 = self._check_webs(fn, ours, True)
+            if ok2:
+                return ok2, text2
+        return ok, text
+
+    def _check_webs(self, fn, ours, fwd):
         orig = fn.words
         n = fn.n
         if len(ours) != n:
@@ -962,7 +1024,7 @@ class Program:
         if why:
             return False, why
         self._solve_webs()
-        RO, RU = [], []
+        RO, RU, CPS = [], [], []
         for i, (wo, wu) in enumerate(zip(orig, ours)):
             do, du = dec(wo), dec(wu)
             at = '%08x' % (fn.addr + 4 * i)
@@ -982,6 +1044,13 @@ class Program:
                 return False, 'psq_l into a different register at %s' % at
             RO.append(ro)
             RU.append(ru)
+            cp = None
+            if copy_of(wo) and copy_of(wu):
+                kw = [k for k, o in enumerate(do[0]) if o[3] & WR]
+                kr = [k for k, o in enumerate(do[0]) if o[3] & RD]
+                if len(kw) == 1 and kr:
+                    cp = (kw[0], kr[0])
+            CPS.append(cp)
         blocks, bsucc, iuse, idef = self._webinfo(fn)
         if fn.rd is None:
             eo = self._effects(fn, orig, idef)
@@ -990,6 +1059,14 @@ class Program:
         EU = self._effects(fn, ours, idef)
         INU = self._rdflow(EU, blocks, bsucc)
         idmask = ((1 << (8 * (n + 1))) - 1) // 255     # entry + every implicit/call def site
+        if fwd:
+            cpo = [(RO[i][c[0]], RO[i][c[1]]) if c and RO[i][c[0]] != RO[i][c[1]] else None
+                   for i, c in enumerate(CPS)]
+            cpu = [(RU[i][c[0]], RU[i][c[1]]) if c and RU[i][c[0]] != RU[i][c[1]] else None
+                   for i, c in enumerate(CPS)]
+            FW = 8 * n + 16
+            FIO = self._fwdflow(EO, cpo, blocks, bsucc, FW)
+            FIU = self._fwdflow(EU, cpu, blocks, bsucc, FW)
         retv = RETREGS | self.retx[fn.addr] | self.ind_retx
         moved = {}
         swaps = 0
@@ -1000,9 +1077,18 @@ class Program:
                 continue
             so, su = INO[b][:], INU[b][:]
 
+            if fwd:
+                fo, fu = FIO[b][:], FIU[b][:]
+
             def same(a, c, off=0):
                 x = so[a + off]
-                return x == su[c + off] and (a == c or not x & idmask)
+                if x == su[c + off] and (a == c or not x & idmask):
+                    return True
+                if fwd and not off:
+                    # copy-forwarded definitions: equal, all explicit, none possibly stale
+                    x, y = fo[a], fu[c]
+                    return x == y and not x & idmask and not x >> FW
+                return False
 
             written = 0
             for i in range(s, e):
@@ -1054,6 +1140,9 @@ class Program:
                     so[idx] = bit if kill else so[idx] | bit
                 for idx, bit, kill in EU[i]:
                     su[idx] = bit if kill else su[idx] | bit
+                if fwd:
+                    self._fwdstep(fo, EO[i], cpo[i], i, FW)
+                    self._fwdstep(fu, EU[i], cpu[i], i, FW)
         txt = ' '.join('%s->%s(%d)' % (rname2(o), rname2(u), c) for (o, u), c in sorted(moved.items()))
         if swaps:
             txt += ' +%d commutative swap(s)' % swaps
@@ -1423,6 +1512,18 @@ def obj_words(prog, name, mine, tgt):
 SELFTEST = ['fn_8019A7D0', 'fn_800F8274', 'fn_8013213C', 'fn_801E26B0', 'fn_8020FAA8', 'fn_8026E4C4']
 
 
+def copy_of(w):
+    """True for a plain register copy: or rA,rS,rS / ori rA,rS,0 / fmr (no record form)."""
+    op = w >> 26
+    if op == 31:
+        return (w >> 1) & 1023 == 444 and not w & 1 and (w >> 21) & 31 == (w >> 11) & 31
+    if op == 24:
+        return w & 0xFFFF == 0
+    if op == 63:
+        return (w >> 1) & 1023 == 72 and not w & 1
+    return False
+
+
 def swap_class(w):
     """Name of a non-commutative two-source instruction, else None."""
     op = w >> 26
@@ -1497,12 +1598,84 @@ def mutations(fn, ours):
             j -= 1
 
 
+def synth_tests():
+    """Hand-made functions for the copy-forwarding rule: (name, target, ours, must pass)."""
+    def addi(d, a, i): return 14 << 26 | d << 21 | a << 16 | i
+    def mr(d, sr): return 31 << 26 | sr << 21 | d << 16 | sr << 11 | 444 << 1
+    def add(d, a, b): return 31 << 26 | d << 21 | a << 16 | b << 11 | 266 << 1
+    def cmpwi(a, i): return 11 << 26 | a << 16 | i
+    def bl(off): return 18 << 26 | (off & 0x3FFFFFC) | 1
+    def bc(bo, bi, off): return 16 << 26 | bo << 21 | bi << 16 | (off & 0xFFFC)
+    blr = 0x4E800020
+    g = 0x1000
+    ret = [mr(3, 31), blr]
+    cases = [
+        # the result of an addi is copied: either register may take the address
+        ('copy order', [addi(3, 4, 8), mr(31, 3), bl(g - 0x2008), mr(3, 31), blr],
+                       [addi(31, 4, 8), mr(3, 31), bl(g - 0x2008), mr(3, 31), blr], True),
+        ('copy order, other reader', [addi(3, 4, 8), mr(31, 3), bl(g - 0x2008), mr(3, 31), blr],
+                                     [addi(31, 4, 8), mr(3, 31), bl(g - 0x2008), mr(3, 30), blr], False),
+        ('copy order, wrong value', [addi(3, 4, 8), mr(31, 3), bl(g - 0x2008), mr(3, 31), blr],
+                                    [addi(31, 4, 9), mr(3, 31), bl(g - 0x2008), mr(3, 31), blr], False),
+        # reading the copy after its source was redefined is not reading the source
+        ('stale copy (straight)', [addi(5, 4, 1), mr(6, 5), addi(5, 4, 2), add(3, 6, 6), blr],
+                                  [addi(5, 4, 1), mr(6, 5), addi(5, 4, 2), add(3, 5, 5), blr], False),
+        # same inside a loop: the copy is older than the last execution of the source's site
+        ('stale copy (loop)', [addi(5, 4, 1), cmpwi(3, 0), bc(12, 2, 12), mr(6, 5), cmpwi(4, 5), bc(4, 2, -20),
+                               add(3, 6, 6), blr],
+                              [addi(5, 4, 1), cmpwi(3, 0), bc(12, 2, 12), mr(6, 5), cmpwi(4, 5), bc(4, 2, -20),
+                               add(3, 5, 5), blr], False),
+        ('copy of a copy', [addi(3, 4, 8), mr(31, 3), mr(30, 31), bl(g - 0x200C), mr(3, 30), blr],
+                           [addi(30, 4, 8), mr(31, 30), mr(3, 31), bl(g - 0x200C), mr(3, 30), blr], True),
+    ]
+    out = []
+    for name, tgt, ours, want in cases:
+        out.append((name, tgt, ours, want))
+    return out
+
+
+class _Fake:
+    def __init__(self, mem):
+        self.mem = mem
+
+    def words(self, addr, size):
+        return [self.mem.get(addr + 4 * k, 0) for k in range(size // 4)]
+
+    def read32(self, addr):
+        return self.mem.get(addr)
+
+
+def synth_run():
+    """Run the hand-made cases; returns the number of problems."""
+    bad = 0
+    for name, tgt, ours, want in synth_tests():
+        mem = {0x1000: 0x4E800020}
+        for k, w in enumerate(tgt):
+            mem[0x2000 + 4 * k] = w
+        prog = Program(_Fake(mem), [('g', 0x1000, 4), ('f', 0x2000, 4 * len(tgt))])
+        prog.strict = False
+        ok, text_ = prog.check(prog.byname['f'], ours)
+        print('%s synthetic %s: %s' % ('ok  ' if ok == want else 'FAIL', name, text_))
+        if ok != want:
+            bad += 1
+    # unit test of the stale marking: a copy made before the source's site ran again is stale
+    F = [0] * 96
+    W = 100
+    Program._fwdstep(F, [(5, 1 << 1, True)], None, 0, W)
+    Program._fwdstep(F, [(6, 1 << 9, True)], (6, 5), 1, W)
+    fresh = F[6] == F[5] == 2 and not F[6] >> W
+    Program._fwdstep(F, [(5, 1 << 1, True)], None, 0, W)
+    stale = F[5] == 2 and F[6] == 2 | 2 << W
+    print('%s synthetic stale marking' % ('ok  ' if fresh and stale else 'FAIL'))
+    return bad + (0 if fresh and stale else 1)
+
+
 def selftest(args, P):
     prog = load_program(args, P)
     prog.strict = False
     units = load_units(P)
+    bad = synth_run()
     names = list(dict.fromkeys(SELFTEST + load_allow(P['allow']) + args.selftest))
-    bad = 0
     bases = []
     npos = 0
     for name in names:                            # (a) known-good pairs
