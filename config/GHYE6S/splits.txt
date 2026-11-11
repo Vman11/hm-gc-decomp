@@ -17685,6 +17685,7 @@ auto/text_80189BA4.cpp:
 	extab       start:0x8000EC20 end:0x8000EC28
 	extabindex  start:0x80021224 end:0x80021230
 	.text       start:0x80189BA4 end:0x80189F24
+	.sdata2     start:0x80364A18 end:0x80364A20
 
 auto/text_80189F24.cpp:
 	extab       start:0x8000EC28 end:0x8000EC30
