@@ -931,3 +931,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wRU (2026-11-07): fn_80233604 MATCHED: missing 'mr r20,r22' d->q copy + r20-r22 rotation fixed by moving the d lookup (h = lbl_8035B460->f8; if (b==0||*b==0) fn_800F9398 else fn_800F9788) into a static inline 'd = Look(a, b);' (early-block inline); extab_padding [0xB0,0x02] x3 (three new[] cleanup actions).
 - wRZ (2026-11-07): fn_80116B10 MATCHED: typed structs (S *s; H *h = s->h; declared first) and `*arg2 = (u8 *)h + (h->off + arg1);` fixed base r7/off r6 colouring.
 - wSE (2026-11-07): fn_8023C528 MATCHED: "compare left operand in r0" register diff fixed by reading the RIGHT operand through a getter inline (it->idx >= nOf(it->cur), ... >= ngOf(it->s)).
+- wSM (2026-11-10): MATCHED fn_800739F8: 0.0f clamp `if (z < K) z = *(f32 *)&K;` with K declared non-volatile (other uses via a volatile-cast macro) gives the literal-like f0/f2 colouring without a reload.

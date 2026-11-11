@@ -1,4 +1,3 @@
-// NonMatching draft: 10 diff lines, register-only (SDIFF 0): x120 clamp f0/f2 colouring.
 #include "common.h"
 
 struct Vec { f32 x, y, z; };
@@ -22,7 +21,8 @@ extern s32 lbl_8035A24C;
 extern volatile f32 lbl_8035A2B0;
 extern volatile s8 lbl_8035A2B4;
 extern Vec lbl_80357E90;
-extern volatile f32 lbl_8035F3EC;
+extern f32 lbl_8035F3EC;
+#define VK (*(volatile f32 *)&lbl_8035F3EC)
 extern f32  lbl_8035F4F0, lbl_8035F4F4, lbl_8035F4E0, lbl_8035F4F8, lbl_8035F4FC;
 extern f32 lbl_8035F500, lbl_8035F504, lbl_8035F4A0, lbl_8035F490;
 extern f64 lbl_8035F4D0, lbl_8035F4D8;
@@ -38,7 +38,7 @@ void fn_802488C4(void *, u32, s32, Vec *, f32, u32);
 void __ct__9C80253F24Fiiii(void *, char *, int, int, int);
 
 static inline f32 Sq(f32 x) {
-    if (x > lbl_8035F3EC) {
+    if (x > VK) {
         const f64 _half = lbl_8035F4D0;
         const f64 _three = lbl_8035F4D8;
         volatile f32 y;
@@ -60,8 +60,8 @@ void fn_800739F8(X *a) {
     Vec v;
     f32 sp, k, r, s, lim;
     lbl_8035A23C = a->x44.z;
-    if (a->x338) m = a->x338->x24 ? *a->x338->x24 : lbl_8035F3EC;
-    else m = lbl_8035F3EC;
+    if (a->x338) m = a->x338->x24 ? *a->x338->x24 : VK;
+    else m = VK;
     g = lbl_80357E90;
     if (a->x338 && (a->x338->x80 ? *a->x338->x80 : 0) != 0 && a->x5b0 && a->x5b0->x30)
         fn_801072C0(a->x5b0->x30, &g);
@@ -74,7 +74,7 @@ void fn_800739F8(X *a) {
         f32 p;
         f32 c = lbl_8035F4E0 * (v.z * v.z);
         p = *a->x52c;
-        if (v.z < lbl_8035F3EC) { f32 q = k + m; r = q * p; }
+        if (v.z < VK) { f32 q = k + m; r = q * p; }
         else r = __fmadds(k + m, p, c);
     }
     s = Sq(lbl_8035F4F8 * r);
@@ -87,7 +87,7 @@ void fn_800739F8(X *a) {
     a->x118.z += w.z;
     if (!lbl_8035A2B4) { lbl_8035A2B0 = lbl_8035F4FC; lbl_8035A2B4 = 1; }
     lim = sinf_(lbl_8035F500 * (lbl_8035F504 - *a->x528));
-    { f32 z; if (a->x118.z < (z = lbl_8035F3EC)) a->x118.z = z; }
+    if (a->x118.z < lbl_8035F3EC) a->x118.z = *(f32 *)&lbl_8035F3EC;
     if (a->x2c.z > lim) {
         a->x118.x += s * g.x;
         a->x118.y += s * g.y;
