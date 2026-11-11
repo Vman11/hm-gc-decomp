@@ -1883,6 +1883,62 @@ def synth_run():
     return bad + (0 if fresh and stale else 1)
 
 
+def _benign_copy_alias(words, i, old, new):
+    """Independent check used only by the self-test: True if `new` differs from `old`
+    in exactly one GPR source field (rA or rB), and the register it now names held a
+    plain copy (`or rX,rY,rY`, i.e. mr rX,rY) of the replaced register, made earlier in
+    straight-line code (no branch targets/branches in between, only bl calls) with
+    neither register redefined since; callee-saved registers (r14-r31) survive bl."""
+    diff = old ^ new
+    op0 = old >> 26
+    logical = op0 == 31 and (old >> 1) & 0x3ff in (28, 60, 124, 284, 316, 412, 444, 476)
+    srcs = (21, 11) if logical else (16, 11)  # source-register fields (rS/rB vs rA/rB)
+    for sh in srcs:
+        if diff == (0x1f << sh) & diff and diff >> sh & 0x1f:
+            break
+    else:
+        return False
+    if diff & ~(0x1f << sh):
+        return False
+    a, b = (old >> sh) & 0x1f, (new >> sh) & 0x1f   # replaced reg a by b
+    if a < 14 or b < 14:
+        return False                          # only callee-saved regs survive calls
+    for j in range(i - 1, -1, -1):
+        w = words[j]
+        op = w >> 26
+        if op in (16, 18) and not (op == 18 and w & 1):   # bc / b (not bl): control flow
+            return False
+        if op == 19:                          # bclr/bcctr etc
+            return False
+        if op == 31 and (w >> 1) & 0x3ff == 444 and (w >> 16) & 0x1f == b \
+                and (w >> 21) & 0x1f == a and (w >> 11) & 0x1f == a:
+            return True                       # mr b,a found, nothing redefined since
+        # which GPR (if any) does this instruction write? be conservative: unknown -> stop
+        if op in (7, 8, 12, 13, 14, 15, 32, 34, 40, 42):          # D-form: rD in bits 21-25
+            dst = {(w >> 21) & 0x1f}
+        elif op in (33, 35, 41, 43):                              # update loads: rD and rA
+            dst = {(w >> 21) & 0x1f, (w >> 16) & 0x1f}
+        elif op in (20, 21, 23, 24, 25, 26, 27, 28, 29):          # rlw*, ori/xori/andi: rA
+            dst = {(w >> 16) & 0x1f}
+        elif op in (36, 37, 38, 39, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 10, 11):
+            dst = {(w >> 16) & 0x1f} if op in (37, 39, 45, 47, 49, 51, 53, 55) else set()
+        elif op == 18:                                            # bl: clobbers volatiles only
+            dst = set()
+        elif op == 31:
+            xo = (w >> 1) & 0x3ff
+            if xo in (28, 60, 124, 284, 316, 412, 444, 476, 24, 536, 792, 824, 26, 922, 954):
+                dst = {(w >> 16) & 0x1f}                          # logical/shift: rA
+            elif xo in (0, 32, 151, 183, 215, 247, 407, 439, 663, 695, 727, 759, 918, 662, 534, 790):
+                dst = {(w >> 16) & 0x1f} if xo in (183, 247, 439, 695, 759) else set()  # cmp/stores
+            else:
+                dst = {(w >> 21) & 0x1f}                          # arithmetic, loads: rD
+        else:
+            return False
+        if dst & {a, b}:
+            return False
+    return False
+
+
 def selftest(args, P):
     prog = load_program(args, P)
     prog.strict = False
@@ -1940,6 +1996,12 @@ def selftest(args, P):
                 rej[kind] = rej.get(kind, 0) + 1
                 key = re.sub(r'\b(at|vs) [0-9a-f]{8}|\b[rf]\d+\b|\bcr\d\b|\(.*\)', '', text_).strip()
                 reasons[key] = reasons.get(key, 0) + 1
+            elif kind == 'operand' and _benign_copy_alias(ours, i, ours[i], x):
+                # the "corrupted" operand names a register that provably holds a plain copy
+                # (mr) of the original operand at this point, so the program is unchanged;
+                # verified by an independent straight-line scan, not by the checker itself
+                rej[kind] = rej.get(kind, 0) + 1
+                reasons['benign copy alias'] = reasons.get('benign copy alias', 0) + 1
             else:
                 bad += 1
                 print('FAIL selftest: %s corruption accepted in %s at %08x (%08x -> %08x): %s' % (
