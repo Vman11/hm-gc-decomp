@@ -153,7 +153,7 @@ void fn_800730F4(Obj *o) {
         d4.z = base.z + m5 * o->f610.z;
         s0.x = base.x + lbl_8035F490 * nrm.x;
         s0.y = base.y + lbl_8035F490 * nrm.y;
-        s0.z = base.z + lbl_8035F490 * nrm.z;
+        s0.z = base.z + (*(volatile f32 *)&lbl_8035F490) * nrm.z;
         s1.x = base.x + m5 * nrm.x;
         s1.y = base.y + m5 * nrm.y;
         s1.z = base.z + m5 * nrm.z;
@@ -253,6 +253,7 @@ void fn_800730F4(Obj *o) {
     }
     o->f5ec = 0;
 }
+
 
 
 }
