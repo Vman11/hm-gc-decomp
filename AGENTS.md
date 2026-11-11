@@ -200,6 +200,13 @@ The decoded extab in `build/GHYE6S/asm/<unit>.s` says which C++ construct the or
 
 ## Coordination
 
+**Work split from 2026-11-11 (user-assigned; supersedes older claims for unmatched functions):**
+- **Collaborator:** every unmatched game function (`auto/*` units) at an address **below `0x80165000`** (133 functions, listed in `tools/decomp_agent/collaborator_2026-11-11.txt`). This includes converting register-only drafts in that range to Matching under the register-equivalent policy above (use `python3 tools/equivcheck.py --list ...`, add the fns to `config/GHYE6S/regequiv.txt`, mark the unit Matching).
+- **Claude workers:** every unmatched game function at or above `0x80165000`, plus the non-`auto/` units (Bink, MSL, SDK) (151 functions, `tools/decomp_agent/claude_workers_2026-11-11.txt`). Planned next: link all register-equivalent units in this range, then keep working the remaining scheduling-only near-misses and link blockers.
+- Don't edit units in the other side's range. Shared files (`configure.py`, `config/GHYE6S/splits.txt`, `symbols.txt`, `regequiv.txt`, `build.sha1`, `AGENTS.md`): pull right before you commit, keep edits to your own lines, and re-check with `ninja` + `python3 tools/equivcheck.py` before pushing.
+- A merge that spans the boundary (shared literal pools / jump tables) needs a note here first.
+
+
 **Claimed game functions (2026-10-22):** the library agent now also works on game code, but only on the functions in
 `tools/decomp_agent/claimed_by_library_agent.txt`: units whose only unmatched functions are 1,000 bytes or larger
 (352 functions), extended on 2026-10-23 to 500 bytes or larger. Re-run the awk line below after pulling. Your `dumpasm2.py` loop works up from the smallest, so add that file's names to your skip.txt
