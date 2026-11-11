@@ -6605,7 +6605,7 @@ auto/text_800B1844.cpp:
 	.text       start:0x800B1844 end:0x800B1D58
 	.data       start:0x802D72A4 end:0x802D72E0
 
-auto/text_800B1D58.c:
+auto/text_800B1D58.cpp:
 	extab       start:0x800095DC end:0x800095E4
 	extabindex  start:0x8001B9D4 end:0x8001B9E0
 	.text       start:0x800B1D58 end:0x800B21A0
