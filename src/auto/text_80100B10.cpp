@@ -30,7 +30,7 @@ int fn_80100B10(Sph_80100B10 *s, Seg_80100B10 *o) {
     V3_80100B10 *pa;
     V3_80100B10 *pb;
     f32 len;
-    f32 r2, d2, proj, disc, t;
+    f32 r2, d2, c, disc, proj, t;
     f32 dx, dy, dz;
 
     pa = o->pa;
@@ -55,9 +55,9 @@ int fn_80100B10(Sph_80100B10 *s, Seg_80100B10 *o) {
     if (d2 < r2) {
         return 1;
     }
+    c = r2 - d2;
     proj = o->dir.x * dx + o->dir.y * dy + o->dir.z * dz;
-    d2 = r2 - d2;
-    disc = proj * proj + d2;
+    disc = proj * proj + c;
     if (disc <= *(f32 *)&lbl_803637F4) {
         return 0;
     }
