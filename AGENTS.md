@@ -48,7 +48,9 @@ register-equivalent function later becomes exact, remove it from the list.
   that are live together can never share a register. The two sources of a commutative instruction (add, and, or, xor,
   mullw, fadd, fmul, the multiplicands of fmadd, ...) may be swapped. Entry values (parameters), call arguments, what
   a callee may read, call results, r3/r4/f1 and the callee-saved registers at a return, r1/r2/r13 and implicitly used
-  registers must be in the same register number. Reordered instructions are still a FAIL. The exact rules and
+  registers must be in the same register number. Since 2026-11-11 (wUK) a plain copy (`mr`, `fmr`) hands on the
+  definitions of its source instead of being one (`addi r3,..; mr r31,r3` equals `addi r31,..; mr r3,r31`), with a
+  stale mark when the source's site runs again; entry values and call results are not forwarded. Reordered instructions are still a FAIL. The exact rules and
   assumptions are in the docstring. It prints one `PASS`/`FAIL` line per differing function.
 - `--strict` applies the first version of the rule (one renaming for the whole function). `--selftest` re-checks the
   listed functions and makes sure corrupted copies (an operand reading another register, swapped operands of
