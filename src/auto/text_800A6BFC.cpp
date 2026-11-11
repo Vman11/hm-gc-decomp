@@ -112,7 +112,7 @@ void fn_800A6BFC(T *t, int mode) {
         scl(t);
         V3 r, a;
         a.x = lbl_80361F5C; a.y = lbl_80361F5C; a.z = lbl_80361F60;
-        cross(&r, lbl_80361F60, lbl_80361F5C, lbl_80361F5C, &a);
+        cross(&r, lbl_80361F60, (*(f32 *)&lbl_80361F5C), lbl_80361F5C, &a);
         fn_80101820(&r);
         cross2(&a, &r, lbl_80361F60, lbl_80361F5C, lbl_80361F5C);
         fn_80101820(&a);
@@ -193,5 +193,6 @@ void fn_800A6BFC(T *t, int mode) {
         break;
     }
 }
+
 
 }
