@@ -115,6 +115,8 @@ After applying: `ninja`, then remove the touched units from `tools/rea/c2cpp_rej
 
 ## Matching cookbook (GC/1.3.2)
 
+- **Register allocation priority (found 2026-11-11 with mwcc-debugger, GC/2.6 as a stand-in for 1.3.2):** virtual registers are coloured in DESCENDING vreg number. Named locals and params get LOW numbers in declaration order; unnamed temporaries (sub-expressions, values assigned straight into struct fields) get higher numbers and are coloured FIRST. So to move a value to an earlier/lower callee-saved register, turn a named local into an unnamed temp (e.g. `b.y = tgt->y;` instead of `f32 by = tgt->y; b.y = by;`), or reorder declarations. Matched `fn_8023BE44` (a0f0a6c6). Tooling: `/home/mi/Decomp/hm-work/wVD/HOWTO.md` (mwcc-debugger dumps the priority list), details in `/home/mi/Decomp/hm-work/SCHEDULER.md` (Claude workers' dir; ask if you can't see it).
+
 - **Allocate-then-construct without the extra `mr r0,r3`** (found 2026-11-11 on `fn_8003BC2C`, collaborator range): write it as `q = (C *)nw(n); if (q) ctor(q); p->f = q;` with a `void` ctor. That gives the target's `mr. r31,r3; beq; bl ctor; stw r31,...`. Minimal repro: `/home/mi/Decomp/hm-work/wVB/repro/EXTRA_MR_2*` (Claude workers' scratch dir; ask if you can't see it).
 
 - **Virtual calls**: vtable slot = (disp − 8) / 4. If the vptr is at offset N, model the class as `struct V { u8 pad[N]; virtual …; }`.
