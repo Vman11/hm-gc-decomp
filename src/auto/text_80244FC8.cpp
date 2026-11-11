@@ -36,6 +36,8 @@ static inline void Tan(Path *p, u32 i, Vec *res) {
     }
     fn_80101624(res, &b, &a, w);
 }
+#pragma push
+#pragma opt_propagation off
 void fn_80244FC8(Path *p, Vec *out) {
     Vec r1, r2, s;
     u32 i, j;
@@ -60,4 +62,6 @@ void fn_80244FC8(Path *p, Vec *out) {
     if (t != sum) t = d1 / sum;
     fn_80101624(out, &r1, &r2, t);
 }
+#pragma pop
+
 }
