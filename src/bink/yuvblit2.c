@@ -328,13 +328,13 @@ void fn_802885F4(s32 count) {
     lbl_80300860[1] = p1 + count * 16;
     stride = (w * 4 + 31) & ~31;
     src1 = (u32 *)lbl_80300860[3];
-    pu = (u16 *)lbl_80300860[5];
     src0 = (u32 *)lbl_80300860[2];
+    pu = (u16 *)lbl_80300860[5];
     pv = (u16 *)lbl_80300860[4];
     ct = lbl_803008C0;
     t3 = ct + 768;
-    t2 = ct + 512;
     t1 = ct + 256;
+    t2 = ct + 512;
     Rt = lbl_802F9340;
     Bt = lbl_802FAB80;
     Gt = lbl_802F9F60;
