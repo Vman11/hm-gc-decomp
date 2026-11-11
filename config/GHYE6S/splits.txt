@@ -3795,34 +3795,10 @@ auto/text_800819BC.cpp:
 	.text       start:0x800819BC end:0x800819F0
 
 auto/text_800819F0.cpp:
-	extab       start:0x80007B38 end:0x80007B40
-	extabindex  start:0x80019F4C end:0x80019F58
-	.text       start:0x800819F0 end:0x80081C1C
-
-auto/text_80081C1C.cpp:
-	extab       start:0x80007B40 end:0x80007B48
-	extabindex  start:0x80019F58 end:0x80019F64
-	.text       start:0x80081C1C end:0x80081F84
-
-auto/text_80081F84.cpp:
-	extab       start:0x80007B48 end:0x80007B50
-	extabindex  start:0x80019F64 end:0x80019F70
-	.text       start:0x80081F84 end:0x800820C4
-
-auto/text_800820C4.cpp:
-	extab       start:0x80007B50 end:0x80007B58
-	extabindex  start:0x80019F70 end:0x80019F7C
-	.text       start:0x800820C4 end:0x800824C0
-
-auto/text_800824C0.cpp:
-	extab       start:0x80007B58 end:0x80007B60
-	extabindex  start:0x80019F7C end:0x80019F88
-	.text       start:0x800824C0 end:0x80082D44
-
-auto/text_80082D44.cpp:
-	extab       start:0x80007B60 end:0x80007B68
-	extabindex  start:0x80019F88 end:0x80019F94
-	.text       start:0x80082D44 end:0x80083120
+	extab       start:0x80007B38 end:0x80007B68
+	extabindex  start:0x80019F4C end:0x80019F94
+	.text       start:0x800819F0 end:0x80083120
+	.sdata2     start:0x8035FC20 end:0x8035FC48
 
 auto/text_80083120.cpp:
 	extab       start:0x80007B68 end:0x80007B70
