@@ -1,70 +1,106 @@
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-struct E_917C { u8 pad_[292];
-    virtual void v0(); virtual void v1(); virtual void m2(char *, int, int); virtual void v3(); virtual void v4(); virtual u32 m5();
+extern "C" {
+
+/* QV=2.0p1 */
+#pragma optimization_level 2
+} /* extern "C" */
+struct Rd {
+    u8 pad[292];
+    virtual void v0();
+    virtual void v1();
+    virtual void open(void *name, s32 a, s32 b);
+    virtual void v3();
+    virtual void v4();
+    virtual u32 next();
 };
-struct P_917C { u8 pad_[16];
-    virtual void v0(); virtual void v12();
-    struct T12_917C *f20;
+struct C80215F50 {
+    C80215F50();
+    ~C80215F50();
+    u8 pad[44];
+    Rd *f44;
+    u8 pad2[4];
 };
-struct T12_917C { u8 d[12]; };
-struct C80215F50 { u8 pad[0x2C]; E_917C *f44; u8 pad2[0x8]; C80215F50(); ~C80215F50(); };
+struct A {
+    u8 pad[16];
+    virtual void v0();
+    virtual void reset();
+    u8 *f20;
+};
+struct Buf { u32 a, b; };
 extern "C" {
 extern char lbl_80363930[4];
-extern char lbl_80363934[8];
+extern char lbl_80363934[6];
 extern char lbl_802E2538[];
-int fn_80215C84(C80215F50 *, char *, char *, int, int);
-void fn_80060E30(int, char *, ...);
-void fn_80215BFC(C80215F50 *);
-void fn_800FB064(E_917C *, void *);
-void fn_800FAFA8(E_917C *);
-u32 fn_800FB33C(E_917C *);
-void fn_800FAF50(E_917C *);
-void fn_800FAEF8(E_917C *);
-void fn_800F8E38(P_917C *, u32);
-void fn_801087AC(void *, P_917C *, void *);
-void fn_80108D14(T12_917C **, u32);
-void fn_800F87F0(P_917C *, void *, T12_917C *);
-void fn_800FAEA0(E_917C *);
-static inline u32 getn(E_917C *r) { return fn_800FB33C(r); }
-static inline void rd(P_917C *p, E_917C *r, u8 *b16, u32 n, u32 i) { for (; i < n; i++) { fn_800FB064(r, b16); fn_800F87F0(p, b16, &p->f20[i]); } }
-void fn_8010917C(P_917C *p, void *a, char *s) {
-    C80215F50 o;
-    u8 b16[8];
-    u8 b8[8];
-    int e;
-    E_917C *r;
-    void *x;
+s32 fn_80215C84(C80215F50 *r, u32 name, char *s, s32 a, s32 b);
+void fn_80060E30(s32 e, char *fmt, ...);
+void fn_800FB064(Rd *r, Buf *b);
+void fn_800FAFA8(Rd *r);
+u32 fn_800FB33C(Rd *r);
+void fn_800FAF50(Rd *r);
+void fn_800FAEF8(Rd *r);
+void fn_800FAEA0(Rd *r);
+void fn_800F8E38(A *a, u32 n);
+void fn_801087AC(void *b, A *a, Buf *p);
+void fn_80108D14(u8 **p, u32 n);
+void fn_800F87F0(A *a, Buf *b, u8 *d);
+void fn_80215BFC(C80215F50 *r);
+
+static inline void rdall(A *a, Rd *r, u32 n, Buf *v, u32 i) {
+    u32 off;
+    for (off = i; i < n; off += 12, i++) {
+        fn_800FB064(r, v);
+        fn_800F87F0(a, v, a->f20 + off);
+    }
+}
+
+static inline void rd58(A *a, void *b, Rd *r, Buf *ph, Buf *v, u32 &off) {
     u32 n;
     u32 i;
-    u32 k;
-    if ((e = fn_80215C84(&o, s, lbl_80363930, 2, 0)) != 0) fn_80060E30(e, lbl_80363934, s, lbl_80363930);
-    r = o.f44;
-    if (p->f20) p->v12();
-    r->m2(lbl_802E2538, 2, 0);
-    k = r->m5();
-    x = 0;
-    if (k == 57) {
-        fn_800FB064(r, b8);
-        x = b8;
-        k = r->m5();
+    fn_800FAFA8(r);
+    n = fn_800FB33C(r);
+    fn_800FAF50(r);
+    fn_800FAEF8(r);
+    fn_800F8E38(a, n);
+    fn_801087AC(b, a, ph);
+    fn_80108D14(&a->f20, n);
+    for (off = i = 0; i < n; off += 12, i++) {
+        fn_800FB064(r, v);
+        fn_800F87F0(a, v, a->f20 + off);
     }
-    while (k != 0) {
-        switch (k) {
+    fn_800FAEA0(r);
+}
+void fn_8010917C(A *a, void *b, u32 name) {
+    s32 e;
+    u32 t;
+    Buf *ph;
+    Rd *r;
+    Buf v;
+    Buf hd;
+    C80215F50 rd;
+    if ((e = fn_80215C84(&rd, name, lbl_80363930, 2, 0)) != 0) fn_80060E30(e, lbl_80363934, name, lbl_80363930);
+    r = rd.f44;
+    if (a->f20) a->reset();
+    r->open(lbl_802E2538, 2, 0);
+    t = r->next();
+    ph = 0;
+    if (t == 57) {
+        fn_800FB064(r, &hd);
+        ph = &hd;
+        t = r->next();
+    }
+    while (t != 0) {
+        switch (t) {
         case 58:
-            fn_800FAFA8(r);
-            n = getn(r);
-            fn_800FAF50(r);
-            fn_800FAEF8(r);
-            fn_800F8E38(p, n);
-            fn_801087AC(a, p, x);
-            fn_80108D14(&p->f20, n);
-            rd(p, r, b16, n, 0);
-            fn_800FAEA0(r);
-            break;
+            rd58(a, b, r, ph, &v, name);
         }
-        k = r->m5();
+        t = r->next();
     }
-    fn_80215BFC(&o);
+    fn_80215BFC(&rd);
 }
-}
+
+#pragma optimization_level reset
+
+} /* extern "C" */

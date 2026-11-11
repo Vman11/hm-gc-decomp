@@ -4,17 +4,21 @@
 
 extern "C" {
 
-struct T {
-    u32 f0; u32 f4; u32 f8;
-    virtual u8 get(u32 i);
-};
-void fn_800FA474(T *t, char *buf, u32 n) {
+/* QV=2.0p1 */
+} /* extern "C" */
+struct O800FA474 { u32 f0; u32 f4; u32 f8; virtual char v0(u32) const; };
+extern "C" {
+void fn_800FA474(const O800FA474 *p, char *buf, u32 size) {
+    char *d;
     u32 i;
-    u32 avail = t->f8 - t->f4;
-    u32 len = avail;
-    if (n <= avail) len = n - 1;
-    for (i = 0; i < len; i++) buf[i] = t->get(i);
+    u32 len;
+    u32 n;
+    len = p->f8 - p->f4;
+    n = len;
+    if (size <= len) n = size - 1;
+    d = buf;
+    for (i = 0; i < n; i++) buf[i] = p->v0(i);
     buf[i] = 0;
 }
 
-}
+} /* extern "C" */

@@ -1,22 +1,22 @@
 /* Functions from 0x800F6FBC to 0x800F710C, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 extern u8 lbl_802E05C8[];
 extern u8 lbl_802E06C8[];
 extern u8 lbl_802E07C8[];
-void fn_800F6FBC(char *src, char *dst) {
-    u32 i;
-    char c = src[0];
+
+
+/* QV=2.0p1 */
+void fn_800F6FBC(const char *src, char *dst) {
+    int i;
     dst[0] = 0;
     for (i = 0; i < 8; i++) {
-        c = src[i];
-        dst[i] = c;
-        if (c == 0) {
-            return;
-        }
+        dst[i] = src[i];
+        if (src[i] == 0) return;
     }
 }
-
 void fn_800F7044(char *s) {
     int c;
     u32 i;
@@ -39,3 +39,4 @@ void fn_800F70A8(char *s) {
     }
 }
 
+} /* extern "C" */

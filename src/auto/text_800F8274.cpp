@@ -1,45 +1,38 @@
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
-// NonMatching (wMO, wQW): SDIFF 0 / DIFF 12 (decl order arr,start,n,off,idx), register-only (permuter). const T* param keeps the n check above stmw; goto layout reproduces the LICM preheader after the b; (T *) casts stop CSE of the loop loads. QV=2.0p1
+
 extern "C" {
-typedef struct { char name[8]; void *val; } E;
-typedef struct { E *arr; u32 n; } T;
-s32 fn_800F6CD0(E *e, const char *s);
-static inline u32 hash(const char *s) {
-    u32 h;
-    s32 shift;
-    s32 i;
-    h = s[0];
+
+/* QV=2.5 */
+typedef struct { char name[8]; void *value; } E800F8274;
+typedef struct { E800F8274 *entries; u32 count; } T800F8274;
+s32 fn_800F6CD0(E800F8274 *e, const char *key);
+static inline u32 hash_800F8274(const char *key) {
+    u32 h, shift;
+    s32 k;
+    h = key[0];
     shift = 7;
-    for (i = 1; i < 8; i++) {
-        if (s[i] == 0) break;
-        h += s[i] << shift;
+    for (k = 1; k < 8; k++) {
+        if (key[k] == 0) break;
+        h += key[k] << shift;
         shift = (shift + 7) & 31;
     }
     return h;
 }
-void *fn_800F8274(const T *t, const char *key) {
-    E *arr;
-    u32 start;
-    u32 n;
-    u32 off;
-    u32 idx;
-    if (t->n == 0) return 0;
-    start = hash(key) % t->n;
-    idx = start;
-    goto L1;
-L0:
-    if (arr[idx].val == 0) return 0;
-    idx++;
-    if (idx >= n) idx = 0;
-    if (idx == start) return 0;
-    goto L2;
-L1:
-    arr = ((T *)t)->arr;
-    n = ((T *)t)->n;
-L2:
-    off = idx * 12;
-    if (fn_800F6CD0((E *)((u8 *)arr + off), key) == 0) goto L0;
-    return t->arr[idx].val;
+void *fn_800F8274(const T800F8274 *t, const char *key) {
+    s32 start;
+    u32 i;
+    if (t->count == 0) return 0;
+    start = hash_800F8274(key) % t->count;
+    i = start;
+    while (!fn_800F6CD0(&t->entries[i], key)) {
+        if (t->entries[i].value == 0) return 0;
+        i++;
+        if (i >= t->count) i = 0;
+        if (i == start) return 0;
+    }
+    return t->entries[i].value;
 }
 
 } /* extern "C" */

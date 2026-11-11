@@ -1,76 +1,70 @@
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+// split_file divides it into the game's real files (file_status shows its range).
 #include "common.h"
 
-// NonMatching (DIFF 14, SDIFF 2): ret r(r28)/loop off40(r27) regs swapped; loop add scheduled after stfs x.
-struct VB_801176A4 { u8 pad[0xd0]; };
-struct T_801176A4 : VB_801176A4 {
-    virtual void v0(); virtual void v1(); virtual void v2(); virtual s32 v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 v7();
-};
 extern "C" {
-typedef struct { u8 pad[0xc]; f32 fc; f32 f10; s32 f14; s32 f18; s32 f1c; } A_801176A4;
-typedef struct { s32 f0; s32 f4; s32 f8; s32 fc; f32 f10; f32 f14; f32 f18; f32 f1c; f32 f20; } D_801176A4;
-typedef struct {
-    s32 f0; s32 f4; s32 f8; u8 padc[0xc]; s32 f18; u8 pad1c[0x34];
-    s32 *f50; u8 pad54[0x54]; s32 fa8; s32 fac;
-} H_801176A4;
-#define H(t) ((H_801176A4 *)(t))
+
 extern volatile f32 lbl_80363A7C;
 extern volatile f32 lbl_80363A80;
 extern volatile f32 lbl_80363A68;
+typedef struct { u32 a; u32 b; } E8;
+typedef struct { u32 f0; u32 f4; u32 f8; u32 f12; f32 f16; f32 f20; f32 f24; f32 f28; f32 f32_; } D36;
+typedef struct { u8 pad[12]; f32 f12; f32 f16; u32 f20; u32 f24; u32 f28; } P176;
+void fn_80118694(void *p, u32 n, u32 v);
+s32 fn_8011F5C0(void *o, const P176 *p);
+void fn_80118B5C(void *q, D36 *s);
 void *memset(void *, int, u32);
-void fn_80118694(void *, s32, s32);
-s32 fn_8011F5C0(T_801176A4 *, A_801176A4 *);
-void fn_80118B5C(void *, D_801176A4 *);
-
-static inline void Upd0(H_801176A4 *h) { h->fa8 = h->f0 + h->f4 + h->f8; }
-static inline void Upd1(H_801176A4 *h) { Upd0(h); h->fac = h->f4 + h->f8; }
-
-static inline void SetX(H_801176A4 *h, s32 v) { h->f0 = v; Upd0(h); }
-static inline void SetY(H_801176A4 *h, s32 v) { h->f4 = v; Upd1(h); }
-static inline void SetZ(H_801176A4 *h, s32 v) { h->f8 = v; Upd1(h); }
-static inline void SetAll(H_801176A4 *h, s32 x, s32 y, s32 z) {
-    h->f0 = x;
-    Upd0(h);
-    h->f4 = y;
-    Upd1(h);
-    h->f8 = z;
-    Upd1(h);
-}
-static inline void Loop_801176A4(T_801176A4 *t, A_801176A4 *a, u32 i) {
-    f32 x = a->fc;
-    f32 y = a->f10;
-    for (; i < H(t)->f4; i++) {
-        D_801176A4 d;
-        memset(&d, 0, 0x24);
-        *(volatile s32 *)&d.f8 = ((s32 * volatile &)H(t)->f50)[i * 2];
-        *(volatile s32 *)&d.f4 = 1;
-        *(volatile s32 *)&d.f0 = *(volatile s32 *)&H(t)->f18;
-        s32 v = i + *(volatile s32 *)&H(t)->f0;
-        *(volatile f32 *)&d.f1c = x;
-        *(volatile s32 *)&d.fc = v;
-        *(volatile f32 *)&d.f20 = y;
-        *(volatile f32 *)&d.f10 = lbl_80363A7C;
-        *(volatile f32 *)&d.f14 = lbl_80363A80;
-        *(volatile f32 *)&d.f18 = lbl_80363A68;
-        fn_80118B5C(*(u8 * volatile *)((u8 *)t + 0xd4) + i * 0x40, &d);
-    }
-}
-
-s32 fn_801176A4(T_801176A4 *__restrict t, A_801176A4 *__restrict a) {
+} /* extern "C" */
+struct O176 {
+    u32 f0; u32 f4; u32 f8; u8 pad12[24 - 12]; u32 f24; u8 pad28[80 - 28]; E8 *f80; u8 pad84[168 - 84];
+    u32 f168; u32 f172; u8 pad176[208 - 176];
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual s32 v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 v7();
+    u8 *f212; u8 f216[4];
+    void upd() { f168 = f0 + f4 + f8; }
+    void upd2() { f168 = f0 + f4 + f8; f172 = f4 + f8; }
+    void set0(u32 v) { f0 = v; upd(); }
+    void set1(u32 v) { f4 = v; upd2(); }
+    void set2(u32 v) { f8 = v; upd2(); }
+};
+extern "C" {
+static inline s32 tail(O176 *o, const P176 *p) {
     s32 r;
-    if ((r = t->v7()) != 0) {
-        return r;
-    }
-    SetX(H(t), a->f14);
-    SetY(H(t), a->f18);
-    SetZ(H(t), a->f1c);
-    fn_80118694((u8 *)t + 0xd8, H(t)->fa8 * 2, 0xff);
-    r = fn_8011F5C0(t, a);
+    u32 i;
+    f32 a;
+    f32 b;
+    r = fn_8011F5C0(o, p);
     if (r == 0) {
-        r = t->v3();
+        r = o->v3();
         if (r == 0) {
-            Loop_801176A4(t, a, 0);
+            a = p->f12; b = p->f16;
+            for (i = 0; i < o->f4; i++) {
+                D36 s;
+                memset(&s, 0, sizeof(s));
+                s.f8 = o->f80[i].a;
+                s.f4 = 1;
+                s.f0 = o->f24;
+                u32 t = i + o->f0;
+                *(volatile f32 *)&s.f28 = a;
+                *(volatile u32 *)&s.f12 = t;
+                *(volatile f32 *)&s.f32_ = b;
+                *(volatile f32 *)&s.f16 = lbl_80363A7C;
+                *(volatile f32 *)&s.f20 = lbl_80363A80;
+                *(volatile f32 *)&s.f24 = lbl_80363A68;
+                fn_80118B5C(o->f212 + i * 64, &s);
+            }
         }
     }
     return r;
 }
+s32 fn_801176A4(O176 *o, const P176 *p) {
+    s32 r;
+    r = o->v7();
+    if (r != 0) return r;
+    o->set0(p->f20);
+    o->set1(p->f24);
+    o->set2(p->f28);
+    fn_80118694(o->f216, o->f168 * 2, 255);
+    return tail(o, p);
 }
+
+} /* extern "C" */

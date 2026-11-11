@@ -4,24 +4,36 @@
 
 extern "C" {
 
-extern void *volatile lbl_8035A0A4;
+/* QV=2.0p1 */
 extern char lbl_80299B08[];
-int fn_8003C674(void *, char *, u32 **);
-void fn_80072438(void *, u32);
+extern void *volatile lbl_8035A0A4;
+s32 fn_8003C674(void *, char *, s32 *volatile *);
+void fn_80072438(void *, s32);
 void fn_80242210(void *);
-typedef struct O { u8 p[284]; u32 *a; u32 *b; u8 q[308 - 292]; void *c; u8 r[364 - 312]; s32 f16C; s32 f170; } O;
-void fn_80094368(O *o) {
-    if (o->f16C) {
-        u32 *p; *(u32 *volatile *)&p = 0;
-        if (fn_8003C674(lbl_8035A0A4, lbl_80299B08, &p) == 0) *p = 0;
-        *p += *o->b;
-        o->f16C = 0;
-    }
-    if (o->f170) {
-        fn_80072438(o->c, *o->a);
-        o->f170 = 0;
-    }
-    fn_80242210(o);
-}
 
+typedef struct {
+    u8 pad0[284];
+    s32 *f11C;
+    s32 *f120;
+    u8 pad124[16];
+    void *f134;
+    u8 pad138[52];
+    s32 f16C;
+    s32 f170;
+} S80094368;
+
+#pragma scheduling 604
+void fn_80094368(S80094368 *p) {
+    if (p->f16C != 0) {
+s32 *volatile v = 0; s32 *q; if (fn_8003C674(lbl_8035A0A4, lbl_80299B08, &v) == 0) { *v = 0; } q = v; *q += *p->f120;
+        p->f16C = 0;
+    }
+    if (p->f170 != 0) {
+        fn_80072438(p->f134, *p->f11C);
+        p->f170 = 0;
+    }
+    fn_80242210(p);
 }
+#pragma scheduling reset
+
+} /* extern "C" */

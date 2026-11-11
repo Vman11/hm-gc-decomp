@@ -1,6 +1,8 @@
 /* Functions from 0x800FEEA0 to 0x800FF140, found by decomp-toolkit. */
 #include "common.h"
 
+extern "C" {
+
 static inline f64 fabs(f64 x) {
     return __fabs(x);
 }
@@ -9,38 +11,48 @@ static inline f32 fabsf(f32 x) {
     return (f32)fabs((f64)x);
 }
 
-s32 fn_800FEEA0(f32 *box, f32 *dir, f32 *pos, f32 t) {
-    f32 dx, dy, dz;
-    f32 ax, ay, az;
 
-    dx = pos[0] - box[0];
-    dy = pos[1] - box[1];
-    dz = pos[2] - box[2];
-    ax = fabsf(dir[0]);
-    if (fabsf(dx) > t * ax + box[3]) {
+/* QV=1.3.2 */
+
+
+/* QV=2.0p1 */
+static inline f64 fabs_FEEA0(f64 x) { return __fabs(x); }
+#define FABSF_FEEA0(x) ((f32)fabs_FEEA0(x))
+s32 fn_800FEEA0(f32 *box, f32 *dir, f32 *pos, f32 t) {
+    f32 d[3];
+    f32 a[3];
+    f32 r;
+    f32 l;
+    f32 ad[3];
+    d[0] = pos[0] - box[0];
+    d[1] = pos[1] - box[1];
+    d[2] = pos[2] - box[2];
+    a[0] = FABSF_FEEA0(dir[0]);
+    if (FABSF_FEEA0(d[0]) > t * a[0] + box[3]) {
         return 0;
     }
-    ay = fabsf(dir[1]);
-    if (fabsf(dy) > t * ay + box[4]) {
+    a[1] = FABSF_FEEA0(dir[1]);
+    if (FABSF_FEEA0(d[1]) > t * a[1] + box[4]) {
         return 0;
     }
-    az = fabsf(dir[2]);
-    if (fabsf(dz) > t * az + box[5]) {
+    a[2] = FABSF_FEEA0(dir[2]);
+    if (FABSF_FEEA0(d[2]) > t * a[2] + box[5]) {
         return 0;
     }
-    if (fabsf(dy * dir[2] - dz * dir[1]) > box[4] * az + box[5] * ay) {
+    r = box[4] * a[2] + box[5] * a[1];
+    if (FABSF_FEEA0(d[1] * dir[2] - d[2] * dir[1]) > r) {
         return 0;
     }
-    if (fabsf(dz * dir[0] - dx * dir[2]) > box[3] * az + box[5] * ax) {
+    r = box[3] * a[2] + box[5] * a[0];
+    if (FABSF_FEEA0(d[2] * dir[0] - d[0] * dir[2]) > r) {
         return 0;
     }
-    if (fabsf(dx * dir[1] - dy * dir[0]) > box[3] * ay + box[4] * ax) {
+    r = box[3] * a[1] + box[4] * a[0];
+    if (FABSF_FEEA0(d[0] * dir[1] - d[1] * dir[0]) > r) {
         return 0;
     }
     return 1;
 }
-
-/* QV=1.3.2 */
 s32 fn_800FEFC8(f32 *box, f32 *sphere) {
     f32 dx, dy, dz;
     f32 z = sphere[2];
@@ -71,3 +83,5 @@ s32 fn_800FEFC8(f32 *box, f32 *sphere) {
     }
     return dx * dx + dy * dy + dz * dz <= sphere[3] * sphere[3];
 }
+
+} /* extern "C" */
