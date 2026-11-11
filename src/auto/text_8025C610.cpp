@@ -245,7 +245,7 @@ void fn_8025C610(Cam *c, f32 dt) {
         }
         roll = lbl_80366950;
         if (lbl_8035A238 == 0) {
-            if ((f32)__fabs(lbl_8035A268) > lbl_80366954) {
+            if ((f32)__fabs(lbl_8035A268) > (*(volatile f32 *)&lbl_80366954)) {
                 lbl_8035B6EC = 0;
                 lbl_8035B6E8 = 0;
                 if (lbl_8035A268 < lbl_80366950) {
@@ -524,5 +524,6 @@ void fn_8025C610(Cam *c, f32 dt) {
     Set(lbl_80357B04, c->fwd);
     Set(lbl_80357B1C, c->eye);
 }
+
 
 } /* extern "C" */
