@@ -18694,6 +18694,7 @@ auto/text_80199430.cpp:
 	extab       start:0x8000F5AC end:0x8000F5B4
 	extabindex  start:0x80021BCC end:0x80021BD8
 	.text       start:0x80199430 end:0x80199874
+	.sdata2     start:0x80364C70 end:0x80364C78
 
 auto/text_80199874.c:
 	.text       start:0x80199874 end:0x801998D4
