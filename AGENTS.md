@@ -42,11 +42,17 @@ register-equivalent function later becomes exact, remove it from the list.
 - `python3 tools/equivcheck.py` compares `build/GHYE6S/main.dol` with `orig/GHYE6S/sys/main.dol` and exits nonzero
   unless: the size, the section table and every byte outside `.text` are identical; every differing `.text` word is
   inside a listed function; in those functions every instruction has the same opcode and the same immediates,
-  displacements, branch targets and condition bits; and **one renaming for the whole function** (a bijection, separate
-  for GPRs, FPRs and CR fields) explains all register fields. The renaming must leave alone r0/r1/r2/r13, parameters
-  (registers live at entry), anything a callee may read at a call, results read after a call, r3/f1 (and r4) when the
-  function writes them, and implicitly used registers; it cannot move a value between a volatile and a callee-saved
-  register. The exact rules are in the docstring. It prints one `PASS`/`FAIL` line per differing function.
+  displacements, branch targets and condition bits; and the register fields are a renaming of **live ranges**
+  (since 2026-11-11, second version): every operand that is read must be reached by the same definitions (same
+  instruction positions) in both versions, so a value may be in r29 in one region and r30 in another, but two values
+  that are live together can never share a register. The two sources of a commutative instruction (add, and, or, xor,
+  mullw, fadd, fmul, the multiplicands of fmadd, ...) may be swapped. Entry values (parameters), call arguments, what
+  a callee may read, call results, r3/r4/f1 and the callee-saved registers at a return, r1/r2/r13 and implicitly used
+  registers must be in the same register number. Reordered instructions are still a FAIL. The exact rules and
+  assumptions are in the docstring. It prints one `PASS`/`FAIL` line per differing function.
+- `--strict` applies the first version of the rule (one renaming for the whole function). `--selftest` re-checks the
+  listed functions and makes sure corrupted copies (an operand reading another register, swapped operands of
+  subf/fdiv/cmpw, a moved call argument) are rejected; run it after changing the script.
 - `python3 tools/equivcheck.py --list auto/text_8019A7D0 [unit:fn | fn ...]` tells, without linking, whether the
   functions of a unit WOULD pass, by comparing `build/GHYE6S/src/<unit>.o` with `build/GHYE6S/obj/<unit>.o`. A unit
   reported `QUALIFIES` has only exact and register-equivalent functions. The link can still fail the real check for
@@ -55,8 +61,10 @@ register-equivalent function later becomes exact, remove it from the list.
   build/GHYE6S/main.dol`, `python3 tools/equivcheck.py`, then `sha1sum build/GHYE6S/main.dol >
   config/GHYE6S/build.sha1` and commit `build.sha1` in the same commit. Never update `build.sha1` without a passing
   equivcheck.
-- Most register differences are NOT accepted: the usual case, where only some live ranges moved (r4 here, r0 there)
-  or a commutative operand order changed, has no whole-function renaming and stays `NonMatching`.
+- Since the per-live-range version, `--list` accepts most pure register differences (54 of the 89 drafts whose
+  disassembly differs in register numbers only, against 6 before). What still fails: two instructions in swapped
+  order, a temporary left in r3/r4/f1 at a return or in an argument register at a call, and anything that is not a
+  rename.
 - `report.json` / objdiff still show a linked register-equivalent function below 100%.
 
 ## Tools (tools/decomp_agent/)
@@ -206,7 +214,7 @@ The decoded extab in `build/GHYE6S/asm/<unit>.s` says which C++ construct the or
 - Don't edit units in the other side's range. Shared files (`configure.py`, `config/GHYE6S/splits.txt`, `symbols.txt`, `regequiv.txt`, `build.sha1`, `AGENTS.md`): pull right before you commit, keep edits to your own lines, and re-check with `ninja` + `python3 tools/equivcheck.py` before pushing.
 - A merge that spans the boundary (shared literal pools / jump tables) needs a note here first.
 - Already done in the collaborator range before the split: `text_800F8274` (`fn_800F8274`) is linked as Matching under the register-equivalent policy (commit e1fb013e); nothing to do there.
-- In progress (Claude workers, shared tooling): `tools/equivcheck.py` currently needs ONE register renaming for the whole function, so only ~6 of ~89 register-only drafts pass. A per-live-range version (MWCC assigns registers per live range) that also allows swapped operands of commutative ops is being built; it will keep `--strict` for the old rule and add self-tests. Until it lands, `--list` under-reports candidates. Pull before relying on it.
+- Shared tooling update (2026-11-11): `tools/equivcheck.py --list` now admits per-live-range renames and swapped commutative operands (see "Register-equivalent matches"). In the collaborator range 29 units now report `QUALIFIES` (28 more than before): run `python3 tools/equivcheck.py --list $(grep -o 'NonMatching, "auto/text_[0-9A-F]*' configure.py | cut -d'"' -f2) | grep QUALIFIES`. The Claude workers convert only the units at or above `0x80165000`.
 
 
 **Claimed game functions (2026-10-22):** the library agent now also works on game code, but only on the functions in
