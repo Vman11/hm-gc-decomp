@@ -91,6 +91,10 @@ static inline u8 Active(Fade *f) {
     return r;
 }
 
+static inline s32 SW(Gx *g) { return g->scr->w; }
+static inline s32 SH(Gx *g) { return g->scr->h; }
+static inline s32 FH(Self *s) { return s->fb70->h; }
+static inline Scr *SC(Gx *g) { return g->scr; }
 void fn_800326D0(Self *self, Gx *gx) {
     volatile V4 a;
     volatile V4 b;
@@ -162,7 +166,7 @@ void fn_800326D0(Self *self, Gx *gx) {
         {
             s32 w = gx->scr->w;
             s32 h = gx->scr->h;
-            s32 off = self->fb70->h;
+            s32 off = FH(self);
             r1.x = lbl_8035BD4C;
             r1.y = lbl_8035BD4C;
             r1.z = w;

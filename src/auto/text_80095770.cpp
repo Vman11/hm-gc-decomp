@@ -41,6 +41,10 @@ static inline float Sq(float x) {
 }
 struct E { u32 flags; u8 pad[0x2c]; void *f30; u8 pad2[0x44]; void *f78; u8 pad3[0x2c]; };
 static inline E *GE(char *self, int i) { return &(*(E **)(self + 0x130))[i]; }
+static inline float GX(const V3 *v) { return v->x; }
+static inline float GY(const V3 *v) { return v->y; }
+static inline float GZ(const V3 *v) { return v->z; }
+static inline void Sub(V3 *o, const V3 *a, const V3 *b) { o->x = a->x - b->x; o->y = a->y - b->y; o->z = a->z - b->z; }
 void fn_80095770(char *self, V3 a, V3 b, int n, char *obj) {
     V3 p, start, end, hit, nrm, c, u, e;
     float pz, py, px;
@@ -52,7 +56,7 @@ void fn_80095770(char *self, V3 a, V3 b, int n, char *obj) {
     int o38, o34;
     void *o30;
     int r = fn_80264E0C(&start, &end, &hit, &nrm, &o38, &o34, &o30, 0, name, 0, 0, 0, 0, 0, 1);
-    V3 d; float bx = b.x, by = b.y, bz = b.z;
+    V3 d; float bx = b.x, by = b.y, bz = GZ(&b);
     d.x = start.x - lbl_80357B1C.x;
     d.y = start.y - lbl_80357B1C.y;
     d.z = start.z - lbl_80357B1C.z;
