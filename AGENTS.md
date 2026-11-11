@@ -932,3 +932,4 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - wRZ (2026-11-07): fn_80116B10 MATCHED: typed structs (S *s; H *h = s->h; declared first) and `*arg2 = (u8 *)h + (h->off + arg1);` fixed base r7/off r6 colouring.
 - wSE (2026-11-07): fn_8023C528 MATCHED: "compare left operand in r0" register diff fixed by reading the RIGHT operand through a getter inline (it->idx >= nOf(it->cur), ... >= ngOf(it->s)).
 - wSM (2026-11-10): MATCHED fn_800739F8: 0.0f clamp `if (z < K) z = *(f32 *)&K;` with K declared non-volatile (other uses via a volatile-cast macro) gives the literal-like f0/f2 colouring without a reload.
+- wSM (2026-11-10): MATCHED fn_80111EEC: not hand-inlined - plain self-recursive fn (`return fn(t->next, name, 0)`) with the accessors fn_8011217C/fn_80112168/fn_8010F1D8/fn_8010CA74 defined `inline` in the unit; MWCC self-inlines 2 levels by default (TIPS wDI recipe), weak copies link away.
