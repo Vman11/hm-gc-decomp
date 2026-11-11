@@ -205,6 +205,8 @@ The decoded extab in `build/GHYE6S/asm/<unit>.s` says which C++ construct the or
 - **Claude workers:** every unmatched game function at or above `0x80165000`, plus the non-`auto/` units (Bink, MSL, SDK) (151 functions, `tools/decomp_agent/claude_workers_2026-11-11.txt`). Planned next: link all register-equivalent units in this range, then keep working the remaining scheduling-only near-misses and link blockers.
 - Don't edit units in the other side's range. Shared files (`configure.py`, `config/GHYE6S/splits.txt`, `symbols.txt`, `regequiv.txt`, `build.sha1`, `AGENTS.md`): pull right before you commit, keep edits to your own lines, and re-check with `ninja` + `python3 tools/equivcheck.py` before pushing.
 - A merge that spans the boundary (shared literal pools / jump tables) needs a note here first.
+- Already done in the collaborator range before the split: `text_800F8274` (`fn_800F8274`) is linked as Matching under the register-equivalent policy (commit e1fb013e); nothing to do there.
+- In progress (Claude workers, shared tooling): `tools/equivcheck.py` currently needs ONE register renaming for the whole function, so only ~6 of ~89 register-only drafts pass. A per-live-range version (MWCC assigns registers per live range) that also allows swapped operands of commutative ops is being built; it will keep `--strict` for the old rule and add self-tests. Until it lands, `--list` under-reports candidates. Pull before relying on it.
 
 
 **Claimed game functions (2026-10-22):** the library agent now also works on game code, but only on the functions in
