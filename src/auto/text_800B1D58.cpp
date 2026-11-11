@@ -1,8 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-// fn_800B1D58: NonMatching draft (28 diff lines, FP register colouring/scheduling in the d = b - a and
-// e *= s length blocks). Same TU as text_800B1844/text_800B21A0 (shared .sdata2 80362F7C..80362FB8);
-// T and VO here are supersets of text_800B1844's (extra fields only in its padding).
+// fn_800B1D58: NonMatching draft, 4 diff lines (one stfs in the e *= s length block is scheduled one slot
+// early). Same TU as text_800B1844/text_800B21A0 (shared .sdata2 80362F7C..80362FB8: the int->float magic
+// lbl_80362F98 comes out as a compiler literal here); T and VO are supersets of text_800B1844's
+// (extra fields only in its padding).
 #include "common.h"
 
 extern "C" {
@@ -75,22 +76,25 @@ static inline void Set(V3 *o, const V3 *a) {
     o->z = a->z;
 }
 
-static inline void Scale(V3 *o, f32 s) {
-    f32 x = o->x * s;
-    f32 y = o->y * s;
-    f32 z = o->z * s;
-    *(volatile f32 *)&o->x = x;
-    *(volatile f32 *)&o->y = y;
-    *(volatile f32 *)&o->z = z;
-}
-
 static inline void SetV(V3 *o, const V3 *a) {
     *(volatile f32 *)&o->x = a->x;
     *(volatile f32 *)&o->y = a->y;
     *(volatile f32 *)&o->z = a->z;
 }
 
+
+
 static inline f32 MagS(f32 x, f32 y, f32 z) {
+    f32 xx = x * x, yy = y * y, zz = z * z;
+    return Sq(zz + (xx + yy));
+}
+static inline f32 SubM(V3 *o, const V3 *a, const V3 *b) {
+    f32 x = a->x - b->x;
+    f32 y = a->y - b->y;
+    f32 z = a->z - b->z;
+    *(volatile f32 *)&o->x = x;
+    *(volatile f32 *)&o->y = y;
+    *(volatile f32 *)&o->z = z;
     f32 xx = x * x, yy = y * y, zz = z * z;
     return Sq(zz + (xx + yy));
 }
@@ -115,14 +119,8 @@ s32 fn_800B1D58(T *p) {
     dz = b.z - a.z;
     if (dz >= *p->f304 && dz <= *p->f304 + *p->f300) {
         {
-        *(volatile f32 *)&a.z = b.z;
-        f32 dx = b.x - a.x;
-        f32 dy = b.y - a.y;
-        dz = b.z - a.z;
-        *(volatile f32 *)&d.x = dx;
-        *(volatile f32 *)&d.y = dy;
-        *(volatile f32 *)&d.z = dz;
-        f32 m = MagS(dx, dy, dz);
+        a.z = b.z;
+        f32 m = SubM(&d, &b, &a);
         if (m <= *p->f296) {
 
             VO *o = lbl_8035B308->f72;
@@ -158,9 +156,21 @@ s32 fn_800B1D58(T *p) {
                 fn_80101820(&h);
                 fn_80101414(&e, &g, -(lbl_80362FA0 * *p->f316));
                 fn_80241628(p, 1, 0);
-                Scale(&e, s);
                 {
-                    f32 l = Mag(&e);
+                    f32 l;
+                    {
+                    f32 x0 = *(volatile f32 *)&e.x;
+                    f32 y0 = *(volatile f32 *)&e.y;
+                    f32 z0 = *(volatile f32 *)&e.z;
+                    f32 xxs = x0 * s;
+                    f32 zzs = z0 * s;
+                    f32 yys = y0 * s;
+                    *(volatile f32 *)&e.x = xxs;
+                    *(volatile f32 *)&e.y = yys;
+                    *(volatile f32 *)&e.z = zzs;
+                    l = MagS(xxs, yys, zzs);
+                    }
+
                     VO *m = p->f224;
                     Set(&m->f280, &e);
                     m->f340 = l;
