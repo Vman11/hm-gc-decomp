@@ -1,3 +1,4 @@
+#pragma opt_propagation off
 #include "common.h"
 class C800F6BDC {
 public:
