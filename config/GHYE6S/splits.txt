@@ -13820,17 +13820,10 @@ auto/text_8014D7A0.cpp:
 	.text       start:0x8014D7A0 end:0x8014D7E8
 
 auto/text_8014D7E8.cpp:
-	extab       start:0x8000C864 end:0x8000C86C
-	extabindex  start:0x8001EFE0 end:0x8001EFEC
-	.text       start:0x8014D7E8 end:0x8014D89C
-
-auto/text_8014D89C.cpp:
-	.text       start:0x8014D89C end:0x8014D8D8
-
-auto/text_8014D8D8.cpp:
-	extab       start:0x8000C86C end:0x8000C874
-	extabindex  start:0x8001EFEC end:0x8001EFF8
-	.text       start:0x8014D8D8 end:0x8014DBE8
+	extab       start:0x8000C864 end:0x8000C874
+	extabindex  start:0x8001EFE0 end:0x8001EFF8
+	.text       start:0x8014D7E8 end:0x8014DBE8
+	.sdata2     start:0x80364500 end:0x80364520
 
 auto/text_8014DBE8.cpp:
 	extab       start:0x8000C874 end:0x8000C87C
