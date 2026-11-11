@@ -35,6 +35,7 @@ static inline void measure(void *font, R *r, Arr *s, V2 *pos, V2 *scl) {
 static inline u16 rnd(u16 range) {
     return (u16)((u32)(range * lbl_802E0F60[lbl_8035A9E8 = (lbl_8035A9E8 + 1) & 0x7ff]) >> 11);
 }
+#pragma opt_propagation off
 void fn_801CBECC(void *p, void *ctx, R *rc, void *unused, R *clip, u32 selA, u32 selB, u8 *st2, int ha, int va) {
     R q;
     R q2;
@@ -166,4 +167,6 @@ void fn_801CBECC(void *p, void *ctx, R *rc, void *unused, R *clip, u32 selA, u32
         else fn_8012C744(width, F(st,0x28,f32), F(st,0x2c,f32), font, ctx, lbl_802A2980, &pos, &scl, st + 0x14, 0, fl);
     }
 }
+#pragma opt_propagation on
+
 }
