@@ -29,9 +29,9 @@ void fn_8023BE44(V3 *cur, const V3 *tgt, V3 *up, f32 rate, f32 minAng, f32 dt) {
     V3 a, b;
     f32 cx, cz, dot, ang;
     V3 c;
-    f32 bx = tgt->x, by = tgt->y, bz = tgt->z;
+    f32 bx = tgt->x;
     a = *cur;
-    b.x = bx; b.y = by; b.z = bz;
+    b.x = bx; b.y = tgt->y; b.z = tgt->z;
     fn_80100F24(&a, up);
     if ((f32)__fabs(fn_80101664(&a)) < lbl_80366040) return;
     fn_80100F24(&b, up);
