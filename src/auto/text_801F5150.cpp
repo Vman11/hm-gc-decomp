@@ -2,7 +2,7 @@
 extern "C" {
 struct wA_BR {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual s32 more(); virtual void refill();
-    u8 *ptr; u8 *end; s32 bits;
+    const u8 *ptr; const u8 *end; s32 bits;
 };
 struct wA_C { wA_BR *br; };
 struct wA_H { u8 pad0[4]; s32 maxcode[16]; s32 valoff[16]; u8 idx[16]; u8 vals[0x104]; s32 minlen; };
@@ -12,7 +12,7 @@ extern char lbl_802A59B4[];
 extern char lbl_802A59E0[];
 extern char lbl_802A5A00[];
 extern u32 lbl_8029DE58[];
-extern u32 lbl_8029DE7C[];
+extern const u32 lbl_8029DE7C[];
 extern u32 lbl_8029DE38[];
 void fn_80060568(const char *s, s32 a, s32 b, s32 c);
 
