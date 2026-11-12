@@ -20,9 +20,8 @@ Easy wins in YOUR range: these 24 units already report schedule-equivalent and c
 text_8002F118 80034AFC 8004058C 8004C4FC 800629DC 80066714 8006BB24 80078308 800885A0 800904CC 80093A70 80099BF8
 800A75B8 800B1D58 80110ADC 801229D0 8012E3F4 8013FCD0 80149A40 8014C830 80155124 801581F0 80159284 8015B860
 (re-run `--list` first; a unit with data outside .text may still fail the full link, as text_80166094 did).
-**Status of those 24 (collaborator, 2026-11-12):** 22 are linked (details under "Coordination", last entries). Open:
-text_8006BB24 (needs the 800690FC..8006F808 TU merge) and text_800A75B8 (int->float constant shared with unmatched
-fn_800A6BFC).
+**Status of those 24 (collaborator, 2026-11-12):** 23 are linked (details under "Coordination", last entries). Open:
+text_800A75B8 (int->float constant shared with unmatched fn_800A6BFC).
 
 **Claude's range** (`>= 0x80165000`, Bink/MSL/SDK; ~118 unmatched) stays with Claude; don't edit those units.
 
@@ -1123,12 +1122,24 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
   One namespace per old unit needs `#undef` for every macro at the end of each part, classes whose ctor/dtor symbol matters
   (`C801883E0`) at global scope (a namespace changes the mangled name), and no second declaration of an extern "C" name at
   global scope (ambiguous).
-- collaborator (2026-11-12), **open leads in the collaborator range**: (a) TU 800690FC..8006F808 (31 units): every
-  function is exact or equivalent now (8006BB24 schedule, 8006D124 schedule+register, 8006F808 register) and every unit
-  keeps its verdict under GC/2.0p1 + lmw + `-str reuse,readonly`; the merged unit must own .sdata2 8035F1E0-8035F210 (the
-  two int->float constants with "Enemy"/"BONUS"/"SPAWN"/0x2B between them as named .sdata2 definitions), the pool
-  80297908.. (85 table strings + 4 sub-pools), the tables 802BD3F8-802C1E70 and .bss 80306768.. (TU statics that
-  fn_8006908C / fn_800710BC / fn_800629DC use by label). (b) 8003B3E8/8003B5F8/8003B87C: 5F8 is schedule-equivalent, but
+- collaborator (2026-11-12): **merged text_800690FC..text_8006FEA4 (34 units) into `text_800690FC.cpp`**, Matching
+  (GC/2.0p1 + lmw + `-str reuse,readonly`, one namespace per former unit; 31 exact, fn_8006BB24 / fn_8006D124
+  schedule-equivalent, fn_8006F808 register-equivalent). What made it link, reusable for the other pool/table TUs:
+  - .sdata2 8035F1E0-8035F210: the two compiler-made int->float constants are 0x28 apart in the original, with
+    "Enemy"/"BONUS"/"SPAWN"/0x2B between them. Those four are `__declspec(section ".sdata2")` definitions placed
+    between the function that first uses constant 1 and the one that first uses constant 2.
+  - String pool 80297908-80297E10 as named arrays in pool order. A GLOBAL array is addressed by its own lis/addi; only
+    statics get the literal-like base + offset form, and only with ONE STATIC PER STRING (two big static groups were
+    still addressed separately). So: table strings that other objects name = globals, strings the code uses = one
+    static each; a part that used `extern char lbl_X[]` on a pool label now casts the pool object instead.
+  - Tables 802BD3F8-802C1E70 + vtable from jt_802BD300 (datafill); its forward declarations of TU functions must be
+    untyped `void f(void);` at global scope (the real parameter types live in later namespaces).
+  - .bss 80306798-80306838: the TU's global object + registration record as globals named by label, then the
+    function statics, in the original order (the anchor of a base-register .bss access is the unit's first object).
+  - `#pragma opt_propagation off` of one part leaks into every later part: reset it at the end of the part (four
+    functions further down changed until then). `build/agent_ds/vtm.py` compiles a merged file once and checks every
+    function against its former unit's target object, before splits.txt is touched.
+- collaborator (2026-11-12), **open leads in the collaborator range**: (b) 8003B3E8/8003B5F8/8003B87C: 5F8 is schedule-equivalent, but
   its constant lbl_8035C168 is shared with unmatched fn_8003BC2C. (c) text_8009DD24: extab header (saved-register count).
   (d) exact code, data-blocked: 8002B760/8002BDD4 (constant shared with 8002CA0C), TU 8008F16C..80090C68 (tables, pool,
   4-mod-8 jump table of 80090C68), 80091A9C, 8008028C, 80051B50/80052028 (TU with 800502FC), 80033C38, 8007225C, 80088294,
