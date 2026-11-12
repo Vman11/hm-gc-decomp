@@ -124,6 +124,11 @@ static inline int inbox(V3 *d, f32 *lp) {
         if ((f32)__fabs(dd) > lbl_80366710) { f32 e = lbl_80366718 - (f32)fn_800F049C(lbl_80366758 * dt); spd = e * dd + len; } \
     } }
 
+static inline V3 &UpV() { return lbl_80357E90; }
+static inline V3 *UpP() { return &lbl_80357E90; }
+static inline f32 UpX() { return lbl_80357E90.x; }
+static inline f32 UpY() { return lbl_80357E90.y; }
+static inline f32 UpZ() { return lbl_80357E90.z; }
 #pragma opt_propagation off
 void fn_80257A98(Cam *c, f32 dt) {
     V3 tgt, r, d, n;
@@ -152,7 +157,7 @@ void fn_80257A98(Cam *c, f32 dt) {
     ang = sacos(dot);
     {
         
-        if ((c->s0.fwd.y * d.z - c->s0.fwd.z * d.y) * lbl_80357E90.x + (c->s0.fwd.z * d.x - c->s0.fwd.x * d.z) * lbl_80357E90.y + (c->s0.fwd.x * d.y - c->s0.fwd.y * d.x) * lbl_80357E90.z > lbl_80366710) ang = -ang;
+        if ((c->s0.fwd.y * d.z - c->s0.fwd.z * d.y) * UpV().x + (c->s0.fwd.z * d.x - c->s0.fwd.x * d.z) * UpV().y + (c->s0.fwd.x * d.y - c->s0.fwd.y * d.x) * UpV().z > lbl_80366710) ang = -ang;
     }
     if ((c->ang < 0.0f && ang > 0.0f) || (c->ang > 0.0f && ang < 0.0f))
         c->own->msg(lbl_80366734, 0, 0, 0, 0);
@@ -173,7 +178,7 @@ void fn_80257A98(Cam *c, f32 dt) {
                 { f32 t = c->f11c; if (t < lbl_8036671C) { c->f11c = lbl_8036671C; c->f114 = lbl_80366718; } }
                 fn_801012C0(&r, &c->s0.up, &r, *c->p128 * (c->f11c * c->f118));
             }
-        } else if ((c->ang < lbl_80366710 && ang > lbl_80366710) || (c->ang > *(volatile f32 *)&lbl_80366710 && ang < lbl_80366710)) {
+        } else if ((c->ang < lbl_80366710 && ang > lbl_80366710) || (c->ang > 0.0f && ang < 0.0f)) {
             fn_801012C0(&r, &c->s0.up, &c->s0.fwd, ang);
         } else {
             cp(&r, &c->s0.fwd);
@@ -181,9 +186,10 @@ void fn_80257A98(Cam *c, f32 dt) {
     }
     c->ang = ang;
     f32 k = c->pf8 ? *c->pf8 : *c->pb4;
-    f32 rate = -k * dt;
+    f32 rate;
     {
         f32 dx, dy, dz, e; dx = r.x - c->s1.fwd.x; dy = r.y - c->s1.fwd.y; dz = r.z - c->s1.fwd.z;
+        rate = -k * dt;
         e = lbl_80366718 - (f32)fn_800F049C(rate);
         c->s1.fwd.x = e * dx + c->s1.fwd.x;
         c->s1.fwd.y = e * dy + c->s1.fwd.y;
