@@ -38,8 +38,9 @@ static inline void Next(C *c) {
     c->br->bits = 8;
     Fill(c);
 }
-static inline s32 GetBits(C *c, s32 n) {
+static inline s32 GetBits(C *c, s32 n0) {
     s32 v;
+    s32 n = n0;
     if (n <= c->br->bits) {
         c->br->bits -= n;
         v = (*c->br->ptr >> c->br->bits) & lbl_8029DE58[n];
