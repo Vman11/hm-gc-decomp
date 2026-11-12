@@ -1,6 +1,8 @@
 #include "common.h"
 
 extern "C" {
+void fn_8010EDC8();
+void *lbl_802E29F8[3] = { 0, 0, (void *)fn_8010EDC8 };
 
 struct Rng { u32 x0; u32 b; u32 e; };
 struct Desc { u8 pad[8]; s32 type; };
