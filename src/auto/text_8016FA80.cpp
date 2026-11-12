@@ -7,7 +7,7 @@ struct Vec { f32 x, y, z; };
 struct Strm { u8 *pos; s32 posStride; u8 pad[24]; u8 *col; s32 colStride; u8 pad2[8]; u8 *uv; u8 pad3[28]; s32 uvStride; };
 struct Part { Vec pos; f32 sx; f32 sy; };
 struct Emi { u8 pad[4]; u32 f4; u32 f8; u8 pad1[4]; u32 col[4]; u8 pad2[84 - 32]; s32 colOff; Vec a; Vec b; };
-extern f32 lbl_80364718;
+extern const f32 lbl_80364718;
 extern f32 lbl_8036471C;
 
 #define EMIT(s, x, y, z, U, V, c) \
