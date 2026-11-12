@@ -20,3 +20,4 @@ fn_80266AD0
 fn_801B0AE8
 fn_80165CF4
 fn_80166094
+double2hex

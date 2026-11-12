@@ -1759,7 +1759,7 @@ config.libs = [
             Object(Matching, "msl/mem.c", mw_version="GC/2.0"),
             Object(Matching, "msl/mem_funcs.c", mw_version="GC/2.0"),
             Object(Matching, "msl/misc_io.c", mw_version="GC/2.0"),
-            Object(NonMatching, "msl/printf.c", mw_version="GC/2.0", extra_cflags=["-str reuse,pool,readonly"]),
+            Object(Matching, "msl/printf.c", mw_version="GC/2.0", extra_cflags=["-str reuse,pool,readonly"]),
             Object(Matching, "msl/qsort.c", mw_version="GC/2.0"),
             Object(Matching, "msl/rand.c", mw_version="GC/2.0"),
             Object(Matching, "msl/scanf.c", mw_version="GC/2.0"),
