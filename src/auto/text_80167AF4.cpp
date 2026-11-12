@@ -34,11 +34,11 @@ void fn_80218A48(u8 *, u8 *, u32, u32 *, void *, u32, u32, s32, s32);
 void fn_800D52E8(void);
 void *fn_802181F8(void *);
 s32 fn_801581F0(void *, Mesh *, u32, u32, u32, void *);
-void fn_80217224(Prim *, u32, u8);
-void fn_8021764C(Prim *, u32);
+void fn_80217224(const Prim *, u32, u8);
+void fn_8021764C(const Prim *, u32);
 void fn_800D65A8(void *);
 
-static inline u32 primCount(Prim *pr)
+static inline u32 primCount(const Prim *pr)
 {
     u32 c = pr->cnt;
     switch (*pr->p & 0xF8) {
@@ -60,7 +60,7 @@ static inline void setTex3(u32 t0, u32 t1, u32 t2) {
                 lbl_802A0CB0[t2], lbl_802A0D34[t2]);
 }
 static inline u32 cvt(u8 b) { return fn_80101A7C(b); }
-void fn_80167AF4(Rend *r, Mesh *m, u32 n, u8 *idx, u32 st, u32 a, Prim *pr, u32 ex)
+void fn_80167AF4(Rend *r, Mesh *m, u32 n, u8 *idx, u32 st, u32 a, const Prim *pr, u32 ex)
 {
     u32 c = primCount(pr);
     u32 fl;
