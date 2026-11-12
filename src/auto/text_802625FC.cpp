@@ -204,3 +204,12 @@ extern "C" P_2E58 *fn_80262E58(P_2E58 *p, short flag) {
     }
     return p;
 }
+extern "C" void __ct__9C80262FA0Fv(u8 *p) {
+    *(void **)&lbl_8035B754 = p;
+    *(s32 *)(p + 0xC) = 0;
+    *(s32 *)(p + 0x8) = 0;
+    *(s32 *)(p + 0x4) = 0;
+    *(s32 *)(p + 0x10) = 0;
+    *(volatile s32 *)(p + 0x14) = 0;
+    Ident_2E58(&lbl_80357E78, &lbl_80357E84, &lbl_80357E90);
+}
