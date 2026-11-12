@@ -14,7 +14,7 @@ extern f32 lbl_80366C00;
 void fn_800604C4(s32, s32, s32, s32);
 void fn_800F7EC0(void *);
 void fn_800F7E98(void);
-void fn_80267F2C(void *);
+void __ct__9C80267F2CFv(void *);
 } /* extern "C" */
 
 struct C80266A14 {
@@ -30,7 +30,7 @@ struct C80266A14i {
     f32 f260;
     u8 pad2[268 - 264];
     C80266A14i() {
-        fn_80267F2C(this);
+        __ct__9C80267F2CFv(this);
         *(void **)this = lbl_802F2DE8;
         f252 = 0;
         f256 = 0;

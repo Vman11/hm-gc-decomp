@@ -10,7 +10,7 @@ extern f32 lbl_80366860;
 void fn_800604C4(s32, s32, s32, s32);
 void fn_800F7EC0(void *);
 void fn_800F7E98(void);
-void fn_80267F2C(void *);
+void __ct__9C80267F2CFv(void *);
 
 struct C8025BA80 {
     u8 pad[256];
@@ -23,7 +23,7 @@ struct C8025B028 {
     u8 pad[248];
     f32 f252;
     C8025B028() {
-        fn_80267F2C(this);
+        __ct__9C80267F2CFv(this);
         vt = lbl_802F2818;
         f252 = lbl_80366860;
     }
