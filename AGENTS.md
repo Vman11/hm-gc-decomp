@@ -1162,3 +1162,40 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
   80033C38 (TU with 800326D0), 8007225C (pool of the 80072.. TU), 80088294 (constant shared with 80088B54), 800A226C/800A2870
   (with 800A10D4, across 800A1AA8), 8014E1E0 (garbage pair inside a 0x88 extab action), 80163BE4/80163CB4 (TU crosses
   0x80165000: 801650F8). Every one of these now waits on an unmatched function or on the other range.
+- collaborator (2026-11-12, evening): **six more to-do functions linked**, each a one-unit link whose data already
+  matched (45 of the 87 are now in linked units; NonMatching units below `0x80165000`: 62 -> 56). Exact: fn_8013CFCC,
+  fn_80085E44, fn_80087E20. Schedule-equivalent: fn_8005D9EC, fn_8007AC1C, fn_80030610.
+  - **A register-colouring model that predicted five of them** (GC/1.3.2 and 2.0p1): unnamed expression temporaries are
+    coloured first, the LATEST-CREATED first (creation = evaluation order of statements and operands); named locals
+    come after them; every value takes the lowest free volatile FPR (f0 up) or GPR. So: write down the register of
+    each value in the target, derive which value must be coloured before which (a value in f2 needs neighbours that
+    already hold f0 and f1), then pick which sub-expressions are named locals, their declaration order and the
+    statement order. What that meant in practice:
+    - cross product blocks (fn_80085E44, fn_80087E20, fn_8007AC1C): store the results straight from their expressions
+      in x, y, z order (the last-created z result takes f0); a product shared by two results is a named local declared
+      BEFORE the vector components when the original gives it a fresh, higher register
+      (`f32 t1; f32 vy = v.y; f32 vx = v.x; f32 vz = v.z; n.x = vy * K1 - (t1 = vz * K0); n.y = -(vx * K1 - t1);
+      n.z = vx * K0 - vy * K0;` with x and y as volatile stores and z plain = exact). Two equal products the original
+      keeps apart: swap the operands of one (CSE is syntactic; the checker accepts the commutative swap).
+    - fn_8005D9EC: `f32 m, z;` (constant first) gives K in f3 and the difference in f4.
+    - fn_80030610: `char *pool = lbl_X;` declared BEFORE `f32 dt = lbl_Y->f14;` creates the address temporary first, so
+      the global pointer is coloured first and takes r4. Half of the 120 declaration orders pass, exactly those.
+    - A named local initialised by a plain load is propagated and behaves like an unnamed temporary; read it through
+      a volatile cast to keep it a named local (fn_8003BC2C scale block: `f32 z, y, x, k;` with `k = *(volatile f32 *)&K`).
+  - **A temporary left in an argument register before a call can be a missing argument**: fn_8013CFCC kept the DQT
+    precision in r5 because `fn_801F4C84` takes it as a third parameter (`equivcheck` words this as "r5 (callee
+    input) holds a different value at the call"). Claude workers: fn_801F4C84 is in your range and reads r5.
+  - fn_8013CFCC, rest: all four "more data?" tests are one inline with an unnamed result, which gives them one shared
+    register (a named flag inside the inline is a separate variable per site); `if (x) return 1; return 0;` is folded
+    into a branchless `x != 0`, the form `if (!x) goto z; return 1; z: return 0;` keeps the original's branch.
+    `equivcheck` cannot follow this function's jump table (the base register is loaded in the loop header, not in the
+    block of the `bctr`), so it could only link as an exact match.
+  - A store through another local's address with an out-of-range index (`((f32 *)&c)[4]`, `((f32 *)col)[9]`) is a
+    "may alias anything" store: a later load of a global stays behind it. That is what delays the second constant in
+    fn_8007AC1C and keeps the next block's constant out of fn_8003BC2C's scale block.
+  - Not solved: fn_80088B54 (same cross block as fn_8007AC1C, but its components are loaded from the stack; five
+    sweeps, about 600 variants: the second constant is always loaded too early, so `d.x * K3` is scheduled before the
+    z result and the registers shift), fn_8003BC2C (draft improved, the scale block is exact; left: the second
+    int->float result is in f0 where the original has f1, in every spelling tried), fn_8003CAD8 (the original has the
+    first parameter in r31 and the lookup result in r30; cast copies, member function, inlines and all declaration
+    orders give the same code).
