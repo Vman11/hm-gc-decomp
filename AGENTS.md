@@ -20,6 +20,9 @@ Easy wins in YOUR range: these 24 units already report schedule-equivalent and c
 text_8002F118 80034AFC 8004058C 8004C4FC 800629DC 80066714 8006BB24 80078308 800885A0 800904CC 80093A70 80099BF8
 800A75B8 800B1D58 80110ADC 801229D0 8012E3F4 8013FCD0 80149A40 8014C830 80155124 801581F0 80159284 8015B860
 (re-run `--list` first; a unit with data outside .text may still fail the full link, as text_80166094 did).
+**Status of those 24 (collaborator, 2026-11-12):** 22 are linked (details under "Coordination", last entries). Open:
+text_8006BB24 (needs the 800690FC..8006F808 TU merge) and text_800A75B8 (int->float constant shared with unmatched
+fn_800A6BFC).
 
 **Claude's range** (`>= 0x80165000`, Bink/MSL/SDK; ~118 unmatched) stays with Claude; don't edit those units.
 
@@ -1080,3 +1083,53 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
 - Claimed by Claude workers 2026-11-11 (user-approved): data-side link fixes for text_8006F808 text_80077010 text_8009DD24 text_8010E450 text_801218C4 (code already register-equivalent; failing bytes are outside .text).
 - wWI (2026-11-11, released, user-approved collaborator units): linked text_801218C4 (owns .sdata2 80363DF0-E08) and text_8010E450 (owns the 12-byte vtable lbl_802E29F8 before its 4-mod-8 jump table). Still NonMatching, released back: text_8006F808 and text_80077010 (int->float magic 0x8035F788 is owned by text_80079A9C; a manual union conversion through `extern const f64` emits fsub+frsp and a different frame, 2 builds; 80077010 also has a pad_strs extra function and a .rodata string pool at 0x80298060), text_8009DD24 (data side solved: own .rodata 8029A530-A600 [symbols.txt split lbl_8029A590 at A600], .data 802CEA98-802CF034 as raw words with real pointers, jt_802CEA94 shrunk to A94-A98, `extern const S5 lbl_8029A590` copied in loadA; but the extab header differs because ours saves r21..r31 vs the original r26..r31 - needs the original register allocation; diff in hm-work/wWI/p_8009DD24_data.diff), text_8009DD24 stays NonMatching.
 - wXA (2026-11-12): matched fn_802625FC (real string literals instead of an extern string struct -> string base addi; fn_80262D38 identity/reset recipe; param reused as the node variable) and merged `text_80262D38` into `text_802625FC.cpp` (one TU 802625FC-80262FA0, `-str reuse,readonly`; owns .rodata 802AA010-802AA190, .bss 80357E78-80357EA0, .sdata2 80366AE8-80366B10), Matching. The `text_80262D38` unit no longer exists; `text_80262FA0.c` (ctor, same TU originally) still separate/NonMatching.
+- collaborator (branch sched-equiv, 2026-11-12): **37 more units of the collaborator range linked** (7,054 -> 7,091 units
+  linked overall, counting upstream's merges), all under `equivcheck.py` (regequiv.txt / schedequiv.txt).
+  - Linked as they were (data outside .text already matched): text_8002F118 80034AFC 80066714 800885A0 800904CC 80099BF8
+    80110ADC 801229D0 8013FCD0 80149A40 8014C830 80155124 801581F0 80159284 8015B860 (schedule), 80157DD4 (register), and
+    after the rule f memory rules 'global'/'pointer' landed: 8002D080 8002F3C8 8004B388 80124AE4.
+  - Own int->float constant in splits.txt (no other user): 800629DC (8035E6F8), 80134C30 (803640F8).
+  - Descriptor tables filled from the DOL (`build/agent_ds/datafill.py`-style: tables + vtable move out of the jt_ unit,
+    switch fn force_active): 8004C4FC, 80093A70, 8003F1E0, 800B1844.
+  - text_8004058C and text_800515C4: the float literals are shared TU pool constants, so they are externs now. A plain
+    `extern f32` read is not always code-neutral: a constant used twice in a clamp keeps its colouring when the second use
+    is spelled `*(f32 *)&lbl` (8004058C); where the draft had literals, reading EVERY use as `*(f32 *)&lbl` kept the code
+    (800515C4). Owning two float literals at a 4-mod-8 address does NOT work: the linker 8-aligns the object's .sdata2.
+  - text_8012E3F4: owns .bss 8032A490-8032BD10 as globals (lbl_8032A510 is the 256-entry array the sinit fn_8012EE9C
+    constructs by name); extab_padding B1 02.
+  - text_80061E80: renamed dtor_80031570 -> __dt__9C800315E4Fv and dtor_8003493C -> __dt__9C80034A10Fv (DESTROYLOCAL).
+  - TU merges: text_800B1844 + 800B1D58 + 800B21A0 (shared int->float constant 80362F98; one object type T for all three,
+    the vtable view A of fn_800B21A0 kept via `((A *)p->f224)`), text_80077010 + 80077944 + 80078308 (GC/2.0p1 + lmw, constant
+    8035F630; fn_80077010's pool lbl_80298060 through an extern base under opt_propagation off instead of literals + pad
+    function: same code), text_8014BDD4 + 8014C150 + 8014C1A4 (af36f733 re-applied; fn_8014BDD4 is schedule-equivalent).
+  - text_8003F1E0: besides its tables it owns .rodata 80294E98-80294F04, the TU string pool written as named
+    `const char` arrays in pool order (globals where other units use the label). The extern-base form changed the code here.
+  - From saved drafts (see next entry): main (text_800605AC), fn_800FD530, fn_800515C4, fn_8003F1E0 linked;
+    fn_800A10D4 is register-equivalent but its unit shares lbl_80361BE8 with 800A226C/800A2870 across unmatched fn_800A1AA8.
+  - fn_800690FC is exact now (lbl_8035F1C0 is the string "RhandRR", lbl_8035F1C8 the 1.0f: they were declared swapped).
+- collaborator (2026-11-12), cheap sweeps worth repeating after every checker change: (1) re-judge ALL saved drafts
+  (wave try/ dirs: `build/agent_ds/rescan.py` + `rsweep.py`) and (2) every historical version of a failing unit's source
+  (`git log --all`, `build/agent_ds/histsweep.py`) with `equivcheck --list` logic. The first run found passing versions of
+  5 functions among 3,834 saved files, the second the reverted 8014BDD4 TU merge. Drafts were kept by lowest DIFF, which is
+  not the same as "passes rule d/f".
+- collaborator (2026-11-12) **FP colouring before a call (fn_8006D124, now schedule+register-equivalent)**: rule d wants
+  every f1-f8 written in the block to hold the same value at the call, so a renamed temporary fails ("f2 holds a different
+  value at the call"). Named locals take ascending FPRs in DECLARATION order above the unnamed temporaries; a value that
+  must sit BELOW them has to stay an unnamed expression (repeat it, CSE keeps one copy). There: `f32 ax, ay, az, bz, bx, by;`
+  for the loaded components and `__fmadds(K * (len - k), ax, p.x)` three times instead of a named scale `s`.
+  The same search did not move fn_80087E20 (900 declaration/naming variants give 10 distinct outputs, none passing).
+- collaborator (2026-11-12), merge mechanics: a call through a function-pointer cast (`((void (*)(P *))fn)(p)`) is an
+  indirect call under GC/1.3.2 (lis/addi/mtctr/bctrl), so it cannot bridge two views of one callee; share the type instead.
+  One namespace per old unit needs `#undef` for every macro at the end of each part, classes whose ctor/dtor symbol matters
+  (`C801883E0`) at global scope (a namespace changes the mangled name), and no second declaration of an extern "C" name at
+  global scope (ambiguous).
+- collaborator (2026-11-12), **open leads in the collaborator range**: (a) TU 800690FC..8006F808 (31 units): every
+  function is exact or equivalent now (8006BB24 schedule, 8006D124 schedule+register, 8006F808 register) and every unit
+  keeps its verdict under GC/2.0p1 + lmw + `-str reuse,readonly`; the merged unit must own .sdata2 8035F1E0-8035F210 (the
+  two int->float constants with "Enemy"/"BONUS"/"SPAWN"/0x2B between them as named .sdata2 definitions), the pool
+  80297908.. (85 table strings + 4 sub-pools), the tables 802BD3F8-802C1E70 and .bss 80306768.. (TU statics that
+  fn_8006908C / fn_800710BC / fn_800629DC use by label). (b) 8003B3E8/8003B5F8/8003B87C: 5F8 is schedule-equivalent, but
+  its constant lbl_8035C168 is shared with unmatched fn_8003BC2C. (c) text_8009DD24: extab header (saved-register count).
+  (d) exact code, data-blocked: 8002B760/8002BDD4 (constant shared with 8002CA0C), TU 8008F16C..80090C68 (tables, pool,
+  4-mod-8 jump table of 80090C68), 80091A9C, 8008028C, 80051B50/80052028 (TU with 800502FC), 80033C38, 8007225C, 80088294,
+  800FEEA0, 8014E1E0 (garbage pair inside a 0x88 extab action), 80163BE4/80163CB4 (TU crosses 0x80165000: 801650F8).
