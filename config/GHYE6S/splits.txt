@@ -1052,28 +1052,10 @@ auto/text_8003CFB8.cpp:
 	.text       start:0x8003CFB8 end:0x8003D130
 
 auto/text_8003D130.cpp:
-	extab       start:0x80005EE4 end:0x80005EEC
-	extabindex  start:0x800183B0 end:0x800183BC
-	.text       start:0x8003D130 end:0x8003D50C
+	extab       start:0x80005EE4 end:0x80005F04
+	extabindex  start:0x800183B0 end:0x800183E0
+	.text       start:0x8003D130 end:0x8003E5F4
 	.rodata     start:0x80294E10 end:0x80294E98
-
-auto/text_8003D50C.c:
-	.text       start:0x8003D50C end:0x8003D518
-
-auto/text_8003D518.cpp:
-	extab       start:0x80005EEC end:0x80005EF4
-	extabindex  start:0x800183BC end:0x800183C8
-	.text       start:0x8003D518 end:0x8003DD00
-
-auto/text_8003DD00.cpp:
-	extab       start:0x80005EF4 end:0x80005EFC
-	extabindex  start:0x800183C8 end:0x800183D4
-	.text       start:0x8003DD00 end:0x8003DE9C
-
-auto/text_8003DE9C.cpp:
-	extab       start:0x80005EFC end:0x80005F04
-	extabindex  start:0x800183D4 end:0x800183E0
-	.text       start:0x8003DE9C end:0x8003E5F4
 
 auto/text_8003E5F4.cpp:
 	extab       start:0x80005F04 end:0x80005F0C
