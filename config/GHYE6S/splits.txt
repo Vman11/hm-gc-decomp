@@ -666,7 +666,7 @@ auto/text_80038DDC.c:
 	.data       start:0x802AFEE0 end:0x802AFF20
 
 auto/jt_802AFF20.c:
-	.data       start:0x802AFF20 end:0x802B091C
+	.data       start:0x802AFF20 end:0x802B0498
 
 auto/text_80039060.cpp:
 	extab       start:0x80005C3C end:0x80005C44
@@ -1141,7 +1141,8 @@ auto/text_8003F1E0.cpp:
 	extab       start:0x80005F64 end:0x80005F7C
 	extabindex  start:0x80018470 end:0x8001847C
 	.text       start:0x8003F1E0 end:0x8003F700
-	.data       start:0x802B091C end:0x802B095C
+	.rodata     start:0x80294E98 end:0x80294F04
+	.data       start:0x802B0498 end:0x802B095C
 
 auto/jt_802B095C.c:
 	.data       start:0x802B095C end:0x802B09B8
