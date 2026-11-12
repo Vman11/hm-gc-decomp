@@ -23,6 +23,7 @@ void fn_8019598C(Pt *, V3 *, V3 *, V3 *, f32, f32);
 
 static inline u32 rnd(u32 &i) { u32 v = lbl_802E0F60[i]; i = (i + 1) & 0x7ff; return v; }
 static inline f32 rvA(f32 base, f32 range, u32 &i) { if (0.0f != range) { s32 r = rnd(i); base += (2.0f * ((f32)r / 2047.0f) - 1.0f) * range; } return base; }
+#pragma opt_propagation off
 void fn_80196B9C(T *t, s32 j, f32 f) {
     u32 i;
     u32 cnt;

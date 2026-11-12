@@ -23,6 +23,7 @@ extern f32 lbl_80366E4C;
 extern f32 lbl_80366E50;
 extern f32 lbl_80366E54;
 static inline void set(O *o, f32 a, f32 b) { o->f48 = a; o->f52 = b; }
+#pragma opt_propagation off
 void fn_8026F2C8(T *t) {
     f32 dt = lbl_8035B488->f20;
     C3 c;

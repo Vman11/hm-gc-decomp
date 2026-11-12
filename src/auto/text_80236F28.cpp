@@ -130,6 +130,7 @@ inline f32 Ang(V3 a, V3 b)
     return r;
 }
 
+#pragma opt_loop_invariants off
 void fn_80236F28(Act *self, f32 maxd, f32 minv, Act *grp, s32 useDir, s32 unused, Act *ref, s32 mode)
 {
     C8023C7CC it;
