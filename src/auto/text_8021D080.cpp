@@ -15,10 +15,12 @@ static inline void push(L *l, void *e, u32 k) {
 extern "C" {
 
 void fn_8021D080(O *o, Tr *tr, f32 t0, s32 len, L *list, Lis *lis, f32 t1) {
-    u16 *first = o->keys + tr->off;
-    u16 *last = first + tr->n - 1;
+    u16 *last;
     u16 *p;
+    u16 *first;
     u32 idx;
+    first = o->keys + tr->off;
+    last = first + tr->n - 1;
     if (t0 <= (s32)first[0]) {
         idx = tr->base;
         p = first;
