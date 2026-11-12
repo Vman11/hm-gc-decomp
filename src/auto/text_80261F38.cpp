@@ -16,7 +16,7 @@ struct Cam {
     f32 *fast; /* 200 */
     f32 *slow; /* 204 */
 };
-extern void *lbl_8035B5E4;
+extern void *lbl_8035B5E4; extern f32 lbl_80366AA4;
 void fn_802610A0(Cam *);
 Pad *fn_800F8274(void *, const char *);
 s32 fn_80253664(Pad *, int);
@@ -47,8 +47,7 @@ void fn_80261F38(Cam *p, f32 dt)
     *(volatile f32 *)&up.x = z0;
     *(volatile f32 *)&up.y = z0;
     }
-    *(volatile f32 *)&up.z = 1.0f;
-    spd = up.z;
+    { f32 o1 = *(volatile f32 *)&lbl_80366AA4; *(volatile f32 *)&up.z = o1; spd = o1; }
     pad = fn_800F8274(*(void *volatile *)&lbl_8035B5E4, "camera");
     if (pad && pad->on) {
         on = 1;
