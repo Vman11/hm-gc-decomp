@@ -724,6 +724,25 @@ class Fn:
         return out
 
 
+def find_sda(dol):
+    """{13: _SDA_BASE_, 2: _SDA2_BASE_} from the one `lis; ori` pair per register in the
+    start-up code (__init_registers), {} when that is not unambiguous."""
+    secs = getattr(dol, 'secs', None)
+    if not secs:
+        return {}
+    out = {}
+    _off, a, size, _t = secs[0]
+    ws = dol.words(a, size) or []
+    for r in (2, 13):
+        hit = [(ws[i] & 0xFFFF) << 16 | ws[i + 1] & 0xFFFF for i in range(len(ws) - 1)
+               if ws[i] == 15 << 26 | r << 21 | ws[i] & 0xFFFF and
+               ws[i + 1] == 24 << 26 | r << 21 | r << 16 | ws[i + 1] & 0xFFFF]
+        if len(hit) != 1:
+            return {}
+        out[r] = hit[0]
+    return out
+
+
 class Program:
     """Whole-program analysis of the original DOL."""
 
@@ -744,6 +763,7 @@ class Program:
         self.thru = None
         self.xin = {}
         self.starts = None
+        self.sda = find_sda(dol)
         self._solve()
 
     def containing(self, t):
@@ -1359,6 +1379,7 @@ class Dol:
         h = struct.unpack('>54I', d[:0xD8])
         self.header = d[:0x100]
         self.secs = [(h[i], h[18 + i], h[36 + i], i < 7) for i in range(18) if h[36 + i]]
+        self.bss = struct.unpack('>2I', d[0xD8:0xE0])
 
     def find(self, addr):
         for off, a, size, _t in self.secs:
@@ -1658,20 +1679,152 @@ def _sched_info(w):
     return (frozenset(rd), frozenset(wr), bar, mem)
 
 
+SCHED_RELAX = ('global',)                 # memory rules beyond "same base": see SchedCtx
+
+
+class SchedCtx:
+    """Facts about one function (OUR words) that the memory rules of sched_dag need.
+
+    hw:       the function builds a hardware address (loads keep their order)
+    frame:    per instruction, True when r1 is this function's own frame pointer there:
+              the function allocates its frame with one `stwu r1,-N(r1)` and r1 is written
+              by nothing else but `addi r1,r1,N` / `lwz r1,0(r1)` (forward dataflow over the
+              control-flow graph; None when anything else happens). An r1-based access is an
+              OWN-FRAME access when it lies inside [0, N) there.
+    Rule 'global' (wYA 2026-11-12): an own-frame access is disjoint from an access to a
+      global: base r13 / r2 (never written in the function; the address must lie in a section
+      of the DOL or in its bss range, the stack is in neither), or a base register that holds,
+      from a lis / lis+addi in the same block, a constant address inside those ranges. Before
+      linking (--list): an @sda21 access, or @l(rX) with rX from a relocated lis @ha.
+    Rule 'pointer': an own-frame access is disjoint from an access through ANY other base
+      (also indexed) when no frame address can exist outside r1: in the original and in ours
+      r1 appears only as the base of displacement loads/stores (lmw/stmw included), in the
+      `stwu r1,-N(r1)` of the prologue and in `addi r1,r1,N` / `lwz r1,0(r1)`.
+    Accesses at or above N (the caller's frame, stack parameters, the LR slot) and negative
+    offsets get neither rule."""
+
+    def __init__(self, prog=None, fn=None, orig=(), ours=(), rel=None, relax=None):
+        self.relax = SCHED_RELAX if relax is None else relax
+        self.rel = rel
+        self.hw = any(w >> 26 == 15 and (w & 0xFFFF) in HWHI for ws in (orig, ours) for w in ws)
+        self.frame = None
+        self.size = 0
+        self.noescape = False
+        self.sda = {}
+        self.dol = getattr(prog, 'dol', None)
+        if fn is None or not self.relax:
+            return
+        self._frame(fn, ours)
+        if self.frame is None:
+            return
+        self.noescape = not (self._escapes(orig) or self._escapes(ours))
+        sda = getattr(prog, 'sda', None) or {}
+        for r in (2, 13):
+            if r in sda and not any((1 << r) & self._wmask(w) for w in ours):
+                self.sda[r] = sda[r]
+
+    @staticmethod
+    def _wmask(w):
+        si = sched_info(w)
+        m = 0
+        for r in (si[1] if si else range(32)):
+            if r < 32:
+                m |= 1 << r
+        return m
+
+    def _frame(self, fn, ours):
+        n = len(ours)
+        st = [None] * n
+        st[0] = False
+        size = None
+        work = [0]
+        while work:
+            i = work.pop()
+            w = ours[i]
+            cur = st[i]
+            if self._wmask(w) & 2:
+                if w >> 16 == 0x9421 and w & 0x8000 and not cur and size in (None, 0x10000 - (w & 0xFFFF)):
+                    size = 0x10000 - (w & 0xFFFF)
+                    cur = True
+                elif cur and (w == 0x38210000 | size or w == 0x80210000) and size < 0x8000:
+                    cur = False
+                else:
+                    return
+            for t in fn.succ[i]:
+                if st[t] is None:
+                    st[t] = cur
+                    work.append(t)
+                elif st[t] != cur:
+                    return
+        if size:
+            self.frame, self.size = st, size
+
+    @staticmethod
+    def _escapes(words):
+        for w in words:
+            d = dec(w)
+            if d is None:
+                return True
+            op = w >> 26
+            for base, sh, _wd, role in d[0]:
+                if base != GP or (w >> sh) & 31 != 1:
+                    continue
+                if sh == 16 and (32 <= op <= 57 or op in (60, 61)):
+                    continue                              # base of a displacement load/store
+                if w >> 16 == 0x9421 or w >> 16 == 0x3821 or w == 0x80210000:
+                    continue                              # stwu r1,-N(r1) / addi r1,r1,N / lwz r1,0(r1)
+                return True
+        return False
+
+    def isglobal(self, addr, size):
+        d = self.dol
+        if d is None:
+            return False
+        for _off, a, sz, _t in d.secs:
+            if a <= addr and addr + size <= a + sz:
+                return True
+        b = getattr(d, 'bss', None)
+        return bool(b) and b[0] <= addr and addr + size <= b[0] + b[1]
+
+
 def sched_dag(words, s, e, hw, rel=None):
     """Dependency graph of the block words[s:e]: (preds, barriers) with preds[p] = set of
     block positions that must stay before p; None when an instruction is unknown."""
     m = e - s
+    cx = hw if isinstance(hw, SchedCtx) else None
+    if cx:
+        hw = cx.hw
     preds = [set() for _ in range(m)]
     events = {}
     mems = []
     ver = {}
     bars = []
+    const = {}                            # register -> constant it holds ('G': a relocated address)
     for p in range(m):
-        si = sched_info(words[s + p])
+        w = words[s + p]
+        si = sched_info(w)
         if si is None:
             return None
         rd, wr, bar, mem = si
+        cls = None                        # 'G' global, 'F' own frame, 'P' any other base but r1
+        if mem and cx and cx.frame is not None:
+            _st, base, off, size = mem
+            rl = rel.get(s + p) if rel else None
+            if base == 1:
+                if not rl and cx.frame[s + p] and 0 <= off and off + size <= cx.size:
+                    cls = 'F'
+            else:
+                cls = 'P'
+                if rl:
+                    if any(x[0] == 109 for x in rl[2]) or \
+                            (const.get(base) == 'G' and all(x[0] == 4 for x in rl[2])):
+                        cls = 'G'
+                elif base in cx.sda:
+                    if cx.isglobal((cx.sda[base] + off) & 0xFFFFFFFF, size):
+                        cls = 'G'
+                elif base is not None and isinstance(const.get(base), int):
+                    if cx.isglobal((const[base] + off) & 0xFFFFFFFF, size):
+                        cls = 'G'
         for r in rd:
             events.setdefault(r, []).append((p, False))
         events.setdefault(BAR, []).append((p, False))
@@ -1680,17 +1833,38 @@ def sched_dag(words, s, e, hw, rel=None):
             if rel and s + p in rel:      # displacement not known before linking
                 base = None
             key = None if base is None else (base, ver.get(base, 0))
-            for q, st2, key2, off2, size2 in mems:
+            for q, st2, key2, off2, size2, cls2 in mems:
                 if not (st or st2 or hw):
                     continue
                 if key is not None and key == key2 and (off + size <= off2 or off2 + size2 <= off):
                     continue
+                if cls and cls2 and 'F' in (cls, cls2) and cls != cls2:
+                    if 'G' in (cls, cls2) and 'global' in cx.relax:
+                        continue
+                    if cx.noescape and 'pointer' in cx.relax:
+                        continue
                 preds[p].add(q)
-            mems.append((p, st, key, off, size))
+            mems.append((p, st, key, off, size, cls))
+        const_a = const.get((w >> 16) & 31)
         for r in wr:
             events.setdefault(r, []).append((p, True))
             ver[r] = ver.get(r, 0) + 1
+            const.pop(r, None)
+        if w >> 26 == 15 and not (w >> 16) & 31:                      # lis
+            rl = rel.get(s + p) if rel else None
+            const[(w >> 21) & 31] = ('G' if all(x[0] in (5, 6) for x in rl[2]) else None) if rl else \
+                (w & 0xFFFF) << 16
+        elif w >> 26 == 14 and (w >> 16) & 31:                        # addi rD,rA,imm
+            rl = rel.get(s + p) if rel else None
+            v = None
+            if rl:
+                v = 'G' if const_a == 'G' and all(x[0] == 4 for x in rl[2]) else None
+            elif isinstance(const_a, int):
+                v = (const_a + sext(w & 0xFFFF, 16)) & 0xFFFFFFFF
+            if v is not None:
+                const[(w >> 21) & 31] = v
         if bar:
+            const = {}
             events[BAR].append((p, True))
             bars.append(p)
             mems = []                     # everything before is ordered through the barrier
@@ -1899,7 +2073,7 @@ def sched_match(orig, ours, s, e, hw, rel=None, symaddr=None):
     return perm, preds, bars, loose
 
 
-def check_sched(prog, fn, ours, xpairs=None, rel=None):
+def check_sched(prog, fn, ours, xpairs=None, rel=None, relax=None):
     """Rule f): (ok, text). rel (object files only) = (orel, urel), index -> (mask of the
     relocated bits, ((type, addend), ...), relocations); the relocated bits of our words
     are then taken from the original after the instructions have been paired."""
@@ -1915,8 +2089,7 @@ def check_sched(prog, fn, ours, xpairs=None, rel=None):
     if why:
         return False, why
     blocks = prog._webinfo(fn)[0]
-    hw = any(w >> 26 == 15 and (w & 0xFFFF) in HWHI for w in orig) or \
-        any(w >> 26 == 15 and (w & 0xFFFF) in HWHI for w in ours)
+    hw = SchedCtx(prog, fn, orig, ours, rel[1] if rel else None, relax)
     new = list(ours)
     moved = nb = loose = 0
     for s, e in blocks:
@@ -2514,14 +2687,60 @@ def sched_synth():
         ('CR field renamed and compare moved', [cmpw(0, 3, 4), li(5, 1), bc(12, 2, 8), li(5, 2), mr(3, 5), blr],
                                                [li(5, 1), cmpw(1, 3, 4), bc(12, 6, 8), li(5, 2), mr(3, 5), blr], True),
     ]
+    # memory rules of SchedCtx: frame of 16 bytes, "sections" 0x4000-0x5000, r13 = 0x4800
+    stwu, pop = 0x9421FFF0, 0x38210010
+    G = ('global',)
+    for name, a, b, tail, want, relax in [
+        ('frame store / SDA load', stw(4, 8, 1), lwz(5, -0x100, 13), [], True, G),
+        ('frame load / SDA store', lwz(5, 8, 1), stw(4, -0x100, 13), [], True, G),
+        ('frame store / SDA load, rule off', stw(4, 8, 1), lwz(5, -0x100, 13), [], False, ()),
+        ('store above the frame / SDA load', stw(4, 20, 1), lwz(5, -0x100, 13), [], False, G),
+        ('store across the frame end / SDA load', stw(4, 14, 1), lwz(5, -0x100, 13), [], False, G),
+        ('store below the frame / SDA load', stw(4, -4, 1), lwz(5, -0x100, 13), [], False, G),
+        ('frame store / r13 load outside the sections', stw(4, 8, 1), lwz(5, 0x7000, 13), [], False, G),
+        ('frame store / pointer load, global rule only', stw(4, 8, 1), lwz(5, 0, 6), [], False, G),
+    ]:
+        pre = [stwu]
+        post = [add(3, 5, 5), pop, blr]
+        cases.append(('memory: ' + name, pre + [a, b] + post, pre + [b, a] + post, want, relax))
+    cases += [
+        ('memory: frame store / lis-based global load',
+         [stwu, lis(6, 0), stw(4, 8, 1), lwz(5, 0x4100, 6), add(3, 5, 5), pop, blr],
+         [stwu, lis(6, 0), lwz(5, 0x4100, 6), stw(4, 8, 1), add(3, 5, 5), pop, blr], True, G),
+        ('memory: frame store / lis+addi-based global load',
+         [stwu, lis(6, 0), addi(6, 6, 0x4100), stw(4, 8, 1), lwz(5, 4, 6), add(3, 5, 5), pop, blr],
+         [stwu, lis(6, 0), addi(6, 6, 0x4100), lwz(5, 4, 6), stw(4, 8, 1), add(3, 5, 5), pop, blr], True, G),
+        ('memory: frame store / lis-based load outside the sections',
+         [stwu, lis(6, 1), stw(4, 8, 1), lwz(5, 0x4100, 6), add(3, 5, 5), pop, blr],
+         [stwu, lis(6, 1), lwz(5, 0x4100, 6), stw(4, 8, 1), add(3, 5, 5), pop, blr], False, G),
+        ('memory: lis-based register changed before the load',
+         [stwu, lis(6, 0), add(6, 6, 7), stw(4, 8, 1), lwz(5, 0x4100, 6), add(3, 5, 5), pop, blr],
+         [stwu, lis(6, 0), add(6, 6, 7), lwz(5, 0x4100, 6), stw(4, 8, 1), add(3, 5, 5), pop, blr], False, G),
+        ('memory: r1 store / SDA load without a frame',
+         [stw(4, 8, 1), lwz(5, -0x100, 13), add(3, 5, 5), blr],
+         [lwz(5, -0x100, 13), stw(4, 8, 1), add(3, 5, 5), blr], False, G),
+        ('memory: r1 store / SDA load after the frame was released',
+         [stwu, pop, stw(4, 8, 1), lwz(5, -0x100, 13), add(3, 5, 5), blr],
+         [stwu, pop, lwz(5, -0x100, 13), stw(4, 8, 1), add(3, 5, 5), blr], False, G),
+        ('memory: r1 changed by something else than the prologue',
+         [stwu, addi(1, 1, -8), stw(4, 8, 1), lwz(5, -0x100, 13), add(3, 5, 5), addi(1, 1, 8), pop, blr],
+         [stwu, addi(1, 1, -8), lwz(5, -0x100, 13), stw(4, 8, 1), add(3, 5, 5), addi(1, 1, 8), pop, blr], False, G),
+        ('memory: r13 written in the function',
+         [stwu, stw(4, 8, 1), lwz(5, -0x100, 13), add(3, 5, 5), addi(13, 13, 0), pop, blr],
+         [stwu, lwz(5, -0x100, 13), stw(4, 8, 1), add(3, 5, 5), addi(13, 13, 0), pop, blr], False, G),
+    ]
     bad = 0
-    for name, tgt, ours, want in cases:
+    for case in cases:
+        name, tgt, ours, want = case[:4]
+        relax = case[4] if len(case) > 4 else None
         mem = {0x1000: blr}
         for k, w in enumerate(tgt):
             mem[A + 4 * k] = w
         prog = Program(_Fake(mem), [('g', 0x1000, 4), ('f', A, 4 * len(tgt))])
         prog.strict = False
-        ok, text_ = check_sched(prog, prog.byname['f'], ours)
+        prog.dol.secs = [(0, 0x4000, 0x1000, False)]
+        prog.sda = {13: 0x4800, 2: 0x4400}
+        ok, text_ = check_sched(prog, prog.byname['f'], ours, None, None, relax)
         if ok and want and not text_.startswith('schedequiv'):
             ok = False
         print('%s synthetic sched %s: %s' % ('ok  ' if ok == want else 'FAIL', name, text_))
@@ -2560,9 +2779,48 @@ def _st_rw(w):
     return rd, wr, cls
 
 
-def sched_mutations(fn, words):
+def _st_frame(words):
+    """Independent of SchedCtx, for the mutation tests: (index of the only stwu r1,-N(r1),
+    index of the first later write to r1, N, frame address may escape, registers written by
+    a lis or reached by any write to r2/r13); N = 0 when the frame is not that simple."""
+    wr1 = [i for i, w in enumerate(words) if _st_rw(w)[1] & 2]
+    size = lo = 0
+    hi = len(words)
+    if wr1 and words[wr1[0]] >> 16 == 0x9421 and words[wr1[0]] & 0x8000:
+        lo = wr1[0]
+        size = 0x10000 - (words[lo] & 0xFFFF)
+        if len(wr1) > 1:
+            hi = wr1[1]
+        if any(words[i] != 0x38210000 | size for i in wr1[1:]):
+            size = 0
+    esc = False
+    lisreg = set()
+    for w in words:
+        op = w >> 26
+        rd, wr, _c = _st_rw(w)
+        if op == 15:
+            lisreg.add((w >> 21) & 31)
+        for r in (2, 13):
+            if wr >> r & 1:
+                lisreg.add(r)
+        if (rd | wr) & 2:
+            base_only = op in MEMSZ or op in (46, 47)
+            if w >> 16 in (0x9421, 0x3821):
+                continue
+            if not base_only or (w >> 21) & 31 == 1 and op not in (48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 60, 61):
+                esc = True
+    for _pass in range(3):                    # addi from a lis register: may be a global address too
+        for w in words:
+            if w >> 26 == 14 and (w >> 16) & 31 in lisreg:
+                lisreg.add((w >> 21) & 31)
+    return lo, hi, size, esc, lisreg
+
+
+def sched_mutations(fn, words, sda=None, glob=None):
     """Reorderings of `words` (compared against fn): yields (kind, mutated words, must pass)."""
     n = fn.n
+    sda = sda or {}
+    oracle = None
     seen = set()
     todo = [0]
     while todo:
@@ -2609,8 +2867,22 @@ def sched_mutations(fn, words):
                         yield 'sched disjoint memory', swapped(i, i + 1), True
                     else:
                         yield 'sched aliasing memory', swapped(i, i + 1), False
-                else:
+                elif 1 not in (A1, A2):
                     yield 'sched aliasing memory', swapped(i, i + 1), False
+                else:                 # an r1 slot against another base: the rules of SchedCtx
+                    x, y = (a, b) if A1 == 1 else (b, a)
+                    ox, B = sext(x & 0xFFFF, 16), (y >> 16) & 31
+                    if oracle is None:
+                        oracle = _st_frame(words)
+                    lo, hi, size, esc, lisreg = oracle
+                    if esc and B not in (2, 13) and B not in lisreg:
+                        yield 'sched escaped frame/pointer', swapped(i, i + 1), False
+                    elif size and lo < i and i + 1 < hi and 0 <= ox and ox + sz(x) <= size and \
+                            B in sda and B not in lisreg and glob((sda[B] + sext(y & 0xFFFF, 16)) & 0xFFFFFFFF):
+                        yield 'sched frame/global', swapped(i, i + 1), True
+                    elif size and lo < i and i + 1 < hi and 0 <= ox and ox + sz(x) <= size and \
+                            not esc and B not in (2, 13) and B not in lisreg:
+                        yield 'sched frame/pointer', swapped(i, i + 1), 'pointer' in SCHED_RELAX
         if k2 in ('bl', 'icall') and i + 2 < n and i + 2 not in fn.leader and k1 == '' and \
                 dec(words[i + 2])[4] == '' and words[i] != words[i + 2]:
             yield 'sched across call', swapped(i, i + 2), False
@@ -2691,7 +2963,8 @@ def sched_selftest(args, P, prog, units):
                 run('sched pair, ' + kind[6:], fn, mut, False, rel)
     # (c) originals as their own counterpart, reordered
     want_n = {'sched RAW': 40, 'sched independent': 40, 'sched load/load': 20, 'sched disjoint memory': 20,
-              'sched aliasing memory': 40, 'sched boundary': 20, 'sched across call': 40, 'sched call moved': 40}
+              'sched aliasing memory': 40, 'sched boundary': 20, 'sched across call': 40, 'sched call moved': 40,
+              'sched frame/global': 10, 'sched escaped frame/pointer': 20, 'sched frame/pointer': 10}
     scanned = 0
     for a in sorted(prog.fns)[::5]:
         fn = prog.fns[a]
@@ -2701,14 +2974,15 @@ def sched_selftest(args, P, prog, units):
             break
         scanned += 1
         per = {}
-        for kind, mut, want in sched_mutations(fn, fn.words):
-            if tot.get(kind, 0) >= 2 * want_n[kind] or per.get(kind, 0) >= 2:
+        for kind, mut, want in sched_mutations(fn, fn.words, prog.sda, lambda a: SchedCtx(prog).isglobal(a, 8)):
+            if tot.get(kind, 0) >= 2 * want_n.get(kind, 20) or per.get(kind, 0) >= 2:
                 continue
             per[kind] = per.get(kind, 0) + 1
             run(kind, fn, mut, want)
     for kind in sorted(set(tot) | set(want_n)):
         n = tot.get(kind, 0)
-        acc = kind in ('sched independent', 'sched load/load', 'sched disjoint memory')
+        acc = kind in ('sched independent', 'sched load/load', 'sched disjoint memory', 'sched frame/global') or \
+            (kind == 'sched frame/pointer' and 'pointer' in SCHED_RELAX)
         print('selftest %-28s %5d of %5d %s' % (kind + ':', good.get(kind, 0), n, 'accepted' if acc else 'rejected'))
         if n < 5 and kind in want_n:
             bad += 1

@@ -116,12 +116,21 @@ inside basic blocks**. Such functions are listed in `config/GHYE6S/schedequiv.tx
   accesses are never disjoint; in a function that builds a 0xCC00/0xCD00/0xE000 address loads keep their order too),
   and barriers nothing may cross: branches, calls, mtspr/mfspr (mflr/mtlr/mtctr), mfmsr/mtmsr, mfcr/mtcrf, CR logic,
   sync/isync, cache instructions, lmw/stmw, OE forms, mffs/mtfsf/mtfsb, float record forms.
-- A stack store against a load through another pointer or an SDA load (`lfs f1, lit@sda21`) is NOT accepted (not
-  provably disjoint by the rule above); this is what rejects most remaining "swapped order" drafts.
+- A stack store against a load through another pointer was NOT accepted by the first version (see the two memory
+  rules below).
 - `--list` reports `schedequiv ...` / `UNIT ...: QUALIFIES-SCHED`; before linking, relocated displacements are unknown
   and local relocation targets are not compared by name, so the linked check is the authority. `--selftest` covers
   hand-made cases, real pairs and mutations (dependent pair swapped, load above an aliasing store, instruction across
   a block boundary or a call, changed operand/immediate must be rejected; independent swaps must be accepted).
+- **Memory rule 'global' (wYA follow-up, 2026-11-12, `SchedCtx`)**: an access to this function's OWN FRAME is
+  disjoint from an access to a GLOBAL. Own frame: r1-based, constant offset, completely inside `[0, N)`, at a point
+  where r1 is the function's frame pointer (exactly one `stwu r1,-N(r1)`; r1 otherwise only written by
+  `addi r1,r1,N` / `lwz r1,0(r1)`; forward dataflow over the CFG, anything else switches the rule off). Offsets at or
+  above N (caller's frame, stack parameters, LR slot) and negative ones stay ordered. Global: base r13 / r2 (never
+  written in the function; the bases are read from `__init_registers`, and base+offset must lie inside a DOL section
+  or the DOL's bss range, where the stack is not), or a base register that holds, from a `lis` / `lis`+`addi` in the
+  same block, a constant address inside those ranges. With `--list` (unlinked): an `@sda21` access, or `sym@l(rX)`
+  with rX from a relocated `lis sym@ha`.
 - To link: unit `Matching`, function name into `schedequiv.txt`, then as for register-equivalent units.
   Candidates: `/home/mi/Decomp/hm-work/wYA/candidates.txt`. Do not merge into main before the user decides.
 
