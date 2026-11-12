@@ -13,7 +13,7 @@ extern void (Ob::*lbl_80330CC8)(s16 *, u32);
 extern "C" {
 extern char lbl_802A5578[], lbl_802A5598[], lbl_802A55C4[];
 extern u32 lbl_8029DE58[];
-extern u32 lbl_8029DE7C[];
+extern const u32 lbl_8029DE7C[];
 extern u32 lbl_802A5A20[];
 void fn_80060568(const char *s, s32 a, s32 b, s32 c);
 u32 fn_801F5150(H *h, C *c);
