@@ -15829,13 +15829,14 @@ auto/text_801699D8.cpp:
 	extab       start:0x8000D968 end:0x8000D970
 	extabindex  start:0x800200FC end:0x80020108
 	.text       start:0x801699D8 end:0x8016A32C
-	.data       start:0x802E80CC end:0x802E8194
+	.data       start:0x802E80CC end:0x802E8190
 
 auto/text_8016A32C.cpp:
 	extab       start:0x8000D970 end:0x8000D978
 	extabindex  start:0x80020108 end:0x80020114
 	.text       start:0x8016A32C end:0x8016AB80
-	.data       start:0x802E8194 end:0x802E8238
+	.rodata     start:0x802A0C20 end:0x802A0DB8
+	.data       start:0x802E8190 end:0x802E8238
 
 auto/jt_802E8238.c:
 	.data       start:0x802E8238 end:0x802E8260

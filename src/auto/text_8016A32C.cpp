@@ -62,16 +62,19 @@ struct Ctx {
     u8 gp[4];
 };
 
-const u32 lbl_802A0C20[16] = {0x1E,0x21,0x24,0x27,0x2A,0x2D,0x30,0x33,0x40,0x43,0x46,0x49,0x4C,0x4F,0x52,0x55};
-const u32 lbl_802A0C60[20] = {0,6,9,12,15,18,21,24,27,0,6,9,12,15,18,21,24,27,0,6};
-const u32 lbl_802A0CB0[33] = {0,4,6,6,6,6,6,6,4,6,4,4,5,7,7,7,7,7,7,7,7,7,7,7,7,7,7,5,7,5,0,0,0};
-const u32 lbl_802A0D34[33] = {0,7,6,5,4,3,2,1,0,0,0,0,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,0,0,0,0};
+extern const u32 lbl_802A0C20[16] = {0x1E,0x21,0x24,0x27,0x2A,0x2D,0x30,0x33,0x40,0x43,0x46,0x49,0x4C,0x4F,0x52,0x55};
+extern const u32 lbl_802A0C60[20] = {0,6,9,12,15,18,21,24,27,0,6,9,12,15,18,21,24,27,0,6};
+extern const u32 lbl_802A0CB0[33] = {0,4,6,6,6,6,6,6,4,6,4,4,5,7,7,7,7,7,7,7,7,7,7,7,7,7,7,5,7,5,0,0,0};
+extern const u32 lbl_802A0D34[33] = {0,7,6,5,4,3,2,1,0,0,0,0,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,0,0,0,0};
+void fn_801699D8(void);
+/* last word (0x802E8190) of the previous unit's switch table, owned here so this unit's table lands 8-aligned */
+__declspec(section ".data") void *lbl_802E8190 = (char *)fn_801699D8 + 0x68;
 extern FT lbl_803286D0;
 extern u32 lbl_803646D0;
 extern u32 lbl_803646D4;
 extern f32 lbl_803646D8;
 
-void fn_80152B64(Mtx *);
+void __ct__9C80152B64Fv(Mtx *);
 void fn_800D9E48(Mtx *, u32);
 void fn_800D9DF8(Mtx *, u32);
 u32 fn_80101A7C(u8);
@@ -117,7 +120,7 @@ inline void endDL(Ctx *c, Shape *s, u32 fmt, u32 base, u32 arg, const Prim *p) {
 inline u32 getM(Ctx *c, u32 k) { return c->mtx[k]; }
 inline void nrmLoad(Ctx *c, Mtx *m, u32 k) {
     u32 mt = c->mtx[k];
-    fn_80152B64(m);
+    __ct__9C80152B64Fv(m);
     lbl_803286D0.f174(m, mt);
     fn_800D9E48(m, k);
     c->cur[k] = mt;
@@ -161,14 +164,14 @@ void fn_8016A32C(Ctx *c, Shape *s, u32 nm, u8 *mi, u32 base, u32 nv, const Prim 
             for (u32 i = 0; i < nm; i++) {
                 u32 k;
                 u32 mt = c->mtx[k = lbl_802A0C60[i]];
-                fn_80152B64(&mA0);
+                __ct__9C80152B64Fv(&mA0);
                 lbl_803286D0.f174(&mA0, mt);
                 fn_800D9E48(&mA0, k);
                 c->cur[k] = mt;
             }
         } else {
             u32 mt = c->mtx[cm];
-            fn_80152B64(&m60);
+            __ct__9C80152B64Fv(&m60);
             lbl_803286D0.f174(&m60, mt);
             fn_800D9E48(&m60, cm);
             c->cur[cm] = mt;
@@ -195,7 +198,7 @@ void fn_8016A32C(Ctx *c, Shape *s, u32 nm, u8 *mi, u32 base, u32 nv, const Prim 
                 for (u32 i = 0; i < nm; i++) {
                     u32 k = lbl_802A0C60[i];
                     u32 mt = c->pm;
-                    fn_80152B64(&m20);
+                    __ct__9C80152B64Fv(&m20);
                     lbl_803286D0.f174(&m20, mt);
                     fn_800D9DF8(&m20, k);
                     c->mtx[k] = mt;
