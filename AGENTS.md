@@ -131,6 +131,13 @@ inside basic blocks**. Such functions are listed in `config/GHYE6S/schedequiv.tx
   or the DOL's bss range, where the stack is not), or a base register that holds, from a `lis` / `lis`+`addi` in the
   same block, a constant address inside those ranges. With `--list` (unlinked): an `@sda21` access, or `sym@l(rX)`
   with rX from a relocated `lis sym@ha`.
+- **Memory rule 'pointer' (wYA follow-up, 2026-11-12)**: an own-frame access (as above) is disjoint from an access
+  through ANY other base register (indexed forms included) only if no frame address can exist outside r1: in the
+  original and in ours r1 appears nowhere except as the base of displacement loads/stores (lmw/stmw included), in the
+  prologue `stwu r1,-N(r1)` and in `addi r1,r1,N` / `lwz r1,0(r1)`. One `addi rX,r1,..`, `mr rX,r1`, `add ..,r1,..`,
+  `stw r1,..`, r1 as an index, anywhere in the function, and all pointer accesses stay ordered with the frame
+  (`--selftest`: "frame address taken ..."). In practice this rule adds no candidate at the moment: the drafts that
+  reorder a stack store against a pointer load all take the address of a local.
 - To link: unit `Matching`, function name into `schedequiv.txt`, then as for register-equivalent units.
   Candidates: `/home/mi/Decomp/hm-work/wYA/candidates.txt`. Do not merge into main before the user decides.
 

@@ -1679,7 +1679,7 @@ def _sched_info(w):
     return (frozenset(rd), frozenset(wr), bar, mem)
 
 
-SCHED_RELAX = ('global',)                 # memory rules beyond "same base": see SchedCtx
+SCHED_RELAX = ('global', 'pointer')       # memory rules beyond "same base": see SchedCtx
 
 
 class SchedCtx:
@@ -2728,6 +2728,35 @@ def sched_synth():
         ('memory: r13 written in the function',
          [stwu, stw(4, 8, 1), lwz(5, -0x100, 13), add(3, 5, 5), addi(13, 13, 0), pop, blr],
          [stwu, lwz(5, -0x100, 13), stw(4, 8, 1), add(3, 5, 5), addi(13, 13, 0), pop, blr], False, G),
+    ]
+    GP_ = ('global', 'pointer')
+    for name, pre, a, b, want, relax in [
+        ('frame store / pointer load', [], stw(4, 8, 1), lwz(5, 0, 6), True, GP_),
+        ('frame load / pointer store', [], lwz(5, 8, 1), stw(4, 0, 6), True, GP_),
+        ('frame store / indexed load', [], stw(4, 8, 1), lwzx(5, 6, 7), True, GP_),
+        ('frame store / pointer load, rule off', [], stw(4, 8, 1), lwz(5, 0, 6), False, G),
+        ('store above the frame / pointer load', [], stw(4, 20, 1), lwz(5, 0, 6), False, GP_),
+        ('store across the frame end / pointer load', [], stw(4, 14, 1), lwz(5, 0, 6), False, GP_),
+        ('frame address taken (addi r3,r1,8), pointer load above the stack store',
+         [addi(3, 1, 8)], stw(4, 8, 1), lwz(5, 0, 3), False, GP_),
+        ('frame address taken, another pointer', [addi(7, 1, 8)], stw(4, 8, 1), lwz(5, 0, 6), False, GP_),
+        ('frame address taken, SDA load still free', [addi(7, 1, 8)], stw(4, 8, 1), lwz(5, -0x100, 13), True, GP_),
+        ('r1 copied (mr r7,r1)', [mr(7, 1)], stw(4, 8, 1), lwz(5, 0, 6), False, GP_),
+        ('r1 added (add r7,r1,r6)', [add(7, 1, 6)], stw(4, 8, 1), lwz(5, 0, 6), False, GP_),
+        ('r1 stored (stw r1,0(r6))', [stw(1, 0, 6)], stw(4, 8, 1), lwz(5, 0, 7), False, GP_),
+        ('r1 as index (lwzx r7,r1,r6)', [lwzx(7, 1, 6)], stw(4, 8, 1), lwz(5, 0, 6), False, GP_),
+        ('two pointers, no frame access', [], stw(4, 8, 6), lwz(5, 0, 7), False, GP_),
+    ]:
+        pre = [stwu] + pre
+        post = [add(3, 5, 5), pop, blr]
+        cases.append(('memory: ' + name, pre + [a, b] + post, pre + [b, a] + post, want, relax))
+    cases += [
+        ('memory: r1 store / pointer load without a frame',
+         [stw(4, 8, 1), lwz(5, 0, 6), add(3, 5, 5), blr],
+         [lwz(5, 0, 6), stw(4, 8, 1), add(3, 5, 5), blr], False, GP_),
+        ('memory: frame address taken in another block',
+         [stwu, cmpwi(3, 0), bc(12, 2, 8), addi(7, 1, 8), stw(4, 8, 1), lwz(5, 0, 6), add(3, 5, 5), pop, blr],
+         [stwu, cmpwi(3, 0), bc(12, 2, 8), addi(7, 1, 8), lwz(5, 0, 6), stw(4, 8, 1), add(3, 5, 5), pop, blr], False, GP_),
     ]
     bad = 0
     for case in cases:
