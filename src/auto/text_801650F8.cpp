@@ -76,7 +76,7 @@ static inline void SetMode(St *g, u32 v) {
 static inline void Ortho(D *p) {
     C80152B64 m;
     SetMode(p->x1938, 3);
-    fn_800BC02C(&m, lbl_80364684, (f32)(H(p->fb) - 1), lbl_80364684, (f32)(W(p->fb) - 1), lbl_80364684, lbl_80364688);
+    fn_800BC02C(&m, 0.0f, (f32)(H(p->fb) - 1), 0.0f, (f32)(W(p->fb) - 1), 0.0f, lbl_80364688);
     lbl_803286D0[94](&m);
     fn_800D9CC8(&m, 1);
 }
