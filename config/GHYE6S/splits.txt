@@ -6555,23 +6555,14 @@ auto/text_800B10B8.cpp:
 	.sdata2     start:0x80362E18 end:0x80362EA8
 
 auto/jt_802D6D3C.c:
-	.data       start:0x802D6D3C end:0x802D72A4
+	.data       start:0x802D6D3C end:0x802D6D40
 
 auto/text_800B1844.cpp:
-	extab       start:0x800095D4 end:0x800095DC
-	extabindex  start:0x8001B9C8 end:0x8001B9D4
-	.text       start:0x800B1844 end:0x800B1D58
-	.data       start:0x802D72A4 end:0x802D72E0
-
-auto/text_800B1D58.cpp:
-	extab       start:0x800095DC end:0x800095E4
-	extabindex  start:0x8001B9D4 end:0x8001B9E0
-	.text       start:0x800B1D58 end:0x800B21A0
-
-auto/text_800B21A0.cpp:
-	extab       start:0x800095E4 end:0x800095EC
-	extabindex  start:0x8001B9E0 end:0x8001B9EC
-	.text       start:0x800B21A0 end:0x800B24A8
+	extab       start:0x800095D4 end:0x800095EC
+	extabindex  start:0x8001B9C8 end:0x8001B9EC
+	.text       start:0x800B1844 end:0x800B24A8
+	.data       start:0x802D6D40 end:0x802D72E0
+	.sdata2     start:0x80362F98 end:0x80362FA0
 
 auto/text_800B24A8.cpp:
 	extab       start:0x800095EC end:0x800095F4
