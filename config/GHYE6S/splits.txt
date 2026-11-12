@@ -2720,6 +2720,7 @@ auto/text_800629DC.cpp:
 	extab       start:0x80006EA4 end:0x80006FC4
 	extabindex  start:0x80019484 end:0x80019490
 	.text       start:0x800629DC end:0x800641A4
+	.sdata2     start:0x8035E6F8 end:0x8035E700
 
 auto/text_800641A4.c:
 	.text       start:0x800641A4 end:0x800641B0
@@ -11939,6 +11940,7 @@ auto/text_8012E3F4.cpp:
 	extab       start:0x8000BA84 end:0x8000BAA0
 	extabindex  start:0x8001E158 end:0x8001E164
 	.text       start:0x8012E3F4 end:0x8012E79C
+	.bss        start:0x8032A490 end:0x8032BD10
 
 auto/text_8012E79C.c:
 	.text       start:0x8012E79C end:0x8012E7A0

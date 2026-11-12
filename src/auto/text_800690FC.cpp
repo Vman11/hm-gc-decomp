@@ -27,8 +27,8 @@ extern int lbl_8035B374;
 extern int lbl_8035A0A4;
 extern int lbl_8035B684;
 extern int lbl_8035B6E4;
-extern f32 lbl_8035F0B4, lbl_8035F0B8, lbl_8035F0BC, lbl_8035F0C0, lbl_8035F0C4, lbl_8035F0C8, lbl_8035F0CC, lbl_8035F0E0, lbl_8035F0EC, lbl_8035F0F0, lbl_8035F1BC, lbl_8035F1C0;
-extern char lbl_8035F09C[4], lbl_8035F0A4[4], lbl_8035F0AC[4], lbl_8035EE70[4], lbl_8035F0D0[4], lbl_8035F0D8[4], lbl_8035ED68[4], lbl_8035F0E4[4], lbl_8035EE18[4], lbl_8035ECE0[4], lbl_8035F1C8[4], lbl_8035F1CC[4], lbl_8035F1D4[4], lbl_8035EEA8[4];
+extern f32 lbl_8035F0B4, lbl_8035F0B8, lbl_8035F0BC, lbl_8035F0C0, lbl_8035F0C4, lbl_8035F0C8, lbl_8035F0CC, lbl_8035F0E0, lbl_8035F0EC, lbl_8035F0F0, lbl_8035F1BC, lbl_8035F1C8;
+extern char lbl_8035F09C[4], lbl_8035F0A4[4], lbl_8035F0AC[4], lbl_8035EE70[4], lbl_8035F0D0[4], lbl_8035F0D8[4], lbl_8035ED68[4], lbl_8035F0E4[4], lbl_8035EE18[4], lbl_8035ECE0[4], lbl_8035F1C0[8], lbl_8035F1CC[4], lbl_8035F1D4[4], lbl_8035EEA8[4];
 extern char lbl_8035F0F4[4], lbl_8035F0FC[4], lbl_8035F104[4], lbl_8035F10C[4], lbl_8035F114[4], lbl_8035F11C[4], lbl_8035F124[4], lbl_8035F12C[4], lbl_8035F134[4], lbl_8035F13C[4], lbl_8035F144[4], lbl_8035F14C[4], lbl_8035F154[4], lbl_8035F15C[4], lbl_8035F164[4], lbl_8035F16C[4], lbl_8035F174[4], lbl_8035F17C[4], lbl_8035F184[4], lbl_8035F18C[4], lbl_8035F194[4], lbl_8035F19C[4], lbl_8035F1A4[4], lbl_8035F1AC[4], lbl_8035F1B4[4];
 void __ct__9C80253F24Fiiii(void *, const char *, int, int, int);
 int fn_800F6CD0(int, const char *);
@@ -158,7 +158,7 @@ static inline void path(int p, char *s) {
 }
 static inline void shot(int p, const char *n) {
     VE *e = fn_80233550(lbl_8035B374, n);
-    if (e != 0) e->shot(I(0x118), 1, lbl_8035ED68, lbl_8035F1C8, 0, lbl_8035F0C0, lbl_8035F1C0);
+    if (e != 0) e->shot(I(0x118), 1, lbl_8035ED68, lbl_8035F1C0, 0, lbl_8035F0C0, lbl_8035F1C8);
 }
 
 void fn_800690FC(int p, int st) {
