@@ -138,6 +138,14 @@ inside basic blocks**. Such functions are listed in `config/GHYE6S/schedequiv.tx
   `stw r1,..`, r1 as an index, anywhere in the function, and all pointer accesses stay ordered with the frame
   (`--selftest`: "frame address taken ..."). In practice this rule adds no candidate at the moment: the drafts that
   reorder a stack store against a pointer load all take the address of a local.
+- **r4 / f1 at a return (wYA, 2026-11-12, `Program.retuse`)**: rule d) used to require r3, r4 and f1 to hold the same
+  definitions at every return. r3 still does. r4 and f1 are now required only when something may read them after the
+  return: a caller's own instruction, a later callee that has them among its inputs (every indirect callee counts),
+  a caller that returns them on to such a reader, a caller in code the checker cannot analyse, or - when the
+  function's address is taken (an aligned word with its address anywhere in the DOL outside extabindex, or a
+  `lis` + `addi`/`ori` of one function that builds it) - any indirect call site that reads them. In practice this is
+  conservative: a function whose callers go on to a virtual call without setting r4 still needs r4 (flips
+  fn_801F4C84; fn_801A8C24 is address-taken and fn_801B1D54's callers are virtual methods that return right after it).
 - To link: unit `Matching`, function name into `schedequiv.txt`, then as for register-equivalent units.
   Candidates: `/home/mi/Decomp/hm-work/wYA/candidates.txt`. Do not merge into main before the user decides.
 

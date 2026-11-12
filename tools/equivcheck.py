@@ -34,8 +34,15 @@ plain sha1 check:
          callee may read (its live-in set over the whole original program;
          r3-r10, f1-f8, cr1 for indirect or undecodable callees) hold the same
          definitions in the same register number;
-       - at every return: r3, r4, f1, every callee-saved register, r1, r2, r13 and
-         any volatile register that some caller reads after the call do;
+       - at every return: r3, every callee-saved register, r1, r2, r13 and any volatile
+         register that some caller reads after the call do. r4 and f1 count as read
+         (wYA 2026-11-12, Program.retuse) unless nothing can read them after the return:
+         no caller reads them with its own instructions, no later callee has them among
+         its inputs (any indirect callee has), no caller returns them on to such a reader,
+         every caller is analysed code, and - when an indirect call site anywhere reads
+         them after its call - the address of the function is not taken (no aligned
+         word with its address in the DOL outside extabindex, no lis + addi/ori of one
+         function that builds it);
        - implicitly used registers (CR logic, mfcr, stmw/lmw ranges) do.
      Copy forwarding (second try, only for a function that failed without it): a plain
      copy (mr / ori rA,rS,0 / fmr) is not a definition site, the copy holds the sites of
@@ -683,12 +690,16 @@ class Fn:
             res |= (unt[i] & thru_of(call[i])) if i in call else unt[i]
         return res
 
-    def xlive(self, retuse, thru_of):
+    def xlive(self, retuse, thru_of, cin=None):
         """Liveness for reads by this function's own instructions (and by its callers
         after the return: retuse), where a call only redefines what the callee cannot
-        pass through."""
+        pass through. cin: index of a call -> registers the callee may read (counted as
+        read at the call)."""
         n = self.n
         succ, use = self.succ, self.xuse[:]
+        if cin:
+            for i, m in cin.items():
+                use[i] |= m
         for i, w in enumerate(self.words):
             # crclr/crset (crxor/creqv b,b,b): the old CR field is not really an input
             if w >> 26 == 19 and (w >> 1) & 1023 in (193, 289) and \
@@ -847,7 +858,20 @@ class Program:
                 if m != thru[a]:
                     thru[a] = m
                     dirty |= callers.get(a, set()) & live_fns
+        # r3/r4/f1 after a return (wYA 2026-11-12): besides the caller's own instructions a later
+        # callee may read them as arguments (cin), and so may callers this analysis does not see.
+        # Only a function whose address is taken somewhere can be reached by an indirect call.
+        self.taken, unk = self._taken()
         retx = self.retx = dict.fromkeys(fns, 0)
+        for t in unk:
+            t = t if t in fns else self.containing(t)
+            if t is not None:
+                retx[t] = RETREGS
+        cins = {}
+        for a in live_fns:
+            fn = fns[a]
+            if fn.call:
+                cins[a] = {i: self.inputs_of(t) & RETREGS for i, t in fn.call.items()}
         self.ind_retx = 0
         dirty = set(live_fns)
         while dirty:
@@ -858,8 +882,8 @@ class Program:
                 fn = fns[a]
                 if not fn.call:
                     continue
-                ru = retx[a] | self.ind_retx
-                live = fn.xlive(ru, self.thru_of)
+                ru = self.retuse(a)
+                live = fn.xlive(ru, self.thru_of, cins[a])
                 for i, t in fn.call.items():
                     m = (ru if i in fn.rets else fn.liveout(i, live)) & VOL
                     if not m:
@@ -874,6 +898,67 @@ class Program:
                             dirty.add(t)
             if self.ind_retx != ind0:
                 dirty = set(live_fns)
+
+    def retuse(self, a):
+        """Volatile registers that may be read after function a returns, before they are
+        written again. What is read after indirect calls counts in full only for a function
+        that can be called indirectly."""
+        if a in self.taken:
+            return self.retx[a] | self.ind_retx
+        return self.retx[a] | (self.ind_retx & ~RETREGS)
+
+    def _taken(self):
+        """(functions whose address may be taken, targets of calls from code that is not
+        analysed). Address taken: a 4-aligned word with the value of a function start in any
+        section of the DOL (code included; extabindex, whose first words are function starts
+        that are only looked up, is skipped when its range is known), or a function start that
+        a `lis` and an `addi` / `ori` of ONE function (or of one gap between functions) can
+        build together. Without section information every function counts as taken."""
+        fns = self.fns
+        secs = getattr(self.dol, 'secs', None)
+        if not secs:
+            return set(fns), set()
+        taken, unk = set(), set()
+        skip = getattr(self, 'noscan', ())
+        for _off, a, size, _t in secs:
+            ws = self.dol.words(a, size & ~3) or ()
+            for k, v in enumerate(ws):
+                if v in fns and not any(lo <= a + 4 * k < hi for lo, hi in skip):
+                    taken.add(v)
+        wins = []                                  # (address, words, analysed)
+        for _off, a, size, text in secs:
+            if not text:
+                continue
+            end = a + (size & ~3)
+            cur = a
+            for s in [x for x in sorted(fns) if a <= x < end] + [end]:
+                if s > cur:
+                    wins.append((cur, self.dol.words(cur, s - cur) or (), False))
+                if s < end:
+                    wins.append((s, fns[s].words, not fns[s].opaque))
+                    cur = max(cur, s + 4 * fns[s].n)
+        for a, ws, known in wins:
+            his, add, ori = set(), set(), set()
+            for k, w in enumerate(ws):
+                op = w >> 26
+                if op == 15:
+                    his.add(w & 0xFFFF)
+                elif op == 14:
+                    add.add(sext(w & 0xFFFF, 16))
+                elif op == 24:
+                    ori.add(w & 0xFFFF)
+                elif not known and op in (16, 18) and not w & 2:
+                    rel = sext(w & 0x03FFFFFC, 26) if op == 18 else sext(w & 0xFFFC, 16)
+                    if not a <= a + 4 * k + rel < a + 4 * len(ws):
+                        unk.add(a + 4 * k + rel)
+            for h in his:
+                for lo in add:
+                    if ((h << 16) + lo) & 0xFFFFFFFF in fns:
+                        taken.add(((h << 16) + lo) & 0xFFFFFFFF)
+                for lo in ori:
+                    if h << 16 | lo in fns:
+                        taken.add(h << 16 | lo)
+        return taken, unk
 
     def unsupported(self, fn):
         """Why the per-live-range check cannot analyse this function, else None."""
@@ -1109,7 +1194,7 @@ class Program:
             FW = 8 * n + 16
             FIO = self._fwdflow(EO, cpo, blocks, bsucc, FW)
             FIU = self._fwdflow(EU, cpu, blocks, bsucc, FW)
-        retv = RETREGS | self.retx[fn.addr] | self.ind_retx
+        retv = R3 | self.retuse(fn.addr)
         moved = {}
         swaps = 0
         for b, (s, e) in enumerate(blocks):
@@ -1506,6 +1591,7 @@ def check_dol(args, P):
             else:
                 touched[syms[k][0]] = touched.get(syms[k][0], 0) + 1
     prog = Program(orig, syms)
+    prog.noscan = [extab_ranges(P)[2:]]
     prog.strict = args.strict
     npass = nsched = 0
     for x in sorted(exd):               # functions whose extab entry differs must be listed, and are checked
@@ -2212,6 +2298,7 @@ def load_units(P):
 
 def load_program(args, P):
     prog = Program(Dol(P['orig']), load_syms(P['syms']))
+    prog.noscan = [extab_ranges(P)[2:]]
     prog.strict = args.strict
     prog.symaddr = {}
     for line in open(P['syms']):
@@ -2452,8 +2539,10 @@ def synth_tests():
 
 
 class _Fake:
-    def __init__(self, mem):
+    def __init__(self, mem, secs=None):
         self.mem = mem
+        if secs:
+            self.secs = secs
 
     def words(self, addr, size):
         return [self.mem.get(addr + 4 * k, 0) for k in range(size // 4)]
@@ -2508,9 +2597,69 @@ def extab_synth():
     return bad
 
 
+def ret_synth():
+    """Hand-made programs for the r4/f1-at-return rule (Program.retuse): returns the number
+    of problems. The function under test leaves a temporary in r4 (f1) in the original and in
+    r5 (f3) in ours; that is fine exactly when nothing can read r4 (f1) after it returns."""
+    def li(d, i): return 14 << 26 | d << 21 | (i & 0xFFFF)
+    def mr(d, sr): return 31 << 26 | sr << 21 | d << 16 | sr << 11 | 444 << 1
+    def fmr(d, b): return 63 << 26 | d << 21 | b << 11 | 72 << 1
+    def mtctr(sr): return 31 << 26 | sr << 21 | 9 << 16 | 467 << 1
+    blr, bctrl = 0x4E800020, 0x4E800421
+    F, H, G, K = 0x1100, 0x1200, 0x1300, 0x1400
+
+    def bl(at, to, lk=1): return 18 << 26 | ((to - at) & 0x3FFFFFC) | lk
+    gpr = ([li(4, 1), li(3, 2), blr], [li(5, 1), li(3, 2), blr])
+    fpr = ([fmr(1, 2), li(3, 2), blr], [fmr(3, 2), li(3, 2), blr])
+    cases = [
+        # (name, (original f, our f), other functions, data words, must pass)
+        ('nobody reads r4', gpr, {H: [bl(H, F), li(3, 0), blr]}, [], True),
+        ('no caller at all', gpr, {}, [], True),
+        ('caller reads r4', gpr, {H: [bl(H, F), mr(3, 4), blr]}, [], False),
+        ('later callee reads r4', gpr, {H: [bl(H, F), bl(H + 4, G), blr], G: [mr(3, 4), blr]}, [], False),
+        ('later callee does not read r4', gpr, {H: [bl(H, F), bl(H + 4, G), blr], G: [li(3, 0), blr]}, [], True),
+        ('caller hands r4 on to its caller', gpr,
+         {H: [bl(H, F), blr], K: [bl(K, H), mr(3, 4), blr]}, [], False),
+        ('tail call, the caller of the caller reads r4', gpr,
+         {H: [bl(H, F, 0)], K: [bl(K, H), mr(3, 4), blr]}, [], False),
+        ('indirect call site reads r4, address of f in data', gpr,
+         {K: [mtctr(5), bctrl, mr(3, 4), blr]}, [F], False),
+        ('indirect call site reads r4, address of f not taken', gpr,
+         {K: [mtctr(5), bctrl, mr(3, 4), blr]}, [], True),
+        ('indirect call site reads r4, address of f built by lis/addi', gpr,
+         {K: [mtctr(5), bctrl, mr(3, 4), blr], G: [15 << 26 | 5 << 21, 14 << 26 | 5 << 21 | 5 << 16 | F, blr]}, [], False),
+        ('indirect call site reads r4, address of f built by lis/ori', gpr,
+         {K: [mtctr(5), bctrl, mr(3, 4), blr], G: [15 << 26 | 5 << 21, 24 << 26 | 5 << 21 | 5 << 16 | F, blr]}, [], False),
+        ('indirect call after f (the callee may read r4)', gpr, {H: [bl(H, F), mtctr(5), bctrl, blr]}, [], False),
+        ('caller that is not analysed', gpr, {H: [0x44000002, bl(H + 4, F), blr]}, [], False),
+        ('nobody reads f1', fpr, {H: [bl(H, F), li(3, 0), blr]}, [], True),
+        ('caller reads f1', fpr, {H: [bl(H, F), fmr(2, 1), blr]}, [], False),
+        ('later callee reads f1', fpr, {H: [bl(H, F), bl(H + 4, G), blr], G: [fmr(2, 1), blr]}, [], False),
+    ]
+    bad = 0
+    for name, (tgt, ours), others, data, want in cases:
+        mem = {}
+        syms = [('f', F, 4 * len(tgt))]
+        for k, w in enumerate(tgt):
+            mem[F + 4 * k] = w
+        for a, ws in others.items():
+            syms.append(('x%x' % a, a, 4 * len(ws)))
+            for k, w in enumerate(ws):
+                mem[a + 4 * k] = w
+        for k, w in enumerate(data):
+            mem[0x3000 + 4 * k] = w
+        prog = Program(_Fake(mem, [(0, 0x1000, 0x1000, True), (0, 0x3000, 0x100, False)]), sorted(syms, key=lambda s: s[1]))
+        prog.strict = False
+        ok, text_ = prog.check(prog.byname['f'], ours)
+        print('%s synthetic return %s: %s' % ('ok  ' if ok == want else 'FAIL', name, text_))
+        if ok != want:
+            bad += 1
+    return bad
+
+
 def synth_run():
     """Run the hand-made cases; returns the number of problems."""
-    bad = extab_synth()
+    bad = extab_synth() + ret_synth()
     for name, tgt, ours, want in synth_tests():
         mem = {0x1000: 0x4E800020}
         for k, w in enumerate(tgt):
