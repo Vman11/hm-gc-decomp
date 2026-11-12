@@ -18,6 +18,8 @@ struct SV { u8 pad[16]; virtual void v0(); virtual void clear(); };
 struct S : SV { s32 f20; u32 f24; Ent *ents; };
 extern "C" {
 extern void *lbl_8035A9F4;
+void __ct__9C800F6BDCFv(C800F6BDC *);
+void *operator new(unsigned long);
 extern void *lbl_8035B610;
 extern u8 lbl_802E31F0[];
 extern u8 lbl_802F2320[];
@@ -37,8 +39,8 @@ void fn_800FAEA0(C800F6BDC *);
 
 s32 fn_80252614(S *s, void *a, u32 b, C800F6BDC *r) {
 //P{
-    C800F6BDC *r1;
     C800F6BDC *r2;
+    C800F6BDC *r1;
     s32 n;
 //P}
     if (lbl_8035A9F4 == 0) fn_800604C4(-2, 0, 0, 0);
@@ -71,17 +73,18 @@ s32 fn_80252614(S *s, void *a, u32 b, C800F6BDC *r) {
     if (s->ents == 0) fn_800604C4(-4, 0, 0, 0);
     fn_800FAEF8(r);
     {
+        u32 off;
         s32 i;
-        for (i = 0; i < n; i++) {
+        for (i = 0, off = 0; i < n; off += 16, i++) {
             Key key;
             fn_800FAEF8(r);
             if (r->next() != 58) r->err(30);
-            s->ents[i].a = r->next();
+            ((Ent *)((u8 *)s->ents + off))->a = r->next();
             if (r->next() != 59) r->err(30);
-            s->ents[i].b = r->next();
+            ((Ent *)((u8 *)s->ents + off))->b = r->next();
             if (r->next() != 60) r->err(30);
             fn_800FB064(r, &key);
-            fn_800F6E88(s->ents[i].name, &key);
+            fn_800F6E88(((Ent *)((u8 *)s->ents + off))->name, &key);
             fn_800FAEA0(r);
         }
     }
