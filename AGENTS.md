@@ -1213,7 +1213,12 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
     fn_80095770 until the first cross product was written out in the function itself.
   - A named local initialised by a plain read of a GLOBAL scalar is not reliably a named local (in fn_80088B54 the two
     constants kept f4/f5 through all 24 declaration orders); read it through a volatile cast when its position matters.
-  - Callee-saved GPRs (r31 down): locals in declaration order first, then the parameters from LAST to FIRST. A
+  - Callee-saved GPRs (r31 down), in STRAIGHT-LINE test functions: locals in declaration order first, then the
+    parameters from LAST to FIRST. With a loop it is not declaration order any more: in
+    `q = getq(p); n = cnt(p); for (i = 0, off = 0; i < n; i++, off += 20) work(p, q->f10 + off, i);` the bound `n`
+    gets r31 and `q` r30 however they are declared, then `i` / `off` in declaration order, then the parameter (an
+    offset the compiler derives from `i * 20` takes the same place as an explicit `off`). So for saved registers
+    declaration order only settles ties between variables of the same kind. A
     parameter copied into a local (same or other pointer type, through an identity inline, a base-class or
     first-member conversion, a reference, a member function's `this`) is still coloured as the parameter; only a
     local with a real computation (`p + 4`, `&p->member` at a non-zero offset, a loaded pointer) is a local of its
