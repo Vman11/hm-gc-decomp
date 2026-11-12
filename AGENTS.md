@@ -1199,8 +1199,7 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
     int->float result is in f0 where the original has f1, in every spelling tried), fn_8003CAD8 (the original has the
     first parameter in r31 and the lookup result in r30; cast copies, member function, inlines and all declaration
     orders give the same code).
-- collaborator (2026-11-12, night): **fn_80095770 linked** (schedule-equivalent; 46 of the 87 now, 55 NonMatching units
-  below `0x80165000`), and the colouring rule from the previous entry checked on small test functions
+- collaborator (2026-11-12, night): **fn_80095770 linked** (schedule-equivalent; 46 of the 87 at that point), and the colouring rule from the previous entry checked on small test functions
   (GC/1.3.2 and 2.0p1, `-O4,p`):
   - Volatile FPRs: unnamed temporaries first (latest-created first), then NAMED locals in DECLARATION order, each
     taking the lowest free register. Four locals that are all live together get f1..f4 in declaration order whatever
@@ -1224,6 +1223,13 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
     local with a real computation (`p + 4`, `&p->member` at a non-zero offset, a loaded pointer) is a local of its
     own. That is why fn_8003CAD8 (original: first parameter r31, lookup result r30, second parameter r29) does not
     move: 30 forms give the result r31, `add` r30, the object r29.
+  - **fn_8005A874 linked too** (register-equivalent; 47 of the 87, 54 NonMatching units left below `0x80165000`).
+    Its 70 differing lines were a rotation of three saved registers, which rule d accepts as a renaming; the only
+    real obstacle was the spot the checker named: four independent byte stores (`b10[8] = 0; b10[5] = 'S';
+    b10[6] = j / 10 + '0'; b10[7] = j % 10 + '1';`). Their temporaries are coloured latest-created first, so the
+    statement order decides which of r0/r3/r5 holds the zero, the 'S' and the quotient: the order [6], [7], [5], [8]
+    is exact there (11 of the 24 orders pass). Before giving up on a "register-only" function, read the address in
+    the `equivcheck --list` message and sweep the statement order of that block alone.
   - What the rule does not give is the SCHEDULE. Where the original keeps a load of a global behind a store, or
     loads stack parameters right after the parameter copies, the instruction order has to be right first, because
     the live ranges (and so the registers) follow from it. Still open for that reason: fn_80088B54 and fn_800AAC34
