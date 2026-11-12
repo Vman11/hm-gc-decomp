@@ -17,6 +17,9 @@ typedef struct {
 } Rend;
 typedef struct { u8 b[64]; } C80152B64;
 typedef struct { void *pad[93]; void (*set)(C80152B64 *, u32); } FnTab;
+void fn_8016708C(void);
+/* last word (0x802E7EB8) of the previous unit's switch table, owned here so this unit's table lands 8-aligned */
+__declspec(section ".data") void *lbl_802E7EB8 = (char *)fn_8016708C + 0x60;
 extern FnTab lbl_803286D0;
 extern u32 lbl_803646D0;
 extern void *lbl_802A0CB0[];
