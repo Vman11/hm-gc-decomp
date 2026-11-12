@@ -25,6 +25,8 @@ static inline u32 rnd(u32 &i) { u32 v = lbl_802E0F60[i]; i = (i + 1) & 0x7ff; re
 static inline f32 rvA(f32 base, f32 range, u32 &i) { if (0.0f != range) { s32 r = rnd(i); base += (2.0f * ((f32)r / 2047.0f) - 1.0f) * range; } return base; }
 #pragma opt_propagation off
 void fn_80196B9C(T *t, s32 j, f32 f) {
+    u32 off;
+    u32 n;
     u32 i;
     u32 cnt;
     u32 k;
@@ -134,9 +136,8 @@ void fn_80196B9C(T *t, s32 j, f32 f) {
         if (t->cb) t->cb->call(t->d, &p24, &p48, &pos, &sz);
         {
             f32 tt = f;
-            u32 n;
-            for (n = 0; n < t->n; n++) {
-                fn_8019598C(&t->parts[n], &p24, &p48, &pos, tt, sz);
+            for (n = 0, off = 0; n < t->n; off += 52, n++) {
+                fn_8019598C((Pt *)((u8 *)t->parts + off), &p24, &p48, &pos, tt, sz);
                 tt -= t->d->f130;
             }
         }
