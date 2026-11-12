@@ -1,4 +1,6 @@
-// fn_80095770 NonMatching draft: DIFF 20. First block exact (b read through volatile reads between the volatile start stores; locals declared bz0, by0, bx0, k0, pz, py, px = ascending target FPRs). Left: in the first cross b.x and d.z have each other's register (f6/f9), one fneg slot.
+// fn_80095770: schedule-equivalent (two store slots in the negation block). Named locals are declared in the order of the
+// original's FPRs, lowest first (first block: bz0, by0, bx0, k0, pz, py, px; cross block: dx, dy, dz, bz, by, bx), and the
+// first cross is written out so that no inline parameter stands in for them.
 #include "common.h"
 extern "C" {
 typedef struct { float x, y, z; } V3;
@@ -26,7 +28,6 @@ static inline void CpV(V3 *d, const V3 *s) { *(volatile float *)&d->x = s->x; *(
 static inline void Madd(V3 *d, const V3 *s, float k) { d->x = k * s->x + d->x; d->y = k * s->y + d->y; d->z = k * s->z + d->z; }
 static inline void Cross(V3 *o, const V3 *a, const V3 *b) { float x = a->y * b->z - a->z * b->y; float y = a->z * b->x - a->x * b->z; float z = a->x * b->y - a->y * b->x; o->x = x; o->y = y; o->z = z; }
 static inline void Madd3(V3 *d, float k, float x, float y, float z) { d->x = k * x + d->x; d->y = k * y + d->y; d->z = k * z + d->z; }
-static inline void CrossS(V3 *o, const V3 *a, float bx, float by, float bz) { float x = a->y * bz - a->z * by; float y = a->z * bx - a->x * bz; float z = a->x * by - a->y * bx; o->x = x; o->y = y; o->z = z; }
 static inline float Sq(float x) {
     if (x > lbl_80361010) {
         const double _half = lbl_80361018;
@@ -59,15 +60,15 @@ void fn_80095770(char *self, V3 a, V3 b, int n, char *obj) {
     int o38, o34;
     void *o30;
     int r = fn_80264E0C(&start, &end, &hit, &nrm, &o38, &o34, &o30, 0, name, 0, 0, 0, 0, 0, 1);
-    float bx, bz, by, dx, dy, dz;
-    bx = b.x;
-    bz = b.z;
-    by = b.y;
+    float dx, dy, dz, bz, by, bx;
+    bx = b.x; by = b.y; bz = b.z;
     dx = start.x - lbl_80357B1C.x;
     dy = start.y - lbl_80357B1C.y;
     dz = start.z - lbl_80357B1C.z;
     u.x = bx; u.y = by; u.z = bz;
-    CrossS(&c, &u, dx, dy, dz);
+    c.x = by * dz - bz * dy;
+    c.y = bz * dx - bx * dz;
+    c.z = bx * dy - by * dx;
     Cross(&e, &c, &u);
     fn_80101820(&e);
     fn_80101820(&c);
