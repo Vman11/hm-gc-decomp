@@ -82,8 +82,8 @@ void DCInvalidateRange(void *, u32);
 u32 fn_802181F8(void *);
 void fn_800D65A8(u32);
 u32 fn_801581F0(void *, Shape *, u32, u32, u32, void *);
-void fn_80217224(Prim *, u32, u8);
-void fn_8021764C(Prim *, u32);
+void fn_80217224(const Prim *, u32, u8);
+void fn_8021764C(const Prim *, u32);
 void fn_80218758(u32, u32, u32, u32, u32, u32);
 void fn_80219410(V3 *, u8 *, u8 *, u32, u32, u32);
 void fn_802188F8(u8 *, u8 *, u8 *, u32, u32 *, u32, u32);
@@ -106,7 +106,7 @@ inline void *beginDL(Ctx *c, u32 size, u32 stride) {
     return buf;
 }
 
-inline void endDL(Ctx *c, Shape *s, u32 fmt, u32 base, u32 arg, Prim *p) {
+inline void endDL(Ctx *c, Shape *s, u32 fmt, u32 base, u32 arg, const Prim *p) {
     fn_800D52E8();
     u32 tok = fn_802181F8(c->gp);
     u32 r = fn_801581F0(c->sub, s, fmt, base, arg, c->gp);
@@ -122,7 +122,7 @@ inline void nrmLoad(Ctx *c, Mtx *m, u32 k) {
     fn_800D9E48(m, k);
     c->cur[k] = mt;
 }
-inline u32 primCount(Prim *p) {
+inline u32 primCount(const Prim *p) {
     u32 n = p->n;
     switch (p->cmd[0] & 0xF8) {
     case 0xB8:
@@ -145,7 +145,7 @@ inline u32 primCount(Prim *p) {
     }
 }
 
-void fn_8016A32C(Ctx *c, Shape *s, u32 nm, u8 *mi, u32 base, u32 nv, Prim *p, u32 arg) {
+void fn_8016A32C(Ctx *c, Shape *s, u32 nm, u8 *mi, u32 base, u32 nv, const Prim *p, u32 arg) {
     Mtx mA0;
     Mtx m60;
     Mtx m20;
