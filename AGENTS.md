@@ -1139,8 +1139,26 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
   - `#pragma opt_propagation off` of one part leaks into every later part: reset it at the end of the part (four
     functions further down changed until then). `build/agent_ds/vtm.py` compiles a merged file once and checks every
     function against its former unit's target object, before splits.txt is touched.
+- collaborator (2026-11-12, later): **more exact-code units linked by giving them their data** (no new matches needed):
+  - merged `text_8008F16C`..`text_80090C68` (13 units, two of them C) into `text_8008F16C.cpp` (lmw + readonly strings):
+    tables 802C88A8.. shared by fn_8008F16C and the descriptor-init fn_80090844 (the table statics are split where
+    fn_80090844 takes their addresses, so both functions keep base + offset addressing), pool 802995A8-8029975C, and
+    fn_80090C68's 4-mod-8 jump table directly behind fn_8008F16C's. `datafill.py` now accepts several consecutive
+    jump tables at the end of a unit's .data.
+  - `text_80091A9C` and `text_8008028C` WITHOUT a merge (all their neighbours already link): each owns its pool
+    (`build/agent_ds/poolify.py`: labels other units use = globals, every other string = a static named like its
+    label, so the filled tables can point at them) and its tables + vtable. After datafill the pool block has to sit
+    above the tables (`poolfirst.py`), else datafill's `extern u8 lbl_X[]` lines clash with the definitions.
+  - `text_800FEEA0`: its 0.0f is the pool constant lbl_80363740; exact with the FIRST read as `*(f32 *)&lbl` and the
+    other six plain (`litsweep.py`; all-plain and all-cast both change the code).
+  - Not solved: `text_80033C38` through an extern pool base is one instruction off (`addi r0,r8,0 .. mr r31,r0`
+    instead of `addi r31,r8,0`; 12 ways of declaring the base all give it), so it still needs the 800316C8 TU, which
+    unmatched fn_800326D0 blocks. `fn_8011CD28`: the two final stores in the original order (`self->head = it;
+    it->prev = 0;`) always swap the self/it callee-saved registers, which breaks the prologue pattern (not a
+    renaming the checker can accept); six push formulations x restrict combinations all do it.
 - collaborator (2026-11-12), **open leads in the collaborator range**: (b) 8003B3E8/8003B5F8/8003B87C: 5F8 is schedule-equivalent, but
   its constant lbl_8035C168 is shared with unmatched fn_8003BC2C. (c) text_8009DD24: extab header (saved-register count).
-  (d) exact code, data-blocked: 8002B760/8002BDD4 (constant shared with 8002CA0C), TU 8008F16C..80090C68 (tables, pool,
-  4-mod-8 jump table of 80090C68), 80091A9C, 8008028C, 80051B50/80052028 (TU with 800502FC), 80033C38, 8007225C, 80088294,
-  800FEEA0, 8014E1E0 (garbage pair inside a 0x88 extab action), 80163BE4/80163CB4 (TU crosses 0x80165000: 801650F8).
+  (d) exact code, data-blocked: 8002B760/8002BDD4 (constant shared with 8002CA0C), 80051B50/80052028 (TU with 800502FC),
+  80033C38 (TU with 800326D0), 8007225C (pool of the 80072.. TU), 80088294 (constant shared with 80088B54), 800A226C/800A2870
+  (with 800A10D4, across 800A1AA8), 8014E1E0 (garbage pair inside a 0x88 extab action), 80163BE4/80163CB4 (TU crosses
+  0x80165000: 801650F8). Every one of these now waits on an unmatched function or on the other range.
