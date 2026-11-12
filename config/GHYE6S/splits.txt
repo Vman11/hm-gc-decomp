@@ -3394,19 +3394,10 @@ auto/text_80076FF0.cpp:
 	.text       start:0x80076FF0 end:0x80077010
 
 auto/text_80077010.cpp:
-	extab       start:0x80007650 end:0x80007658
-	extabindex  start:0x80019AC0 end:0x80019ACC
-	.text       start:0x80077010 end:0x80077944
-
-auto/text_80077944.cpp:
-	extab       start:0x80007658 end:0x80007670
-	extabindex  start:0x80019ACC end:0x80019AD8
-	.text       start:0x80077944 end:0x80078308
-
-auto/text_80078308.cpp:
-	extab       start:0x80007670 end:0x80007678
-	extabindex  start:0x80019AD8 end:0x80019AE4
-	.text       start:0x80078308 end:0x800786B8
+	extab       start:0x80007650 end:0x80007678
+	extabindex  start:0x80019AC0 end:0x80019AE4
+	.text       start:0x80077010 end:0x800786B8
+	.sdata2     start:0x8035F630 end:0x8035F638
 
 auto/text_800786B8.cpp:
 	extab       start:0x80007678 end:0x80007680
