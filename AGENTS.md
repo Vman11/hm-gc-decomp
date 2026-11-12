@@ -1199,3 +1199,39 @@ wGZ (user-approved, collaborator units, 2026-11-05): matched fn_801C6D74 (NonMat
     int->float result is in f0 where the original has f1, in every spelling tried), fn_8003CAD8 (the original has the
     first parameter in r31 and the lookup result in r30; cast copies, member function, inlines and all declaration
     orders give the same code).
+- collaborator (2026-11-12, night): **fn_80095770 linked** (schedule-equivalent; 46 of the 87 now, 55 NonMatching units
+  below `0x80165000`), and the colouring rule from the previous entry checked on small test functions
+  (GC/1.3.2 and 2.0p1, `-O4,p`):
+  - Volatile FPRs: unnamed temporaries first (latest-created first), then NAMED locals in DECLARATION order, each
+    taking the lowest free register. Four locals that are all live together get f1..f4 in declaration order whatever
+    the order of their assignments. So for a block that only differs in FP registers: declare the named locals in
+    the order of the ORIGINAL's registers, lowest first (fn_80095770: `float bz0, by0, bx0, k0, pz, py, px;` and
+    `float dx, dy, dz, bz, by, bx;`).
+  - An inline function's parameters and locals are separate variables created at the expansion. A local of the caller
+    that is only handed to an inline (`Cross(&c, &u, &d)`, or scalars passed to a helper) is coloured in the inline
+    parameter's place, not in its own declaration place: 720 declaration orders could not move b.x and d.z in
+    fn_80095770 until the first cross product was written out in the function itself.
+  - A named local initialised by a plain read of a GLOBAL scalar is not reliably a named local (in fn_80088B54 the two
+    constants kept f4/f5 through all 24 declaration orders); read it through a volatile cast when its position matters.
+  - Callee-saved GPRs (r31 down): locals in declaration order first, then the parameters from LAST to FIRST. A
+    parameter copied into a local (same or other pointer type, through an identity inline, a base-class or
+    first-member conversion, a reference, a member function's `this`) is still coloured as the parameter; only a
+    local with a real computation (`p + 4`, `&p->member` at a non-zero offset, a loaded pointer) is a local of its
+    own. That is why fn_8003CAD8 (original: first parameter r31, lookup result r30, second parameter r29) does not
+    move: 30 forms give the result r31, `add` r30, the object r29.
+  - What the rule does not give is the SCHEDULE. Where the original keeps a load of a global behind a store, or
+    loads stack parameters right after the parameter copies, the instruction order has to be right first, because
+    the live ranges (and so the registers) follow from it. Still open for that reason: fn_80088B54 and fn_800AAC34
+    (the second constant is loaded 3 slots after a stack store in the original, earlier in every form tried),
+    fn_8015EED0 (stack parameter loaded at entry into r11, then `mr r3,r11`; `#pragma scheduling 604` / `7450` are
+    2 lines closer, none match), fn_8003BC2C (second int->float result in f1: no spelling of the conversion or of
+    the product puts it there, 40 forms).
+  - **Proposal for `equivcheck.py` rule f (measured in a private copy, nothing changed in the repo):** a register
+    that still holds an unmodified incoming argument (r3-r10 at entry, or a plain `mr` copy of one; a call clears
+    r0, r3-r12) cannot hold an address inside the frame the function allocates, nor of the back-chain word written
+    by its `stwu r1,-N(r1)`, nor of the LR save word at N+4: the caller computed that value before the frame
+    existed. Treating a load/store through such a base as disjoint from own-frame accesses `[0, N)`, from the
+    `stwu` itself and from the store at `N+4(r1)` makes fn_800FFA4C and fn_8014FABC pass (schedule- and
+    register-equivalent; their `lfs fX,0(r4)` sits above the `stwu` in the original). It needs no "no frame address
+    escapes" condition, so it also applies to functions that take `addi rX,r1,..`. Both units then still need their
+    0.0f in `.sdata2`.
