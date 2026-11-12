@@ -62,6 +62,13 @@ plain sha1 check:
      the original's register holds there. The same equality is required for every other
      register operand of the function's actions even when it is unchanged. Everything else
      in extab and all of extabindex stays byte-identical.
+  f) schedule (experimental, branch sched-equiv, wYA 2026-11-12): a function listed in
+     config/<version>/schedequiv.txt may also have its instructions in a different order
+     inside basic blocks, as long as our order only exchanges instructions that do not
+     depend on each other (registers incl. CR/XER[CA]/FPSCR, memory unless provably
+     disjoint; branches, calls, mtspr/mfspr, cache/sync instructions are barriers) and the
+     function passes rule d) once our instructions are put back into the original order.
+     See the comment above sched_info() for the exact rules.
   --strict uses the first version of rule d) instead: ONE renaming for the whole
      function (a bijection orig -> ours, separately for GPRs, FPRs and CR fields)
      that is the identity on every register visible across an ABI boundary:
@@ -1462,6 +1469,8 @@ def check_dol(args, P):
     syms = load_syms(P['syms'])
     starts = [s[1] for s in syms]
     allow = set(load_allow(P['allow']))
+    sallow = set(load_allow(P['sallow']))
+    allow |= sallow
     n = tsize // 4
     wo = struct.unpack('>%dI' % n, orig.data[toff:toff + tsize])
     wu = struct.unpack('>%dI' % n, ours.data[toff:toff + tsize])
@@ -1477,7 +1486,7 @@ def check_dol(args, P):
                 touched[syms[k][0]] = touched.get(syms[k][0], 0) + 1
     prog = Program(orig, syms)
     prog.strict = args.strict
-    npass = 0
+    npass = nsched = 0
     for x in sorted(exd):               # functions whose extab entry differs must be listed, and are checked
         for f in ex.x_fns.get(x, ()):
             fn = prog.fns.get(f)
@@ -1501,19 +1510,475 @@ def check_dol(args, P):
                 print('FAIL %s: %s' % (name, why))
                 bad += 1
                 continue
-        ok, text_ = prog.check(fn, ours.words(fn.addr, 4 * fn.n), xpairs)
+        if name in sallow and not args.strict:
+            ok, text_ = check_sched(prog, fn, ours.words(fn.addr, 4 * fn.n), xpairs)
+        else:
+            ok, text_ = prog.check(fn, ours.words(fn.addr, 4 * fn.n), xpairs)
         print('%s %s: %s' % ('PASS' if ok else 'FAIL', name, text_))
+        if ok and text_.startswith('schedequiv'):
+            nsched += 1
         if ok:
             npass += 1
         else:
             bad += 1
     for name in sorted(allow - set(touched)):
-        print('note %s: listed in regequiv.txt but exact (or unknown); entry can be removed' % name)
+        print('note %s: listed in %s but exact (or unknown); entry can be removed' % (
+            name, 'schedequiv.txt' if name in sallow else 'regequiv.txt'))
     if bad:
         print('FAIL: %d violation(s)' % bad)
         return 1
+    if nsched:
+        print('OK: main.dol is register/schedule-equivalent to the original (%d function(s) differ by register '
+              'renaming only, %d also by instruction order inside basic blocks)' % (npass - nsched, nsched))
+        return 0
     print('OK: main.dol is register-equivalent to the original (%d function(s) differ by register renaming only)' % npass)
     return 0
+
+
+# ---- schedule equivalence (experimental, branch sched-equiv) ---------------
+#
+# f) A function listed in config/<version>/schedequiv.txt may, in addition to rule d), have
+#    its instructions in a different ORDER inside basic blocks. check_sched() looks for a
+#    permutation of our instructions, block by block (the blocks of the original; every
+#    branch, call and return keeps its position), such that
+#      1. the permuted function passes rule d) against the original (same instructions at
+#         the same positions up to live-range renaming, ABI rules at calls and returns), and
+#      2. the permutation only exchanges instructions of OURS that do not depend on each
+#         other, i.e. our order and the permuted order are two topological orders of the
+#         dependency graph of our block (sched_dag), built from the concrete registers:
+#         - registers (GPR, FPR, CR fields, XER[CA], FPSCR class/condition bits): a read
+#           stays after the write it sees and before the next write; a write whose value
+#           is read (or is the last one in the block) stays after every earlier write;
+#         - memory: a store stays ordered with every other load/store unless both use the
+#           same base register holding the same value (no write to it in between) with
+#           non-overlapping [off, off+size) (this covers two different stack slots);
+#           indexed accesses never count as disjoint. In a function that builds a
+#           hardware address (lis 0xCC00/0xCD00/0xE000) loads keep their order too;
+#         - barriers keep their position and nothing crosses them: branches, calls,
+#           returns, mtspr/mfspr (mflr, mtctr, ...), mfmsr/mtmsr, mftb, mfcr/mtcrf, CR
+#           logic, isync/sync, the cache instructions, lmw/stmw, OE forms, mffs/mtfsf/
+#           mtfsb, record forms of float instructions.
+#    Two orders of the same dependency graph compute the same registers and memory, and
+#    the permuted function is the original up to rule d), so ours is equivalent.
+
+CA, FPC, FPCC, BAR = 96, 97, 98, 99       # XER[CA], FPSCR[C], FPSCR[FPCC], "everything"
+CA_WR9 = {8, 10, 136, 138, 234, 202, 232, 200}
+CA_RD9 = {136, 138, 234, 202, 232, 200}
+MEMSZ = {32: 4, 33: 4, 34: 1, 35: 1, 36: 4, 37: 4, 38: 1, 39: 1, 40: 2, 41: 2, 42: 2, 43: 2, 44: 2, 45: 2,
+         48: 4, 49: 4, 50: 8, 51: 8, 52: 4, 53: 4, 54: 8, 55: 8, 56: 8, 57: 8, 60: 8, 61: 8}
+HWHI = {0xCC00, 0xCD00, 0xE000}
+_smemo = {}
+
+
+def sched_info(w):
+    """What matters for reordering: (reads, writes, barrier, mem) or None when unknown.
+    reads/writes are frozensets of resources (register numbers as in the masks, CA, FPC,
+    FPCC); mem is None or (is_store, base, off, size) with base = GPR number, -1 for an
+    absolute address, None for an unknown (indexed) address."""
+    r = _smemo.get(w)
+    if r is None and w not in _smemo:
+        r = _smemo[w] = _sched_info(w)
+    return r
+
+
+def _sched_info(w):
+    d = dec(w)
+    if d is None:
+        return None
+    ops, use, defs, _pin, kind, _rel, _cond, _m, _closed = d
+    rd, wr = set(regbits(use)), set(regbits(defs))
+    for base, sh, wd, role in ops:
+        r = base + ((w >> sh) & ((1 << wd) - 1))
+        if role & (RD | SAVE):
+            rd.add(r)
+        if role & WR:
+            wr.add(r)
+    op = w >> 26
+    xo = (w >> 1) & 1023
+    x9 = xo & 511
+    A = (w >> 16) & 31
+    bar = kind != ''
+    mem = None
+    if op in (8, 12, 13):
+        wr.add(CA)
+    elif op == 19:
+        if xo != 0:                       # everything but mcrf: branches, CR logic, isync
+            bar = True
+    elif op == 31:
+        if xo in (0, 32):
+            pass
+        elif (x9 in X_DAB and not (xo >= 512 and x9 in (75, 11))) or x9 in X_DA:
+            if xo >= 512:                 # OE form: XER[OV,SO]
+                bar = True
+            if x9 in CA_WR9:
+                wr.add(CA)
+            if x9 in CA_RD9:
+                rd.add(CA)
+        elif xo in (792, 824):
+            wr.add(CA)
+        elif xo in LOADX or xo in LOADUX or xo in FLOADX or xo in FLOADUX:
+            mem = (False, None, 0, 0)
+        elif xo in STOREX or xo in STOREUX or xo in FSTOREX or xo in FSTOREUX:
+            mem = (True, None, 0, 0)
+        elif xo in (339, 83, 371, 467, 146, 19, 144, 598) or xo in CACHE:
+            bar = True
+    elif 32 <= op <= 45:
+        mem = (not (op < 36 or 40 <= op <= 43), A if A else -1, sext(w & 0xFFFF, 16), MEMSZ[op])
+    elif op in (46, 47):
+        bar = True
+    elif 48 <= op <= 55:
+        mem = (op >= 52, A if A else -1, sext(w & 0xFFFF, 16), MEMSZ[op])
+    elif op in (56, 57, 60, 61):
+        mem = (op >= 60, A if A else -1, sext(w & 0xFFF, 12), MEMSZ[op])
+    elif op in (59, 63):
+        x5 = xo & 31
+        if x5 in (18, 20, 21, 25, 28, 29, 30, 31) or (x5 == 24 and op == 59) or (x5 == 26 and op == 63):
+            wr.update((FPC, FPCC))
+            if w & 1:
+                bar = True
+        elif x5 == 23 and op == 63:       # fsel: no FPSCR
+            if w & 1:
+                bar = True
+        elif xo in (0, 32):               # fcmpu fcmpo
+            wr.add(FPCC)
+        elif xo == 12:                    # frsp
+            wr.update((FPC, FPCC))
+            if w & 1:
+                bar = True
+        elif xo in (14, 15):              # fctiw(z): FPRF undefined, keep it in place
+            rd.update((FPC, FPCC))
+            wr.update((FPC, FPCC))
+            if w & 1:
+                bar = True
+        elif xo in (40, 72, 136, 264):    # fneg fmr fnabs fabs
+            if w & 1:
+                bar = True
+        else:                             # mffs mtfsf mtfsb0/1
+            bar = True
+    return (frozenset(rd), frozenset(wr), bar, mem)
+
+
+def sched_dag(words, s, e, hw, rel=None):
+    """Dependency graph of the block words[s:e]: (preds, barriers) with preds[p] = set of
+    block positions that must stay before p; None when an instruction is unknown."""
+    m = e - s
+    preds = [set() for _ in range(m)]
+    events = {}
+    mems = []
+    ver = {}
+    bars = []
+    for p in range(m):
+        si = sched_info(words[s + p])
+        if si is None:
+            return None
+        rd, wr, bar, mem = si
+        for r in rd:
+            events.setdefault(r, []).append((p, False))
+        events.setdefault(BAR, []).append((p, False))
+        if mem:
+            st, base, off, size = mem
+            if rel and s + p in rel:      # displacement not known before linking
+                base = None
+            key = None if base is None else (base, ver.get(base, 0))
+            for q, st2, key2, off2, size2 in mems:
+                if not (st or st2 or hw):
+                    continue
+                if key is not None and key == key2 and (off + size <= off2 or off2 + size2 <= off):
+                    continue
+                preds[p].add(q)
+            mems.append((p, st, key, off, size))
+        for r in wr:
+            events.setdefault(r, []).append((p, True))
+            ver[r] = ver.get(r, 0) + 1
+        if bar:
+            events[BAR].append((p, True))
+            bars.append(p)
+            mems = []                     # everything before is ordered through the barrier
+    for res, ev in events.items():
+        if res != BAR and bars:
+            # a barrier (a call, ...) may read anything: the value a register has there is live
+            ev = sorted(ev + [(b, False) for b in bars])
+        live = [False] * len(ev)
+        lastw = None
+        for k, (p, isw) in enumerate(ev):
+            if isw:
+                lastw = k
+            elif lastw is not None:
+                live[lastw] = True
+        if lastw is not None:
+            live[lastw] = True
+        cur = None
+        readers = []
+        dead = []
+        for k, (p, isw) in enumerate(ev):
+            if not isw:
+                if cur is not None and cur != p:
+                    preds[p].add(cur)
+                readers.append(p)
+            else:
+                for q in readers:
+                    if q != p:
+                        preds[p].add(q)
+                if live[k]:
+                    preds[p].update(dead)
+                    if cur is not None:
+                        preds[p].add(cur)
+                    cur, readers, dead = p, [], []
+                else:
+                    dead.append(p)
+    return preds, bars
+
+
+def sched_keys(words, s, e, rel):
+    """Per instruction: (non-register bits, operand layout, relocation types/addends)."""
+    out = []
+    for i in range(s, e):
+        w = words[i]
+        rk = None
+        if rel and i in rel:
+            w &= ~rel[i][0]
+            rk = rel[i][1]
+        d = dec(w)
+        if d is None:
+            return None
+        out.append((w & ~d[7] & 0xFFFFFFFF,
+                    tuple((b, sh, bool(r & WR), bool(r & (RD | SAVE))) for b, sh, _w, r in d[0]), rk))
+    return out
+
+
+def sched_sigs(words, keys, s, e, rel):
+    """Order- and register-independent labels of the instructions of a block, from the
+    def-use structure inside the block: per instruction (finest, ..., coarsest)."""
+    m = e - s
+    srcs = []                # per instruction: [(slot, def position or None, def slot or class)]
+    cons = [[] for _ in range(m)]
+    lastdef = {}
+    lastslots = [[] for _ in range(m)]
+    argmark = [[] for _ in range(m)]     # values an ABI boundary sees: (slot, register)
+    since = -1
+    cpair = []
+    for p in range(m):
+        w = words[s + p]
+        if rel and s + p in rel:
+            w &= ~rel[s + p][0]
+        ops = dec(w)[0]
+        rd, wr, _bar, _mem = sched_info(w)
+        cp = comm(w)
+        cpair.append(cp)
+        if dec(w)[4] in ('bl', 'icall', 'ret', 'b', 'bctr'):
+            for r, (dp, ds) in lastdef.items():
+                if dp > since and ds < 100 and ((1 << r) & (ARGREGS | NONVOL)):
+                    argmark[dp].append((ds, r))
+            since = p
+        lst = []
+        seen = set()
+        for k, (b, sh, wd, role) in enumerate(ops):
+            if role & (RD | SAVE):
+                r = b + ((w >> sh) & ((1 << wd) - 1))
+                seen.add(r)
+                slot = cp[0] if cp and k in cp else k
+                ld = lastdef.get(r)
+                if ld is None:
+                    lst.append((slot, None, r if r in (1, 2, 13) else 200 + b))
+                else:
+                    lst.append((slot, ld[0], ld[1]))
+                    cons[ld[0]].append((ld[1], p, slot))
+        for r in sorted(rd - seen):
+            ld = lastdef.get(r)
+            if ld is None:
+                lst.append((100 + r, None, r))
+            else:
+                lst.append((100 + r, ld[0], ld[1]))
+                cons[ld[0]].append((ld[1], p, 100 + r))
+        srcs.append(lst)
+        seen = set()
+        for k, (b, sh, wd, role) in enumerate(ops):
+            if role & WR:
+                r = b + ((w >> sh) & ((1 << wd) - 1))
+                seen.add(r)
+                lastdef[r] = (p, k)
+        for r in wr - seen:
+            lastdef[r] = (p, 100 + r)
+    for p, slot in lastdef.values():
+        lastslots[p].append(slot)
+
+    def back(L):
+        out = []
+        for p in range(m):
+            out.append(hash((keys[p], tuple(sorted(
+                (slot, -1, c) if dp is None else (slot, L[dp], c) for slot, dp, c in srcs[p])))))
+        return out
+
+    def fwd(Bv):
+        return [hash((Bv[p], tuple(sorted((ds, Bv[c], cs) for ds, c, cs in cons[p])),
+                      tuple(sorted(lastslots[p])), tuple(sorted(argmark[p])))) for p in range(m)]
+
+    B = []
+    for p in range(m):       # defs come first, so one pass in order
+        B.append(hash((keys[p], tuple(sorted(
+            (slot, -1, c) if dp is None else (slot, B[dp], c) for slot, dp, c in srcs[p])))))
+    F = fwd(B)
+    B2 = back(F)
+    F2 = fwd(B2)
+    return [(F2[p], B2[p], B[p], hash(keys[p])) for p in range(m)]
+
+
+def rel_compat(a, b, symaddr):
+    """Relocations of ours / of the original at one instruction: None when they cannot be
+    the same, else the number of targets that could not be compared by name."""
+    if [(x[0], x[3]) for x in a] != [(x[0], x[3]) for x in b]:
+        return None
+    loose = 0
+    for (_ty, na, ba, _ad), (_ty2, nb, _bb, _ad2) in zip(a, b):
+        if na != nb:
+            aa, ab = symaddr.get(na, ()), symaddr.get(nb, ())
+            if ba != 0 and len(aa) == 1 and len(ab) == 1:
+                if aa != ab:
+                    return None
+            else:
+                loose += 1
+    return loose
+
+
+def sched_match(orig, ours, s, e, hw, rel=None, symaddr=None):
+    """A permutation perm (perm[j] = position in our block of the instruction that goes to
+    position j of the original block) that respects the dependencies of OUR block:
+    (perm, preds, bars, loose) or (None, reason, None, 0)."""
+    orel, urel = rel if rel else (None, None)
+    ko, ku = sched_keys(orig, s, e, orel), sched_keys(ours, s, e, urel)
+    if ko is None or ku is None:
+        return None, 'unknown instruction', None, 0
+    cnt = {}
+    for k in ko:
+        cnt[k] = cnt.get(k, 0) + 1
+    for k in ku:
+        cnt[k] = cnt.get(k, 0) - 1
+    if any(cnt.values()):
+        return None, 'the block does not hold the same instructions', None, 0
+    dag = sched_dag(ours, s, e, hw, urel)
+    if dag is None:
+        return None, 'unknown instruction', None, 0
+    preds, bars = dag
+    so, su = sched_sigs(orig, ko, s, e, orel), sched_sigs(ours, ku, s, e, urel)
+    m = e - s
+    idx = [{} for _ in range(4)]
+    for k in range(m):
+        for lv in range(4):
+            idx[lv].setdefault(su[k][lv], []).append(k)
+    placed = [False] * m
+    perm = []
+    loose = 0
+    for j in range(m):
+        pick = None
+        blocked = False
+        for lv in range(4):
+            first = None
+            for k in idx[lv].get(so[j][lv], ()):
+                if placed[k] or ko[j] != ku[k]:
+                    continue
+                if rel and (s + j in orel or s + k in urel):
+                    if rel_compat(urel[s + k][2], orel[s + j][2], symaddr) is None:
+                        continue
+                if any(not placed[q] for q in preds[k]):
+                    blocked = True
+                    continue
+                # among equally labelled candidates: the same word, then the same position
+                rank = (0 if ours[s + k] == orig[s + j] else 1, 0 if k == j else 1, k)
+                if first is None or rank < first:
+                    first = rank
+            if first is not None:
+                pick = first[2]
+                break
+        if pick is None:
+            return None, ('the order differs across a dependency' if blocked else
+                          'no counterpart for the instruction') + ' at +0x%x' % (4 * (s + j)), None, 0
+        if rel and s + j in orel:
+            loose += rel_compat(urel[s + pick][2], orel[s + j][2], symaddr)
+        placed[pick] = True
+        perm.append(pick)
+    return perm, preds, bars, loose
+
+
+def check_sched(prog, fn, ours, xpairs=None, rel=None):
+    """Rule f): (ok, text). rel (object files only) = (orel, urel), index -> (mask of the
+    relocated bits, ((type, addend), ...), relocations); the relocated bits of our words
+    are then taken from the original after the instructions have been paired."""
+    orig = fn.words
+    n = fn.n
+    if len(ours) != n:
+        return False, 'length differs'
+    if rel is None:
+        ok, text = prog.check_webs(fn, ours, xpairs)
+        if ok:
+            return ok, text
+    why = prog.unsupported(fn)
+    if why:
+        return False, why
+    blocks = prog._webinfo(fn)[0]
+    hw = any(w >> 26 == 15 and (w & 0xFFFF) in HWHI for w in orig) or \
+        any(w >> 26 == 15 and (w & 0xFFFF) in HWHI for w in ours)
+    new = list(ours)
+    moved = nb = loose = 0
+    for s, e in blocks:
+        if rel is None and orig[s:e] == ours[s:e]:
+            continue
+        perm, preds, bars, lo = sched_match(orig, ours, s, e, hw, rel, getattr(prog, 'symaddr', None))
+        if perm is None:
+            return False, 'sched: %s (block %08x-%08x)' % (preds, fn.addr + 4 * s, fn.addr + 4 * e)
+        # independent re-check of what sched_match promises
+        m = e - s
+        if sorted(perm) != list(range(m)):
+            return False, 'sched: internal error (not a permutation)'
+        pos = [0] * m
+        for j, k in enumerate(perm):
+            pos[k] = j
+        if any(pos[q] >= pos[k] for k in range(m) for q in preds[k]) or any(pos[k] != k for k in bars):
+            return False, 'sched: internal error (dependency not respected)'
+        loose += lo
+        for j, k in enumerate(perm):
+            w = ours[s + k]
+            if rel and s + j in rel[0]:
+                mask = rel[0][s + j][0]
+                w = (w & ~mask) | (orig[s + j] & mask)
+            new[s + j] = w
+        d = sum(1 for j, k in enumerate(perm) if j != k)
+        if d:
+            moved += d
+            nb += 1
+    ok, text = prog.check_webs(fn, new, xpairs)
+    if not ok:
+        return False, ('sched: after reordering %d instruction(s): ' % moved if moved else '') + text
+    if loose:
+        text += ' [%d local relocation target(s) not compared by name]' % loose
+    if not moved:
+        return True, text
+    return True, 'schedequiv %d instruction(s) reordered in %d block(s); %s' % (moved, nb, text)
+
+
+def obj_rel(prog, name, mine, tgt):
+    """Our raw words and the relocation tables of both objects for check_sched:
+    (words, (orel, urel)) or (None, reason)."""
+    fn = prog.byname.get(name)
+    m = mine.func(name)
+    t = tgt.func(name)
+    if fn is None or m is None or t is None:
+        return None, 'missing'
+    mw, mr = m
+    tw, tr = t
+    if len(mw) != fn.n or len(tw) != fn.n:
+        return None, 'size differs (%d vs %d bytes)' % (4 * len(mw), 4 * fn.n)
+    out = []
+    for r in (tr, mr):
+        d = {}
+        for i, lst in r.items():
+            mask = 0
+            for ty, _n, _b, _a in lst:
+                if ty not in RELMASK:
+                    return None, 'unsupported relocation type %d' % ty
+                mask |= RELMASK[ty]
+            d[i] = (mask, tuple((x[0], x[3]) for x in lst), lst)
+        out.append(d)
+    return list(mw), tuple(out)
 
 
 # ---- --list: object files -------------------------------------------------
@@ -1605,34 +2070,46 @@ def list_mode(args, P):
             print('FAIL %s: %s' % (unit, e))
             rc = 1
             continue
-        res = {'exact': 0, 'regequiv': 0, 'fail': 0}
+        res = {'exact': 0, 'regequiv': 0, 'schedequiv': 0, 'fail': 0}
         names = sorted(tgt.funcs, key=lambda k: tgt.funcs[k][1])
         for name in names:
             if want and name not in want:
                 continue
             ok, text_ = list_one(prog, name, mine, tgt)
-            key = 'fail' if not ok else 'exact' if text_.startswith('exact') else 'regequiv'
+            key = 'fail' if not ok else 'exact' if text_.startswith('exact') else \
+                'schedequiv' if text_.startswith('schedequiv') else 'regequiv'
             res[key] += 1
             if key != 'exact' or want or args.verbose:
                 print('%s %s %s: %s' % ('PASS' if ok else 'FAIL', unit, name, text_))
         if not want:
-            verdict = 'QUALIFIES' if not res['fail'] and res['regequiv'] else \
+            verdict = 'QUALIFIES-SCHED' if not res['fail'] and res['schedequiv'] else \
+                'QUALIFIES' if not res['fail'] and res['regequiv'] else \
                 'EXACT' if not res['fail'] else 'NO'
-            print('UNIT %s: %s (%d exact, %d regequiv, %d fail)' % (
-                unit, verdict, res['exact'], res['regequiv'], res['fail']))
+            print('UNIT %s: %s (%d exact, %d regequiv, %s%d fail)' % (
+                unit, verdict, res['exact'], res['regequiv'],
+                '%d schedequiv, ' % res['schedequiv'] if res['schedequiv'] else '', res['fail']))
         if res['fail']:
             rc = 1
     return rc
 
 
-def list_one(prog, name, mine, tgt):
+def list_one(prog, name, mine, tgt, sched=True):
     ours, text_, loose = obj_words(prog, name, mine, tgt)
-    if ours is None:
+    if ours is not None:
+        ok, text_ = prog.check(prog.byname[name], ours)
+        if ok and loose:
+            text_ += ' [%d local relocation target(s) not compared by name]' % loose
+    else:
+        ok = False
+    if ok or not sched or prog.strict or name not in prog.byname or text_.startswith(('size', 'missing', 'not a')):
+        return ok, text_
+    raw, rel = obj_rel(prog, name, mine, tgt)       # rule f): instruction order inside blocks
+    if raw is None:
         return False, text_
-    ok, text_ = prog.check(prog.byname[name], ours)
-    if ok and loose:
-        text_ += ' [%d local relocation target(s) not compared by name]' % loose
-    return ok, text_
+    ok2, text2 = check_sched(prog, prog.byname[name], raw, None, rel)
+    if ok2:
+        return ok2, text2
+    return False, text_ + (' / ' + text2 if text2.startswith('sched') else '')
 
 
 def obj_words(prog, name, mine, tgt):
@@ -1939,6 +2416,306 @@ def _benign_copy_alias(words, i, old, new):
     return False
 
 
+# ---- self-test of rule f) -------------------------------------------------
+
+# schedule-only pairs found on 2026-11-12 (objects of NonMatching or linked units); must keep passing
+SCHED_SELFTEST = ['fn_80207510', 'fn_80272028', 'fn_801C9F7C', 'fn_8016AB80', 'fn_80264E0C', 'fn_8022F544']
+
+
+def sched_synth():
+    """Hand-made cases for rule f): returns the number of problems."""
+    def li(d, i): return 14 << 26 | d << 21 | (i & 0xFFFF)
+    def addi(d, a, i): return 14 << 26 | d << 21 | a << 16 | (i & 0xFFFF)
+    def addic(d, a, i): return 12 << 26 | d << 21 | a << 16 | (i & 0xFFFF)
+    def mr(d, sr): return 31 << 26 | sr << 21 | d << 16 | sr << 11 | 444 << 1
+    def add(d, a, b): return 31 << 26 | d << 21 | a << 16 | b << 11 | 266 << 1
+    def addze(d, a): return 31 << 26 | d << 21 | a << 16 | 202 << 1
+    def subf(d, a, b): return 31 << 26 | d << 21 | a << 16 | b << 11 | 40 << 1
+    def srawi(a, sr, n): return 31 << 26 | sr << 21 | a << 16 | n << 11 | 824 << 1
+    def lwz(d, off, a): return 32 << 26 | d << 21 | a << 16 | (off & 0xFFFF)
+    def lhz(d, off, a): return 40 << 26 | d << 21 | a << 16 | (off & 0xFFFF)
+    def stw(sr, off, a): return 36 << 26 | sr << 21 | a << 16 | (off & 0xFFFF)
+    def lwzx(d, a, b): return 31 << 26 | d << 21 | a << 16 | b << 11 | 23 << 1
+    def fadds(d, a, b): return 59 << 26 | d << 21 | a << 16 | b << 11 | 21 << 1
+    def fmr(d, b): return 63 << 26 | d << 21 | b << 11 | 72 << 1
+    def cmpwi(a, i): return 11 << 26 | a << 16 | (i & 0xFFFF)
+    def cmpw(cr, a, b): return 31 << 26 | cr << 23 | a << 16 | b << 11
+    def bc(bo, bi, off): return 16 << 26 | bo << 21 | bi << 16 | (off & 0xFFFC)
+    def bl(at): return 18 << 26 | ((0x1000 - at) & 0x3FFFFFC) | 1
+    def mtctr(sr): return 31 << 26 | sr << 21 | 9 << 16 | 467 << 1
+    def lis(d, i): return 15 << 26 | d << 21 | (i & 0xFFFF)
+    blr = 0x4E800020
+    A = 0x2000
+    cases = [
+        # (name, original, ours, must pass)
+        ('independent li swapped', [li(4, 1), li(5, 2), add(3, 4, 5), blr],
+                                   [li(5, 2), li(4, 1), add(3, 4, 5), blr], True),
+        ('swap plus rename', [li(5, 1), li(6, 2), add(3, 5, 6), blr],
+                             [li(7, 2), li(8, 1), add(3, 8, 7), blr], True),
+        ('swap plus rename, values exchanged', [li(5, 1), li(6, 2), subf(3, 5, 6), blr],
+                                               [li(7, 2), li(8, 1), subf(3, 7, 8), blr], False),
+        ('RAW pair swapped', [addi(4, 3, 1), addi(5, 4, 2), add(3, 4, 5), blr],
+                             [addi(5, 4, 2), addi(4, 3, 1), add(3, 4, 5), blr], False),
+        ('WAR pair swapped', [addi(5, 4, 2), li(4, 1), add(3, 4, 5), blr],
+                             [li(4, 1), addi(5, 4, 2), add(3, 4, 5), blr], False),
+        ('WAW pair swapped', [li(4, 1), cmpwi(3, 0), li(4, 2), add(3, 4, 4), blr],
+                             [li(4, 2), cmpwi(3, 0), li(4, 1), add(3, 4, 4), blr], False),
+        ('load above aliasing store', [stw(4, 0, 5), lwz(6, 0, 7), add(3, 6, 6), blr],
+                                      [lwz(6, 0, 7), stw(4, 0, 5), add(3, 6, 6), blr], False),
+        ('store above possibly aliasing load', [lwz(6, 0, 7), stw(4, 0, 5), add(3, 6, 6), blr],
+                                               [stw(4, 0, 5), lwz(6, 0, 7), add(3, 6, 6), blr], False),
+        ('two stores, different bases', [stw(4, 0, 5), stw(6, 0, 7), li(3, 0), blr],
+                                        [stw(6, 0, 7), stw(4, 0, 5), li(3, 0), blr], False),
+        ('load / store, distinct stack slots', [stw(4, 8, 1), lwz(6, 12, 1), mr(3, 6), blr],
+                                               [lwz(6, 12, 1), stw(4, 8, 1), mr(3, 6), blr], True),
+        ('load / store, overlapping stack slots', [stw(4, 8, 1), lhz(6, 10, 1), mr(3, 6), blr],
+                                                  [lhz(6, 10, 1), stw(4, 8, 1), mr(3, 6), blr], False),
+        ('load / store, same base, disjoint', [stw(4, 8, 5), lwz(6, 12, 5), mr(3, 6), blr],
+                                              [lwz(6, 12, 5), stw(4, 8, 5), mr(3, 6), blr], True),
+        ('indexed load above store', [stw(4, 8, 5), lwzx(6, 5, 7), mr(3, 6), blr],
+                                     [lwzx(6, 5, 7), stw(4, 8, 5), mr(3, 6), blr], False),
+        ('two loads swapped', [lwz(4, 0, 5), lwz(6, 0, 7), add(3, 4, 6), blr],
+                              [lwz(6, 0, 7), lwz(4, 0, 5), add(3, 4, 6), blr], True),
+        ('two loads swapped, hardware address in the function',
+         [lis(5, 0xCC00), lwz(4, 0, 5), lwz(6, 0, 7), add(3, 4, 6), blr],
+         [lis(5, 0xCC00), lwz(6, 0, 7), lwz(4, 0, 5), add(3, 4, 6), blr], False),
+        ('across a call', [mr(31, 3), bl(A + 4), li(30, 2), add(3, 31, 30), blr],
+                          [li(30, 2), bl(A + 4), mr(31, 3), add(3, 31, 30), blr], False),
+        ('call moved', [li(30, 2), bl(A + 4), li(31, 3), add(3, 31, 30), blr],
+                       [li(30, 2), li(31, 3), bl(A + 8), add(3, 31, 30), blr], False),
+        ('across a block boundary', [cmpwi(3, 0), li(4, 1), bc(12, 2, 8), li(5, 2), li(6, 3), add(3, 4, 6), blr],
+                                    [cmpwi(3, 0), li(4, 1), bc(12, 2, 8), li(6, 3), li(5, 2), add(3, 4, 6), blr], False),
+        ('across a branch', [cmpwi(3, 0), li(4, 1), bc(12, 2, 8), li(5, 2), add(3, 4, 5), blr],
+                            [cmpwi(3, 0), bc(12, 2, 12), li(4, 1), li(5, 2), add(3, 4, 5), blr], False),
+        ('compare below its independent neighbour', [cmpwi(3, 0), li(4, 1), bc(12, 2, 8), li(4, 2), mr(3, 4), blr],
+                                                    [li(4, 1), cmpwi(3, 0), bc(12, 2, 8), li(4, 2), mr(3, 4), blr], True),
+        ('operand changed', [li(4, 1), li(5, 2), add(3, 4, 5), blr],
+                            [li(5, 2), li(4, 1), add(3, 4, 4), blr], False),
+        ('immediate changed', [li(4, 1), li(5, 2), add(3, 4, 5), blr],
+                              [li(5, 3), li(4, 1), add(3, 4, 5), blr], False),
+        ('instruction duplicated', [li(4, 1), li(5, 2), add(3, 4, 5), blr],
+                                   [li(5, 2), li(5, 2), add(3, 4, 5), blr], False),
+        ('carry read moved above its writer', [addic(4, 3, 1), addze(5, 6), add(3, 4, 5), blr],
+                                              [addze(5, 6), addic(4, 3, 1), add(3, 4, 5), blr], False),
+        ('last carry writer changed', [srawi(4, 3, 1), srawi(5, 3, 2), add(3, 4, 5), blr],
+                                      [srawi(5, 3, 2), srawi(4, 3, 1), add(3, 4, 5), blr], False),
+        ('dead carry writers swapped', [srawi(4, 3, 1), srawi(5, 3, 2), addic(6, 3, 3), add(3, 4, 5), blr],
+                                       [srawi(5, 3, 2), srawi(4, 3, 1), addic(6, 3, 3), add(3, 4, 5), blr], True),
+        ('last FPSCR writer changed', [fadds(3, 1, 2), fadds(4, 2, 2), fadds(1, 3, 4), fmr(2, 1), fadds(5, 1, 1), blr],
+                                      [fadds(3, 1, 2), fadds(4, 2, 2), fadds(5, 1, 1), fmr(2, 1), fadds(1, 3, 4), blr], False),
+        ('float adds swapped, last one kept', [fadds(3, 1, 2), fadds(4, 2, 2), fadds(1, 3, 4), blr],
+                                              [fadds(4, 2, 2), fadds(3, 1, 2), fadds(1, 3, 4), blr], True),
+        ('writes of an argument register before a call', [li(3, 1), li(3, 2), bl(A + 8), li(3, 0), blr],
+                                                         [li(3, 2), li(3, 1), bl(A + 8), li(3, 0), blr], False),
+        ('dead write moved below the live one', [li(5, 1), li(5, 2), add(3, 5, 5), blr],
+                                                [li(5, 2), li(5, 1), add(3, 5, 5), blr], False),
+        ('across mtctr', [li(4, 1), mtctr(3), li(5, 2), add(3, 4, 5), blr],
+                         [li(5, 2), mtctr(3), li(4, 1), add(3, 4, 5), blr], False),
+        ('CR field renamed and compare moved', [cmpw(0, 3, 4), li(5, 1), bc(12, 2, 8), li(5, 2), mr(3, 5), blr],
+                                               [li(5, 1), cmpw(1, 3, 4), bc(12, 6, 8), li(5, 2), mr(3, 5), blr], True),
+    ]
+    bad = 0
+    for name, tgt, ours, want in cases:
+        mem = {0x1000: blr}
+        for k, w in enumerate(tgt):
+            mem[A + 4 * k] = w
+        prog = Program(_Fake(mem), [('g', 0x1000, 4), ('f', A, 4 * len(tgt))])
+        prog.strict = False
+        ok, text_ = check_sched(prog, prog.byname['f'], ours)
+        if ok and want and not text_.startswith('schedequiv'):
+            ok = False
+        print('%s synthetic sched %s: %s' % ('ok  ' if ok == want else 'FAIL', name, text_))
+        if ok != want:
+            bad += 1
+    return bad
+
+
+_ST_PURE31 = {266, 40, 444, 28, 316, 235, 24, 536, 954, 922, 26, 124, 476}
+
+
+def _st_rw(w):
+    """Independent of sched_info: (reads, writes, class) of one instruction for the mutation
+    tests; class 'pure' = no hidden state and no memory, 'load', 'store', or None."""
+    d = dec(w)
+    rd, wr = d[1], d[2]
+    for base, sh, wd, role in d[0]:
+        b = 1 << (base + ((w >> sh) & ((1 << wd) - 1)))
+        if role & (RD | SAVE):
+            rd |= b
+        if role & WR:
+            wr |= b
+    op = w >> 26
+    cls = None
+    if d[4] == '' and not d[1] and not d[2]:
+        if op in (14, 15, 24, 25, 26, 27, 21) and not (op == 21 and w & 1):
+            cls = 'pure'
+        elif op == 31 and not w & 1 and (w >> 1) & 1023 in _ST_PURE31:
+            cls = 'pure'
+        elif op == 63 and not w & 1 and (w >> 1) & 1023 in (72, 40):
+            cls = 'pure'
+        elif op in (32, 34, 40, 42, 48, 50):
+            cls = 'load'
+        elif op in (36, 38, 44, 52, 54):
+            cls = 'store'
+    return rd, wr, cls
+
+
+def sched_mutations(fn, words):
+    """Reorderings of `words` (compared against fn): yields (kind, mutated words, must pass)."""
+    n = fn.n
+    seen = set()
+    todo = [0]
+    while todo:
+        i = todo.pop()
+        if i not in seen:
+            seen.add(i)
+            todo.extend(fn.succ[i])
+    hw = any(w >> 26 == 15 and (w & 0xFFFF) in (0xCC00, 0xCD00, 0xE000) for w in words)
+    info = [_st_rw(w) for w in words]
+
+    def swapped(a, b):
+        m = list(words)
+        m[a], m[b] = m[b], m[a]
+        return m
+
+    def indep(a, b):
+        (r1, w1, _c1), (r2, w2, _c2) = info[a], info[b]
+        return not (w1 & (r2 | w2)) and not (w2 & r1)
+
+    for i in range(n - 1):
+        if i not in seen or words[i] == words[i + 1]:
+            continue
+        (r1, w1, c1), (r2, w2, c2) = info[i], info[i + 1]
+        k1, k2 = dec(words[i])[4], dec(words[i + 1])[4]
+        if i + 1 in fn.leader:
+            if k1 == '' and k2 == '' and c1 and c2 and indep(i, i + 1):
+                yield 'sched boundary', swapped(i, i + 1), False
+            continue
+        if k1 == '' and k2 == '' and w1 & r2 & ~(FIXED & ~1):
+            yield 'sched RAW', swapped(i, i + 1), False
+        elif c1 and c2 and indep(i, i + 1):
+            if c1 == 'pure' and c2 == 'pure':
+                yield 'sched independent', swapped(i, i + 1), True
+            elif c1 == c2 == 'load':
+                if not hw:
+                    yield 'sched load/load', swapped(i, i + 1), True
+            elif 'pure' not in (c1, c2):
+                a, b = words[i], words[i + 1]
+                A1, A2 = (a >> 16) & 31, (b >> 16) & 31
+                sz = lambda x: {32: 4, 34: 1, 36: 4, 38: 1, 40: 2, 42: 2, 44: 2, 48: 4, 50: 8, 52: 4, 54: 8}[x >> 26]
+                o1, o2 = sext(a & 0xFFFF, 16), sext(b & 0xFFFF, 16)
+                if A1 == A2 and A1:
+                    if o1 + sz(a) <= o2 or o2 + sz(b) <= o1:
+                        yield 'sched disjoint memory', swapped(i, i + 1), True
+                    else:
+                        yield 'sched aliasing memory', swapped(i, i + 1), False
+                else:
+                    yield 'sched aliasing memory', swapped(i, i + 1), False
+        if k2 in ('bl', 'icall') and i + 2 < n and i + 2 not in fn.leader and k1 == '' and \
+                dec(words[i + 2])[4] == '' and words[i] != words[i + 2]:
+            yield 'sched across call', swapped(i, i + 2), False
+            yield 'sched call moved', swapped(i, i + 1), False
+
+
+def sched_selftest(args, P, prog, units):
+    """Self-test of rule f): returns the number of problems."""
+    bad = sched_synth()
+    names = list(dict.fromkeys(SCHED_SELFTEST + load_allow(P['sallow'])))
+    real = []
+    for name in names:                            # (a) real schedule-only pairs
+        fn = prog.byname.get(name)
+        unit = next((u for u, s, e in units if fn and s <= fn.addr < e), None)
+        try:
+            mine = Obj(os.path.join(P['build'], 'src', unit + '.o'))
+            tgt = Obj(os.path.join(P['build'], 'obj', unit + '.o'))
+        except (OSError, TypeError) as e:
+            print('skip %s: no objects (%s)' % (name, e))
+            continue
+        ok, text_ = list_one(prog, name, mine, tgt)
+        print('%s %s: %s' % ('PASS' if ok else 'FAIL', name, text_))
+        if not ok:
+            bad += 1
+        elif text_.startswith('schedequiv'):
+            raw, rel = obj_rel(prog, name, mine, tgt)
+            real.append((fn, raw, rel))
+        elif name in SCHED_SELFTEST:
+            print('note %s: no longer differs by instruction order' % name)
+    print('selftest: %d schedule-equivalent function(s) pass' % len(real))
+    if len(real) < 3:
+        bad += 1
+        print('FAIL selftest: fewer than 3 real schedule-only pairs')
+    tot, good = {}, {}
+
+    def run(kind, fn, mut, want, rel=None):
+        nonlocal bad
+        ok, text_ = check_sched(prog, fn, mut, None, rel)
+        tot[kind] = tot.get(kind, 0) + 1
+        if ok == want:
+            good[kind] = good.get(kind, 0) + 1
+        else:
+            bad += 1
+            print('FAIL selftest: %s %s in %s: %s' % (kind, 'accepted' if ok else 'rejected', fn.name, text_))
+
+    # (b) corrupted copies of the real pairs: an operand, an immediate, a dependent pair
+    for fn, raw, rel in real:
+        urel = rel[1]
+        cnt = {}
+        for i in range(fn.n):
+            if i in urel or dec(raw[i]) is None:
+                continue
+            w = raw[i]
+            ops = dec(w)[0]
+            for k, (_b, sh, wd, role) in enumerate(ops):
+                if role & RD and not role & WR and cnt.get('o', 0) < 12 and i % 3 == 0:
+                    r = (w >> sh) & ((1 << wd) - 1)
+                    x = setfield(w, sh, wd, r + 1 if r + 1 < 1 << wd else r - 1)
+                    if dec(x) is not None and not _benign_copy_alias(raw, i, w, x):
+                        cnt['o'] = cnt.get('o', 0) + 1
+                        mut = list(raw)
+                        mut[i] = x
+                        run('sched pair, operand', fn, mut, False, rel)
+                    break
+            if w >> 26 in (14, 32, 36, 48, 52) and cnt.get('i', 0) < 12 and i % 3 == 1:
+                cnt['i'] = cnt.get('i', 0) + 1
+                mut = list(raw)
+                mut[i] = w ^ 4
+                run('sched pair, immediate', fn, mut, False, rel)
+        c = 0
+        for kind, mut, want in sched_mutations(fn, raw):
+            if not want and c < 16 and kind in ('sched RAW', 'sched across call', 'sched call moved',
+                                                'sched aliasing memory', 'sched boundary'):
+                # the relocations stay at their instruction
+                if any(i in urel for i in range(fn.n) if mut[i] != raw[i]):
+                    continue
+                c += 1
+                run('sched pair, ' + kind[6:], fn, mut, False, rel)
+    # (c) originals as their own counterpart, reordered
+    want_n = {'sched RAW': 40, 'sched independent': 40, 'sched load/load': 20, 'sched disjoint memory': 20,
+              'sched aliasing memory': 40, 'sched boundary': 20, 'sched across call': 40, 'sched call moved': 40}
+    scanned = 0
+    for a in sorted(prog.fns)[::5]:
+        fn = prog.fns[a]
+        if not 8 <= fn.n <= 300 or prog.unsupported(fn):
+            continue
+        if all(tot.get(k, 0) >= v for k, v in want_n.items()) or scanned >= 400:
+            break
+        scanned += 1
+        per = {}
+        for kind, mut, want in sched_mutations(fn, fn.words):
+            if tot.get(kind, 0) >= 2 * want_n[kind] or per.get(kind, 0) >= 2:
+                continue
+            per[kind] = per.get(kind, 0) + 1
+            run(kind, fn, mut, want)
+    for kind in sorted(set(tot) | set(want_n)):
+        n = tot.get(kind, 0)
+        acc = kind in ('sched independent', 'sched load/load', 'sched disjoint memory')
+        print('selftest %-28s %5d of %5d %s' % (kind + ':', good.get(kind, 0), n, 'accepted' if acc else 'rejected'))
+        if n < 5 and kind in want_n:
+            bad += 1
+            print('FAIL selftest: too few %s cases' % kind)
+    return bad
+
+
 def selftest(args, P):
     prog = load_program(args, P)
     prog.strict = False
@@ -2016,6 +2793,7 @@ def selftest(args, P):
     if args.verbose:
         for key, n in sorted(reasons.items(), key=lambda kv: -kv[1]):
             print('  %5d  %s' % (n, key))
+    bad += sched_selftest(args, P, prog, units)
     print('selftest: %s' % ('FAILED (%d problem(s))' % bad if bad else 'OK'))
     return 1 if bad else 0
 
@@ -2037,6 +2815,7 @@ def main():
         'syms': os.path.join(ROOT, 'config', v, 'symbols.txt'),
         'splits': os.path.join(ROOT, 'config', v, 'splits.txt'),
         'allow': os.path.join(ROOT, 'config', v, 'regequiv.txt'),
+        'sallow': os.path.join(ROOT, 'config', v, 'schedequiv.txt'),
     }
     if args.selftest is not None:
         sys.exit(selftest(args, P))

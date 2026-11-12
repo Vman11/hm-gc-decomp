@@ -78,6 +78,32 @@ register-equivalent function later becomes exact, remove it from the list.
   rename.
 - `report.json` / objdiff still show a linked register-equivalent function below 100%.
 
+### Schedule-equivalent matches (EXPERIMENT, branch `sched-equiv` only, wYA 2026-11-12)
+
+On this local branch a function may additionally differ from the original in the **order of independent instructions
+inside basic blocks**. Such functions are listed in `config/GHYE6S/schedequiv.txt` (separate from `regequiv.txt`) and
+`tools/equivcheck.py` checks them with rule f) (docstring and the comment above `sched_info()`):
+
+- same length, same basic blocks, every branch / call / return at the same position with the same target;
+- our block is a permutation of the original block's instructions up to live-range renaming: the checker puts our
+  instructions back into the original order and that function must pass the register rule d) unchanged (ABI rules at
+  calls and returns, extab rule e);
+- the permutation may only exchange instructions of ours that do not depend on each other: registers (GPR, FPR, CR
+  fields, XER[CA], FPSCR class/condition bits; a read stays between the write it sees and the next write, a live write
+  stays after all earlier writes), memory (a store stays ordered with every load/store unless both use the same base
+  register with the same value and non-overlapping `[off, off+size)`, which includes two different r1 slots; indexed
+  accesses are never disjoint; in a function that builds a 0xCC00/0xCD00/0xE000 address loads keep their order too),
+  and barriers nothing may cross: branches, calls, mtspr/mfspr (mflr/mtlr/mtctr), mfmsr/mtmsr, mfcr/mtcrf, CR logic,
+  sync/isync, cache instructions, lmw/stmw, OE forms, mffs/mtfsf/mtfsb, float record forms.
+- A stack store against a load through another pointer or an SDA load (`lfs f1, lit@sda21`) is NOT accepted (not
+  provably disjoint by the rule above); this is what rejects most remaining "swapped order" drafts.
+- `--list` reports `schedequiv ...` / `UNIT ...: QUALIFIES-SCHED`; before linking, relocated displacements are unknown
+  and local relocation targets are not compared by name, so the linked check is the authority. `--selftest` covers
+  hand-made cases, real pairs and mutations (dependent pair swapped, load above an aliasing store, instruction across
+  a block boundary or a call, changed operand/immediate must be rejected; independent swaps must be accepted).
+- To link: unit `Matching`, function name into `schedequiv.txt`, then as for register-equivalent units.
+  Candidates: `/home/mi/Decomp/hm-work/wYA/candidates.txt`. Do not merge into main before the user decides.
+
 ## Tools (tools/decomp_agent/)
 
 Copy them into a scratch dir and run from there. Scripts locate each other through `$DECOMP_SCRATCH`:

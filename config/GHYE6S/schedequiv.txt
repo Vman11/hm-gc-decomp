@@ -1,0 +1,3 @@
+# Schedule-equivalent functions (EXPERIMENTAL, branch sched-equiv): linked from C, differ from the
+# original only by register renaming (rule d) and by the order of independent instructions inside
+# basic blocks (rule f of tools/equivcheck.py). One function name per line.
