@@ -46,7 +46,6 @@ typedef struct decform {
 } decform;
 void fn_800EA1DC(decimal *dec, int new_length);
 char *strcpy(char *, const char *);
-extern const char lbl_8029C148[];
 void __begin_critical_region(int region);
 void __end_critical_region(int region);
 extern u8 __files[];
@@ -526,16 +525,16 @@ char *float2str(double num, char *buff, print_format format) {
         if (num < 0) {
             buff -= 5;
             if (lbl_802E05C8[format.conversion_char] & 0x80) {
-                strcpy(buff, lbl_8029C148 + 1);
+                strcpy(buff, "-INF");
             } else {
-                strcpy(buff, lbl_8029C148 + 6);
+                strcpy(buff, "-inf");
             }
         } else {
             buff -= 4;
             if (lbl_802E05C8[format.conversion_char] & 0x80) {
-                strcpy(buff, lbl_8029C148 + 11);
+                strcpy(buff, "INF");
             } else {
-                strcpy(buff, lbl_8029C148 + 15);
+                strcpy(buff, "inf");
             }
         }
         return buff;
@@ -543,16 +542,16 @@ char *float2str(double num, char *buff, print_format format) {
         if (dec.sign) {
             buff -= 5;
             if (lbl_802E05C8[format.conversion_char] & 0x80) {
-                strcpy(buff, lbl_8029C148 + 19);
+                strcpy(buff, "-NAN");
             } else {
-                strcpy(buff, lbl_8029C148 + 24);
+                strcpy(buff, "-nan");
             }
         } else {
             buff -= 4;
             if (lbl_802E05C8[format.conversion_char] & 0x80) {
-                strcpy(buff, lbl_8029C148 + 29);
+                strcpy(buff, "NAN");
             } else {
-                strcpy(buff, lbl_8029C148 + 33);
+                strcpy(buff, "nan");
             }
         }
         return buff;
@@ -764,24 +763,24 @@ char *double2hex(char *buff, print_format format, double x) {
     if (d.sig.text[0] == 'I') {
         if ((*(short *)&bits) & 0x8000) {
             buff -= 5;
-            if (format.conversion_char == 'A') strcpy(buff, lbl_8029C148 + 1);
-            else strcpy(buff, lbl_8029C148 + 6);
+            if (format.conversion_char == 'A') strcpy(buff, "-INF");
+            else strcpy(buff, "-inf");
         } else {
             buff -= 4;
-            if (format.conversion_char == 'A') strcpy(buff, lbl_8029C148 + 11);
-            else strcpy(buff, lbl_8029C148 + 15);
+            if (format.conversion_char == 'A') strcpy(buff, "INF");
+            else strcpy(buff, "inf");
         }
         return buff;
     }
     if (d.sig.text[0] == 'N') {
         if (((const unsigned char *)&x)[0] & 0x80) {
             buff -= 5;
-            if (format.conversion_char == 'A') strcpy(buff, lbl_8029C148 + 19);
-            else strcpy(buff, lbl_8029C148 + 24);
+            if (format.conversion_char == 'A') strcpy(buff, "-NAN");
+            else strcpy(buff, "-nan");
         } else {
             buff -= 4;
-            if (format.conversion_char == 'A') strcpy(buff, lbl_8029C148 + 29);
-            else strcpy(buff, lbl_8029C148 + 33);
+            if (format.conversion_char == 'A') strcpy(buff, "NAN");
+            else strcpy(buff, "nan");
         }
         return buff;
     }

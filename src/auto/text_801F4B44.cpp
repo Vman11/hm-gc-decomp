@@ -28,7 +28,7 @@ f64 fn_800F045C(f64);
 f64 fn_800EFDA4(f64);
 static inline f64 R_4B44(f64 x) { return x * lbl_80365488; }
 void fn_801F4B44(void) {
-    lbl_80330CC8.set(lbl_802EE938);
+    lbl_80330CC8 = lbl_802EE938;
     lbl_8035B0D8 = fn_800F045C(lbl_80365470);
     lbl_8035B0E0 = lbl_80365478 * fn_800EFDA4(R_4B44(lbl_80365480 * lbl_8035B0D8));
     lbl_8035B0E4 = lbl_80365490 / fn_800EFDA4(R_4B44(lbl_80365498 * lbl_8035B0D8));
