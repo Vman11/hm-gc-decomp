@@ -29501,17 +29501,9 @@ auto/text_8021E508.cpp:
 	.text       start:0x8021E508 end:0x8021EA50
 
 auto/text_8021EA50.cpp:
-	extab       start:0x80014A5C end:0x80014A64
-	extabindex  start:0x800278E4 end:0x800278F0
-	.text       start:0x8021EA50 end:0x8021EDC4
-
-auto/text_8021EDC4.cpp:
-	extab       start:0x80014A64 end:0x80014A6C
-	extabindex  start:0x800278F0 end:0x800278FC
-	.text       start:0x8021EDC4 end:0x8021EFA8
-
-auto/text_8021EFA8.cpp:
-	.text       start:0x8021EFA8 end:0x8021EFF4
+	extab       start:0x80014A5C end:0x80014A6C
+	extabindex  start:0x800278E4 end:0x800278FC
+	.text       start:0x8021EA50 end:0x8021EFF4
 
 auto/text_8021EFF4.cpp:
 	extab       start:0x80014A6C end:0x80014A74
