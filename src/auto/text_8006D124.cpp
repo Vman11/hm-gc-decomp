@@ -1,3 +1,7 @@
+// fn_8006D124: schedule- and register-equivalent (passes equivcheck --list). The push-out block reads the
+// vector components into named locals (declared ax, ay, az, bz, bx, by) and keeps the scale factor an unnamed
+// expression: that gives the original FP colouring up to f8, which the call to fn_80101820 needs.
+// The unit stays NonMatching until the 800690FC..8006F808 TU merge (shared int->float constants, TU .bss).
 #include "common.h"
 
 extern "C" {
@@ -208,14 +212,15 @@ void fn_8006D124(P *p, f32 dt) {
                 xa0.z = lbl_8035F0C0;
                 len = fn_80101664(&xa0);
                 if (len < lbl_8035F27C) {
-                    f32 s = lbl_8035F240 * (len - k);
-                    xac.x = __fmadds(s, xa0.x, xac.x);
-                    xac.y = __fmadds(s, xa0.y, xac.y);
-                    xac.z = __fmadds(s, xa0.z, xac.z);
-                    x94.x = xa0.x; x94.y = xa0.y; x94.z = xa0.z;
-                    x7c.x = __fmsubs(xa0.y, x88.z, xa0.z * x88.y);
-                    x7c.y = __fmsubs(xa0.z, x88.x, xa0.x * x88.z);
-                    x7c.z = __fmsubs(xa0.x, x88.y, xa0.y * x88.x);
+                    f32 ax, ay, az, bz, bx, by;
+                    ax = xa0.x; ay = xa0.y; az = xa0.z; bz = x88.z; by = x88.y; bx = x88.x;
+                    xac.x = __fmadds(lbl_8035F240 * (len - k), ax, xac.x);
+                    xac.y = __fmadds(lbl_8035F240 * (len - k), ay, xac.y);
+                    xac.z = __fmadds(lbl_8035F240 * (len - k), az, xac.z);
+                    x94.x = ax; x94.y = ay; x94.z = az;
+                    x7c.x = __fmsubs(ay, bz, az * by);
+                    x7c.y = __fmsubs(az, bx, ax * bz);
+                    x7c.z = __fmsubs(ax, by, ay * bx);
                     fn_80101820(&x7c);
                     p->fe0->SetPos(&xac, &x94, &x88, &x7c, 0);
                 }
